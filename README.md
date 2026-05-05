@@ -70,13 +70,11 @@ npm run build
 
 ## Preparação para GitHub
 
-Este repositório está preparado para subir ao GitHub:
+Este repositório está hospedado no GitHub em: https://github.com/sucsnj/sistema-de-vendas
 
-- arquivo `.gitignore` configurado para ignorar dependências locais, builds, banco de dados e arquivos temporários
+- Arquivo `.gitignore` configurado para ignorar dependências locais, builds, banco de dados e arquivos temporários
 - `.gitattributes` incluído para manter consistência de final de linha e tratamento de texto
 - `README.md` atualizado com informações de uso e autoria
-
-> Observação: o projeto foi preparado, mas ainda não deve ser enviado para o GitHub até que a configuração de repositório seja revisada.
 
 ## Notas adicionais
 
