@@ -243,6 +243,16 @@ const ContasAPagar: React.FC = () => {
     return Array.from(map.values()).sort((a, b) => (a.data < b.data ? 1 : -1));
   }, [contasMes]);
 
+  // Lista de contas pendentes que serão pagas na próxima semana
+  const proximasContas = useMemo(() => {
+    const hoje = new Date().toISOString().split('T')[0]; // formato YYYY-MM-DD
+    return contasAno
+      .filter((conta) => conta.status === 'Pendente' && conta.vencimento >= '1970-01-01') // só pendentes
+      .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime()) // ordenar por vencimento
+      .filter((conta) => conta.vencimento >= hoje) // apenas vencimentos futuros ou iguais a hoje
+      .slice(0, 12); // pegar só as 12 primeiras
+  }, [contasAno]);
+
   const resumo = useMemo(() => {
     const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
     const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
@@ -455,14 +465,14 @@ const ContasAPagar: React.FC = () => {
                       <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
                     </td>
                     <td className="actions-cell">
-                      <button type="button" onClick={() => handleView(conta)}>
+                      <button type="button" className="view-button" onClick={() => handleView(conta)}>
                         Ver
                       </button>
-                      <button type="button" onClick={() => handleEditar(conta)}>
-                        Editar
-                      </button>
-                      <button type="button" onClick={() => handleDelete(conta.id)}>
+                      <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>
                         Excluir
+                      </button>
+                      <button type="button" className="edit-button" onClick={() => handleEditar(conta)}>
+                        Editar
                       </button>
                       {conta.status === 'Pendente' ? (
                         <button type="button" className="pay-button" onClick={() => handlePagar(conta.id)}>
@@ -492,7 +502,8 @@ const ContasAPagar: React.FC = () => {
                   <th>Distribuidora</th>
                   <th>Valor</th>
                   <th>Status</th>
-                  <th>Ações</th> {/* nova coluna */}
+                  {/* nova coluna */}
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -505,8 +516,9 @@ const ContasAPagar: React.FC = () => {
                       <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
                     </td>
                     <td className="actions-cell">
-                      <button type="button" onClick={() => handleEditar(conta)}>Editar</button>
-                      <button type="button" onClick={() => handleDelete(conta.id)}>Excluir</button>
+                      <button type="button" className="view-button" onClick={() => handleView(conta)}>Ver</button>
+                      <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>Excluir</button>
+                      <button type="button" className="edit-button" onClick={() => handleEditar(conta)}>Editar</button>
                     </td>
                   </tr>
                 ))}
@@ -542,6 +554,23 @@ const ContasAPagar: React.FC = () => {
               )}
             </div>
           </div>
+
+          <section className="contas-panel proximas-panel">
+            <div className="panel-header">
+              <h3>Próximas contas a vencer</h3>
+            </div>
+            <div className="proximas-list">
+              {proximasContas.length === 0 ? (
+                <p>Nenhuma conta pendente encontrada.</p>
+              ) : (
+                proximasContas.map((conta) => (
+                  <div key={conta.id} className="proxima-row">
+                    <strong>{conta.vencimento}</strong> - {conta.distribuidora} - <span>R$ {conta.valor.toFixed(2)}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
         </section>
 
         <section className="contas-panel resumo-panel">
@@ -633,15 +662,15 @@ const ContasAPagar: React.FC = () => {
             </div>
             <div className="modal-actions">
               {selectedConta.status === 'Pendente' ? (
-                <button type="button" onClick={() => handlePagar(selectedConta.id)}>
+                <button type="button" className="pay-button" onClick={() => handlePagar(selectedConta.id)}>
                   Pagar conta
                 </button>
               ) : (
-                <button type="button" onClick={() => handleCancelarPagamento(selectedConta.id)}>
+                <button type="button" className="cancel-button" onClick={() => handleCancelarPagamento(selectedConta.id)}>
                   Cancelar pagamento
                 </button>
               )}
-              <button type="button" onClick={() => setSelectedConta(null)}>
+              <button type="button" className="close-button" onClick={() => setSelectedConta(null)}>
                 Fechar
               </button>
             </div>
@@ -1008,6 +1037,31 @@ const ContasAPagar: React.FC = () => {
 
         .pay-button {
           background: var(--success);
+        }
+
+        .cancel-button {
+          background-color: #3498db;
+          color: #fff;
+        }
+
+        .close-button {
+          background-color: #dfaea9;
+          color: #fff;
+        }
+
+        .view-button {
+          background-color: #27cd6c;
+          color: #fff;
+        }
+
+        .edit-button {
+          background-color: #ecd165;
+          color: #fff;
+        }
+
+        .delete-button {
+          background-color: #ed8a34;
+          color: #fff;
         }
 
         .status {
