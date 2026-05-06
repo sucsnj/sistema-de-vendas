@@ -26,6 +26,15 @@ export const registrarConta = async (
   return response.json();
 };
 
+export const importarContasXML = async (xml: string) => {
+  const response = await fetch('/api/contas/import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ xml }),
+  });
+  return response.json();
+};
+
 export const buscarContas = async (ano: number, mes?: number): Promise<ContaDetalhe[]> => {
   const params = new URLSearchParams({ ano: String(ano) });
   if (mes !== undefined) {

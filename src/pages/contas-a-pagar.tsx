@@ -172,12 +172,44 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const handleImportXML = () => {
-    // Função reservada para futura implementação de importação XML
+  // Função reservada para futura implementação de importação XML
+  const handleImportXML = async () => {
+    try {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.xml';
+      fileInput.onchange = async (event: any) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const text = await file.text();
+
+        const response = await fetch('/api/contas/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ xml: text }),
+        });
+
+        const result = await response.json();
+
+        if (result.sucesso) {
+          showToast(`Importação concluída: ${result.registros.length} registros inseridos`, 'success');
+          // Atualiza imediatamente a UI
+          await loadContasMes();
+          await loadContasAno();
+        } else {
+          showToast(`Erro: ${result.error || 'Falha ao importar XML'}`, 'error');
+        }
+      };
+      fileInput.click();
+    } catch (error) {
+      showToast('Erro ao importar XML', 'error');
+      console.error(error);
+    }
   };
 
-  const filteredContasMes = useMemo(() => {
-    return contasMes.filter((conta) => {
+  const filteredContas = useMemo(() => {
+    return contasAno.filter((conta) => {
       const matchesDistribuidora = conta.distribuidora
         .toLowerCase()
         .includes(filtroDistribuidora.toLowerCase());
@@ -186,7 +218,7 @@ const ContasAPagar: React.FC = () => {
       const matchesVencimentoAte = filtroVencimentoAte ? conta.vencimento <= filtroVencimentoAte : true;
       return matchesDistribuidora && matchesStatus && matchesVencimentoDe && matchesVencimentoAte;
     });
-  }, [contasMes, filtroDistribuidora, filtroStatus, filtroVencimentoDe, filtroVencimentoAte]);
+  }, [contasAno, filtroDistribuidora, filtroStatus, filtroVencimentoDe, filtroVencimentoAte]);
 
   const ultimasContas = useMemo(() => {
     return [...contasAno]
@@ -413,7 +445,7 @@ const ContasAPagar: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredContasMes.map((conta) => (
+                {filteredContas.map((conta) => (
                   <tr key={conta.id}>
                     <td>{conta.distribuidora}</td>
                     <td>R$ {conta.valor.toFixed(2)}</td>
@@ -440,7 +472,7 @@ const ContasAPagar: React.FC = () => {
                     </td>
                   </tr>
                 ))}
-                {filteredContasMes.length === 0 ? (
+                {filteredContas.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="empty-row">
                       Nenhuma conta encontrada para o período selecionado.
@@ -460,6 +492,7 @@ const ContasAPagar: React.FC = () => {
                   <th>Distribuidora</th>
                   <th>Valor</th>
                   <th>Status</th>
+                  <th>Ações</th> {/* nova coluna */}
                 </tr>
               </thead>
               <tbody>
@@ -471,11 +504,15 @@ const ContasAPagar: React.FC = () => {
                     <td>
                       <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
                     </td>
+                    <td className="actions-cell">
+                      <button type="button" onClick={() => handleEditar(conta)}>Editar</button>
+                      <button type="button" onClick={() => handleDelete(conta.id)}>Excluir</button>
+                    </td>
                   </tr>
                 ))}
                 {ultimasContas.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="empty-row">
+                    <td colSpan={5} className="empty-row">
                       Nenhuma conta registrada ainda.
                     </td>
                   </tr>
