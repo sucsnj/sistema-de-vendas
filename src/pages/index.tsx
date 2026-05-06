@@ -19,39 +19,11 @@ const Home: React.FC = () => {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
-  const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
   const editValorInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     loadSales();
   }, [mes, ano]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const saved = localStorage.getItem('themeMode');
-    if (saved === 'light' || saved === 'dark' || saved === 'system') {
-      setThemeMode(saved);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    if (themeMode === 'system') {
-      document.documentElement.classList.remove('light', 'dark');
-    } else {
-      document.documentElement.classList.add(themeMode);
-      document.documentElement.classList.remove(themeMode === 'light' ? 'dark' : 'light');
-    }
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('themeMode', themeMode);
-    }
-  }, [themeMode]);
-
-  const toggleThemeMode = () => {
-    setThemeMode((current) =>
-      current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system'
-    );
-  };
 
   const loadSales = async () => {
     const data = await buscarVendasDiarias(mes, ano);
@@ -144,13 +116,6 @@ const Home: React.FC = () => {
     <div className="page-container">
       <div className="top-bar">
         <h1>Dashboard de Vendas</h1>
-        <button type="button" className="theme-toggle" onClick={toggleThemeMode}>
-          {themeMode === 'system'
-            ? 'Modo: Sistema'
-            : themeMode === 'light'
-            ? 'Modo: Claro'
-            : 'Modo: Escuro'}
-        </button>
       </div>
       <DailySalesTotal
         sales={sales}
