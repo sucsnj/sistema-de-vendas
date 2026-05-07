@@ -52,3 +52,9 @@ next-env.d.ts
 
 # system
 Thumbs.db
+
+# tesseract
+/temp
+eng.traineddata
+por.traineddata
+/uploads

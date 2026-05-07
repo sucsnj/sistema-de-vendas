@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
+import OcrUpload from '@/components/OcrUpload';
 import {
   buscarContas,
   atualizarConta,
@@ -284,6 +285,8 @@ const ContasAPagar: React.FC = () => {
       totaisPorDistribuidora,
     };
   }, [contasAno]);
+
+  const [linhaDigitavel, setLinhaDigitavel] = useState<string | null>(null);
 
   return (
     <div className="contas-page">
@@ -571,6 +574,15 @@ const ContasAPagar: React.FC = () => {
                   </div>
                 ))
               )}
+            </div>
+          </section>
+
+          <section className="contas-panel">
+            <div className="panel-header">
+              <h3>Leitura de Contas</h3>
+            </div>
+            <div>
+              <OcrUpload />
             </div>
           </section>
         </section>
