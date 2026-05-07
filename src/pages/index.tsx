@@ -4,14 +4,17 @@ import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
 import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
+import dayjs from 'dayjs';
 import ExportButtons from '../components/ExportButtons';
 import { buscarVendasDiarias, consolidarMensal, fazerBackup, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
+
+const hoje = dayjs().format('YYYY-MM-DD');
 
 const Home: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [ano, setAno] = useState(new Date().getFullYear());
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(hoje);
   const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
   const [editData, setEditData] = useState('');
   const [editValor, setEditValor] = useState('');

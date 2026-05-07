@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Toast from '../components/Toast';
+import dayjs from 'dayjs';
 import {
   buscarContas,
   atualizarConta,
@@ -10,6 +11,8 @@ import {
   registrarConta,
   ContaDetalhe,
 } from '../services/contasService';
+
+const hoje = dayjs().format('YYYY-MM-DD');
 
 const ContasAPagar: React.FC = () => {
   const today = new Date();
@@ -26,8 +29,8 @@ const ContasAPagar: React.FC = () => {
   const [selectedConta, setSelectedConta] = useState<ContaDetalhe | null>(null);
   const [filtroDistribuidora, setFiltroDistribuidora] = useState('');
   const [filtroStatus, setFiltroStatus] = useState<'Todos' | 'Pendente' | 'Pago'>('Todos');
-  const [filtroVencimentoDe, setFiltroVencimentoDe] = useState('');
-  const [filtroVencimentoAte, setFiltroVencimentoAte] = useState('');
+  const [filtroVencimentoDe, setFiltroVencimentoDe] = useState(hoje);
+  const [filtroVencimentoAte, setFiltroVencimentoAte] = useState(hoje);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
@@ -319,74 +322,8 @@ const ContasAPagar: React.FC = () => {
         <section className="contas-panel detail-panel">
           <div className="panel-header">
             <h2>Detalhe</h2>
-            <span className="status-chip">Entrada manual</span>
+            <span className="status-chip">Filtro</span>
           </div>
-          <form onSubmit={handleSubmit} className="contas-form">
-            <div className="form-row">
-              <label>
-                Distribuidora
-                <input
-                  ref={distribuidoraInputRef}
-                  type="text"
-                  value={distribuidora}
-                  onChange={(e) => setDistribuidora(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Valor
-                <input
-                  type="number"
-                  step="0.01"
-                  value={valor}
-                  onChange={(e) => setValor(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                Vencimento
-                <input
-                  type="date"
-                  value={vencimento}
-                  onChange={(e) => setVencimento(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Documento
-                <input
-                  type="text"
-                  value={documento}
-                  onChange={(e) => setDocumento(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
-            <label>
-              Banco / Observações
-              <textarea
-                rows={4}
-                value={bancoObservacoes}
-                onChange={(e) => setBancoObservacoes(e.target.value)}
-              />
-            </label>
-            <div className="form-actions">
-              <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
-              <button type="button" className="secondary" onClick={resetForm}>
-                Limpar Campos
-              </button>
-              <button type="button" className="secondary" onClick={handleImportXML}>
-                Importar XML
-              </button>
-              {editingConta ? (
-                <button type="button" className="secondary" onClick={handleCancelarEdicao}>
-                  Cancelar
-                </button>
-              ) : null}
-            </div>
-          </form>
 
           <div className="detail-table-wrapper">
             <div className="filter-bar">
@@ -435,8 +372,8 @@ const ContasAPagar: React.FC = () => {
                 <button type="button" onClick={() => {
                   setFiltroDistribuidora('');
                   setFiltroStatus('Todos');
-                  setFiltroVencimentoDe('');
-                  setFiltroVencimentoAte('');
+                  setFiltroVencimentoDe(hoje);
+                  setFiltroVencimentoAte(hoje);
                 }}>
                   Limpar filtros
                 </button>
@@ -492,6 +429,71 @@ const ContasAPagar: React.FC = () => {
               </tbody>
             </table>
           </div>
+
+          <form onSubmit={handleSubmit} className="contas-form">
+            <div className="form-row">
+              <label>
+                Distribuidora
+                <input
+                  ref={distribuidoraInputRef}
+                  type="text"
+                  value={distribuidora}
+                  onChange={(e) => setDistribuidora(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Valor
+                <input
+                  type="number"
+                  step="0.01"
+                  value={valor}
+                  onChange={(e) => setValor(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Vencimento
+                <input
+                  type="date"
+                  value={hoje} // data atual
+                  onChange={(e) => setVencimento(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Documento
+                <input
+                  type="text"
+                  value={documento}
+                  onChange={(e) => setDocumento(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+            <label>
+              Banco / Observações
+              <textarea
+                rows={4}
+                value={bancoObservacoes}
+                onChange={(e) => setBancoObservacoes(e.target.value)}
+              />
+            </label>
+            <div className="form-actions">
+              <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
+              <button type="button" className="secondary" onClick={resetForm}>
+                Limpar Campos
+              </button>
+              <button type="button" className="secondary" onClick={handleImportXML}>
+                Importar XML
+              </button>
+              {editingConta ? (
+                <button type="button" className="secondary" onClick={handleCancelarEdicao}>
+                  Cancelar
+                </button>
+              ) : null}
+            </div>
+          </form>
 
           <div className="last-ten-panel">
             <h3>Últimas 10 contas registradas</h3>
@@ -775,7 +777,7 @@ const ContasAPagar: React.FC = () => {
           grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
           gap: 12px;
           align-items: start;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
         }
 
         .filter-bar label {
@@ -932,7 +934,7 @@ const ContasAPagar: React.FC = () => {
 
         .form-row {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 14px;
         }
 
@@ -957,7 +959,7 @@ const ContasAPagar: React.FC = () => {
         }
 
         textarea {
-          min-height: 110px;
+          min-height: 50px;
           resize: vertical;
         }
 
@@ -993,6 +995,7 @@ const ContasAPagar: React.FC = () => {
           width: 100%;
           border-collapse: collapse;
           min-width: 860px;
+          margin-bottom: 24px;
         }
 
         .detail-table th,

@@ -16,9 +16,13 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
     return diffDays >= 0 && diffDays <= 2;
   };
 
+  const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
+
   return (
     <div className="table-container">
-      <h2>Vendas Diárias</h2>
+      <h2>Vendas Diárias
+         - <span>Total R$ {totalVendas.toFixed(2)}</span>
+      </h2>
       <table>
         <thead>
           <tr>

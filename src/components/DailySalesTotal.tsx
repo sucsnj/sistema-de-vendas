@@ -27,42 +27,42 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
         <div className="summary-left">
           <div className="summary-row">
             <div className="summary-card totals-card">
-          <span className="summary-card-title">Total do Período</span>
-          <div className="summary-metrics">
-            <div>
-              <span className="summary-label">Total de Vendas</span>
-              <span className="summary-value">R$ {total.toFixed(2)}</span>
+              <span className="summary-card-title">Total do Período</span>
+              <div className="summary-metrics">
+                <div>
+                  <span className="summary-label">Total de Vendas</span>
+                  <span className="summary-value">R$ {total.toFixed(2)}</span>
+                </div>
+                <div>
+                  <span className="summary-label">Quantidade de Vendas</span>
+                  <span className="summary-value">{quantidadeVendas}</span>
+                </div>
+                <div>
+                  <span className="summary-label">Ticket Médio</span>
+                  <span className="summary-value">R$ {ticketMedio.toFixed(2)}</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <span className="summary-label">Quantidade de Vendas</span>
-              <span className="summary-value">{quantidadeVendas}</span>
-            </div>
-            <div>
-              <span className="summary-label">Ticket Médio</span>
-              <span className="summary-value">R$ {ticketMedio.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
 
-        {selectedDay ? (
-          <div className="summary-card daily-card">
-            <span className="summary-card-title">Resumo do dia {selectedDay}</span>
-            <div className="summary-metrics">
-              <div>
-                <span className="summary-label">Total</span>
-                <span className="summary-value">R$ {dailyTotal.toFixed(2)}</span>
+            {selectedDay ? (
+              <div className="summary-card daily-card">
+                <span className="summary-card-title">Resumo do dia {selectedDay}</span>
+                <div className="summary-metrics">
+                  <div>
+                    <span className="summary-label">Total</span>
+                    <span className="summary-value">R$ {dailyTotal.toFixed(2)}</span>
+                  </div>
+                  <div>
+                    <span className="summary-label">Vendas</span>
+                    <span className="summary-value">{dailyCount}</span>
+                  </div>
+                  <div>
+                    <span className="summary-label">Média do dia</span>
+                    <span className="summary-value">R$ {dailyAverage.toFixed(2)}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <span className="summary-label">Vendas</span>
-                <span className="summary-value">{dailyCount}</span>
-              </div>
-              <div>
-                <span className="summary-label">Média do dia</span>
-                <span className="summary-value">R$ {dailyAverage.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-        ) : null}
+            ) : null}
           </div>
 
           {recentSales.length > 0 ? (
@@ -104,9 +104,11 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
       <style jsx>{`
         .daily-sales-total {
           margin: 28px auto 24px;
+          transform: scale(0.85); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
+          transform-origin: top;
           padding: 18px;
           width: calc(100% - 16px);
-          max-width: 1160px;
+          max-width: 1280px;
           background: linear-gradient(135deg, #5b6ce0 0%, #6f55b0 100%);
           border-radius: 12px;
           color: white;
