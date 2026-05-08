@@ -847,7 +847,6 @@ const ContasAPagar: React.FC = () => {
           grid-column: 1 / 2;
         }
 
-        .agenda-panel,
         .resumo-panel {
           display: flex;
           flex-direction: column;
@@ -1037,27 +1036,12 @@ const ContasAPagar: React.FC = () => {
           color: #166534;
         }
 
-        .agenda-card,
         .summary-card {
           background: var(--surface-strong);
           border: 1px solid var(--border);
           border-radius: 22px;
           padding: 20px;
           min-height: 220px;
-        }
-
-        .agenda-list {
-          display: grid;
-          gap: 14px;
-        }
-
-        .agenda-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 14px 16px;
-          border-radius: 18px;
-          background: var(--surface-soft);
         }
 
         .summary-card.small {
