@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
-import OcrUpload from '@/components/OcrUpload';
+import Agenda from '@/components/Agenda';
 import {
   buscarContas,
   atualizarConta,
@@ -234,6 +234,7 @@ const ContasAPagar: React.FC = () => {
       .slice(0, 10);
   }, [contasAno]);
 
+  // #Agenda
   const agenda = useMemo(() => {
     const map = new Map<string, { data: string; totalPendente: number }>();
     contasMes.forEach((conta) => {
@@ -247,6 +248,7 @@ const ContasAPagar: React.FC = () => {
     return Array.from(map.values()).sort((a, b) => (a.data < b.data ? 1 : -1));
   }, [contasMes]);
 
+  // #Agenda
   // Lista de contas pendentes que serão pagas na próxima semana
   const proximasContas = useMemo(() => {
     const hoje = new Date().toISOString().split('T')[0]; // formato YYYY-MM-DD
@@ -285,8 +287,6 @@ const ContasAPagar: React.FC = () => {
       totaisPorDistribuidora,
     };
   }, [contasAno]);
-
-  const [linhaDigitavel, setLinhaDigitavel] = useState<string | null>(null);
 
   return (
     <div className="contas-page">
@@ -539,53 +539,9 @@ const ContasAPagar: React.FC = () => {
           </div>
         </section>
 
-        <section className="contas-panel agenda-panel">
-          <div className="panel-header">
-            <h2>Agenda</h2>
-            <span className="status-chip">Atualização automática</span>
-          </div>
-          <div className="agenda-card">
-            <h3>Total pendente por vencimento</h3>
-            <div className="agenda-list">
-              {agenda.length === 0 ? (
-                <p>Nenhum vencimento registrado neste mês.</p>
-              ) : (
-                agenda.map((item) => (
-                  <div key={item.data} className="agenda-row">
-                    <strong>{item.data}</strong>
-                    <span>R$ {item.totalPendente.toFixed(2)}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+        {/* #Agenda */}
+        <Agenda agenda={agenda} proximasContas={proximasContas} />
 
-          <section className="contas-panel proximas-panel">
-            <div className="panel-header">
-              <h3>Próximas contas a vencer</h3>
-            </div>
-            <div className="proximas-list">
-              {proximasContas.length === 0 ? (
-                <p>Nenhuma conta pendente encontrada.</p>
-              ) : (
-                proximasContas.map((conta) => (
-                  <div key={conta.id} className="proxima-row">
-                    <strong>{conta.vencimento}</strong> - {conta.distribuidora} - <span>R$ {conta.valor.toFixed(2)}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </section>
-
-          <section className="contas-panel">
-            <div className="panel-header">
-              <h3>Leitura de Contas</h3>
-            </div>
-            <div className="ocr-upload-wrapper">
-              <OcrUpload />
-            </div>
-          </section>
-        </section>
 
         <section className="contas-panel resumo-panel">
           <div className="panel-header">
