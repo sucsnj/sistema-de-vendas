@@ -3,6 +3,7 @@ import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
 import ConsolidacaoMensal from '@/components/ConsolidacaoMensal';
+import TotaisPorDistribuidora from '@/components/TotaisPorDistribuidora';
 import {
   buscarContas,
   atualizarConta,
@@ -562,20 +563,8 @@ const ContasAPagar: React.FC = () => {
               <span>R$ {resumo.totalAnual.toFixed(2)}</span>
             </div>
           </div>
-          <div className="summary-card small">
-            <h3>Totais por distribuidora</h3>
-            {Object.keys(resumo.totaisPorDistribuidora).length === 0 ? (
-              <p>Sem pendências por distribuidora.</p>
-            ) : (
-              <ul>
-                {Object.entries(resumo.totaisPorDistribuidora).map(([nome, valor]) => (
-                  <li key={nome}>
-                    {nome}: R$ {valor.toFixed(2)}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* #Totais por distribuidora */}
+          <TotaisPorDistribuidora totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
 
          { /* #Consolidação mensal */}
           <ConsolidacaoMensal meses={resumo.meses} />
@@ -1044,10 +1033,6 @@ const ContasAPagar: React.FC = () => {
           min-height: 220px;
         }
 
-        .summary-card.small {
-          padding: 18px;
-        }
-
         .summary-row {
           display: flex;
           justify-content: space-between;
@@ -1059,25 +1044,6 @@ const ContasAPagar: React.FC = () => {
 
         .summary-row:last-child {
           border-bottom: none;
-        }
-
-        .summary-card h3 {
-          margin: 0 0 14px;
-          font-size: 1rem;
-          color: var(--muted);
-        }
-
-        .summary-card ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          display: grid;
-          gap: 10px;
-        }
-
-        .summary-card ul li {
-          color: var(--foreground);
-          font-size: 0.95rem;
         }
 
         .empty-row {
