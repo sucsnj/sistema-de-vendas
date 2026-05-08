@@ -11,7 +11,10 @@ export default function OcrUpload() {
         if (!e.target.files?.[0]) return;
 
         const formData = new FormData();
-        formData.append("file", e.target.files[0]);
+        // formData.append("file", e.target.files[0]); // Pega um arquivo por vez
+        Array.from(e.target.files).forEach((file) => {
+            formData.append("files", file);
+        });
 
         // Mostra Toast de carregamento
         setToastMessage("Carregando OCR...");
@@ -41,35 +44,42 @@ export default function OcrUpload() {
         }
     }
 
-    function copiarConteudo() {
-        if (resultado) {
-            navigator.clipboard.writeText(
-                typeof resultado === "string" ? resultado : JSON.stringify(resultado, null, 2)
-            )
-                .then(() => {
-                    setToastMessage("Linha digitável copiada!");
-                    setToastType("success");
-                    setToastOpen(true);
-                })
-                .catch(err => {
-                    console.error("Erro ao copiar:", err);
-                    setToastMessage("Erro ao copiar conteúdo");
-                    setToastType("error");
-                    setToastOpen(true);
-                });
-        }
+    function copiarConteudo(texto: string) {
+
+        navigator.clipboard.writeText(texto)
+            .then(() => {
+
+                setToastMessage("Linha digitável copiada!");
+                setToastType("success");
+                setToastOpen(true);
+
+            })
+            .catch(err => {
+
+                console.error("Erro ao copiar:", err);
+
+                setToastMessage("Erro ao copiar conteúdo");
+                setToastType("error");
+                setToastOpen(true);
+            });
     }
 
     return (
         <div>
-            <input type="file" className="ocr-upload" onChange={uploadArquivo} />
+            <input type="file" className="ocr-upload" multiple onChange={uploadArquivo} />
 
             {resultado && (
-                <div>
-                    <pre className="ocr-upload-wrapper"
-                        onClick={copiarConteudo}>
-                        {typeof resultado === "string" ? resultado : JSON.stringify(resultado, null, 2)}
-                    </pre>
+                <div className="ocr-results">
+                    {resultado.map((item: any, index: number) => (
+                        <pre
+                            key={index}
+                            className="ocr-upload-wrapper"
+                            onClick={() => copiarConteudo(item.linhaDigitavel)}>
+                            <strong>{item.arquivo}</strong>
+                            {"\n"}
+                            {item.linhaDigitavel || item.erro}
+                        </pre>
+                    ))}
                 </div>
             )}
 
@@ -82,40 +92,88 @@ export default function OcrUpload() {
             />
 
             <style jsx>{`
-                .ocr-upload-wrapper {
-                    padding: 10px 12px;
-                    border-radius: 10px;
-                    border: 1px solid var(--border);
-                    background: var(--surface-soft);
-                    color: var(--foreground);
-                    min-width: 130px;
-                    height: 42px;
-                }
-
-                .ocr-upload-wrapper {
-                    background: rgba(255, 255, 255, 0.14);
-                    border-radius: 8px;
+                .ocr-results {
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.22);
-                    transition: transform 0.25s ease, background 0.25s ease;
+                    margin-top: 16px;
+                }
+
+                .ocr-upload-wrapper {
+                    width: 100%;
+                    padding: 0px 5px 5px 7px;
+                    border-radius: 14px;
+                    background: rgba(255, 255, 255, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    color: var(--foreground);
+                    backdrop-filter: blur(12px);
+                    transition:
+                        transform 0.2s ease,
+                        background 0.2s ease,
+                        border-color 0.2s ease,
+                        box-shadow 0.2s ease;
+                    overflow-x: auto;
+                    line-height: 1.5;
+
+                    white-space: pre-wrap;
+                    word-break: break-word;
+                    user-select: all;
                 }
 
                 .ocr-upload-wrapper:hover {
                     cursor: pointer;
-                    background: var(--surface-softer);
+                    background: rgba(255, 255, 255, 0.12);
+                    border-color: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-2px);
+                    box-shadow:
+                        0 8px 24px rgba(0, 0, 0, 0.18);
+                }
+
+                .ocr-upload-wrapper:active {
+                    transform: scale(0.99);
                 }
 
                 .ocr-upload {
-                    padding: 10px 12px;
-                    border-radius: 10px;
-                    border: 1px solid var(--border);
-                    background: var(--surface-soft);
+                    width: 100%;
+                    padding: 12px 14px;
+                    border-radius: 12px;
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    background: rgba(255, 255, 255, 0.06);
                     color: var(--foreground);
-                    min-width: 130px;
-                    height: 42px;
+                    backdrop-filter: blur(10px);
+                    transition:
+                        border-color 0.2s ease,
+                        background 0.2s ease,
+                        box-shadow 0.2s ease;
+                    outline: none;
+                }
+
+                .ocr-upload:hover {
+                    background: rgba(255, 255, 255, 0.09);
+                }
+
+                .ocr-upload:focus {
+                    border-color: rgba(255, 255, 255, 0.28);
+                    box-shadow:
+                        0 0 0 4px rgba(255, 255, 255, 0.06);
+                }
+
+                .ocr-upload::file-selector-button {
+                    margin-right: 12px;
+                    padding: 8px 14px;
+                    border: none;
+                    border-radius: 10px;
+                    background: rgba(255, 255, 255, 0.14);
+                    color: var(--foreground);
+                    cursor: pointer;
+                    transition:
+                        background 0.2s ease,
+                        transform 0.2s ease;
+                }
+
+                .ocr-upload::file-selector-button:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-1px);
                 }
             `}</style>
         </div>

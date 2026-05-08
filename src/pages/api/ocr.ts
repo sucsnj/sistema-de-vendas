@@ -18,6 +18,7 @@ const upload = multer({
 
 function runMiddleware(req: any, res: any, fn: any) {
     return new Promise((resolve, reject) => {
+
         fn(req, res, (result: any) => {
 
             if (result instanceof Error) {
@@ -40,13 +41,14 @@ export default async function handler(
         });
     }
 
-    await runMiddleware(req, res, upload.single("file"));
+    await runMiddleware(req, res, upload.array("files"));
 
-    const file = (req as any).file;
+    const files = (req as any).files;
 
-    if (!file) {
+    if (!files || files.length === 0) {
+
         return res.status(400).json({
-            error: "Arquivo não enviado",
+            error: "Nenhum arquivo enviado",
         });
     }
 
@@ -54,51 +56,50 @@ export default async function handler(
         fs.mkdirSync("./temp");
     }
 
-    const ext = path.extname(file.originalname).toLowerCase();
+    const resultados = [];
 
-    let linhaDigitavel: string | null = null;
+    for (const file of files) {
 
-    try {
+        const ext = path.extname(file.originalname).toLowerCase();
 
-        console.log("EXTENSÃO:", ext);
-
-        if (ext === ".pdf") {
-
-            console.log("PROCESSANDO PDF");
-
-            linhaDigitavel = await lerPdfComOcr(file.path);
-
-        } else {
-
-            console.log("PROCESSANDO IMAGEM");
-
-            linhaDigitavel = await lerLinhaDigitavel(file.path);
-        }
-
-        console.log("RESULTADO FINAL:", linhaDigitavel);
-
-        if (!linhaDigitavel) {
-
-            return res.status(422).json({
-                error: "Não foi possível extrair a linha digitável",
-            });
-        }
-
-        return res.status(200).json(linhaDigitavel);
-
-    } catch (err) {
-
-        console.error("Erro no processamento:", err);
-
-        return res.status(500).json({
-            error: "Falha ao processar arquivo",
-        });
-
-    } finally {
+        let linhaDigitavel: string | null = null;
 
         try {
-            fs.unlinkSync(file.path);
-        } catch {}
 
+            console.log("PROCESSANDO:", file.originalname);
+
+            if (ext === ".pdf") {
+
+                console.log("PROCESSANDO PDF");
+
+                linhaDigitavel = await lerPdfComOcr(file.path);
+
+            } else {
+
+                console.log("PROCESSANDO IMAGEM");
+
+                linhaDigitavel = await lerLinhaDigitavel(file.path);
+            }
+
+            resultados.push(linhaDigitavel);
+
+        } catch (err) {
+
+            console.error("Erro:", err);
+
+            resultados.push({
+                arquivo: file.originalname,
+                erro: "Falha ao processar arquivo",
+            });
+
+        } finally {
+
+            try {
+                fs.unlinkSync(file.path);
+            } catch { }
+
+        }
     }
+
+    return res.status(200).json(resultados);
 }
