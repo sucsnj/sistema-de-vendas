@@ -91,7 +91,7 @@ const Toast: React.FC<ToastProps> = ({ open, message, type = 'info', onClose, po
         }
 
         .toast-info {
-          background: #1f7a5d;
+          background: #11a2e1;
         }
 
         .toast-success {

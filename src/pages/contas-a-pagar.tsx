@@ -581,7 +581,7 @@ const ContasAPagar: React.FC = () => {
             <div className="panel-header">
               <h3>Leitura de Contas</h3>
             </div>
-            <div>
+            <div className="ocr-upload-wrapper">
               <OcrUpload />
             </div>
           </section>
