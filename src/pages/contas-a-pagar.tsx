@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
+import ConsolidacaoMensal from '@/components/ConsolidacaoMensal';
 import {
   buscarContas,
   atualizarConta,
@@ -542,7 +543,6 @@ const ContasAPagar: React.FC = () => {
         {/* #Agenda */}
         <Agenda agenda={agenda} proximasContas={proximasContas} />
 
-
         <section className="contas-panel resumo-panel">
           <div className="panel-header">
             <h2>Resumo</h2>
@@ -576,27 +576,9 @@ const ContasAPagar: React.FC = () => {
               </ul>
             )}
           </div>
-          <div className="summary-card small">
-            <h3>Consolidação mensal</h3>
-            <table className="summary-table">
-              <thead>
-                <tr>
-                  <th>Mês</th>
-                  <th>Pago</th>
-                  <th>Pendente</th>
-                </tr>
-              </thead>
-              <tbody>
-                {resumo.meses.map((m) => (
-                  <tr key={m.mes}>
-                    <td>{new Date(0, m.mes - 1).toLocaleString('pt-BR', { month: 'short' })}</td>
-                    <td>R$ {m.pago.toFixed(2)}</td>
-                    <td>R$ {m.pendente.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+         { /* #Consolidação mensal */}
+          <ConsolidacaoMensal meses={resumo.meses} />
         </section>
       </main>
 
@@ -1112,24 +1094,6 @@ const ContasAPagar: React.FC = () => {
         .summary-card ul li {
           color: var(--foreground);
           font-size: 0.95rem;
-        }
-
-        .summary-table {
-          width: 100%;
-          border-collapse: collapse;
-          color: var(--foreground);
-        }
-
-        .summary-table th,
-        .summary-table td {
-          padding: 10px 12px;
-          text-align: left;
-          border-bottom: 1px solid var(--border);
-        }
-
-        .summary-table th {
-          color: var(--muted);
-          font-size: 0.9rem;
         }
 
         .empty-row {
