@@ -78,4 +78,9 @@ Este repositório está hospedado no GitHub em: https://github.com/sucsnj/sistem
 
 ## Notas adicionais
 
-Substitua os valores de autoria e de repositório conforme necessário antes da publicação.
+Para usar o ocr com precisão, é necessário instalar o Ghostscript e GraphicsMagick no Windows.
+
+# As isntruções de instalação estão disponíveis em:
+
+- [OCR.md](OCR.md)
+

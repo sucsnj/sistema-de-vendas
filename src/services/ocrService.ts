@@ -1,43 +1,47 @@
-import Tesseract from 'tesseract.js';
-// import sharp from 'sharp';
+import Tesseract from "tesseract.js";
 
 export async function lerLinhaDigitavel(imagemPath: string) {
-  try {
-    const imagemTratada = "temp.png";
 
-    // TODO: sharp não reconhece o arquivo como imagem, por isso não faz nada
-    // await sharp(imagemPath)
-    //   .grayscale()
-    //   .normalize()
-    //   .threshold(180)
-    //   .sharpen()
-    //   .toFile(imagemTratada);
+    try {
 
-    const worker = await Tesseract.createWorker("eng");
+        console.log("OCR EXECUTANDO:", imagemPath);
 
-    await worker.setParameters({
-      tessedit_char_whitelist: "0123456789. "
-    });
+        const worker = await Tesseract.createWorker("eng");
 
-    // OCR na imagem tratada
-    const resultado = await worker.recognize(imagemPath);
-    await worker.terminate();
+        await worker.setParameters({
+            tessedit_char_whitelist: "0123456789. "
+        });
 
-    const texto = resultado.data.text
-      .replace(/\n/g, " ")
-      .replace(/\s+/g, " ");
+        const resultado = await worker.recognize(imagemPath);
 
-    const regex = /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g;
-    const linha = texto.match(regex);
+        await worker.terminate();
 
-    // remover espaços e pontos
-    if (linha) {
-      return linha[0].replace(/\s/g, "").replace(/\./g, "");
+        console.log("TEXTO OCR:");
+        console.log(resultado.data.text);
+
+        const texto = resultado.data.text
+            .replace(/\n/g, " ")
+            .replace(/\s+/g, " ");
+
+        const regex =
+            /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g;
+
+        const linha = texto.match(regex);
+
+        console.log("MATCHES:", linha);
+
+        if (linha) {
+            return linha[0]
+                .replace(/\s/g, "")
+                .replace(/\./g, "");
+        }
+
+        return null;
+
+    } catch (err) {
+
+        console.error("Erro no OCR:", err);
+
+        return null;
     }
-
-    return linha?.[0] || null;
-  } catch (err) {
-    console.error("Erro no OCR:", err);
-    return null;
-  }
 }

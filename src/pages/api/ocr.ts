@@ -19,48 +19,86 @@ const upload = multer({
 function runMiddleware(req: any, res: any, fn: any) {
     return new Promise((resolve, reject) => {
         fn(req, res, (result: any) => {
+
             if (result instanceof Error) {
                 return reject(result);
             }
+
             return resolve(result);
         });
     });
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
+
+    if (req.method !== "POST") {
+        return res.status(405).json({
+            error: "Método não permitido",
+        });
+    }
+
     await runMiddleware(req, res, upload.single("file"));
+
     const file = (req as any).file;
 
     if (!file) {
-        return res.status(400).json({ error: "Arquivo não enviado" });
+        return res.status(400).json({
+            error: "Arquivo não enviado",
+        });
+    }
+
+    if (!fs.existsSync("./temp")) {
+        fs.mkdirSync("./temp");
     }
 
     const ext = path.extname(file.originalname).toLowerCase();
+
     let linhaDigitavel: string | null = null;
 
     try {
+
+        console.log("EXTENSÃO:", ext);
+
         if (ext === ".pdf") {
-            if (!fs.existsSync("./temp")) {
-                fs.mkdirSync("./temp");
-            }
-            linhaDigitavel = await lerPdfComOcr(file.path, 3);
+
+            console.log("PROCESSANDO PDF");
+
+            linhaDigitavel = await lerPdfComOcr(file.path);
+
         } else {
+
+            console.log("PROCESSANDO IMAGEM");
+
             linhaDigitavel = await lerLinhaDigitavel(file.path);
         }
 
+        console.log("RESULTADO FINAL:", linhaDigitavel);
+
         if (!linhaDigitavel) {
-            return res.status(422).json({ error: "Não foi possível extrair a linha digitável" });
+
+            return res.status(422).json({
+                error: "Não foi possível extrair a linha digitável",
+            });
         }
 
         return res.status(200).json(linhaDigitavel);
+
     } catch (err) {
+
         console.error("Erro no processamento:", err);
-        return res.status(500).json({ error: "Falha ao processar arquivo" });
+
+        return res.status(500).json({
+            error: "Falha ao processar arquivo",
+        });
+
     } finally {
+
         try {
-            fs.unlinkSync(file.path); // remove o arquivo original só aqui
-        } catch (cleanupErr) {
-            console.warn("Falha ao limpar arquivo temporário:", cleanupErr);
-        }
+            fs.unlinkSync(file.path);
+        } catch {}
+
     }
 }
