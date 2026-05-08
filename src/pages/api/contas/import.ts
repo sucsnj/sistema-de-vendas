@@ -4,14 +4,14 @@ import { parseStringPromise } from 'xml2js';
 
 // Nomes de distribuidoras válidos
 const nomesValidos = [
-  'acripel', 'cimed', 'pro', 'profarma', 'g1', 'nova',
-  'unilever', 'aujo', 'f&f', 'nds', 'mbca', 'plena', 'total'
+  'acripel', 'cimed', 'profarma', 'g1', 'nova',
+  'unilever', 'aujo', 'f&f', 'nds', 'mbca', 'plena', 'total', 'pro'
 ];
 
 // Funções auxiliares para formatar e normalizar dados
 const formatarDistribuidora = (nome: string) => {
   const lower = nome.toLowerCase();
-  if (lower.includes('f&f')) return 'F$F';
+  if (lower.includes('f&f')) return 'FF';
   const encontrado = nomesValidos.find(n => lower.includes(n));
   if (encontrado) {
     return encontrado.charAt(0).toUpperCase() + encontrado.slice(1);
