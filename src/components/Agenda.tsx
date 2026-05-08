@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import OcrUpload from '@/components/OcrUpload';
 import { ContaDetalhe, } from '../services/contasService';
 
 interface AgendaProps {
-    agenda: { data: string; totalPendente: number }[];
-    proximasContas: ContaDetalhe[];
+    contasMes: ContaDetalhe[];
+    contasAno: ContaDetalhe[];
 }
 
-const Agenda: React.FC<AgendaProps> = ({ agenda, proximasContas }) => {
+const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
+    const agenda = useMemo(() => {
+        const map = new Map<string, { data: string; totalPendente: number }>();
+        contasMes.forEach((conta) => {
+            const current = map.get(conta.vencimento) ?? { data: conta.vencimento, totalPendente: 0 };
+            if (conta.status === 'Pendente') {
+                current.totalPendente += conta.valor;
+            }
+            map.set(conta.vencimento, current);
+        });
+        return Array.from(map.values()).sort((a, b) => (a.data < b.data ? 1 : -1));
+    }, [contasMes]);
+
+    // Lista de contas pendentes que serão pagas na próxima semana
+    const proximasContas = useMemo(() => {
+        const hoje = new Date().toISOString().split('T')[0];
+        return contasAno
+            .filter((conta) => conta.status === 'Pendente')
+            .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime())
+            .filter((conta) => conta.vencimento >= hoje)
+            .slice(0, 12);
+    }, [contasAno]);
+
     return (
         <div>
             <section className="contas-panel agenda-panel">

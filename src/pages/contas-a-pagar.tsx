@@ -236,31 +236,6 @@ const ContasAPagar: React.FC = () => {
       .slice(0, 10);
   }, [contasAno]);
 
-  // #Agenda
-  const agenda = useMemo(() => {
-    const map = new Map<string, { data: string; totalPendente: number }>();
-    contasMes.forEach((conta) => {
-      const current = map.get(conta.vencimento) ?? { data: conta.vencimento, totalPendente: 0 };
-      if (conta.status === 'Pendente') {
-        current.totalPendente += conta.valor;
-      }
-      map.set(conta.vencimento, current);
-    });
-
-    return Array.from(map.values()).sort((a, b) => (a.data < b.data ? 1 : -1));
-  }, [contasMes]);
-
-  // #Agenda
-  // Lista de contas pendentes que serão pagas na próxima semana
-  const proximasContas = useMemo(() => {
-    const hoje = new Date().toISOString().split('T')[0]; // formato YYYY-MM-DD
-    return contasAno
-      .filter((conta) => conta.status === 'Pendente' && conta.vencimento >= '1970-01-01') // só pendentes
-      .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime()) // ordenar por vencimento
-      .filter((conta) => conta.vencimento >= hoje) // apenas vencimentos futuros ou iguais a hoje
-      .slice(0, 12); // pegar só as 12 primeiras
-  }, [contasAno]);
-
   const resumo = useMemo(() => {
     const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
     const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
@@ -542,7 +517,7 @@ const ContasAPagar: React.FC = () => {
         </section>
 
         {/* #Agenda */}
-        <Agenda agenda={agenda} proximasContas={proximasContas} />
+        <Agenda contasMes={contasMes} contasAno={contasAno} />
 
         <section className="contas-panel resumo-panel">
           <div className="panel-header">
