@@ -290,16 +290,6 @@ const ContasAPagar: React.FC = () => {
               </div>
               <div>
                 <label>
-                  Status
-                  <select className="status-select" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
-                    <option value="Todos">Todos</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Pago">Pago</option>
-                  </select>
-                </label>
-              </div>
-              <div>
-                <label>
                   Vencimento de
                   <input
                     type="date"
@@ -316,6 +306,16 @@ const ContasAPagar: React.FC = () => {
                     value={filtroVencimentoAte}
                     onChange={(e) => setFiltroVencimentoAte(e.target.value)}
                   />
+                </label>
+              </div>
+              <div>
+                <label>
+                  Status
+                  <select className="status-select" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
+                    <option value="Todos">Todos</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago</option>
+                  </select>
                 </label>
               </div>
               <div className="filter-actions">
@@ -490,7 +490,7 @@ const ContasAPagar: React.FC = () => {
         <Agenda contasMes={contasMes} contasAno={contasAno} />
 
         {/* #Resumo */}
-        <Resumo contasAno={contasAno}/>
+        <Resumo contasAno={contasAno} />
       </main>
 
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
@@ -684,8 +684,8 @@ const ContasAPagar: React.FC = () => {
         }
 
         .filter-actions button {
-          width: 100%;
-          margin-top: 0;
+          width: 97%;
+          margin-top: 40px;
           background: var(--surface);
           border: 1px solid var(--border);
           color: var(--foreground);

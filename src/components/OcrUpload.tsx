@@ -11,7 +11,6 @@ export default function OcrUpload() {
         if (!e.target.files?.[0]) return;
 
         const formData = new FormData();
-        // formData.append("file", e.target.files[0]); // Pega um arquivo por vez
         Array.from(e.target.files).forEach((file) => {
             formData.append("files", file);
         });
@@ -66,7 +65,9 @@ export default function OcrUpload() {
 
     return (
         <div>
-            <input type="file" className="ocr-upload" multiple onChange={uploadArquivo} />
+            <input type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="ocr-upload" multiple onChange={uploadArquivo} />
 
             {resultado && (
                 <div className="ocr-results">
