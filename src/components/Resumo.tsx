@@ -2,12 +2,15 @@ import React, { useMemo } from 'react';
 import { ContaDetalhe } from '../services/contasService';
 import ConsolidacaoMensal from './ConsolidacaoMensal';
 import TotaisPorDistribuidora from './TotaisPorDistribuidora';
+import { NotaDetalhe } from '../services/notasService';
+import NotasDoMes from './NotasDoMes';
+import dayjs from 'dayjs';
 
 interface ResumoProps {
     contasAno: ContaDetalhe[];
 }
 
-const Resumo: React.FC<ResumoProps> = ({ contasAno}) => {
+const Resumo: React.FC<ResumoProps> = ({ contasAno }) => {
     const resumo = useMemo(() => {
         const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
         const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
@@ -63,6 +66,9 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno}) => {
 
                 { /* #Consolidação mensal */}
                 <ConsolidacaoMensal meses={resumo.meses} />
+
+                {/* #Notas do Mês */}
+                <NotasDoMes />
             </section>
             <style jsx>{`
                 .contas-panel {

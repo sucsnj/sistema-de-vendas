@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertConta } from '../../../database/contasDb';
+import { insertNota } from '../../../database/notasDb';
 import { parseStringPromise } from 'xml2js';
 
 // Nomes de distribuidoras válidos
@@ -54,6 +55,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const nNF = infNFe.ide[0].nNF[0];
     const duplicatas = infNFe.cobr[0].dup;
 
+    const dhSaiEnt = infNFe.ide[0].dhSaiEnt[0];   // emissão
+    const vPag = infNFe.pag[0].detPag[0].vPag[0]; // total
+
+    const data = dhSaiEnt.split('T')[0];
+
     let distribuidora = formatarDistribuidora(distribuidoraRaw);
     let documentoBase = normalizarDocumento(nNF);
 
@@ -70,6 +76,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       registros.push({ distribuidora, valor, vencimento, documento });
     }
+
+    // Adiciona notas de pagamento
+    insertNota(data, vPag);
 
     return res.status(200).json({ sucesso: true, registros });
   } catch (error) {

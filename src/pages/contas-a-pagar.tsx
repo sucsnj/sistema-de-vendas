@@ -13,6 +13,7 @@ import {
   registrarConta,
   ContaDetalhe,
 } from '../services/contasService';
+import { NotaDetalhe, buscarNotasPorPeriodo, excluirNota } from '../services/notasService';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -491,6 +492,7 @@ const ContasAPagar: React.FC = () => {
 
         {/* #Resumo */}
         <Resumo contasAno={contasAno} />
+
       </main>
 
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
