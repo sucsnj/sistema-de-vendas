@@ -19,7 +19,6 @@ try {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       distribuidora TEXT NOT NULL,
       valor REAL NOT NULL,
-      valor_nota REAL,
       vencimento TEXT NOT NULL,
       documento TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'Pendente',
@@ -37,12 +36,11 @@ export const insertConta = (
   vencimento: string,
   documento: string,
   bancoObservacoes?: string,
-  valorNota?: number,
 ) => {
   const stmt = db.prepare(
-    'INSERT INTO contas_detalhes (distribuidora, valor, valor_nota, vencimento, documento, status, banco_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO contas_detalhes (distribuidora, valor, vencimento, documento, status, banco_observacoes) VALUES (?, ?, ?, ?, ?, ?)',
   );
-  return stmt.run(distribuidora, valor, valorNota || null, vencimento, documento, 'Pendente', bancoObservacoes || null);
+  return stmt.run(distribuidora, valor, vencimento, documento, 'Pendente', bancoObservacoes || null);
 };
 
 export const getContasByPeriod = (ano: number, mes?: number) => {
@@ -70,12 +68,11 @@ export const updateConta = (
   vencimento: string,
   documento: string,
   bancoObservacoes?: string,
-  valorNota?: number,
 ) => {
   const stmt = db.prepare(
-    'UPDATE contas_detalhes SET distribuidora = ?, valor = ?, valor_nota = ?, vencimento = ?, documento = ?, banco_observacoes = ? WHERE id = ?',
+    'UPDATE contas_detalhes SET distribuidora = ?, valor = ?, vencimento = ?, documento = ?, banco_observacoes = ? WHERE id = ?',
   );
-  return stmt.run(distribuidora, valor, valorNota || null, vencimento, documento, bancoObservacoes || null, id);
+  return stmt.run(distribuidora, valor, vencimento, documento, bancoObservacoes || null, id);
 };
 
 export const deleteConta = (id: number) => {

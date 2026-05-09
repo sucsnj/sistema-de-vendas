@@ -2,7 +2,6 @@ export interface ContaDetalhe {
   id: number;
   distribuidora: string;
   valor: number;
-  valor_nota?: number;
   vencimento: string;
   documento: string;
   status: 'Pendente' | 'Pago';
@@ -16,12 +15,11 @@ export const registrarConta = async (
   vencimento: string,
   documento: string,
   bancoObservacoes?: string,
-  valorNota?: number,
 ) => {
   const response = await fetch('/api/contas', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ distribuidora, valor, valorNota, vencimento, documento, bancoObservacoes }),
+    body: JSON.stringify({ distribuidora, valor, vencimento, documento, bancoObservacoes }),
   });
   return response.json();
 };
@@ -70,12 +68,11 @@ export const atualizarConta = async (
   vencimento: string,
   documento: string,
   bancoObservacoes?: string,
-  valorNota?: number,
 ) => {
   const response = await fetch('/api/contas', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, distribuidora, valor, valorNota, vencimento, documento, bancoObservacoes }),
+    body: JSON.stringify({ id, distribuidora, valor, vencimento, documento, bancoObservacoes }),
   });
   return response.json();
 };

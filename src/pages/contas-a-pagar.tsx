@@ -13,7 +13,6 @@ import {
   registrarConta,
   ContaDetalhe,
 } from '../services/contasService';
-import { NotaDetalhe, buscarNotasPorPeriodo, excluirNota } from '../services/notasService';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 

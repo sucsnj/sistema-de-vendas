@@ -21,7 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (req.method === 'POST') {
-    const { action, id, distribuidora, valor, valorNota, vencimento, documento, bancoObservacoes } = req.body;
+    const { action, id, distribuidora, valor, vencimento, documento, bancoObservacoes } = req.body;
 
     if (action === 'pagar') {
       if (!id) {
@@ -51,12 +51,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).json({ error: 'Dados inválidos para criação de conta' });
     }
 
-    insertConta(distribuidora, valor, vencimento, documento, bancoObservacoes, valorNota);
+    insertConta(distribuidora, valor, vencimento, documento, bancoObservacoes);
     return res.status(200).json({ message: 'Conta registrada com sucesso' });
   }
 
   if (req.method === 'PUT') {
-    const { id, distribuidora, valor, valorNota, vencimento, documento, bancoObservacoes } = req.body;
+    const { id, distribuidora, valor, vencimento, documento, bancoObservacoes } = req.body;
     if (!id || !distribuidora || typeof valor !== 'number' || !vencimento || !documento) {
       return res.status(400).json({ error: 'Dados inválidos para atualização de conta' });
     }
@@ -66,7 +66,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(404).json({ error: 'Conta não encontrada' });
     }
 
-    updateConta(id, distribuidora, valor, vencimento, documento, bancoObservacoes, valorNota);
+    updateConta(id, distribuidora, valor, vencimento, documento, bancoObservacoes);
     return res.status(200).json({ message: 'Conta atualizada com sucesso' });
   }
 
