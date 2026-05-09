@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
-import ConsolidacaoMensal from '@/components/ConsolidacaoMensal';
-import TotaisPorDistribuidora from '@/components/TotaisPorDistribuidora';
+import Resumo from '@/components/Resumo';
 import {
   buscarContas,
   atualizarConta,
@@ -234,35 +233,6 @@ const ContasAPagar: React.FC = () => {
         return dateB - dateA;
       })
       .slice(0, 10);
-  }, [contasAno]);
-
-  const resumo = useMemo(() => {
-    const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
-    const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
-    const totaisPorDistribuidora = contasAno.reduce<Record<string, number>>((acc, conta) => {
-      if (conta.status === 'Pendente') {
-        acc[conta.distribuidora] = (acc[conta.distribuidora] || 0) + conta.valor;
-      }
-      return acc;
-    }, {});
-
-    const meses = Array.from({ length: 12 }, (_, i) => {
-      const monthIndex = i + 1;
-      const contasNoMes = contasAno.filter((conta) => new Date(`${conta.vencimento}T00:00:00`).getMonth() + 1 === monthIndex);
-      return {
-        mes: monthIndex,
-        pago: contasNoMes.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0),
-        pendente: contasNoMes.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0),
-      };
-    });
-
-    return {
-      totalPago,
-      totalPendente,
-      totalAnual: totalPago + totalPendente,
-      meses,
-      totaisPorDistribuidora,
-    };
   }, [contasAno]);
 
   return (
@@ -519,31 +489,8 @@ const ContasAPagar: React.FC = () => {
         {/* #Agenda */}
         <Agenda contasMes={contasMes} contasAno={contasAno} />
 
-        <section className="contas-panel resumo-panel">
-          <div className="panel-header">
-            <h2>Resumo</h2>
-            <span className="status-chip">Atualização automática</span>
-          </div>
-          <div className="summary-card">
-            <div className="summary-row">
-              <strong>Total pago</strong>
-              <span>R$ {resumo.totalPago.toFixed(2)}</span>
-            </div>
-            <div className="summary-row">
-              <strong>Total pendente</strong>
-              <span>R$ {resumo.totalPendente.toFixed(2)}</span>
-            </div>
-            <div className="summary-row">
-              <strong>Total acumulado anual</strong>
-              <span>R$ {resumo.totalAnual.toFixed(2)}</span>
-            </div>
-          </div>
-          {/* #Totais por distribuidora */}
-          <TotaisPorDistribuidora totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
-
-         { /* #Consolidação mensal */}
-          <ConsolidacaoMensal meses={resumo.meses} />
-        </section>
+        {/* #Resumo */}
+        <Resumo contasAno={contasAno}/>
       </main>
 
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
@@ -811,12 +758,6 @@ const ContasAPagar: React.FC = () => {
           grid-column: 1 / 2;
         }
 
-        .resumo-panel {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
         .panel-header {
           display: flex;
           justify-content: space-between;
@@ -998,27 +939,6 @@ const ContasAPagar: React.FC = () => {
         .status.pago {
           background: rgba(34, 197, 94, 0.18);
           color: #166534;
-        }
-
-        .summary-card {
-          background: var(--surface-strong);
-          border: 1px solid var(--border);
-          border-radius: 22px;
-          padding: 20px;
-          min-height: 220px;
-        }
-
-        .summary-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 12px;
-          padding: 16px 0;
-          border-bottom: 1px solid var(--border);
-        }
-
-        .summary-row:last-child {
-          border-bottom: none;
         }
 
         .empty-row {

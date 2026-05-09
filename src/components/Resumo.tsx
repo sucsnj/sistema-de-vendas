@@ -1,0 +1,138 @@
+import React, { useMemo } from 'react';
+import { ContaDetalhe } from '../services/contasService';
+import ConsolidacaoMensal from './ConsolidacaoMensal';
+import TotaisPorDistribuidora from './TotaisPorDistribuidora';
+
+interface ResumoProps {
+    contasAno: ContaDetalhe[];
+}
+
+const Resumo: React.FC<ResumoProps> = ({ contasAno}) => {
+    const resumo = useMemo(() => {
+        const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
+        const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
+        const totaisPorDistribuidora = contasAno.reduce<Record<string, number>>((acc, conta) => {
+            if (conta.status === 'Pendente') {
+                acc[conta.distribuidora] = (acc[conta.distribuidora] || 0) + conta.valor;
+            }
+            return acc;
+        }, {});
+
+        const meses = Array.from({ length: 12 }, (_, i) => {
+            const monthIndex = i + 1;
+            const contasNoMes = contasAno.filter((conta) => new Date(`${conta.vencimento}T00:00:00`).getMonth() + 1 === monthIndex);
+            return {
+                mes: monthIndex,
+                pago: contasNoMes.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0),
+                pendente: contasNoMes.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0),
+            };
+        });
+
+        return {
+            totalPago,
+            totalPendente,
+            totalAnual: totalPago + totalPendente,
+            meses,
+            totaisPorDistribuidora,
+        };
+    }, [contasAno]);
+
+    return (
+        <div>
+            <section className="contas-panel resumo-panel">
+                <div className="panel-header">
+                    <h2>Resumo</h2>
+                    <span className="status-chip">Atualização automática</span>
+                </div>
+                <div className="summary-card">
+                    <div className="summary-row">
+                        <strong>Total pago</strong>
+                        <span>R$ {resumo.totalPago.toFixed(2)}</span>
+                    </div>
+                    <div className="summary-row">
+                        <strong>Total pendente</strong>
+                        <span>R$ {resumo.totalPendente.toFixed(2)}</span>
+                    </div>
+                    <div className="summary-row">
+                        <strong>Total acumulado anual</strong>
+                        <span>R$ {resumo.totalAnual.toFixed(2)}</span>
+                    </div>
+                </div>
+                {/* #Totais por distribuidora */}
+                <TotaisPorDistribuidora totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
+
+                { /* #Consolidação mensal */}
+                <ConsolidacaoMensal meses={resumo.meses} />
+            </section>
+            <style jsx>{`
+                .contas-panel {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: 24px;
+                    padding: 22px;
+                    box-shadow: var(--shadow);
+                }
+
+                .resumo-panel {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .panel-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    margin-bottom: 18px;
+                }
+
+                .panel-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 18px;
+                }
+
+                .panel-header h2 {
+                    margin: 0;
+                    font-size: 1.4rem;
+                }
+
+                .status-chip {
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    background: var(--surface-soft);
+                    color: var(--muted);
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                }
+
+                .summary-card {
+                    background: var(--surface-strong);
+                    border: 1px solid var(--border);
+                    border-radius: 22px;
+                    padding: 20px;
+                    min-height: 220px;
+                }
+
+                .summary-row:last-child {
+                  border-bottom: none;
+                }
+
+                .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 16px 0;
+                    border-bottom: 1px solid var(--border);
+                }
+
+            `}</style>
+        </div>
+    );
+};
+
+export default Resumo;
