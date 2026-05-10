@@ -26,7 +26,7 @@ const ContasAPagar: React.FC = () => {
   const [contasAno, setContasAno] = useState<ContaDetalhe[]>([]);
   const [distribuidora, setDistribuidora] = useState('');
   const [valor, setValor] = useState('');
-  const [vencimento, setVencimento] = useState(today.toISOString().split('T')[0]);
+  const [vencimento, setVencimento] = useState(hoje);
   const [documento, setDocumento] = useState('');
   const [bancoObservacoes, setBancoObservacoes] = useState('');
   const [editingConta, setEditingConta] = useState<ContaDetalhe | null>(null);
@@ -77,7 +77,7 @@ const ContasAPagar: React.FC = () => {
   const resetForm = () => {
     setDistribuidora('');
     setValor('');
-    setVencimento(today.toISOString().split('T')[0]);
+    setVencimento(hoje);
     setDocumento('');
     setBancoObservacoes('');
     setEditingConta(null);
@@ -409,7 +409,7 @@ const ContasAPagar: React.FC = () => {
                 Vencimento
                 <input
                   type="date"
-                  value={hoje} // data atual
+                  value={vencimento} // data atual
                   onChange={(e) => setVencimento(e.target.value)}
                   required
                 />
