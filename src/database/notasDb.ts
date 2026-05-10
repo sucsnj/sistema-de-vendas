@@ -40,6 +40,17 @@ export const getNotasById = (id: number) => {
   return stmt.get(id);
 };
 
+// soma notas de um determinado ano
+export const getSumNotasByYear = (ano: number) => {
+  const stmt = db.prepare(`
+    SELECT SUM(valor_nota) AS total
+    FROM notas_detalhes
+    WHERE date(data_emissao) >= ? AND date(data_emissao) <= ?
+  `);
+  const row = stmt.get(`${ano}-01-01`, `${ano}-12-31`) as { total: number | null };
+  return row?.total ?? 0;
+};
+
 export const getNotasByValor = (valor: number) => {
   if (valor < 0) {
     return null;
