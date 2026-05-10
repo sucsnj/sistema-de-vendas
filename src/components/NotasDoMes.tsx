@@ -28,6 +28,9 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
         ),
     });
 
+    // Somatório de notas
+    const somaNotas = notas.reduce((sum, nota) => sum + nota.valor_nota, 0);
+
     const handleExcluir = async (id: number) => {
         try {
             await excluirNota(id);
@@ -57,6 +60,10 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                         <option key={y} value={y}>{y}</option>
                     ))}
                 </select>
+                <div>
+                    <h4>Somatório</h4>
+                    <span>R$ {somaNotas.toFixed(2)}</span>
+                </div>
             </div>
 
             {isLoading ? (
@@ -101,9 +108,9 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
         }
 
         .selectors {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 12px;
+            display: flex;
+            margin-bottom: 24px;
+            gap: 15px;
         }
 
         select {
