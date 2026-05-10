@@ -108,7 +108,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           transform-origin: top;
           padding: 18px;
           width: calc(100% - 16px);
-          max-width: 1280px;
+          max-width: 1440px;
           background: linear-gradient(135deg, #5b6ce0 0%, #6f55b0 100%);
           border-radius: 12px;
           color: white;
