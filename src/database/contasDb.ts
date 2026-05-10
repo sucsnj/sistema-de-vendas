@@ -8,6 +8,7 @@ let db: Database.Database;
 try {
   db = new Database(dbPath);
   db.pragma('journal_mode = WAL');
+  db.pragma('synchronous = FULL');
 } catch (error) {
   console.error('Erro ao conectar ao banco de contas:', error);
   throw error;
