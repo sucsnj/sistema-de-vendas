@@ -55,8 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const nNF = infNFe.ide[0].nNF[0];
     const duplicatas = infNFe.cobr[0].dup;
 
-    const dhSaiEnt = infNFe.ide[0].dhSaiEnt[0];   // emissão
-    const vPag = infNFe.pag[0].detPag[0].vPag[0]; // total
+    const dhSaiEnt = infNFe.ide[0].dhEmi[0]; // emissão
+    const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
 
     const data = dhSaiEnt.split('T')[0];
 
