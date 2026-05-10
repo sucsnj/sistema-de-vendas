@@ -2,9 +2,7 @@ import React, { useMemo } from 'react';
 import { ContaDetalhe } from '../services/contasService';
 import ConsolidacaoMensal from './ConsolidacaoMensal';
 import TotaisPorDistribuidora from './TotaisPorDistribuidora';
-import { NotaDetalhe } from '../services/notasService';
 import NotasDoMes from './NotasDoMes';
-import dayjs from 'dayjs';
 
 interface ResumoProps {
   contasAno: ContaDetalhe[];
@@ -12,10 +10,9 @@ interface ResumoProps {
   mes: number;
   setAno: (ano: number) => void;
   setMes: (mes: number) => void;
-  refreshNotas: number;
 }
 
-const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes, refreshNotas }) => {
+const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) => {
     const resumo = useMemo(() => {
         const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
         const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
@@ -73,7 +70,7 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes, re
                 <ConsolidacaoMensal meses={resumo.meses} />
 
                 {/* #Notas do Mês */}
-                <NotasDoMes ano={ano} mes={mes} setAno={setAno} setMes={setMes} refreshNotas={refreshNotas} />
+                <NotasDoMes ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
 
             </section>
             <style jsx>{`

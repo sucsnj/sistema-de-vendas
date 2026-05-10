@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.9",
     "better-sqlite3": "^12.9.0",
     "dayjs": "^1.11.20",
     "html2canvas": "^1.4.1",

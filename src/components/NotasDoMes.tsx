@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/notasService';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
@@ -15,32 +15,24 @@ interface NotasDoMesProps {
     mes: number;
     setAno: (ano: number) => void;
     setMes: (mes: number) => void;
-    refreshNotas: number;
 }
 
-const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes, refreshNotas }) => {
-    const [notas, setNotas] = useState<NotaDetalhe[]>([]);
-    const [loading, setLoading] = useState(true);
+const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => {
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchNotas = async () => {
-            setLoading(true);
-            try {
-                const data = await buscarNotasPorPeriodo(ano, mes);
-                setNotas(Array.isArray(data) ? data : [data]);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchNotas();
-    }, [ano, mes, refreshNotas]);
+    // Hook que busca notas automaticamente
+    const { data: notas = [], isLoading } = useQuery<NotaDetalhe[]>({
+        queryKey: ['notas', ano, mes],
+        queryFn: () => buscarNotasPorPeriodo(ano, mes).then((data) =>
+            Array.isArray(data) ? data : [data]
+        ),
+    });
 
     const handleExcluir = async (id: number) => {
         try {
             await excluirNota(id);
-            setNotas((prev) => prev.filter((n) => n.id !== id));
+            // invalida cache e força refetch
+            queryClient.invalidateQueries({ queryKey: ['notas', ano, mes] });
         } catch (error) {
             console.error('Erro ao excluir nota:', error);
         }
@@ -67,7 +59,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes, refre
                 </select>
             </div>
 
-            {loading ? (
+            {isLoading ? (
                 <p>Carregando notas...</p>
             ) : notas.length === 0 ? (
                 <p>Nenhuma nota encontrada.</p>
@@ -82,7 +74,6 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes, refre
                     <tbody>
                         {notas.map((n) => (
                             <tr key={n.id}>
-                                {/* <td>{dayjs(n.data_emissao).format('MMMM').replace(/^\w/, c => c.toUpperCase())}</td> */}
                                 <td>{dayjs(n.data_emissao).format('DD/MM/YYYY')}</td>
                                 <td>R$ {Number(n.valor_nota).toFixed(2)}</td>
                                 <td>

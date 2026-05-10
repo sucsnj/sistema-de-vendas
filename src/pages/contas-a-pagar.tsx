@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
@@ -17,8 +18,8 @@ import {
 const hoje = dayjs().format('YYYY-MM-DD');
 
 const ContasAPagar: React.FC = () => {
+  const queryClient = useQueryClient();
   const today = new Date();
-  const [refreshNotas, setRefreshNotas] = useState(0);
   const [ano, setAno] = useState(today.getFullYear());
   const [mes, setMes] = useState(today.getMonth() + 1);
   const [contasMes, setContasMes] = useState<ContaDetalhe[]>([]);
@@ -203,7 +204,7 @@ const ContasAPagar: React.FC = () => {
           // Atualiza imediatamente a UI
           await loadContasMes();
           await loadContasAno();
-          setRefreshNotas(prev => prev + 1);
+          queryClient.invalidateQueries({ queryKey: ['notas'] });
         } else {
           showToast(`Erro: ${result.error || 'Falha ao importar XML'}`, 'error');
         }
@@ -492,7 +493,7 @@ const ContasAPagar: React.FC = () => {
         <Agenda contasMes={contasMes} contasAno={contasAno} />
 
         {/* #Resumo */}
-        <Resumo contasAno={contasAno} ano={ano} mes={mes} setAno={setAno} setMes={setMes} refreshNotas={refreshNotas} />
+        <Resumo contasAno={contasAno} ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
 
       </main>
 
