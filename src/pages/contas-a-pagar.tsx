@@ -18,6 +18,7 @@ const hoje = dayjs().format('YYYY-MM-DD');
 
 const ContasAPagar: React.FC = () => {
   const today = new Date();
+  const [refreshNotas, setRefreshNotas] = useState(0);
   const [ano, setAno] = useState(today.getFullYear());
   const [mes, setMes] = useState(today.getMonth() + 1);
   const [contasMes, setContasMes] = useState<ContaDetalhe[]>([]);
@@ -202,6 +203,7 @@ const ContasAPagar: React.FC = () => {
           // Atualiza imediatamente a UI
           await loadContasMes();
           await loadContasAno();
+          setRefreshNotas(prev => prev + 1);
         } else {
           showToast(`Erro: ${result.error || 'Falha ao importar XML'}`, 'error');
         }
@@ -490,7 +492,7 @@ const ContasAPagar: React.FC = () => {
         <Agenda contasMes={contasMes} contasAno={contasAno} />
 
         {/* #Resumo */}
-        <Resumo contasAno={contasAno} />
+        <Resumo contasAno={contasAno} ano={ano} mes={mes} setAno={setAno} setMes={setMes} refreshNotas={refreshNotas} />
 
       </main>
 

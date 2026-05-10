@@ -10,25 +10,32 @@ const meses = [
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
-const NotasDoMes: React.FC = () => {
-    const [ano, setAno] = useState(dayjs().year());
-    const [mes, setMes] = useState(dayjs().month() + 1);
+interface NotasDoMesProps {
+    ano: number;
+    mes: number;
+    setAno: (ano: number) => void;
+    setMes: (mes: number) => void;
+    refreshNotas: number;
+}
+
+const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes, refreshNotas }) => {
     const [notas, setNotas] = useState<NotaDetalhe[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchNotas = async () => {
+            setLoading(true);
             try {
                 const data = await buscarNotasPorPeriodo(ano, mes);
                 setNotas(Array.isArray(data) ? data : [data]);
             } catch (error) {
-                console.error('Erro ao buscar notas:', error);
+                console.error(error);
             } finally {
                 setLoading(false);
             }
         };
         fetchNotas();
-    }, [ano, mes]);
+    }, [ano, mes, refreshNotas]);
 
     const handleExcluir = async (id: number) => {
         try {
