@@ -40,6 +40,11 @@ const ContasAPagar: React.FC = () => {
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
   const distribuidoraInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+  const [payModalOpen, setPayModalOpen] = useState(false);
+  const [payObservacao, setPayObservacao] = useState('');
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedDe = localStorage.getItem('filtroVencimentoDe');
@@ -164,6 +169,34 @@ const ContasAPagar: React.FC = () => {
       setSelectedConta((current) => (current?.id === id ? null : current));
     } catch (error) {
       showToast('Erro ao excluir a conta.', 'error');
+    }
+  };
+
+  const handleConfirmarPagamento = async () => {
+    if (!selectedConta) return;
+
+    try {
+      await atualizarConta(
+        selectedConta.id,
+        selectedConta.distribuidora,
+        selectedConta.valor,
+        selectedConta.vencimento,
+        selectedConta.documento,
+        payObservacao
+      );
+
+      await pagarConta(selectedConta.id);
+
+      showToast('Conta paga com sucesso.', 'success');
+
+      setPayModalOpen(false);
+
+      loadContasMes();
+      loadContasAno();
+
+      setSelectedConta(null);
+    } catch (error) {
+      showToast('Erro ao pagar conta.', 'error');
     }
   };
 
@@ -387,11 +420,16 @@ const ContasAPagar: React.FC = () => {
                       <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>
                         Excluir
                       </button>
-                      <button type="button" className="edit-button" onClick={() => handleEditar(conta)}>
-                        Editar
-                      </button>
                       {conta.status === 'Pendente' ? (
-                        <button type="button" className="pay-button" onClick={() => handlePagar(conta.id)}>
+                        <button
+                          type="button"
+                          className="pay-button"
+                          onClick={() => {
+                            setSelectedConta(conta);
+                            setPayObservacao(conta.banco_observacoes || '');
+                            setPayModalOpen(true);
+                          }}
+                        >
                           Pagar
                         </button>
                       ) : null}
@@ -435,7 +473,7 @@ const ContasAPagar: React.FC = () => {
                 Vencimento
                 <input
                   type="date"
-                  value={vencimento} // data atual
+                  value={vencimento}
                   onChange={(e) => setVencimento(e.target.value)}
                   required
                 />
@@ -525,51 +563,175 @@ const ContasAPagar: React.FC = () => {
 
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
 
+      {/* Modal de detalhes da conta */}
       {selectedConta ? (
         <div className="modal-overlay" onClick={() => setSelectedConta(null)}>
           <div className="modal-content" onClick={(event) => event.stopPropagation()}>
-            <h2>Detalhes da conta</h2>
+            <h2>
+              Detalhes da conta
+
+              {editingConta?.id === selectedConta.id ? (
+                <>
+                  <button type="button" className="save-button" onClick={handleSubmit}>
+                    Salvar
+                  </button>
+
+                  <button type="button" className="close-button" onClick={handleCancelarEdicao}>
+                    Cancelar
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button" className="edit-button"
+                  onClick={() => handleEditar(selectedConta)}
+                >
+                  Editar
+                </button>
+              )}
+            </h2>
+
             <div className="modal-row">
               <strong>Distribuidora:</strong>
-              <span>{selectedConta.distribuidora}</span>
+              {editingConta?.id === selectedConta.id ? (
+                <input className="modal-edit"
+                  value={distribuidora}
+                  onChange={(e) => setDistribuidora(e.target.value)}
+                />
+              ) : (
+                <span>{selectedConta.distribuidora}</span>
+              )}
             </div>
             <div className="modal-row">
               <strong>Valor:</strong>
-              <span>R$ {selectedConta.valor.toFixed(2)}</span>
+              {editingConta?.id === selectedConta.id ? (
+                <input className="modal-edit"
+                  type="number"
+                  step="0.01"
+                  value={valor}
+                  onChange={(e) => setValor(e.target.value)}
+                />
+              ) : (
+                <span>R$ {selectedConta.valor.toFixed(2)}</span>
+              )}
             </div>
             <div className="modal-row">
               <strong>Vencimento:</strong>
-              <span>{selectedConta.vencimento}</span>
+              {editingConta?.id === selectedConta.id ? (
+                <input className="modal-edit"
+                  type="date"
+                  value={vencimento}
+                  onChange={(e) => setVencimento(e.target.value)}
+                />
+              ) : (
+                <span>{selectedConta.vencimento}</span>
+              )}
             </div>
             <div className="modal-row">
               <strong>Documento:</strong>
-              <span>{selectedConta.documento}</span>
+              {editingConta?.id === selectedConta.id ? (
+                <input className="modal-edit"
+                  type="text"
+                  value={documento}
+                  onChange={(e) => setDocumento(e.target.value)}
+                />
+              ) : (
+                <span>{selectedConta.documento}</span>
+              )}
             </div>
             <div className="modal-row">
               <strong>Status:</strong>
-              <span>{selectedConta.status}</span>
+              <span className={`status ${selectedConta.status.toLowerCase()}`}>{selectedConta.status}</span>
             </div>
             <div className="modal-row">
               <strong>Banco / Observações:</strong>
-              <span>{selectedConta.banco_observacoes || 'Sem observações'}</span>
+              {editingConta?.id === selectedConta.id ? (
+                <textarea className="modal-edit"
+                  rows={4}
+                  value={bancoObservacoes}
+                  onChange={(e) => setBancoObservacoes(e.target.value)}
+                />
+              ) : (
+                <span>{selectedConta.banco_observacoes || 'Sem observações'}</span>
+              )}
             </div>
             <div className="modal-actions">
               {selectedConta.status === 'Pendente' ? (
-                <button type="button" className="pay-button" onClick={() => handlePagar(selectedConta.id)}>
+                <button type="button" className="pay-button"
+                  onClick={() => {
+                    setPayObservacao(selectedConta.banco_observacoes || '');
+                    setPayModalOpen(true);
+                  }}>
                   Pagar conta
                 </button>
               ) : (
-                <button type="button" className="cancel-button" onClick={() => handleCancelarPagamento(selectedConta.id)}>
+                <button type="button" className="cancel-button"
+                  onClick={() => {
+                    handleCancelarPagamento(selectedConta.id)
+                    handleCancelarEdicao();
+                  }}>
                   Cancelar pagamento
                 </button>
               )}
-              <button type="button" className="close-button" onClick={() => setSelectedConta(null)}>
+              <button type="button" className="close-button"
+                onClick={() => {
+                  setSelectedConta(null);
+                  handleCancelarEdicao();
+                }}>
                 Fechar
               </button>
             </div>
           </div>
         </div>
       ) : null}
+
+      {/* Modal para confirmar pagamento */}
+      {payModalOpen && (
+        <div
+          className="modal-overlay"
+          onClick={() => setPayModalOpen(false)}
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Observações do pagamento</h2>
+
+            <textarea
+              className="modal-edit"
+              rows={5}
+              value={payObservacao}
+              onChange={(e) => setPayObservacao(e.target.value)}
+              placeholder="Digite observações..."
+            />
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="pay-button"
+                onClick={() => {
+                  handleConfirmarPagamento();
+                  handleCancelarEdicao();
+                  setSelectedConta(null);
+                }}
+              >
+                Confirmar pagamento
+              </button>
+
+              <button
+                type="button"
+                className="close-button"
+                onClick={() => {
+                  setPayModalOpen(false);
+                  handleCancelarEdicao();
+                  setSelectedConta(null);
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .contas-page {
@@ -707,10 +869,24 @@ const ContasAPagar: React.FC = () => {
         }
 
         .modal-row {
-          display: grid;
+          display: flex;
           grid-template-columns: 140px 1fr;
           gap: 10px;
           align-items: center;
+        }
+
+        .modal-edit {
+          flex: 1;
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          background: var(--surface-strong);
+          color: var(--foreground);
+          padding: 12px 14px;
+          outline: none;
+        }
+
+        .modal-row strong {
+          min-width: 200px;
         }
 
         .filter-actions button {
@@ -877,8 +1053,7 @@ const ContasAPagar: React.FC = () => {
 
         .detail-table {
           width: 100%;
-          border-collapse: collapse;
-          min-width: 860px;
+          min-width: 820px;
           margin-bottom: 24px;
         }
 
@@ -926,8 +1101,13 @@ const ContasAPagar: React.FC = () => {
           background: var(--success);
         }
 
+        .save-button {
+          background-color: #0eb1f1;
+          color: #ffffff;
+        }
+
         .cancel-button {
-          background-color: #3498db;
+          background-color: #e6490c;
           color: #fff;
         }
 
