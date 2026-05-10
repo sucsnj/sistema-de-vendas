@@ -41,6 +41,27 @@ const ContasAPagar: React.FC = () => {
   const distribuidoraInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedDe = localStorage.getItem('filtroVencimentoDe');
+      const savedAte = localStorage.getItem('filtroVencimentoAte');
+      if (savedDe) setFiltroVencimentoDe(savedDe);
+      if (savedAte) setFiltroVencimentoAte(savedAte);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('filtroVencimentoDe', filtroVencimentoDe);
+    }
+  }, [filtroVencimentoDe]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('filtroVencimentoAte', filtroVencimentoAte);
+    }
+  }, [filtroVencimentoAte]);
+
+  useEffect(() => {
     loadContasMes();
   }, [mes, ano]);
 
@@ -327,6 +348,11 @@ const ContasAPagar: React.FC = () => {
                   setFiltroStatus('Todos');
                   setFiltroVencimentoDe(hoje);
                   setFiltroVencimentoAte(hoje);
+
+                  if (typeof window !== 'undefined') {
+                    localStorage.removeItem('filtroVencimentoDe');
+                    localStorage.removeItem('filtroVencimentoAte');
+                  }
                 }}>
                   Limpar filtros
                 </button>
