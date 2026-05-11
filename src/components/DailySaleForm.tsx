@@ -52,7 +52,11 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
-      await registrarVenda(selectedDate, parseFloat(valor), observacoes);
+      await registrarVenda(
+        selectedDate,
+        parseFloat(valor.replace(',', '.')),
+        observacoes
+      );
 
       if (formRef.current) {
         const top =
@@ -109,8 +113,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               Valor:
               <input
                 ref={valorInputRef}
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
+                enterKeyHint="done"
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
                 required
