@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { VendaDiaria } from '../services/vendasService';
 
 interface DailySalesTotalProps {
@@ -19,6 +19,25 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   const dailyTotal = dailySales.reduce((sum, sale) => sum + sale.valor, 0);
   const dailyCount = dailySales.length;
   const dailyAverage = dailyCount > 0 ? dailyTotal / dailyCount : 0;
+
+  useEffect(() => {
+    const handleDeleteKey = (event: KeyboardEvent) => {
+      if (event.key === 'Delete' && recentSales.length > 0 && onDeleteSale) {
+        const ultimaVenda = [...recentSales]
+          .sort((a, b) => b.id - a.id)[0];
+
+        if (ultimaVenda) {
+          onDeleteSale(ultimaVenda.id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleDeleteKey);
+
+    return () => {
+      window.removeEventListener('keydown', handleDeleteKey);
+    };
+  }, [recentSales, onDeleteSale]);
 
   return (
     <div className="daily-sales-total">
@@ -68,32 +87,45 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           {recentSales.length > 0 ? (
             <div className="history-card">
               <span className="summary-card-title">Últimas 4 vendas</span>
+
               <div className="recent-sales-grid">
-                {recentSales.map((sale) => (
-                  <div key={sale.id} className="history-item">
-                    <div>
-                      <strong>{sale.data}</strong>
-                      <div className="recent-sale-observacoes">
-                        {sale.observacoes || 'Sem observações'}
+                {[...recentSales]
+                  .sort((a, b) => a.id - b.id)
+                  .map((sale) => (
+                    <div key={sale.id} className="history-item">
+                      <div>
+                        <strong>{sale.data}</strong>
+
+                        <div className="recent-sale-observacoes">
+                          {sale.observacoes || 'Sem observações'}
+                        </div>
+                      </div>
+
+                      <div className="history-values">
+                        <span>R$ {sale.valor.toFixed(2)}</span>
+                      </div>
+
+                      <div className="recent-sale-actions">
+                        {onEditSale && (
+                          <button
+                            type="button"
+                            onClick={() => onEditSale(sale)}
+                          >
+                            Editar
+                          </button>
+                        )}
+
+                        {onDeleteSale && (
+                          <button
+                            type="button"
+                            onClick={() => onDeleteSale(sale.id)}
+                          >
+                            Excluir
+                          </button>
+                        )}
                       </div>
                     </div>
-                    <div className="history-values">
-                      <span>R$ {sale.valor.toFixed(2)}</span>
-                    </div>
-                    <div className="recent-sale-actions">
-                      {onEditSale && (
-                        <button type="button" onClick={() => onEditSale(sale)}>
-                          Editar
-                        </button>
-                      )}
-                      {onDeleteSale && (
-                        <button type="button" onClick={() => onDeleteSale(sale.id)}>
-                          Excluir
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           ) : null}
@@ -107,7 +139,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           transform: scale(0.85); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
           transform-origin: top;
           padding: 18px;
-          width: calc(100% - 16px);
+          width: calc(105% - 16px);
           max-width: 1440px;
           background: linear-gradient(135deg, #5b6ce0 0%, #6f55b0 100%);
           border-radius: 12px;

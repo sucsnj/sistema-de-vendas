@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 
@@ -53,6 +53,19 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setLoading(true);
     try {
       await registrarVenda(selectedDate, parseFloat(valor), observacoes);
+
+      if (formRef.current) {
+        const top =
+          formRef.current.getBoundingClientRect().top +
+          window.scrollY -
+          80;
+
+        window.scrollTo({
+          top,
+          behavior: 'smooth',
+        });
+      }
+
       showToast('Venda registrada com sucesso.', 'success');
       setValor('');
       setObservacoes('');
@@ -67,9 +80,19 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setLoading(false);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      valorInputRef.current?.focus();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formRef = useRef<HTMLFormElement | null>(null);
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="daily-sale-form">
+      <form ref={formRef} onSubmit={handleSubmit} className="daily-sale-form">
         <h2>Registrar Venda Diária</h2>
         <div className="sale-form-grid">
           <div className="sale-form-fields">
@@ -91,6 +114,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
                 required
+                autoFocus
               />
             </label>
             <label>
