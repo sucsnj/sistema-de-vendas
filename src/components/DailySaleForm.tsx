@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
+import { Parser } from 'expr-eval';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -28,6 +29,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
   const [toastOpen, setToastOpen] = useState(false);
   const valorInputRef = useRef<HTMLInputElement | null>(null);
+  const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToastMessage(message);
@@ -37,6 +39,41 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
   const closeToast = () => {
     setToastOpen(false);
+  };
+
+  const calculateValue = (input: string) => {
+    if (!input.trim()) {
+      setCalculatedValue(0);
+      return;
+    }
+    try {
+      // Substituir vírgulas por pontos para cálculo
+      let expression = input.replace(/,/g, '.');
+      const parser = new Parser();
+      let result = parser.evaluate(expression);
+      if (typeof result === 'number' && !isNaN(result)) {
+        setCalculatedValue(result);
+        return;
+      }
+    } catch (error) {
+      // Se erro, tentar remover o último operador
+      try {
+        let expression = input.replace(/,/g, '.');
+        const lastChar = expression.slice(-1);
+        if (/[+\-*/]$/.test(lastChar)) {
+          expression = expression.slice(0, -1);
+          const parser = new Parser();
+          const result = parser.evaluate(expression);
+          if (typeof result === 'number' && !isNaN(result)) {
+            setCalculatedValue(result);
+            return;
+          }
+        }
+      } catch (innerError) {
+        // Ignorar
+      }
+    }
+    setCalculatedValue(null);
   };
 
   const recentSales = [...sales]
@@ -52,9 +89,15 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
+      const valueToRegister = calculatedValue !== null ? calculatedValue : parseFloat(valor.replace(',', '.'));
+      if (isNaN(valueToRegister)) {
+        showToast('Valor inválido.', 'error');
+        setLoading(false);
+        return;
+      }
       await registrarVenda(
         selectedDate,
-        parseFloat(valor.replace(',', '.')),
+        valueToRegister,
         observacoes
       );
 
@@ -70,9 +113,10 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         });
       }
 
-      showToast('Venda registrada com sucesso.', 'success');
+      showToast(`Venda registrada com sucesso: R$ ${valueToRegister.toFixed(2)}`, 'success');
       setValor('');
       setObservacoes('');
+      setCalculatedValue(0);
       valorInputRef.current?.focus();
       valorInputRef.current?.select();
       if (onSaleAdded) {
@@ -111,16 +155,25 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             </label>
             <label>
               Valor:
-              <input
-                ref={valorInputRef}
-                type="text"
-                inputMode="decimal"
-                enterKeyHint="done"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-                required
-                autoFocus
-              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  ref={valorInputRef}
+                  type="text"
+                  inputMode="decimal"
+                  enterKeyHint="done"
+                  value={valor}
+                  onChange={(e) => {
+                    setValor(e.target.value);
+                    calculateValue(e.target.value);
+                  }}
+                  required
+                  autoFocus
+                  style={{ flex: 1 }}
+                />
+                <span style={{ color: '#f9f6f6', fontSize: '35px', flexShrink: 0, minWidth: '80px', textAlign: 'right' }}>
+                  {(calculatedValue ?? 0).toFixed(2)}
+                </span>
+              </div>
             </label>
             <label>
               Observações:
