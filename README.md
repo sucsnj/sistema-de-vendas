@@ -4,7 +4,7 @@ Painel de vendas simples para gerenciamento diário e exportação de dados.
 
 ## Sobre o projeto
 
-Este projeto é um sistema de controle de vendas que permite cadastrar, editar, excluir e visualizar vendas diárias. Ele oferece suporte a exportação de dados em formato XLSX e PDF, além de importação de planilhas XLSX para registros do dia ou do mês selecionado.
+Este projeto é um sistema de controle de vendas que permite cadastrar, editar, excluir e visualizar vendas diárias. Ele oferece suporte a exportação de dados em formato XLSX e PDF, além de importação de planilhas XLSX para registros do dia ou do mês selecionado. Também oferece ocr em documentos para finalidade de encontrar códigos de barras. Conta com uma busca pela tabela de medicamentos CMED.
 
 A aplicação foi desenvolvida sob supervisão humana e com coautoria da Inteligência Artificial como assistente de criação e revisão em todas as etapas do projeto.
 
