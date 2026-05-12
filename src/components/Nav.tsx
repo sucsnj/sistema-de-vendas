@@ -41,6 +41,8 @@ const Nav: React.FC = () => {
         <Link href="/historico">Histórico</Link>
         <span>·</span>
         <Link href="/contas-a-pagar">Contas a pagar</Link>
+        <span>·</span>
+        <Link href="/tabela">Tabela</Link>
       </div>
       <button
         type="button"
