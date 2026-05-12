@@ -381,8 +381,8 @@ const Tabela: React.FC = () => {
         }
 
         .table-container {
-          width: 100%;
-          min-width: 980px;
+          width: 95%;
+          min-width: 700px;
         }
 
         .history-list {
