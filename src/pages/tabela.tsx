@@ -152,6 +152,26 @@ const Tabela: React.FC = () => {
               onChange={handleFileUpload}
               style={{ display: 'none' }}
             />
+
+            <form onSubmit={handleSearch} className="search-form">
+              <div className="search-field">
+
+                <input className="search-input"
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={
+                    tabelaLoaded
+                      ? 'Buscar na Tabela: Digite substância, laboratório, EAN, produto, classe...'
+                      : 'Nenhuma planilha de tabela interna foi encontrada. Faça o upload de um arquivo XLSX para habilitar as buscas.'
+                  }
+                  disabled={!tabelaLoaded}
+                />
+              </div>
+              <button type="submit" className="search-button" disabled={loading || !tabelaLoaded}>
+                {loading ? 'Pesquisando...' : 'Buscar'}
+              </button>
+            </form>
           </div>
           <div className="panel-summary">
             <strong>Planilha atual</strong>
@@ -161,37 +181,6 @@ const Tabela: React.FC = () => {
             <strong>Status</strong>
             <span>{tabelaLoaded ? 'Carregada' : 'Aguardando upload'}</span>
           </div>
-        </div>
-      </section>
-
-      <section className="glass-form search-panel">
-        <form onSubmit={handleSearch} className="search-form">
-          <div>
-            <label>
-              Buscar na tabela
-              <input className="search-input"
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Digite substância, laboratório, EAN, produto, classe..."
-                disabled={!tabelaLoaded}
-              />
-            </label>
-          </div>
-          <button type="submit" className="search-button" disabled={loading || !tabelaLoaded}>
-            {loading ? 'Pesquisando...' : 'Buscar'}
-          </button>
-        </form>
-        <div className="search-hint">
-          {tabelaLoaded ? (
-            <>
-              <strong>Busca:</strong> procurar pela substância, laboratório, EAN, produto, classe ou preço
-            </>
-          ) : (
-            <span className="warning-text">
-              Nenhuma planilha de tabela interna foi encontrada. Faça o upload de um arquivo XLSX para habilitar as buscas.
-            </span>
-          )}
         </div>
       </section>
 
@@ -279,7 +268,32 @@ const Tabela: React.FC = () => {
           gap: 18px;
         }
 
+        .upload-help {
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+          flex: 1;
+        }
+
+        .upload-button {
+          align-self: flex-start;
+          white-space: nowrap;
+        }
+
+        .search-field {
+          flex: unset;
+          padding-left: 4px;
+          width: 70%;
+        }
+
+        .search-field label {
+          display: block;
+          width: 100%;
+        }
+
         .search-input {
+          flex: 1;
+          max-width: 100%;
           padding: 8px 14px;
         }
 
@@ -322,8 +336,8 @@ const Tabela: React.FC = () => {
 
         .panel-summary {
           min-width: 220px;
-          display: flex;
-          gap: 25px;
+          display: grid;
+          gap: 2px;
           font-size: 0.92rem;
         }
 
@@ -338,9 +352,9 @@ const Tabela: React.FC = () => {
 
         .search-form {
           display: flex;
-          flex-wrap: wrap;
-          gap: 14px;
           align-items: flex-end;
+          gap: 14px;
+          width: 100%;
         }
 
         .search-form label {

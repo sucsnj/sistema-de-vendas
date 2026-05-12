@@ -87,7 +87,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   useEffect(() => {
     const interval = setInterval(() => {
       valorInputRef.current?.focus();
-    }, 60000);
+    }, 180000);
 
     return () => clearInterval(interval);
   }, []);
