@@ -138,6 +138,16 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const addOperator = (operator: string) => {
+    const novoValor = valor + operator;
+    setValor(novoValor);
+    calculateValue(novoValor);
+
+    requestAnimationFrame(() => {
+      valorInputRef.current?.focus();
+    });
+  };
+
   return (
     <>
       <form ref={formRef} onSubmit={handleSubmit} className="daily-sale-form">
@@ -154,6 +164,44 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               />
             </label>
             <label>
+              <div className="math-buttons">
+                <button
+                  type="button"
+                  className="math-button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => addOperator('+')}
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  className="math-button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => addOperator('-')}
+                >
+                  -
+                </button>
+                <button
+                  type="button"
+                  className="math-button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => addOperator('*')}
+                >
+                  ×
+                </button>
+                <button
+                  type="button"
+                  className="math-button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => addOperator('/')}
+                >
+                  ÷
+                </button>
+              </div>
               Valor:
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input
@@ -267,7 +315,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           padding: 12px 20px;
           border: none;
           border-radius: 12px;
-          background: #1f7a5d;
+          background: #0870f7;
           color: white;
           font-weight: 700;
           cursor: pointer;
@@ -337,9 +385,27 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           color: white;
         }
 
+        .math-buttons {
+          display: none;
+        }
+
+        .math-button {
+          padding: 6px 10px;
+          border-radius: 8px;
+          border: none;
+          cursor: pointer;
+          font-size: 1.5rem;
+        }
+
         @media (max-width: 900px) {
           .sale-form-grid {
             grid-template-columns: 1fr;
+          }
+
+          .math-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
           }
         }
       `}</style>
