@@ -5,6 +5,7 @@ export interface VendaDiaria {
   data: string;
   valor: number;
   observacoes?: string;
+  criado_em: string;
 }
 
 export interface VendaMensal {

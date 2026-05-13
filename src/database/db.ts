@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { format } from 'date-fns-tz'
 
 // Conexão local com o banco de dados SQLite usado pelo aplicativo.
 // O arquivo `vendas.db` permanece fora do controle de versão e é mantido no diretório do projeto.
@@ -39,12 +40,16 @@ try {
   console.error('Erro ao criar tabelas:', error);
 }
 
+const getLocalTimestamp = () => {
+  return format(new Date(), 'yyyy-MM-dd HH:mm:ss', { timeZone: 'America/Recife' });
+};
+
 // Funções de acesso ao banco de dados e operações de persistência.
 export const insertDailySale = (data: string, valor: number, observacoes?: string) => {
   try {
-    const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes) VALUES (?, ?, ?)');
-    const result = stmt.run(data, valor, observacoes || null);
-    console.log('Venda registrada:', { data, valor, observacoes, result });
+    const criadoEm = getLocalTimestamp();
+    const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
+    const result = stmt.run(data, valor, observacoes || null, criadoEm);
     return result;
   } catch (error) {
     console.error('Erro ao inserir venda:', error);

@@ -1183,6 +1183,145 @@ const ContasAPagar: React.FC = () => {
           }
         }
 
+        @media (max-width: 436px) {
+          .contas-page {
+            padding: 16px;
+          }
+
+          .contas-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+          }
+
+          .contas-header h1 {
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+          }
+
+          .contas-header p {
+            font-size: 0.85rem;
+            max-width: 100%;
+          }
+
+          .contas-actions {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+          }
+
+          .contas-actions label,
+          .contas-actions button {
+            width: 100%;
+            min-height: 38px;
+            font-size: 0.9rem;
+          }
+
+          .contas-actions label select,
+          .contas-actions label input,
+          .contas-actions .backup-button {
+            width: 100%;
+            min-width: auto;
+            font-size: 0.9rem;
+          }
+
+          .contas-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .filter-bar {
+            grid-template-columns: 1fr;
+            gap: 10px;
+          }
+
+          .filter-bar input,
+          .filter-bar select {
+            font-size: 0.9rem;
+          }
+
+          .panel-header h2 {
+            font-size: 1.1rem;
+          }
+
+          .form-row {
+            grid-template-columns: 1fr;
+            gap: 10px;
+          }
+
+          .form-actions {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .form-actions button {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.9rem;
+          }
+
+          .detail-table {
+            min-width: auto;
+            font-size: 0.8rem;
+          }
+
+          .detail-table th,
+          .detail-table td {
+            padding: 8px 6px;
+          }
+
+          .actions-cell {
+            flex-direction: column;
+            gap: 6px;
+          }
+
+          .detail-table button {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.8rem;
+          }
+
+          .modal-content {
+            width: calc(100% - 16px);
+            padding: 16px;
+            border-radius: 14px;
+          }
+
+          .modal-row {
+            flex-direction: column;
+            gap: 8px;
+          }
+
+          .modal-actions {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .modal-actions button {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.9rem;
+          }
+
+          .status-chip,
+          .status {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+          }
+
+          .compact-table th,
+          .compact-table td {
+            padding: 8px 6px;
+            font-size: 0.8rem;
+          }
+
+          .empty-row {
+            font-size: 0.85rem;
+          }
+        }
+
+
       `}</style>
     </div>
   );

@@ -94,7 +94,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                   .map((sale) => (
                     <div key={sale.id} className="history-item">
                       <div>
-                        <strong>{sale.data}</strong>
+                        <strong>{sale.criado_em.slice(10, 19)}</strong>
 
                         <div className="recent-sale-observacoes">
                           {sale.observacoes || 'Sem observações'}
