@@ -85,7 +85,7 @@ const Historico: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="container-padding">
       <h1>Histórico de Vendas</h1>
       <div>
         <label>
@@ -138,7 +138,7 @@ const Historico: React.FC = () => {
             />
           </label>
           <button type="submit">Salvar Alteração</button>
-          <button type="button" onClick={handleCancelEdit} style={{ marginLeft: '10px' }}>
+          <button type="button" onClick={handleCancelEdit} className="button-spacing">
             Cancelar
           </button>
         </form>

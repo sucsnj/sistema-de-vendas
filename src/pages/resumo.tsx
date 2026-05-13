@@ -14,7 +14,7 @@ const Resumo: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="container-padding">
       <h1>Resumo Mensal</h1>
       <table className="table-container">
         <thead>

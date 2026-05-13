@@ -169,7 +169,7 @@ const Home: React.FC = () => {
             />
           </label>
           <button type="submit">Salvar Alteração</button>
-          <button type="button" onClick={handleCancelEdit} style={{ marginLeft: '10px' }}>
+          <button type="button" onClick={handleCancelEdit} className="button-spacing">
             Cancelar
           </button>
         </form>
@@ -249,9 +249,9 @@ export default Home;
     transform: translateY(-50%);
     padding: 10px 14px;
     border-radius: 12px;
-    border: 1px solid rgba(15, 23, 42, 0.12);
-    background: #2563eb;
-    color: white;
+    border: 1px solid var(--border);
+    background: var(--accent);
+    color: var(--foreground);
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s ease, background 0.2s ease;
@@ -259,7 +259,8 @@ export default Home;
 
   .theme-toggle:hover {
     transform: translateY(-1px);
-    background: #1d4ed8;
+    background: var(--accent);
+    opacity: 0.8;
   }
 
   .footer-header {

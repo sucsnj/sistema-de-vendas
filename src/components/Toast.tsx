@@ -91,21 +91,21 @@ const Toast: React.FC<ToastProps> = ({ open, message, type = 'info', onClose, po
         }
 
         .toast-info {
-          background: #11a2e1;
+          background: var(--accent);
         }
 
         .toast-success {
-          background: #198754;
+          background: var(--success);
         }
 
         .toast-error {
-          background: #dc3545;
+          background: var(--danger);
         }
 
         button {
           border: none;
           background: transparent;
-          color: inherit;
+          color: var(--foreground);
           font-size: 1.25rem;
           cursor: pointer;
           line-height: 1;

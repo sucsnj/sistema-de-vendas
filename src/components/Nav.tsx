@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import styles from '@/styles/nav.module.css';
 
 const Nav: React.FC = () => {
   const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
@@ -32,8 +33,8 @@ const Nav: React.FC = () => {
   };
 
   return (
-    <nav style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+    <nav className={styles.nav}>
+      <div className={styles.navLinks}>
         <Link href="/">Dashboard</Link>
         <span>·</span>
         <Link href="/resumo">Resumo Mensal</Link>
@@ -47,7 +48,7 @@ const Nav: React.FC = () => {
       <button
         type="button"
         onClick={toggleThemeMode}
-        style={{ marginLeft: 'auto', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.18)', background: 'rgba(255,255,255,0.12)', color: 'inherit', padding: '8px 14px', cursor: 'pointer' }}
+        className={styles.themeButton}
       >
         {themeMode === 'system'
           ? 'Modo: Sistema'

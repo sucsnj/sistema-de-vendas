@@ -104,8 +104,8 @@ export default function OcrUpload() {
                     width: 100%;
                     padding: 0px 5px 5px 7px;
                     border-radius: 14px;
-                    background: rgba(255, 255, 255, 0.08);
-                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    background: var(--surface-soft);
+                    border: 1px solid var(--border);
                     color: var(--foreground);
                     backdrop-filter: blur(12px);
                     transition:
@@ -123,8 +123,8 @@ export default function OcrUpload() {
 
                 .ocr-upload-wrapper:hover {
                     cursor: pointer;
-                    background: rgba(255, 255, 255, 0.12);
-                    border-color: rgba(255, 255, 255, 0.2);
+                    background: var(--surface);
+                    border-color: var(--border);
                     transform: translateY(-2px);
                     box-shadow:
                         0 8px 24px rgba(0, 0, 0, 0.18);
@@ -138,8 +138,8 @@ export default function OcrUpload() {
                     width: 100%;
                     padding: 12px 14px;
                     border-radius: 12px;
-                    border: 1px solid rgba(255, 255, 255, 0.12);
-                    background: rgba(255, 255, 255, 0.06);
+                    border: 1px solid var(--border);
+                    background: var(--surface-soft);
                     color: var(--foreground);
                     backdrop-filter: blur(10px);
                     transition:
@@ -150,13 +150,14 @@ export default function OcrUpload() {
                 }
 
                 .ocr-upload:hover {
-                    background: rgba(255, 255, 255, 0.09);
+                    background: var(--surface);
                 }
 
                 .ocr-upload:focus {
-                    border-color: rgba(255, 255, 255, 0.28);
+                    border-color: var(--accent);
                     box-shadow:
-                        0 0 0 4px rgba(255, 255, 255, 0.06);
+                        0 0 0 4px var(--accent);
+                    opacity: 0.3;
                 }
 
                 .ocr-upload::file-selector-button {
@@ -164,7 +165,7 @@ export default function OcrUpload() {
                     padding: 8px 14px;
                     border: none;
                     border-radius: 10px;
-                    background: rgba(255, 255, 255, 0.14);
+                    background: var(--surface);
                     color: var(--foreground);
                     cursor: pointer;
                     transition:
@@ -173,7 +174,7 @@ export default function OcrUpload() {
                 }
 
                 .ocr-upload::file-selector-button:hover {
-                    background: rgba(255, 255, 255, 0.2);
+                    background: var(--surface-soft);
                     transform: translateY(-1px);
                 }
             `}</style>

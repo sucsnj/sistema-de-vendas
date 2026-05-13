@@ -203,7 +203,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 </button>
               </div>
               Valor:
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center-gap">
                 <input
                   ref={valorInputRef}
                   type="text"
@@ -216,9 +216,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   }}
                   required
                   autoFocus
-                  style={{ flex: 1 }}
+                  className="flex-grow-1"
                 />
-                <span style={{ color: '#f9f6f6', fontSize: '35px', flexShrink: 0, minWidth: '80px', textAlign: 'right' }}>
+                <span className="display-value">
                   {(calculatedValue ?? 0).toFixed(2)}
                 </span>
               </div>
@@ -300,7 +300,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         .sale-form-fields label textarea {
           width: 100%;
           border-radius: 10px;
-          border: 1px solid #d1d5db;
+          border: 1px solid var(--border);
           padding: 10px 12px;
           font-size: 1rem;
         }
@@ -315,22 +315,22 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           padding: 12px 20px;
           border: none;
           border-radius: 12px;
-          background: #0870f7;
-          color: white;
+          background: var(--accent);
+          color: var(--foreground);
           font-weight: 700;
           cursor: pointer;
         }
 
         .sale-form-fields button:disabled {
-          background: #94a3b8;
+          background: var(--muted);
           cursor: not-allowed;
         }
 
         .recent-history {
           padding: 16px;
-          background: rgba(255, 255, 255, 0.95);
+          background: var(--surface);
           border-radius: 16px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--border);
         }
 
         .recent-history h3 {
@@ -353,12 +353,12 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           gap: 12px;
           padding: 12px 14px;
           border-radius: 12px;
-          background: #f8f9fb;
+          background: var(--surface-soft);
         }
 
         .recent-sale-observacoes {
           margin-top: 6px;
-          color: #555;
+          color: var(--muted);
           font-size: 0.95rem;
         }
 
@@ -377,12 +377,12 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         }
 
         .recent-sale-actions button:first-of-type {
-          background: #f2f2f2;
+          background: var(--surface-soft);
         }
 
         .recent-sale-actions button:last-of-type {
-          background: #ff6b6b;
-          color: white;
+          background: var(--danger);
+          color: var(--foreground);
         }
 
         .math-buttons {

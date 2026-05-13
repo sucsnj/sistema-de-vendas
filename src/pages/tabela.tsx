@@ -150,7 +150,7 @@ const Tabela: React.FC = () => {
               type="file"
               accept=".xlsx,.xls"
               onChange={handleFileUpload}
-              style={{ display: 'none' }}
+              className="hidden"
             />
 
             <form onSubmit={handleSearch} className="search-form">
@@ -427,11 +427,119 @@ const Tabela: React.FC = () => {
           border-color: var(--border);
         }
 
-        @media (max-width: 1040px) {
-          .results-grid {
-            grid-template-columns: 1fr;
-          }
+      @media (max-width: 630px) {
+        .results-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
         }
+
+        .upload-help {
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .upload-button {
+          align-self: stretch;
+          width: 100%;
+          text-align: center;
+        }
+
+        .search-field {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 10px 12px;
+          font-size: 0.95rem;
+        }
+
+        .search-button {
+          width: 100%;
+          margin-bottom: 10px;
+          padding: 10px;
+          font-size: 0.95rem;
+        }
+
+        .panel-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .result-counter {
+          font-size: 0.85rem;
+        }
+
+        .upload-panel,
+        .search-panel,
+        .results-panel,
+        .history-panel {
+          padding: 14px;
+          border-radius: 14px;
+        }
+
+        .panel-row {
+          flex-direction: column;
+          gap: 12px;
+          align-items: stretch;
+        }
+
+        .panel-summary {
+          min-width: auto;
+          font-size: 0.85rem;
+        }
+
+        .search-form {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+
+        .search-form label {
+          min-width: auto;
+          width: 100%;
+        }
+
+        .search-form button {
+          width: 100%;
+          padding: 10px;
+          font-size: 0.95rem;
+        }
+
+        .search-hint {
+          font-size: 0.85rem;
+          margin-top: 10px;
+        }
+
+        .table-container {
+          width: 100%;
+          min-width: auto;
+          font-size: 0.85rem;
+        }
+
+        .history-list {
+          gap: 8px;
+        }
+
+        .history-item {
+          padding: 10px 12px;
+          font-size: 0.9rem;
+        }
+
+        .history-item small {
+          font-size: 0.8rem;
+        }
+
+        .empty-state {
+          font-size: 0.9rem;
+          padding: 16px;
+        }
+      }
+
       `}</style>
     </div>
   );

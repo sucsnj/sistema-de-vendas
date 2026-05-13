@@ -153,11 +153,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
         .confirm-dialog {
           width: min(100%, 420px);
-          background: #ffffff;
+          background: var(--surface-strong);
           border-radius: 16px;
           padding: 24px;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-          color: #1a1a1a;
+          color: var(--foreground);
           text-align: left;
           outline: none;
         }
@@ -165,12 +165,13 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         .confirm-dialog h3 {
           margin: 0 0 12px;
           font-size: 22px;
+          color: var(--foreground);
         }
 
         .confirm-dialog p {
           margin: 0 0 24px;
           line-height: 1.6;
-          color: #444;
+          color: var(--muted);
         }
 
         .confirm-actions {
@@ -189,26 +190,27 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         }
 
         .confirm-button:focus-visible {
-          outline: 3px solid #1f7a5d;
+          outline: 3px solid var(--accent);
           outline-offset: 4px;
         }
 
         .confirm-cancel {
-          background: #f2f2f2;
-          color: #333;
+          background: var(--surface-soft);
+          color: var(--foreground);
         }
 
         .confirm-ok {
-          background: #1f7a5d;
-          color: #fff;
+          background: var(--success);
+          color: var(--foreground);
         }
 
         .confirm-ok:hover {
-          background: #16644c;
+          background: var(--success);
+          opacity: 0.8;
         }
 
         .confirm-cancel:hover {
-          background: #e6e6e6;
+          background: var(--surface);
         }
       `}</style>
     </div>

@@ -47,13 +47,13 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
                       </button>
                     ) : null}
                     {onDeleteSale ? (
-                      <button type="button" className="delete-button" onClick={() => onDeleteSale(sale.id)} style={{ marginLeft: '8px' }}>
+                      <button type="button" className="delete-button button-spacing-small" onClick={() => onDeleteSale(sale.id)}>
                         Excluir
                       </button>
                     ) : null}
                   </>
                 ) : (
-                  <span style={{ color: '#777' }}>Bloqueado</span>
+                  <span className="color-muted">Bloqueado</span>
                 )}
               </td>
             </tr>

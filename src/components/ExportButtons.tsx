@@ -244,7 +244,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
         ref={fileInputRef}
         type="file"
         accept=".xlsx,.xls"
-        style={{ display: 'none' }}
+        className="hidden"
         data-mode="month"
         onChange={handleFileChange}
       />

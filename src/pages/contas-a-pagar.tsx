@@ -1102,33 +1102,33 @@ const ContasAPagar: React.FC = () => {
         }
 
         .save-button {
-          background-color: #0eb1f1;
-          color: #ffffff;
+          background-color: var(--accent);
+          color: var(--foreground);
         }
 
         .cancel-button {
-          background-color: #e6490c;
-          color: #fff;
+          background-color: var(--danger);
+          color: var(--foreground);
         }
 
         .close-button {
-          background-color: #dfaea9;
-          color: #fff;
+          background-color: var(--muted);
+          color: var(--foreground);
         }
 
         .view-button {
-          background-color: #27cd6c;
-          color: #fff;
+          background-color: var(--success);
+          color: var(--foreground);
         }
 
         .edit-button {
-          background-color: #ecd165;
-          color: #fff;
+          background-color: var(--accent);
+          color: var(--foreground);
         }
 
         .delete-button {
-          background-color: #ed8a34;
-          color: #fff;
+          background-color: var(--danger);
+          color: var(--foreground);
         }
 
         .status {
@@ -1143,12 +1143,12 @@ const ContasAPagar: React.FC = () => {
 
         .status.pendente {
           background: rgba(248, 113, 113, 0.18);
-          color: #b91c1c;
+          color: var(--danger);
         }
 
         .status.pago {
           background: rgba(34, 197, 94, 0.18);
-          color: #166534;
+          color: var(--success);
         }
 
         .empty-row {
@@ -1183,7 +1183,7 @@ const ContasAPagar: React.FC = () => {
           }
         }
 
-        @media (max-width: 436px) {
+        @media (max-width: 630px) {
           .contas-page {
             padding: 16px;
           }
