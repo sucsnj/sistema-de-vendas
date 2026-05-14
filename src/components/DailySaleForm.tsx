@@ -85,6 +85,15 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     })
     .slice(0, 4);
 
+  // apagar se pressionar esc no teclado
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setValor('');
+    }
+  };
+  document.addEventListener('keydown', handleKeyDown);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
