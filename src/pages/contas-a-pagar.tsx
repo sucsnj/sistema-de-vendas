@@ -1321,6 +1321,47 @@ const ContasAPagar: React.FC = () => {
           }
         }
 
+@media (max-width: 436px) {
+  html, body {
+    font-size: 12px; /* reduz base de tudo */
+  }
+
+  .detail-table {
+    min-width: unset; /* remove largura mínima */
+    display: block;
+    overflow-x: auto; /* permite rolagem lateral */
+    font-size: 0.7rem;
+  }
+
+  .detail-table th,
+  .detail-table td {
+    padding: 4px 3px;
+    white-space: nowrap; /* evita quebra feia */
+  }
+
+  .form-actions button,
+  .contas-actions button,
+  .modal-actions button {
+    padding: 6px 8px; /* bem compacto */
+    font-size: 0.75rem;
+  }
+
+  .contas-header h1 {
+    font-size: 1rem;
+  }
+
+  .contas-header p {
+    font-size: 0.75rem;
+  }
+
+  .status-chip,
+  .status {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+}
+
+
 
       `}</style>
     </div>

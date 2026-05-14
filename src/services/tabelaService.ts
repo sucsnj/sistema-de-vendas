@@ -12,7 +12,7 @@ export interface TabelaRow {
 export interface TabelaSearchHistoryItem {
   id: number;
   query: string;
-  resultCount: number;
+  result_count: number;
   updated_at: string;
 }
 

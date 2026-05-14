@@ -415,58 +415,42 @@ h2 {
 
 /* Responsividade para 436px */
 @media (max-width: 436px) {
-  .glass-form,
-  .chart-container,
-  .table-container {
-    padding: 8px;
-    margin: 8px;
-    border-radius: 6px;
+  html, body {
+    font-size: 12px; /* reduz base de tudo */
   }
 
-  .export-buttons {
-    margin: 8px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  button {
-    padding: 5px 8px;
-    margin: 2px 0;
-    font-size: 0.65rem;
-    width: 100%;
-    border-radius: 4px;
-  }
-
-  input, textarea {
-    padding: 5px;
-    margin: 4px 0;
-    font-size: 0.65rem;
-    width: 100%;
-  }
-
-  th, td {
-    padding: 4px;
-    font-size: 0.65rem;
-  }
-
-  h2 {
-    margin-bottom: 8px;
-    font-size: 0.85rem;
-  }
-
-  body {
-    font-size: 0.65rem;
-    line-height: 1.35;
-    padding: 0 4px;
-  }
-
-  table {
-    font-size: 0.65rem;
-    overflow-x: auto;
-  }
-
-  a {
+  .detail-table {
+    min-width: unset; /* remove largura mínima */
     display: block;
-    width: 100%;
+    overflow-x: auto; /* permite rolagem lateral */
+    font-size: 0.7rem;
+  }
+
+  .detail-table th,
+  .detail-table td {
+    padding: 4px 3px;
+    white-space: nowrap; /* evita quebra feia */
+  }
+
+  .form-actions button,
+  .contas-actions button,
+  .modal-actions button {
+    padding: 6px 8px; /* bem compacto */
+    font-size: 0.75rem;
+  }
+
+  .contas-header h1 {
+    font-size: 1rem;
+  }
+
+  .contas-header p {
+    font-size: 0.75rem;
+  }
+
+  .status-chip,
+  .status {
+    font-size: 0.65rem;
+    padding: 2px 4px;
   }
 }
+

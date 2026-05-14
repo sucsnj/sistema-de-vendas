@@ -212,7 +212,7 @@ const Tabela: React.FC = () => {
                 <tbody>
                   {results.map((row, index) => (
                     <tr key={`${row.ean}-${index}`}>
-                      <td>{row.substancia}</td>
+                      <td>{row.substancia.replace(/;/g, ";\n")}</td>
                       <td>{row.laboratorio}</td>
                       <td>{row.ean}</td>
                       <td>{row.produto}</td>
@@ -246,8 +246,8 @@ const Tabela: React.FC = () => {
               {history.map((item) => (
                 <button key={item.id} type="button" className="history-item" onClick={() => handleHistoryClick(item)}>
                   <div>
-                    <strong>{item.query}</strong>
-                    <span>{item.resultCount} resultados</span>
+                    <strong>{item.query.replace(/;/g, ";\n")}</strong>
+                    <span> {item.result_count} resultados</span>
                   </div>
                   <small>{new Date(item.updated_at).toLocaleString('pt-BR')}</small>
                 </button>
@@ -265,7 +265,7 @@ const Tabela: React.FC = () => {
         .results-grid {
           display: grid;
           grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
-          gap: 18px;
+          gap: 8px;
         }
 
         .upload-help {
@@ -383,6 +383,7 @@ const Tabela: React.FC = () => {
         .table-container {
           width: 95%;
           min-width: 700px;
+          font-size: 0.8rem;
         }
 
         .history-list {
@@ -518,7 +519,7 @@ const Tabela: React.FC = () => {
         .table-container {
           width: 100%;
           min-width: auto;
-          font-size: 0.85rem;
+          font-size: 0.65rem;
         }
 
         .history-list {
