@@ -17,7 +17,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
             }
             map.set(conta.vencimento, current);
         });
-        return Array.from(map.values()).sort((a, b) => (a.data < b.data ? 1 : -1));
+        return Array.from(map.values()).sort((a, b) => (b.data < a.data ? 1 : -1));
     }, [contasMes]);
 
     // Lista de contas pendentes que serão pagas na próxima semana
