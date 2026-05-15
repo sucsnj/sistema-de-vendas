@@ -21,7 +21,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
   return (
     <div className="table-container">
       <h2>Vendas Diárias
-         - <span>Total R$ {totalVendas.toFixed(2)}</span>
+        - <span>Total R$ {totalVendas.toFixed(2)}</span>
       </h2>
       <table>
         <thead>
@@ -33,31 +33,40 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
           </tr>
         </thead>
         <tbody>
-          {sales.map((sale) => (
-            <tr key={sale.id}>
-              <td>{sale.data}</td>
-              <td>R$ {sale.valor.toFixed(2)}</td>
-              <td>{sale.observacoes || '-'}</td>
-              <td>
-                {canEdit(sale.data) ? (
-                  <>
-                    {onEditSale ? (
-                      <button type="button" className="edit-button" onClick={() => onEditSale(sale)}>
-                        Editar
-                      </button>
-                    ) : null}
-                    {onDeleteSale ? (
-                      <button type="button" className="delete-button button-spacing-small" onClick={() => onDeleteSale(sale.id)}>
-                        Excluir
-                      </button>
-                    ) : null}
-                  </>
-                ) : (
-                  <span className="color-muted">Bloqueado</span>
-                )}
-              </td>
-            </tr>
-          ))}
+          {[...sales]
+            .sort((a, b) => {
+              const diffDate =
+                new Date(b.data).getTime() - new Date(a.data).getTime();
+
+              if (diffDate !== 0) return diffDate;
+
+              return b.id - a.id;
+            })
+            .map((sale) => (
+              <tr key={sale.id}>
+                <td>{sale.data}</td>
+                <td>R$ {sale.valor.toFixed(2)}</td>
+                <td>{sale.observacoes || '-'}</td>
+                <td>
+                  {canEdit(sale.data) ? (
+                    <>
+                      {onEditSale ? (
+                        <button type="button" className="edit-button" onClick={() => onEditSale(sale)}>
+                          Editar
+                        </button>
+                      ) : null}
+                      {onDeleteSale ? (
+                        <button type="button" className="delete-button button-spacing-small" onClick={() => onDeleteSale(sale.id)}>
+                          Excluir
+                        </button>
+                      ) : null}
+                    </>
+                  ) : (
+                    <span className="color-muted">Bloqueado</span>
+                  )}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
