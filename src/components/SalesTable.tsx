@@ -34,6 +34,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
         </thead>
         <tbody>
           {[...sales]
+            .slice(0, 50)
             .sort((a, b) => {
               const diffDate =
                 new Date(b.data).getTime() - new Date(a.data).getTime();
