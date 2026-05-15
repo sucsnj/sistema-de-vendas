@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import OcrUpload from '@/components/OcrUpload';
 import { ContaDetalhe, } from '../services/contasService';
+import dayjs from 'dayjs';
 
 interface AgendaProps {
     contasMes: ContaDetalhe[];
@@ -22,11 +23,11 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
 
     // Lista de contas pendentes que serão pagas na próxima semana
     const proximasContas = useMemo(() => {
-        const hoje = new Date().toISOString().split('T')[0];
+        // const hoje = dayjs().format('YYYY-MM-DD');
         return contasAno
             .filter((conta) => conta.status === 'Pendente')
             .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime())
-            .filter((conta) => conta.vencimento >= hoje)
+            // .filter((conta) => conta.vencimento >= hoje)
             .slice(0, 12);
     }, [contasAno]);
 
@@ -55,7 +56,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
 
                 <section className="contas-panel proximas-panel">
                     <div className="panel-header">
-                        <h3>Próximas contas a vencer</h3>
+                        <h3>Próximas contas</h3>
                     </div>
                     <div className="proximas-list">
                         {proximasContas.length === 0 ? (
