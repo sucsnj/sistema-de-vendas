@@ -62,6 +62,11 @@ export const getContaById = (id: number) => {
   return stmt.get(id);
 };
 
+export const getAllContas = () => {
+  const stmt = db.prepare('SELECT * FROM contas_detalhes ORDER BY vencimento DESC, id DESC');
+  return stmt.all() as any[];
+};
+
 export const updateConta = (
   id: number,
   distribuidora: string,

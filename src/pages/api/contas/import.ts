@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertConta } from '../../../database/contasDb';
+import { insertConta, getAllContas } from '../../../database/contasDb';
 import { insertNota } from '../../../database/notasDb';
 import { parseStringPromise } from 'xml2js';
 
@@ -71,6 +71,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       valor = ajustarValorPorDistribuidora(distribuidora, valor);
       const documento = `${documentoBase}${i + 1}`;
+
+      const todasContas = getAllContas();
+      // se já existir uma conta com a mesma distribuidora e documento, pule para a próxima
+      const contaExistente = todasContas.find(c => c.distribuidora === distribuidora && c.documento === documento);
+      if (contaExistente) {
+        continue; // pula pra proxima duplicata
+      }
 
       insertConta(distribuidora, valor, vencimento, documento);
 
