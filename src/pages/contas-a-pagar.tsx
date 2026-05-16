@@ -134,8 +134,15 @@ const ContasAPagar: React.FC = () => {
         );
         showToast('Conta atualizada com sucesso.', 'success');
       } else {
-        await registrarConta(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
-        showToast('Conta registrada com sucesso.', 'success');
+        // traz o retorno do backend para mostrar a mensagem de sucesso ou erro específico
+        // o retorno do json
+        const response = await registrarConta(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        if (response.error) {
+          showToast(response.error, 'error');
+          return;
+        }
+        // await registrarConta(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        showToast(response.message, 'success');
       }
 
       resetForm();

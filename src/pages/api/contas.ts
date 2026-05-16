@@ -4,6 +4,7 @@ import {
   deleteConta,
   getContaById,
   getContasByPeriod,
+  getAllContas,
   insertConta,
   payConta,
   updateConta,
@@ -49,6 +50,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (!distribuidora || typeof valor !== 'number' || !vencimento || !documento) {
       return res.status(400).json({ error: 'Dados inválidos para criação de conta' });
+    }
+
+    const allContas = getAllContas();
+    const contaExistente = allContas.find(c => c.distribuidora === distribuidora && c.documento === documento);
+    if (contaExistente) {
+      return res.status(400).json({ error: 'Já existe uma conta com a mesma distribuidora e documento' });
     }
 
     insertConta(distribuidora, valor, vencimento, documento, bancoObservacoes);
