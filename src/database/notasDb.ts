@@ -18,6 +18,8 @@ try {
   db.exec(`
     CREATE TABLE IF NOT EXISTS notas_detalhes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      distribuidora TEXT NOT NULL,
+      chave TEXT NOT NULL,
       data_emissao TEXT NOT NULL,
       valor_nota REAL NOT NULL
     );
@@ -27,13 +29,15 @@ try {
 }
 
 export const insertNota = (
+  distribuidora: string,
+  chave: string,
   dataEmissao: string,
   valorNota: number,
 ) => {
   const stmt = db.prepare(
-    'INSERT INTO notas_detalhes (data_emissao, valor_nota) VALUES (?, ?)',
+    'INSERT INTO notas_detalhes (distribuidora, chave, data_emissao, valor_nota) VALUES (?, ?, ?, ?)'
   );
-  return stmt.run(dataEmissao, valorNota);
+  return stmt.run(distribuidora, chave, dataEmissao, valorNota);
 };
 
 export const getNotasById = (id: number) => {
@@ -72,6 +76,11 @@ export const getNotasByPeriod = (ano: number, mes?: number) => {
   );
 
   return stmt.all(startDate, endDate) as any[];
+};
+
+export const getAllNotas = () => {
+  const stmt = db.prepare('SELECT * FROM notas_detalhes ORDER BY data_emissao DESC, id DESC');
+  return stmt.all() as any[];
 };
 
 export const deleteNota = (id: number) => {

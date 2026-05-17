@@ -1,5 +1,7 @@
 export interface NotaDetalhe {
   id: number;
+  distribuidora: string;
+  chave: string;
   data_emissao: string;
   valor_nota: number;
 }
@@ -20,6 +22,11 @@ export const buscarNotaPorValor = async (valor: number): Promise<NotaDetalhe | n
   if (response.status === 404) {
     return null;
   }
+  return response.json();
+};
+
+export const buscarTodasNotas = async (): Promise<NotaDetalhe[]> => {
+  const response = await fetch('/api/notas');
   return response.json();
 };
 

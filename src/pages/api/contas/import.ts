@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertConta, getAllContas } from '../../../database/contasDb';
-import { insertNota } from '../../../database/notasDb';
+import { getAllNotas, insertNota } from '../../../database/notasDb';
 import { parseStringPromise } from 'xml2js';
+import { get } from 'http';
 
 // Nomes de distribuidoras válidos
 const nomesValidos = [
@@ -53,12 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const infNFe = parsed.nfeProc.NFe[0].infNFe[0];
     const distribuidoraRaw = infNFe.emit[0].xNome[0];
     const nNF = infNFe.ide[0].nNF[0];
-    const duplicatas = infNFe.cobr[0].dup;
+    let duplicatas = infNFe.cobr[0].dup;
 
-    const dhSaiEnt = infNFe.ide[0].dhEmi[0]; // emissão
+    const dataEmissao = infNFe.ide[0].dhEmi[0]; // emissão
+    // const data = dataEmissao.split('T')[0]; // remove hora
     const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
-
-    const data = dhSaiEnt.split('T')[0];
+    const chave = parsed.nfeProc.protNFe[0].infProt[0].chNFe[0]; // chave
 
     let distribuidora = formatarDistribuidora(distribuidoraRaw);
     let documentoBase = normalizarDocumento(nNF);
@@ -84,10 +85,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       registros.push({ distribuidora, valor, vencimento, documento });
     }
 
-    // Adiciona notas de pagamento
-    insertNota(data, vPag);
+    // flag para saber se alguma nota foi inserida
+    let notaInserida = false;
 
-    return res.status(200).json({ sucesso: true, registros });
+    // se já existir uma nota com a mesma chave
+    const todasNotas = getAllNotas();
+    const notaExistente = todasNotas.find(n => n.chave === chave);
+
+    if (notaExistente) {
+      if (registros.length > 0) {
+        // houve duplicatas novas
+        return res.status(200).json({ sucesso: true, registros });
+      } else {
+        // nenhuma duplicata nova e nota já existe
+        return res.status(400).json({ error: 'Nota e duplicata(s) já existentes' });
+      }
+    } else {
+      // adiciona nota
+      insertNota(distribuidora, chave, dataEmissao, vPag);
+      notaInserida = true;
+    }
+
+    // se chegou aqui, ou inseriu nota ou duplicatas
+    if (notaInserida || registros.length > 0) {
+      return res.status(200).json({ sucesso: true, registros });
+    } else {
+      return res.status(400).json({ error: 'Nada foi inserido' });
+    }
+
   } catch (error) {
     console.error('Erro ao importar XML:', error);
     return res.status(500).json({ error: 'Erro interno ao processar XML' });

@@ -4,6 +4,7 @@ import {
   getNotasById,
   getNotasByValor,
   getNotasByPeriod,
+  getAllNotas,
   deleteNota,
 } from '../../database/notasDb';
 
@@ -35,16 +36,22 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       mes ? parseInt(mes as string) : undefined
     );
 
+    // Buscar todas as notas
+    const allNotas = getAllNotas();
+    if (allNotas.length === 0) {
+      return res.status(200).json([]);
+    }
+
     console.log(notas);
     return res.status(200).json(notas);
   }
 
   if (req.method === 'POST') {
-    const { dataEmissao, valorNota } = req.body;
-    if (!dataEmissao || !valorNota) {
+    const { distribuidora, chave, dataEmissao, valorNota } = req.body;
+    if (!distribuidora || !chave || !dataEmissao || !valorNota) {
       return res.status(400).json({ error: 'Data de emissão e valor da nota são obrigatórios' });
     }
-    const result = insertNota(dataEmissao, valorNota);
+    const result = insertNota(distribuidora, chave, dataEmissao, valorNota);
     return res.status(201).json({ id: result.lastInsertRowid });
   }
 
