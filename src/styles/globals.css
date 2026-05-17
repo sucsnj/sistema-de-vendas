@@ -146,7 +146,8 @@ button:hover {
   transform: translateY(-1px);
 }
 
-input, textarea {
+input,
+textarea {
   display: block;
   margin: 8px 0;
   padding: 8px;
@@ -166,7 +167,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
@@ -198,6 +200,8 @@ h2 {
 
 .color-muted {
   color: #777;
+  cursor: default;
+  pointer-events: none;
 }
 
 .hidden {
@@ -206,10 +210,6 @@ h2 {
 
 .flex-grow-1 {
   flex: 1;
-}
-
-.color-muted {
-  color: #777;
 }
 
 .hidden {
@@ -265,20 +265,46 @@ h2 {
 }
 
 /* Standardized spacing */
-.gap-small { gap: 4px; }
-.gap-base { gap: 8px; }
-.gap-medium { gap: 12px; }
-.gap-large { gap: 16px; }
+.gap-small {
+  gap: 4px;
+}
+
+.gap-base {
+  gap: 8px;
+}
+
+.gap-medium {
+  gap: 12px;
+}
+
+.gap-large {
+  gap: 16px;
+}
 
 /* Standardized text colors */
-.text-foreground { color: var(--foreground); }
-.text-muted { color: var(--muted); }
-.text-danger { color: var(--danger); }
-.text-success { color: var(--success); }
-.text-accent { color: var(--accent); }
+.text-foreground {
+  color: var(--foreground);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-accent {
+  color: var(--accent);
+}
 
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
+
   .glass-form,
   .chart-container,
   .table-container {
@@ -296,12 +322,14 @@ h2 {
     font-size: 0.75rem;
   }
 
-  input, textarea {
+  input,
+  textarea {
     padding: 7px;
     margin: 6px 0;
   }
 
-  th, td {
+  th,
+  td {
     padding: 6px;
   }
 
@@ -317,6 +345,7 @@ h2 {
 
 /* Responsividade para 840px */
 @media (max-width: 840px) {
+
   .glass-form,
   .chart-container,
   .table-container {
@@ -338,13 +367,15 @@ h2 {
     border-radius: 5px;
   }
 
-  input, textarea {
+  input,
+  textarea {
     padding: 6px;
     margin: 5px 0;
     font-size: 0.7rem;
   }
 
-  th, td {
+  th,
+  td {
     padding: 5px;
     font-size: 0.7rem;
   }
@@ -366,6 +397,7 @@ h2 {
 
 /* Responsividade para 630px */
 @media (max-width: 630px) {
+
   .glass-form,
   .chart-container,
   .table-container {
@@ -387,13 +419,15 @@ h2 {
     border-radius: 4px;
   }
 
-  input, textarea {
+  input,
+  textarea {
     padding: 5.5px;
     margin: 4.5px 0;
     font-size: 0.68rem;
   }
 
-  th, td {
+  th,
+  td {
     padding: 4.5px;
     font-size: 0.68rem;
   }
@@ -415,27 +449,34 @@ h2 {
 
 /* Responsividade para 436px */
 @media (max-width: 436px) {
-  html, body {
-    font-size: 12px; /* reduz base de tudo */
+
+  html,
+  body {
+    font-size: 12px;
+    /* reduz base de tudo */
   }
 
   .detail-table {
-    min-width: unset; /* remove largura mínima */
+    min-width: unset;
+    /* remove largura mínima */
     display: block;
-    overflow-x: auto; /* permite rolagem lateral */
+    overflow-x: auto;
+    /* permite rolagem lateral */
     font-size: 0.7rem;
   }
 
   .detail-table th,
   .detail-table td {
     padding: 4px 3px;
-    white-space: nowrap; /* evita quebra feia */
+    white-space: nowrap;
+    /* evita quebra feia */
   }
 
   .form-actions button,
   .contas-actions button,
   .modal-actions button {
-    padding: 6px 8px; /* bem compacto */
+    padding: 6px 8px;
+    /* bem compacto */
     font-size: 0.75rem;
   }
 
@@ -453,4 +494,3 @@ h2 {
     padding: 2px 4px;
   }
 }
-

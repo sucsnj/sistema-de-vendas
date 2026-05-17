@@ -1,3 +1,4 @@
+import React from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import dayjs from 'dayjs';
 
@@ -19,11 +20,46 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
 
   const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
 
+  const changeMaxSales = (value: number) => {
+    setMaxSales(value);
+  };
+
+  const [maxSales, setMaxSales] = React.useState(5);
+
   return (
     <div className="table-container">
       <h2>Vendas Diárias
         - <span>Total R$ {totalVendas.toFixed(2)}</span>
       </h2>
+      <div className="range-buttons">
+        <button
+          className={maxSales === 100 ? 'color-muted' : 'button-100'}
+          onClick={() => changeMaxSales(100)}
+        >
+          100 últimas
+        </button>
+
+        <button
+          className={maxSales === 50 ? 'color-muted' : 'button-50'}
+          onClick={() => changeMaxSales(50)}
+        >
+          50 últimas
+        </button>
+
+        <button
+          className={maxSales === 25 ? 'color-muted' : 'button-25'}
+          onClick={() => changeMaxSales(25)}
+        >
+          25 últimas
+        </button>
+
+        <button
+          className={maxSales === sales.length ? 'color-muted' : 'button-todas'}
+          onClick={() => changeMaxSales(sales.length)}
+        >
+          Todas
+        </button>
+      </div>
       <table>
         <thead>
           <tr>
@@ -35,7 +71,6 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
         </thead>
         <tbody>
           {[...sales]
-            // .slice(0, 50)
             .sort((a, b) => {
               const diffDate =
                 new Date(b.data).getTime() - new Date(a.data).getTime();
@@ -44,9 +79,10 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
 
               return b.id - a.id;
             })
+            .slice(0, maxSales)
             .map((sale) => (
               <tr key={sale.id}>
-                <td>{dayjs(sale.data).format('DD-MM-YYYY')}</td>
+                <td>{dayjs(sale.criado_em).format('DD-MM-YYYY HH:mm:ss')}</td>
                 <td>R$ {sale.valor.toFixed(2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>
