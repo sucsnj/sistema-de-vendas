@@ -415,7 +415,7 @@ const ContasAPagar: React.FC = () => {
                   <tr key={conta.id}>
                     <td>{conta.distribuidora}</td>
                     <td>R$ {conta.valor.toFixed(2)}</td>
-                    <td>{conta.vencimento}</td>
+                    <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
                     <td>{conta.documento}</td>
                     <td>
                       <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>

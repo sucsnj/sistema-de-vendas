@@ -46,7 +46,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                         ) : (
                             agenda.map((item) => (
                                 <div key={item.data} className="agenda-row">
-                                    <strong>{item.data}</strong>
+                                    <strong>{dayjs(item.data).format('DD-MM-YYYY')}</strong>
                                     <span>R$ {item.totalPendente.toFixed(2)}</span>
                                 </div>
                             ))
@@ -64,7 +64,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                         ) : (
                             proximasContas.map((conta) => (
                                 <div key={conta.id} className="proxima-row">
-                                    <strong>{conta.vencimento}</strong> - {conta.distribuidora} - <span>R$ {conta.valor.toFixed(2)}</span>
+                                    <strong>{dayjs(conta.vencimento).format('DD-MM-YYYY')}</strong> - {conta.distribuidora} - <span>R$ {conta.valor.toFixed(2)}</span>
                                 </div>
                             ))
                         )}
