@@ -524,10 +524,9 @@ const ContasAPagar: React.FC = () => {
             <table className="detail-table compact-table">
               <thead>
                 <tr>
-                  <th>Data</th>
+                  <th>Vencimento</th>
                   <th>Distribuidora</th>
                   <th>Valor</th>
-                  <th>Status</th>
                   {/* nova coluna */}
                   <th>Ações</th>
                 </tr>
@@ -535,12 +534,10 @@ const ContasAPagar: React.FC = () => {
               <tbody>
                 {ultimasContas.map((conta) => (
                   <tr key={conta.id}>
-                    <td>{conta.criado_em?.split('T')[0] || conta.vencimento}</td>
+                    <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
                     <td>{conta.distribuidora}</td>
                     <td>R$ {conta.valor.toFixed(2)}</td>
-                    <td>
-                      <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
-                    </td>
+
                     <td className="actions-cell">
                       <button type="button" className="view-button" onClick={() => handleView(conta)}>Ver</button>
                       <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>Excluir</button>
