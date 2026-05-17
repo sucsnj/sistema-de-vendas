@@ -175,7 +175,7 @@ const Home: React.FC = () => {
         </form>
       )}
       <SalesChart data={sales} />
-      <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
+      {/* <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} /> */}
       <ExportButtons
         sales={sales}
         mes={mes}

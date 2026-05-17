@@ -1,4 +1,5 @@
 import { VendaDiaria } from '../services/vendasService';
+import dayjs from 'dayjs';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -34,7 +35,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
         </thead>
         <tbody>
           {[...sales]
-            .slice(0, 50)
+            // .slice(0, 50)
             .sort((a, b) => {
               const diffDate =
                 new Date(b.data).getTime() - new Date(a.data).getTime();
@@ -45,7 +46,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
             })
             .map((sale) => (
               <tr key={sale.id}>
-                <td>{sale.data}</td>
+                <td>{dayjs(sale.data).format('DD-MM-YYYY')}</td>
                 <td>R$ {sale.valor.toFixed(2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>
