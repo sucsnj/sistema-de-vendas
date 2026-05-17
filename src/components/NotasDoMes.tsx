@@ -74,14 +74,16 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                 <table className="summary-table">
                     <thead>
                         <tr>
-                            <th>Data</th>
+                            <th>Emissão</th>
+                            <th>Distribuidora</th>
                             <th>Valor</th>
                         </tr>
                     </thead>
                     <tbody>
                         {notas.map((n) => (
                             <tr key={n.id}>
-                                <td>{dayjs(n.data_emissao).format('DD/MM/YYYY')}</td>
+                                <td>{dayjs(n.data_emissao).format('DD/MM/YYYY HH:mm')}</td>
+                                <td>{n.distribuidora}</td>
                                 <td>R$ {Number(n.valor_nota).toFixed(2)}</td>
                                 <td>
                                     <button onClick={() => handleExcluir(n.id)} className="delete-btn">
