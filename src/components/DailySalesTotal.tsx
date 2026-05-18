@@ -1,6 +1,12 @@
 import { ReactNode, useEffect } from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("America/Recife");
 
 interface DailySalesTotalProps {
   sales: VendaDiaria[];
@@ -66,7 +72,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
 
             {selectedDay ? (
               <div className="summary-card daily-card">
-                <span className="summary-card-title">Resumo do dia {dayjs(selectedDay).format('DD-MM-YYYY')}</span>
+                <span className="summary-card-title">Resumo do dia {dayjs(selectedDay).tz("America/Recife").format("DD-MM-YYYY")}</span>
                 <div className="summary-metrics">
                   <div>
                     <span className="summary-label">Total</span>

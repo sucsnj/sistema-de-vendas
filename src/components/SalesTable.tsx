@@ -20,12 +20,19 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
 
   const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
 
-  const changeMaxSales = (value: number) => {
-    setMaxSales(value);
-    localStorage.setItem('maxSales', String(value));
-  };
+const [maxSales, setMaxSales] = React.useState(5);
 
-  const [maxSales, setMaxSales] = React.useState(localStorage.getItem('maxSales') ? parseInt(localStorage.getItem('maxSales') as string) : 5);
+React.useEffect(() => {
+  const saved = localStorage.getItem("maxSales");
+  if (saved) {
+    setMaxSales(parseInt(saved));
+  }
+}, []);
+
+const changeMaxSales = (value: number) => {
+  setMaxSales(value);
+  localStorage.setItem("maxSales", String(value));
+};
 
   return (
     <div className="table-container">
