@@ -72,7 +72,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
 
             {selectedDay ? (
               <div className="summary-card daily-card">
-                <span className="summary-card-title">Resumo do dia {dayjs(selectedDay).tz("America/Recife").format("DD-MM-YYYY")}</span>
+                <span className="summary-card-title">Resumo do dia {dayjs.tz(selectedDay, "America/Recife").format("DD-MM-YYYY")}</span>
                 <div className="summary-metrics">
                   <div>
                     <span className="summary-label">Total</span>
