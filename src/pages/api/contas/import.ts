@@ -57,8 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let duplicatas = infNFe.cobr[0].dup;
 
     const dataEmissao = infNFe.ide[0].dhEmi[0]; // emissão
-    // const data = dataEmissao.split('T')[0]; // remove hora
-    const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
+    // const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
+    const vNF = infNFe.total[0].ICMSTot[0].vNF[0]; // total
     const chave = parsed.nfeProc.protNFe[0].infProt[0].chNFe[0]; // chave
 
     let distribuidora = formatarDistribuidora(distribuidoraRaw);
@@ -72,6 +72,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       valor = ajustarValorPorDistribuidora(distribuidora, valor);
       const documento = `${documentoBase}${i + 1}`;
+
+      // se for distribuidora for igual a 'Distribuidora de medicamentos ltda', muda para 'Mbca'
+      if (distribuidora.toLowerCase() === 'distribuidora de medicamentos ltda') {
+        distribuidora = 'Mbca';
+      }
 
       const todasContas = getAllContas();
       // se já existir uma conta com a mesma distribuidora e documento, pule para a próxima
@@ -102,7 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     } else {
       // adiciona nota
-      insertNota(distribuidora, chave, dataEmissao, vPag);
+      insertNota(distribuidora, chave, dataEmissao, vNF);
       notaInserida = true;
     }
 
