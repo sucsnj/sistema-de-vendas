@@ -27,6 +27,12 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   const dailyCount = dailySales.length;
   const dailyAverage = dailyCount > 0 ? dailyTotal / dailyCount : 0;
 
+  // conta quantos dias houveram vendas
+  const daysWithSales = [...new Set(sales.map((sale) => sale.data))];
+  const clientAverage = quantidadeVendas > 0 && daysWithSales.length > 0 ? quantidadeVendas / daysWithSales.length : 0;
+  // arredondar o clientAerage para 0 casas decimais
+  const clientAverageRounded = Math.round(clientAverage);
+
   useEffect(() => {
     const handleDeleteKey = (event: KeyboardEvent) => {
       if (event.key === 'Delete' && recentSales.length > 0 && onDeleteSale) {
@@ -57,15 +63,19 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
               <div className="summary-metrics">
                 <div>
                   <span className="summary-label">Total de Vendas</span>
-                  <span className="summary-value">R$ {total.toFixed(2)}</span>
+                  <span className="summary-value"> R$ {total.toFixed(2)}</span>
                 </div>
                 <div>
                   <span className="summary-label">Quantidade de Vendas</span>
-                  <span className="summary-value">{quantidadeVendas}</span>
+                  <span className="summary-value"> {quantidadeVendas}</span>
+                </div>
+                <div>
+                  <span className="summary-label">Ticket Médio de Clientes</span>
+                  <span className="summary-value"> {clientAverageRounded}</span>
                 </div>
                 <div>
                   <span className="summary-label">Ticket Médio</span>
-                  <span className="summary-value">R$ {ticketMedio.toFixed(2)}</span>
+                  <span className="summary-value"> R$ {ticketMedio.toFixed(2)}</span>
                 </div>
               </div>
             </div>
