@@ -179,7 +179,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 required
               />
             </label>
-            <label>
               <div className="math-buttons">
                 <button
                   type="button"
@@ -218,6 +217,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   ÷
                 </button>
               </div>
+            <label>
               Valor:
               <div className="flex-center-gap">
                 <input
