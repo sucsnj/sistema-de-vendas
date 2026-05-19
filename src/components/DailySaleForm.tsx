@@ -89,6 +89,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        setCalculatedValue(0); // limpa o somatório
         event.preventDefault();
         setValor('');
       }
