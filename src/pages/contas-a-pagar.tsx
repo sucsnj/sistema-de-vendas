@@ -704,6 +704,7 @@ const ContasAPagar: React.FC = () => {
               className="modal-edit"
               rows={5}
               value={payObservacao}
+              autoFocus
               onChange={(e) => setPayObservacao(e.target.value)}
               placeholder="Digite observações..."
             />
