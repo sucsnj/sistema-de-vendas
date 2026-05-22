@@ -49,7 +49,7 @@ const Nav: React.FC = () => {
   <div className={styles.rightSide}>
     <div className={styles.logo}>
       <Link href="/">
-        <img src="/favicon.png" alt="logo" width={42} height={32} />
+        <img src="/favicon.png" alt="logo" width={40} height={36} />
       </Link>
     </div>
     <button
