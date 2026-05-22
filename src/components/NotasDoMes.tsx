@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/notasService';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import { formatCurrency } from '../utils/formatter';
 
 dayjs.locale('pt-br');
 
@@ -62,7 +63,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                 </select>
                 <div>
                     <h4>Somatório</h4>
-                    <span>R$ {somaNotas.toFixed(2)}</span>
+                    <span>R$ {formatCurrency(somaNotas, 2)}</span>
                 </div>
             </div>
 
@@ -84,7 +85,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                             <tr key={n.id}>
                                 <td>{dayjs(n.data_emissao).format('DD/MM/YYYY HH:mm')}</td>
                                 <td>{n.distribuidora}</td>
-                                <td>R$ {Number(n.valor_nota).toFixed(2)}</td>
+                                <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
                                     <button onClick={() => handleExcluir(n.id)} className="delete-btn">
                                         Excluir

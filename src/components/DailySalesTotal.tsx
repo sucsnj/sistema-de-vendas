@@ -88,7 +88,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                 <div className="summary-metrics">
                   <div>
                     <span className="summary-label">Total</span>
-                    <span className="summary-value">R$ {dailyTotal.toFixed(2)}</span>
+                    <span className="summary-value">R$ {formatCurrency(dailyTotal, 2)}</span>
                   </div>
                   <div>
                     <span className="summary-label">Vendas</span>
@@ -96,7 +96,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                   </div>
                   <div>
                     <span className="summary-label">Média do dia</span>
-                    <span className="summary-value">R$ {dailyAverage.toFixed(2)}</span>
+                    <span className="summary-value">R$ {formatCurrency(dailyAverage, 2)}</span>
                   </div>
                 </div>
               </div>
@@ -121,7 +121,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                       </div>
 
                       <div className="history-values">
-                        <span>R$ {sale.valor.toFixed(2)}</span>
+                        <span>R$ {formatCurrency(sale.valor, 2)}</span>
                       </div>
 
                       <div className="recent-sale-actions">
