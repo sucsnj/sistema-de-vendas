@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import OcrUpload from '@/components/OcrUpload';
 import { ContaDetalhe, } from '../services/contasService';
 import dayjs from 'dayjs';
+import { formatCurrency } from '../utils/formatter';
 
 interface AgendaProps {
     contasMes: ContaDetalhe[];
@@ -49,7 +50,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                             agenda.map((item) => (
                                 <div key={item.data} className="agenda-row">
                                     <strong>{dayjs(item.data).format('DD-MM-YYYY')}</strong>
-                                    <span>R$ {item.totalPendente.toFixed(2)}</span>
+                                    <span>R$ {formatCurrency(item.totalPendente, 2)}</span>
                                 </div>
                             ))
                         )}
@@ -66,7 +67,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                         ) : (
                             proximasContas.map((conta) => (
                                 <div key={conta.id} className="proxima-row">
-                                    <strong>{dayjs(conta.vencimento).format('DD-MM-YYYY')}</strong> - {conta.distribuidora} - <span>R$ {conta.valor.toFixed(2)}</span>
+                                    <strong>{dayjs(conta.vencimento).format('DD-MM-YYYY')}</strong> - {conta.distribuidora} - <span>R$ {formatCurrency(conta.valor, 2)}</span>
                                 </div>
                             ))
                         )}

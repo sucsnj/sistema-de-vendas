@@ -1,6 +1,7 @@
 import React from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import dayjs from 'dayjs';
+import { formatCurrency } from '../utils/formatter';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -37,7 +38,7 @@ const changeMaxSales = (value: number) => {
   return (
     <div className="table-container">
       <h2>Vendas Diárias
-        - <span>Total R$ {totalVendas.toFixed(2)}</span>
+        - <span>Total R$ {formatCurrency(totalVendas, 2)}</span>
       </h2>
       <div className="range-buttons">
         <button
@@ -91,7 +92,7 @@ const changeMaxSales = (value: number) => {
             .map((sale) => (
               <tr key={sale.id}>
                 <td>{dayjs(sale.criado_em).format('DD-MM-YYYY HH:mm:ss')}</td>
-                <td>R$ {sale.valor.toFixed(2)}</td>
+                <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>
                   {canEdit(sale.data) ? (

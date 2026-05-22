@@ -3,6 +3,7 @@ import { ContaDetalhe } from '../services/contasService';
 import ConsolidacaoMensal from './ConsolidacaoMensal';
 import TotaisPorDistribuidora from './TotaisPorDistribuidora';
 import NotasDoMes from './NotasDoMes';
+import { formatCurrency } from '../utils/formatter';
 
 interface ResumoProps {
   contasAno: ContaDetalhe[];
@@ -52,15 +53,15 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
                 <div className="summary-card">
                     <div className="summary-row">
                         <strong>Total pago</strong>
-                        <span>R$ {resumo.totalPago.toFixed(2)}</span>
+                        <span>R$ {formatCurrency(resumo.totalPago, 2)}</span>
                     </div>
                     <div className="summary-row">
                         <strong>Total pendente</strong>
-                        <span>R$ {resumo.totalPendente.toFixed(2)}</span>
+                        <span>R$ {formatCurrency(resumo.totalPendente, 2)}</span>
                     </div>
                     <div className="summary-row">
                         <strong>Total acumulado anual</strong>
-                        <span>R$ {resumo.totalAnual.toFixed(2)}</span>
+                        <span>R$ {formatCurrency(resumo.totalAnual, 2)}</span>
                     </div>
                 </div>
                 {/* #Totais por distribuidora */}

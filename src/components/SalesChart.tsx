@@ -10,8 +10,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-
 import { VendaDiaria } from '../services/vendasService';
+import { formatCurrency, formatCurrencyNumber } from '../utils/formatter';
 
 interface SalesChartProps {
   data: VendaDiaria[];
@@ -26,7 +26,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
     .slice(-range) // pega os últimos X dias
     .map((sale) => ({
       data: sale.criado_em,
-      valor: sale.valor,
+      valor: formatCurrencyNumber(sale.valor, 2),
     }));
 
   return (
@@ -56,7 +56,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="data" />
             <YAxis />
-            <Tooltip />
+            <Tooltip formatter={(value: any) => formatCurrency(Number(value), 2)} />
             <Line type="monotone" dataKey="valor" stroke="#8884d8" />
           </LineChart>
         ) : (
@@ -64,7 +64,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="data" />
             <YAxis />
-            <Tooltip />
+            <Tooltip formatter={(value: any) => formatCurrency(Number(value), 2)} />
             <Bar dataKey="valor" fill="#8884d8" />
           </BarChart>
         )}

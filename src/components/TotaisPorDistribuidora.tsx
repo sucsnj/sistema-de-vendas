@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCurrency } from '../utils/formatter';
 
 interface TotaisPorDistribuidoraProps {
     totaisPorDistribuidora: Record<string, number>;
@@ -15,7 +16,7 @@ const TotaisPorDistribuidora: React.FC<TotaisPorDistribuidoraProps> = ({ totaisP
                     <ul>
                         {Object.entries(totaisPorDistribuidora).map(([nome, valor]) => (
                             <li key={nome}>
-                                {nome}: R$ {valor.toFixed(2)}
+                                {nome}: R$ {formatCurrency(valor, 2)}
                             </li>
                         ))}
                     </ul>
