@@ -33,30 +33,39 @@ const Nav: React.FC = () => {
   };
 
   return (
-    <nav className={styles.nav}>
-      <div className={styles.navLinks}>
-        <Link href="/">Dashboard</Link>
-        <span>·</span>
-        <Link href="/resumo">Resumo Mensal</Link>
-        <span>·</span>
-        <Link href="/historico">Histórico</Link>
-        <span>·</span>
-        <Link href="/contas-a-pagar">Contas a pagar</Link>
-        <span>·</span>
-        <Link href="/tabela">Tabela</Link>
-      </div>
-      <button
-        type="button"
-        onClick={toggleThemeMode}
-        className={styles.themeButton}
-      >
-        {themeMode === 'system'
-          ? 'Modo: Sistema'
-          : themeMode === 'light'
-          ? 'Modo: Claro'
-          : 'Modo: Escuro'}
-      </button>
-    </nav>
+<nav className={styles.nav}>
+  <div className={styles.navLinks}>
+    <Link href="/">Dashboard</Link>
+    <span>·</span>
+    <Link href="/resumo">Resumo Mensal</Link>
+    <span>·</span>
+    <Link href="/historico">Histórico</Link>
+    <span>·</span>
+    <Link href="/contas-a-pagar">Contas a pagar</Link>
+    <span>·</span>
+    <Link href="/tabela">Tabela</Link>
+  </div>
+
+  <div className={styles.rightSide}>
+    <div className={styles.logo}>
+      <Link href="/">
+        <img src="/favicon.png" alt="logo" width={42} height={32} />
+      </Link>
+    </div>
+    <button
+      type="button"
+      onClick={toggleThemeMode}
+      className={styles.themeButton}
+    >
+      {themeMode === 'system'
+        ? 'Modo: Sistema'
+        : themeMode === 'light'
+        ? 'Modo: Claro'
+        : 'Modo: Escuro'}
+    </button>
+  </div>
+</nav>
+
   );
 };
 
