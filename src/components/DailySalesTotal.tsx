@@ -3,6 +3,7 @@ import { VendaDiaria } from '../services/vendasService';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { formatCurrency } from '../utils/formatter';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -19,6 +20,7 @@ interface DailySalesTotalProps {
 
 const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, recentSales = [], onEditSale, onDeleteSale, children }) => {
   const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
+
   const quantidadeVendas = sales.length;
   const ticketMedio = quantidadeVendas > 0 ? total / quantidadeVendas : 0;
 
@@ -63,7 +65,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
               <div className="summary-metrics">
                 <div>
                   <span className="summary-label">Total de Vendas</span>
-                  <span className="summary-value"> R$ {total.toFixed(2)}</span>
+                  <span className="summary-value"> R$ {formatCurrency(total, 2)}</span>
                 </div>
                 <div>
                   <span className="summary-label">Quantidade de Vendas</span>
@@ -75,7 +77,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                 </div>
                 <div>
                   <span className="summary-label">Ticket Médio</span>
-                  <span className="summary-value"> R$ {ticketMedio.toFixed(2)}</span>
+                  <span className="summary-value"> R$ {formatCurrency(ticketMedio, 2)}</span>
                 </div>
               </div>
             </div>
