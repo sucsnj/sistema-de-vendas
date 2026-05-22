@@ -14,6 +14,7 @@ import {
   registrarConta,
   ContaDetalhe,
 } from '../services/contasService';
+import { formatCurrency } from '../utils/formatter';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -414,7 +415,7 @@ const ContasAPagar: React.FC = () => {
                 {filteredContas.map((conta) => (
                   <tr key={conta.id}>
                     <td>{conta.distribuidora}</td>
-                    <td>R$ {conta.valor.toFixed(2)}</td>
+                    <td>R$ {formatCurrency(conta.valor, 2)}</td>
                     <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
                     <td>{conta.documento}</td>
                     <td>
@@ -536,7 +537,7 @@ const ContasAPagar: React.FC = () => {
                   <tr key={conta.id}>
                     <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
                     <td>{conta.distribuidora}</td>
-                    <td>R$ {conta.valor.toFixed(2)}</td>
+                    <td>R$ {formatCurrency(conta.valor, 2)}</td>
 
                     <td className="actions-cell">
                       <button type="button" className="view-button" onClick={() => handleView(conta)}>Ver</button>
@@ -615,7 +616,7 @@ const ContasAPagar: React.FC = () => {
                   onChange={(e) => setValor(e.target.value)}
                 />
               ) : (
-                <span>R$ {selectedConta.valor.toFixed(2)}</span>
+                <span>R$ {formatCurrency(selectedConta.valor, 2)}</span>
               )}
             </div>
             <div className="modal-row">

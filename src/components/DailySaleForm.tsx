@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
+import { formatCurrency } from '../utils/formatter';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -236,7 +237,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   className="flex-grow-1"
                 />
                 <span className="display-value">
-                  {(calculatedValue ?? 0).toFixed(2)}
+                  {formatCurrency(calculatedValue ?? 0, 2)}
                 </span>
               </div>
             </label>
