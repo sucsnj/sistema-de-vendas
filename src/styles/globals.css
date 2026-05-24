@@ -1,13 +1,15 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-strong: #ffffff;
+  --surface-soft: rgba(255, 255, 255, 0.75);
+  --border: rgba(15, 23, 42, 0.12);
+  --muted: #475569;
+  --accent: #2563eb;
+  --danger: #ef4444;
+  --success: #16a34a;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 html {
@@ -31,21 +33,6 @@ body {
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-:root {
-  color-scheme: light;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-strong: #ffffff;
-  --surface-soft: rgba(255, 255, 255, 0.75);
-  --border: rgba(15, 23, 42, 0.12);
-  --muted: #475569;
-  --accent: #2563eb;
-  --danger: #ef4444;
-  --success: #16a34a;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -106,12 +93,6 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
 /* Glassmorphism styles */
 .glass-form,
 .chart-container,
@@ -123,10 +104,6 @@ a {
   padding: 14px;
   margin: 18px;
   box-shadow: var(--shadow);
-}
-
-.export-buttons {
-  margin: 16px;
 }
 
 button {
@@ -192,12 +169,6 @@ h2 {
   margin-left: 8px;
 }
 
-.flex-center-gap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .color-muted {
   color: #777;
   cursor: default;
@@ -208,100 +179,6 @@ h2 {
   display: none;
 }
 
-.flex-grow-1 {
-  flex: 1;
-}
-
-.hidden {
-  display: none;
-}
-
-.flex-grow-1 {
-  flex: 1;
-}
-
-.display-value {
-  color: #f9f6f6;
-  font-size: 35px;
-  flex-shrink: 0;
-  min-width: 80px;
-  text-align: right;
-}
-
-/* Standardized button variations */
-.btn-primary {
-  background: var(--accent);
-  color: var(--foreground);
-}
-
-.btn-primary:hover {
-  background: var(--accent);
-  opacity: 0.8;
-}
-
-.btn-secondary {
-  background: var(--surface-soft);
-  color: var(--foreground);
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: var(--surface-strong);
-}
-
-.btn-success {
-  background: var(--success);
-  color: var(--surface-strong);
-}
-
-.btn-small {
-  padding: 6px 10px;
-  font-size: 0.7rem;
-}
-
-.btn-medium {
-  padding: 8px 14px;
-  font-size: 0.78rem;
-}
-
-/* Standardized spacing */
-.gap-small {
-  gap: 4px;
-}
-
-.gap-base {
-  gap: 8px;
-}
-
-.gap-medium {
-  gap: 12px;
-}
-
-.gap-large {
-  gap: 16px;
-}
-
-/* Standardized text colors */
-.text-foreground {
-  color: var(--foreground);
-}
-
-.text-muted {
-  color: var(--muted);
-}
-
-.text-danger {
-  color: var(--danger);
-}
-
-.text-success {
-  color: var(--success);
-}
-
-.text-accent {
-  color: var(--accent);
-}
-
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
 
@@ -310,10 +187,6 @@ h2 {
   .table-container {
     padding: 12px;
     margin: 14px;
-  }
-
-  .export-buttons {
-    margin: 12px;
   }
 
   button {
@@ -352,12 +225,6 @@ h2 {
     padding: 10px;
     margin: 10px;
     border-radius: 8px;
-  }
-
-  .export-buttons {
-    margin: 10px;
-    display: flex;
-    flex-wrap: wrap;
   }
 
   button {
@@ -406,12 +273,6 @@ h2 {
     border-radius: 7px;
   }
 
-  .export-buttons {
-    margin: 9px;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
   button {
     padding: 5.5px 9px;
     margin: 2px;
@@ -449,48 +310,8 @@ h2 {
 
 /* Responsividade para 436px */
 @media (max-width: 436px) {
-
   html,
   body {
     font-size: 12px;
-    /* reduz base de tudo */
-  }
-
-  .detail-table {
-    min-width: unset;
-    /* remove largura mínima */
-    display: block;
-    overflow-x: auto;
-    /* permite rolagem lateral */
-    font-size: 0.7rem;
-  }
-
-  .detail-table th,
-  .detail-table td {
-    padding: 4px 3px;
-    white-space: nowrap;
-    /* evita quebra feia */
-  }
-
-  .form-actions button,
-  .contas-actions button,
-  .modal-actions button {
-    padding: 6px 8px;
-    /* bem compacto */
-    font-size: 0.75rem;
-  }
-
-  .contas-header h1 {
-    font-size: 1rem;
-  }
-
-  .contas-header p {
-    font-size: 0.75rem;
-  }
-
-  .status-chip,
-  .status {
-    font-size: 0.65rem;
-    padding: 2px 4px;
   }
 }

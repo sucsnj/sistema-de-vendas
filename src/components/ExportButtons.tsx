@@ -224,7 +224,14 @@ const ExportButtons: FC<ExportButtonsProps> = ({
   };
 
   return (
-    <div className="export-buttons">
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '10px',
+        margin: '16px 0',
+      }}
+    >
       <button type="button" onClick={() => exportXLSX('month')}>
         Exportar XLSX (Mês)
       </button>

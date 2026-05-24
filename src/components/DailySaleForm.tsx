@@ -236,10 +236,10 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   autoFocus
                   className="flex-grow-1"
                 />
+              </div>
                 <span className="display-value">
                   {formatCurrency(calculatedValue ?? 0, 2)}
                 </span>
-              </div>
             </label>
             <label>
               Observações:
@@ -342,6 +342,23 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         .sale-form-fields button:disabled {
           background: var(--muted);
           cursor: not-allowed;
+        }
+
+        .flex-center-gap {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .flex-grow-1 {
+          flex: 1;
+        }
+
+        .display-value {
+          font-size: 1.9rem;
+          font-weight: 700;
+          min-width: 110px;
+          text-align: right;
         }
 
         .recent-history {
