@@ -81,7 +81,17 @@ export default async function handler(
                 linhaDigitavel = await lerLinhaDigitavel(file.path);
             }
 
-            resultados.push(linhaDigitavel);
+            if (linhaDigitavel) {
+                resultados.push({
+                    arquivo: file.originalname,
+                    linha: linhaDigitavel,
+                });
+            } else {
+                resultados.push({
+                    arquivo: file.originalname,
+                    erro: "Erro no OCR",
+                });
+            }
 
         } catch (err) {
 

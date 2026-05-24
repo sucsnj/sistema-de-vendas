@@ -75,10 +75,10 @@ export default function OcrUpload() {
                         <pre
                             key={index}
                             className="ocr-upload-wrapper"
-                            onClick={() => copiarConteudo(item)}>
+                            onClick={() => copiarConteudo(item.linha)}>
                             <strong>{item.arquivo}</strong>
                             {"\n"}
-                            {item || item.erro}
+                            {item.linha || item.erro}
                         </pre>
                     ))}
                 </div>
