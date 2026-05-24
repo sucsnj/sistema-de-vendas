@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 
 import { lerLinhaDigitavel } from "@/services/ocrService";
-import { lerPdfComOcr } from "@/services/pdfService";
+import { lerPdfComOcr, info } from "@/services/pdfService";
 
 export const config = {
     api: {
@@ -83,7 +83,7 @@ export default async function handler(
 
             if (linhaDigitavel) {
                 resultados.push({
-                    arquivo: file.originalname,
+                    arquivo: file.originalname + `${info}`,
                     linha: linhaDigitavel,
                 });
             } else {

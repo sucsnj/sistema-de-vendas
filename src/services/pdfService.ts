@@ -115,6 +115,8 @@ async function preprocessScenarios(imgPath: string): Promise<string[]> {
     return scenarios;
 }
 
+export let info = "";
+
 export async function lerPdfComOcr(pdfPath: string) {
     const converter = fromPath(pdfPath, {
         density: 400,
@@ -151,6 +153,13 @@ export async function lerPdfComOcr(pdfPath: string) {
                 await cleanTemp();
                 return linha
             } else {
+                // refaz com regex2
+                linha = await lerLinhaDigitavel(imgPath, "regex2");
+                info = " (ocr inconsistente)";
+                if (linha) {
+                    await cleanTemp();
+                    return linha
+                }
                 await cleanTemp();
             };
 

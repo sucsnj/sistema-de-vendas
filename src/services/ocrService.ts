@@ -1,6 +1,6 @@
 import Tesseract from "tesseract.js";
 
-export async function lerLinhaDigitavel(imagemPath: string) {
+export async function lerLinhaDigitavel(imagemPath: string, regexConst: string = "regex1") {
 
     try {
 
@@ -23,13 +23,16 @@ export async function lerLinhaDigitavel(imagemPath: string) {
             .replace(/\n/g, " ")
             .replace(/\s+/g, " ");
 
-        const regex =
-            /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g;
+        const regex1 = /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g;
+        const regex2 = /\d{5}[\s\.]?\d{5}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d[\s\.]?\d{13,14}/g;
+        let regex = null;
 
-        // const regex2 = /\d{5}[\s\.]?\d{5}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d[\s\.]?\d{13,14}/g;
-
+        if (regexConst === "regex1") {
+            regex = regex1;
+        } else {
+            regex = regex2;
+        }
         const linha = texto.match(regex);
-
         console.log("MATCHES:", linha);
 
         if (linha) {
