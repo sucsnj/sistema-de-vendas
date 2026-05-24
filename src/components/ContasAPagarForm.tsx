@@ -1,0 +1,109 @@
+import React from 'react';
+import { ContaDetalhe } from '../services/contasService';
+
+interface ContasAPagarFormProps {
+  distribuidora: string;
+  setDistribuidora: (value: string) => void;
+  valor: string;
+  setValor: (value: string) => void;
+  vencimento: string;
+  setVencimento: (value: string) => void;
+  documento: string;
+  setDocumento: (value: string) => void;
+  bancoObservacoes: string;
+  setBancoObservacoes: (value: string) => void;
+  editingConta: ContaDetalhe | null;
+  onSubmit: (event: React.FormEvent) => Promise<void>;
+  onReset: () => void;
+  onImportXML: () => Promise<void>;
+  onCancelarEdicao: () => void;
+  distribuidoraInputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
+  distribuidora,
+  setDistribuidora,
+  valor,
+  setValor,
+  vencimento,
+  setVencimento,
+  documento,
+  setDocumento,
+  bancoObservacoes,
+  setBancoObservacoes,
+  editingConta,
+  onSubmit,
+  onReset,
+  onImportXML,
+  onCancelarEdicao,
+  distribuidoraInputRef,
+}) => {
+  return (
+    <form onSubmit={onSubmit} className="contas-form">
+      <div className="form-row">
+        <label>
+          Distribuidora
+          <input
+            ref={distribuidoraInputRef}
+            type="text"
+            value={distribuidora}
+            onChange={(e) => setDistribuidora(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Valor
+          <input
+            type="number"
+            step="0.01"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Vencimento
+          <input
+            type="date"
+            value={vencimento}
+            onChange={(e) => setVencimento(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Documento
+          <input
+            type="text"
+            value={documento}
+            onChange={(e) => setDocumento(e.target.value)}
+            required
+          />
+        </label>
+      </div>
+      <label>
+        Banco / Observações
+        <textarea
+          rows={4}
+          value={bancoObservacoes}
+          onChange={(e) => setBancoObservacoes(e.target.value)}
+        />
+      </label>
+      <div className="form-actions">
+        <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
+        <button type="button" className="secondary" onClick={onReset}>
+          Limpar Campos
+        </button>
+        <button type="button" className="secondary" onClick={onImportXML}>
+          Importar XML
+        </button>
+        {editingConta ? (
+          <button type="button" className="secondary" onClick={onCancelarEdicao}>
+            Cancelar
+          </button>
+        ) : null}
+      </div>
+    </form>
+  );
+};
+
+export default ContasAPagarForm;

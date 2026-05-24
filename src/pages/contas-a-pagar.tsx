@@ -4,6 +4,11 @@ import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
 import Resumo from '@/components/Resumo';
+import ContasAPagarHeader from '@/components/ContasAPagarHeader';
+import ContasAPagarFilterPanel from '@/components/ContasAPagarFilterPanel';
+import ContasAPagarForm from '@/components/ContasAPagarForm';
+import ContasAPagarLastTen from '@/components/ContasAPagarLastTen';
+import ContasAPagarModals from '@/components/ContasAPagarModals';
 import {
   buscarContas,
   atualizarConta,
@@ -302,260 +307,67 @@ const ContasAPagar: React.FC = () => {
 
   return (
     <div className="contas-page">
-      <header className="contas-header">
-        <div>
-          <h1>Contas a pagar</h1>
-          <p>Cadastro detalhado, agenda automática e resumo analítico de pagamentos.</p>
-        </div>
-        <div className="contas-actions">
-          <label>
-            Ano:
-            <input
-              className="ano-input"
-              type="number"
-              value={ano}
-              onChange={(e) => setAno(parseInt(e.target.value, 10) || today.getFullYear())}
-            />
-          </label>
-          <label>
-            Mês:
-            <select className="mes-select" value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i} value={i + 1}>
-                  {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" onClick={handleBackup} className="backup-button">
-            Backup Anual
-          </button>
-        </div>
-      </header>
+      <ContasAPagarHeader ano={ano} mes={mes} setAno={setAno} setMes={setMes} handleBackup={handleBackup} />
 
       <main className="contas-grid">
         <section className="contas-panel detail-panel">
-          <div className="panel-header">
-            <h2>Detalhe</h2>
-            <span className="status-chip">Filtro</span>
-          </div>
+          <ContasAPagarFilterPanel
+            filtroDistribuidora={filtroDistribuidora}
+            setFiltroDistribuidora={setFiltroDistribuidora}
+            filtroStatus={filtroStatus}
+            setFiltroStatus={setFiltroStatus}
+            filtroVencimentoDe={filtroVencimentoDe}
+            setFiltroVencimentoDe={setFiltroVencimentoDe}
+            filtroVencimentoAte={filtroVencimentoAte}
+            setFiltroVencimentoAte={setFiltroVencimentoAte}
+            hoje={hoje}
+            filteredContas={filteredContas}
+            handleView={handleView}
+            handleDelete={handleDelete}
+            handleEditar={handleEditar}
+            handleStartPayment={(conta) => {
+              setSelectedConta(conta);
+              setPayObservacao(conta.banco_observacoes || '');
+              setPayModalOpen(true);
+            }}
+            onClearFilters={() => {
+              setFiltroDistribuidora('');
+              setFiltroStatus('Todos');
+              setFiltroVencimentoDe(hoje);
+              setFiltroVencimentoAte(hoje);
 
-          <div className="detail-table-wrapper">
-            <div className="filter-bar">
-              <div>
-                <label>
-                  Distribuidora
-                  <input
-                    type="text"
-                    placeholder="Filtrar por distribuidora"
-                    value={filtroDistribuidora}
-                    onChange={(e) => setFiltroDistribuidora(e.target.value)}
-                  />
-                </label>
-              </div>
-              <div>
-                <label>
-                  Vencimento de
-                  <input
-                    type="date"
-                    value={filtroVencimentoDe}
-                    onChange={(e) => setFiltroVencimentoDe(e.target.value)}
-                  />
-                </label>
-              </div>
-              <div>
-                <label>
-                  até
-                  <input
-                    type="date"
-                    value={filtroVencimentoAte}
-                    onChange={(e) => setFiltroVencimentoAte(e.target.value)}
-                  />
-                </label>
-              </div>
-              <div>
-                <label>
-                  Status
-                  <select className="status-select" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
-                    <option value="Todos">Todos</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Pago">Pago</option>
-                  </select>
-                </label>
-              </div>
-              <div className="filter-actions">
-                <button type="button" onClick={() => {
-                  setFiltroDistribuidora('');
-                  setFiltroStatus('Todos');
-                  setFiltroVencimentoDe(hoje);
-                  setFiltroVencimentoAte(hoje);
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem('filtroVencimentoDe');
+                localStorage.removeItem('filtroVencimentoAte');
+              }
+            }}
+          />
 
-                  if (typeof window !== 'undefined') {
-                    localStorage.removeItem('filtroVencimentoDe');
-                    localStorage.removeItem('filtroVencimentoAte');
-                  }
-                }}>
-                  Limpar filtros
-                </button>
-              </div>
-            </div>
-            <h3>Contas do mês</h3>
-            <table className="detail-table">
-              <thead>
-                <tr>
-                  <th>Distribuidora</th>
-                  <th>Valor</th>
-                  <th>Vencimento</th>
-                  <th>Documento</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredContas.map((conta) => (
-                  <tr key={conta.id}>
-                    <td>{conta.distribuidora}</td>
-                    <td>R$ {formatCurrency(conta.valor, 2)}</td>
-                    <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
-                    <td>{conta.documento}</td>
-                    <td>
-                      <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
-                    </td>
-                    <td className="actions-cell">
-                      <button type="button" className="view-button" onClick={() => handleView(conta)}>
-                        Ver
-                      </button>
-                      <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>
-                        Excluir
-                      </button>
-                      {conta.status === 'Pendente' ? (
-                        <button
-                          type="button"
-                          className="pay-button"
-                          onClick={() => {
-                            setSelectedConta(conta);
-                            setPayObservacao(conta.banco_observacoes || '');
-                            setPayModalOpen(true);
-                          }}
-                        >
-                          Pagar
-                        </button>
-                      ) : null}
-                    </td>
-                  </tr>
-                ))}
-                {filteredContas.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="empty-row">
-                      Nenhuma conta encontrada para o período selecionado.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
+          <ContasAPagarForm
+            distribuidora={distribuidora}
+            setDistribuidora={setDistribuidora}
+            valor={valor}
+            setValor={setValor}
+            vencimento={vencimento}
+            setVencimento={setVencimento}
+            documento={documento}
+            setDocumento={setDocumento}
+            bancoObservacoes={bancoObservacoes}
+            setBancoObservacoes={setBancoObservacoes}
+            editingConta={editingConta}
+            onSubmit={handleSubmit}
+            onReset={resetForm}
+            onImportXML={handleImportXML}
+            onCancelarEdicao={handleCancelarEdicao}
+            distribuidoraInputRef={distribuidoraInputRef}
+          />
 
-          <form onSubmit={handleSubmit} className="contas-form">
-            <div className="form-row">
-              <label>
-                Distribuidora
-                <input
-                  ref={distribuidoraInputRef}
-                  type="text"
-                  value={distribuidora}
-                  onChange={(e) => setDistribuidora(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Valor
-                <input
-                  type="number"
-                  step="0.01"
-                  value={valor}
-                  onChange={(e) => setValor(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Vencimento
-                <input
-                  type="date"
-                  value={vencimento}
-                  onChange={(e) => setVencimento(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Documento
-                <input
-                  type="text"
-                  value={documento}
-                  onChange={(e) => setDocumento(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
-            <label>
-              Banco / Observações
-              <textarea
-                rows={4}
-                value={bancoObservacoes}
-                onChange={(e) => setBancoObservacoes(e.target.value)}
-              />
-            </label>
-            <div className="form-actions">
-              <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
-              <button type="button" className="secondary" onClick={resetForm}>
-                Limpar Campos
-              </button>
-              <button type="button" className="secondary" onClick={handleImportXML}>
-                Importar XML
-              </button>
-              {editingConta ? (
-                <button type="button" className="secondary" onClick={handleCancelarEdicao}>
-                  Cancelar
-                </button>
-              ) : null}
-            </div>
-          </form>
-
-          <div className="last-ten-panel">
-            <h3>Últimas 10 contas registradas</h3>
-            <table className="detail-table compact-table">
-              <thead>
-                <tr>
-                  <th>Vencimento</th>
-                  <th>Distribuidora</th>
-                  <th>Valor</th>
-                  {/* nova coluna */}
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ultimasContas.map((conta) => (
-                  <tr key={conta.id}>
-                    <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
-                    <td>{conta.distribuidora}</td>
-                    <td>R$ {formatCurrency(conta.valor, 2)}</td>
-
-                    <td className="actions-cell">
-                      <button type="button" className="view-button" onClick={() => handleView(conta)}>Ver</button>
-                      <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>Excluir</button>
-                      <button type="button" className="edit-button" onClick={() => handleEditar(conta)}>Editar</button>
-                    </td>
-                  </tr>
-                ))}
-                {ultimasContas.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="empty-row">
-                      Nenhuma conta registrada ainda.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
+          <ContasAPagarLastTen
+            ultimasContas={ultimasContas}
+            handleView={handleView}
+            handleDelete={handleDelete}
+            handleEditar={handleEditar}
+          />
         </section>
 
         {/* #Agenda */}
@@ -568,178 +380,41 @@ const ContasAPagar: React.FC = () => {
 
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
 
-      {/* Modal de detalhes da conta */}
-      {selectedConta ? (
-        <div className="modal-overlay" onClick={() => setSelectedConta(null)}>
-          <div className="modal-content" onClick={(event) => event.stopPropagation()}>
-            <h2>
-              Detalhes da conta
+      <ContasAPagarModals
+        selectedConta={selectedConta}
+        editingConta={editingConta}
+        distribuidora={distribuidora}
+        setDistribuidora={setDistribuidora}
+        valor={valor}
+        setValor={setValor}
+        vencimento={vencimento}
+        setVencimento={setVencimento}
+        documento={documento}
+        setDocumento={setDocumento}
+        bancoObservacoes={bancoObservacoes}
+        setBancoObservacoes={setBancoObservacoes}
+        payModalOpen={payModalOpen}
+        payObservacao={payObservacao}
+        setPayObservacao={setPayObservacao}
+        onCloseSelectedConta={() => setSelectedConta(null)}
+        onSave={handleSubmit}
+        onEditar={handleEditar}
+        onCancelEdit={handleCancelarEdicao}
+        onStartPayment={(conta) => {
+          setSelectedConta(conta);
+          setPayObservacao(conta.banco_observacoes || '');
+          setPayModalOpen(true);
+        }}
+        onConfirmPayment={() => {
+          handleConfirmarPagamento();
+          handleCancelarEdicao();
+          setSelectedConta(null);
+        }}
+        onClosePayModal={() => setPayModalOpen(false)}
+        onCancelPayment={handleCancelarPagamento}
+      />
 
-              {editingConta?.id === selectedConta.id ? (
-                <>
-                  <button type="button" className="save-button" onClick={handleSubmit}>
-                    Salvar
-                  </button>
-
-                  <button type="button" className="close-button" onClick={handleCancelarEdicao}>
-                    Cancelar
-                  </button>
-                </>
-              ) : (
-                <button
-                  type="button" className="edit-button"
-                  onClick={() => handleEditar(selectedConta)}
-                >
-                  Editar
-                </button>
-              )}
-            </h2>
-
-            <div className="modal-row">
-              <strong>Distribuidora:</strong>
-              {editingConta?.id === selectedConta.id ? (
-                <input className="modal-edit"
-                  value={distribuidora}
-                  onChange={(e) => setDistribuidora(e.target.value)}
-                />
-              ) : (
-                <span>{selectedConta.distribuidora}</span>
-              )}
-            </div>
-            <div className="modal-row">
-              <strong>Valor:</strong>
-              {editingConta?.id === selectedConta.id ? (
-                <input className="modal-edit"
-                  type="number"
-                  step="0.01"
-                  value={valor}
-                  onChange={(e) => setValor(e.target.value)}
-                />
-              ) : (
-                <span>R$ {formatCurrency(selectedConta.valor, 2)}</span>
-              )}
-            </div>
-            <div className="modal-row">
-              <strong>Vencimento:</strong>
-              {editingConta?.id === selectedConta.id ? (
-                <input className="modal-edit"
-                  type="date"
-                  value={vencimento}
-                  onChange={(e) => setVencimento(e.target.value)}
-                />
-              ) : (
-                <span>{selectedConta.vencimento}</span>
-              )}
-            </div>
-            <div className="modal-row">
-              <strong>Documento:</strong>
-              {editingConta?.id === selectedConta.id ? (
-                <input className="modal-edit"
-                  type="text"
-                  value={documento}
-                  onChange={(e) => setDocumento(e.target.value)}
-                />
-              ) : (
-                <span>{selectedConta.documento}</span>
-              )}
-            </div>
-            <div className="modal-row">
-              <strong>Status:</strong>
-              <span className={`status ${selectedConta.status.toLowerCase()}`}>{selectedConta.status}</span>
-            </div>
-            <div className="modal-row">
-              <strong>Banco / Observações:</strong>
-              {editingConta?.id === selectedConta.id ? (
-                <textarea className="modal-edit"
-                  rows={4}
-                  value={bancoObservacoes}
-                  onChange={(e) => setBancoObservacoes(e.target.value)}
-                />
-              ) : (
-                <span>{selectedConta.banco_observacoes || 'Sem observações'}</span>
-              )}
-            </div>
-            <div className="modal-actions">
-              {selectedConta.status === 'Pendente' ? (
-                <button type="button" className="pay-button"
-                  onClick={() => {
-                    setPayObservacao(selectedConta.banco_observacoes || '');
-                    setPayModalOpen(true);
-                  }}>
-                  Pagar conta
-                </button>
-              ) : (
-                <button type="button" className="cancel-button"
-                  onClick={() => {
-                    handleCancelarPagamento(selectedConta.id)
-                    handleCancelarEdicao();
-                  }}>
-                  Cancelar pagamento
-                </button>
-              )}
-              <button type="button" className="close-button"
-                onClick={() => {
-                  setSelectedConta(null);
-                  handleCancelarEdicao();
-                }}>
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Modal para confirmar pagamento */}
-      {payModalOpen && (
-        <div
-          className="modal-overlay"
-          onClick={() => setPayModalOpen(false)}
-        >
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Observações do pagamento</h2>
-
-            <textarea
-              className="modal-edit"
-              rows={5}
-              value={payObservacao}
-              autoFocus
-              onChange={(e) => setPayObservacao(e.target.value)}
-              placeholder="Digite observações..."
-            />
-
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="pay-button"
-                onClick={() => {
-                  handleConfirmarPagamento();
-                  handleCancelarEdicao();
-                  setSelectedConta(null);
-                }}
-              >
-                Confirmar pagamento
-              </button>
-
-              <button
-                type="button"
-                className="close-button"
-                onClick={() => {
-                  setPayModalOpen(false);
-                  handleCancelarEdicao();
-                  setSelectedConta(null);
-                }}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style jsx>{`
+      <style jsx global>{`
         .contas-page {
           padding: 24px;
           min-height: 100vh;
@@ -1058,9 +733,32 @@ const ContasAPagar: React.FC = () => {
 
         .detail-table-wrapper {
           overflow-x: auto;
+          min-width: 0;
+        }
+
+        .contas-panel {
+          min-width: 0;
+        }
+
+        .contas-panel,
+        .contas-panel > * {
+          min-width: 0;
+        }
+
+        .contas-filter-panel {
+          display: grid;
+          gap: 24px;
+          min-width: 0;
+        }
+
+        .filter-bar > div,
+        .form-row > label,
+        .actions-cell {
+          min-width: 0;
         }
 
         .detail-table {
+          width: 100%;
           width: 100%;
           min-width: 820px;
           margin-bottom: 24px;
@@ -1072,6 +770,9 @@ const ContasAPagar: React.FC = () => {
           text-align: left;
           border-bottom: 1px solid var(--border);
           color: var(--foreground);
+          min-width: 0;
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .detail-table th {

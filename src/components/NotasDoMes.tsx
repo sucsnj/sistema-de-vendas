@@ -78,6 +78,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                             <th>Emissão</th>
                             <th>Distribuidora</th>
                             <th>Valor</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,34 +113,78 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
 
         .selectors {
             display: flex;
+            align-items: center;
             margin-bottom: 24px;
-            gap: 15px;
+            gap: 12px;
         }
 
-        select {
-          padding: 6px 10px;
-          border-radius: 6px;
+        .selectors > div,
+        .selectors select {
+          min-width: 0;
+        }
+
+        .selectors select {
+          flex: 1 1 160px;
+          padding: 8px 12px;
+          border-radius: 8px;
           border: 1px solid var(--border);
           background: var(--surface-soft);
           color: var(--foreground);
         }
 
+        .selectors > div {
+          flex: 1 1 220px;
+          min-width: 160px;
+          display: grid;
+          gap: 4px;
+        }
+
+        .selectors > div h4 {
+          margin: 0;
+          font-size: 0.95rem;
+          color: var(--muted);
+        }
+
         .summary-table {
           width: 100%;
           border-collapse: collapse;
+          min-width: 0;
+          table-layout: auto;
           color: var(--foreground);
         }
 
         .summary-table th,
         .summary-table td {
-          padding: 10px 12px;
+          padding: 10px 7px;
           text-align: left;
           border-bottom: 1px solid var(--border);
+          min-width: 0;
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .summary-table th {
           color: var(--muted);
           font-size: 0.9rem;
+        }
+
+        .summary-table td:last-child {
+          white-space: nowrap;
+          width: 1%;
+        }
+
+        .delete-btn {
+          background: var(--danger);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          padding: 8px 12px;
+          cursor: pointer;
+          font-size: 0.85rem;
+        }
+
+        .delete-btn:hover {
+          opacity: 0.95;
         }
       `}</style>
         </div>
