@@ -1,8 +1,8 @@
 import { fromPath } from "pdf2pic";
 import path from "path";
-import fs from "fs";
 import { lerLinhaDigitavel } from "./ocrService";
 import sharp from "sharp";
+import { cleanTemp } from "../utils/cleaner";
 
 // Cenários de pre-processamento de imagem
 async function preprocessScenarios(imgPath: string): Promise<string[]> {
@@ -140,18 +140,19 @@ export async function lerPdfComOcr(pdfPath: string) {
             if (!linha) {
                 const preImgs = await preprocessScenarios(imgPath); // tenta por cenários de pre-processamento
                 for (const preImg of preImgs) {
-                    linha = await lerLinhaDigitavel(preImg); // tenta por imagem reprocessada
-                    // remove arquivos temporários
-                    fs.unlinkSync(preImg);
+                    linha = await lerLinhaDigitavel(preImg); // imagem reprocessada
                     if (linha) break;
                 }
             }
             console.log("LINHA:", linha);
 
-            // remove arquivos temporários
-            fs.unlinkSync(imgPath);
-
-            if (linha) return linha;
+            if (linha) {
+                // remove arquivos temporários
+                await cleanTemp();
+                return linha
+            } else {
+                await cleanTemp();
+            };
 
         } catch (err) {
             console.error(`Erro página ${i}:`, err);

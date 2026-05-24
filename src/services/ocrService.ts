@@ -26,6 +26,8 @@ export async function lerLinhaDigitavel(imagemPath: string) {
         const regex =
             /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g;
 
+        // const regex2 = /\d{5}[\s\.]?\d{5}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d[\s\.]?\d{13,14}/g;
+
         const linha = texto.match(regex);
 
         console.log("MATCHES:", linha);
