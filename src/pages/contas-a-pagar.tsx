@@ -989,7 +989,10 @@ const ContasAPagar: React.FC = () => {
           background: var(--surface-soft);
           color: var(--muted);
           font-size: 0.9rem;
-          white-space: nowrap;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          max-width: 100%;
         }
 
         .contas-form {
@@ -1342,7 +1345,9 @@ const ContasAPagar: React.FC = () => {
   .detail-table th,
   .detail-table td {
     padding: 4px 3px;
-    white-space: nowrap; /* evita quebra feia */
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .form-actions button,

@@ -116,7 +116,10 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
                     background: var(--surface-soft);
                     color: var(--muted);
                     font-size: 0.9rem;
-                    white-space: nowrap;
+                    white-space: normal;
+                    overflow-wrap: anywhere;
+                    word-break: break-word;
+                    max-width: 100%;
                 }
 
                 .summary-card {

@@ -277,7 +277,9 @@ const Tabela: React.FC = () => {
 
         .upload-button {
           align-self: flex-start;
-          white-space: nowrap;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .search-field {
@@ -298,7 +300,9 @@ const Tabela: React.FC = () => {
         }
 
         .search-button {
-          white-space: nowrap;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          word-break: break-word;
           margin-bottom: 8px;
         }
 
@@ -367,7 +371,9 @@ const Tabela: React.FC = () => {
         }
 
         .search-form button {
-          white-space: nowrap;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .search-hint {

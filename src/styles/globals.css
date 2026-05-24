@@ -139,6 +139,32 @@ textarea::placeholder {
   color: var(--muted);
 }
 
+html,
+body {
+  min-width: 0;
+}
+
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+
+input,
+textarea,
+button,
+select,
+th,
+td,
+span,
+p,
+label,
+a {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
