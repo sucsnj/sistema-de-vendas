@@ -12,14 +12,17 @@ interface ToastProps {
     | 'top-center'
     | 'local-top-right'
     | 'local-top-left';
+  duration?: number | null;
 }
 
-const Toast: React.FC<ToastProps> = ({ open, message, type = 'info', onClose, position = 'top-right' }) => {
+const Toast: React.FC<ToastProps> = ({ open, message, type = 'info', onClose, position = 'top-right', duration = 3000}) => {
   useEffect(() => {
     if (!open) return;
-    const timer = window.setTimeout(() => onClose(), 3000);
+    if (duration == null) return;
+
+    const timer = window.setTimeout(() => onClose(), duration);
     return () => window.clearTimeout(timer);
-  }, [open, onClose]);
+  }, [open, onClose, duration]);
 
   if (!open) return null;
 

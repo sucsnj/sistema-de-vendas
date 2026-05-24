@@ -150,6 +150,7 @@ export async function lerPdfComOcr(pdfPath: string) {
 
             if (linha) {
                 // remove arquivos temporários
+                info = "";
                 await cleanTemp();
                 return linha
             } else {

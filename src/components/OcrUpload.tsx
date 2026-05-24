@@ -6,8 +6,18 @@ export default function OcrUpload() {
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
+    const [duration, setToastDuration] = useState<number | null>(3000);
+
+    // Função utilitária para abrir toast
+    function showToast(message: string, type: "success" | "error" | "info", duration: number | null = 3000) {
+        setToastMessage(message);
+        setToastType(type);
+        setToastDuration(duration);
+        setToastOpen(true);
+    }
 
     async function uploadArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+
         if (!e.target.files?.[0]) return;
 
         const formData = new FormData();
@@ -16,9 +26,7 @@ export default function OcrUpload() {
         });
 
         // Mostra Toast de carregamento
-        setToastMessage("Carregando OCR...");
-        setToastType("info");
-        setToastOpen(true);
+        showToast("Carregando OCR...", "info", null);
 
         try {
             const response = await fetch("/api/ocr", {
@@ -30,16 +38,12 @@ export default function OcrUpload() {
             setResultado(data);
 
             // Atualiza Toast para sucesso
-            setToastMessage("OCR finalizado com sucesso!");
-            setToastType("success");
-            setToastOpen(true);
+            showToast("OCR finalizado!", "success");
         } catch (err) {
             console.error("Erro no OCR:", err);
 
             // Atualiza Toast para erro
-            setToastMessage("Erro ao processar OCR");
-            setToastType("error");
-            setToastOpen(true);
+            showToast("Erro ao processar OCR", "error");
         }
     }
 
@@ -48,26 +52,21 @@ export default function OcrUpload() {
         navigator.clipboard.writeText(texto)
             .then(() => {
 
-                setToastMessage("Linha digitável copiada!");
-                setToastType("success");
-                setToastOpen(true);
-
+                showToast("Linha digitável copiada!", "success");
             })
             .catch(err => {
 
                 console.error("Erro ao copiar:", err);
 
-                setToastMessage("Erro ao copiar conteúdo");
-                setToastType("error");
-                setToastOpen(true);
+                showToast("Erro ao copiar conteúdo", "error");
             });
     }
 
     return (
         <div>
             <input type="file"
-            accept=".pdf,.jpg,.jpeg,.png"
-            className="ocr-upload" multiple onChange={uploadArquivo} />
+                accept=".pdf,.jpg,.jpeg,.png"
+                className="ocr-upload" multiple onChange={uploadArquivo} />
 
             {resultado && (
                 <div className="ocr-results">
@@ -88,6 +87,7 @@ export default function OcrUpload() {
                 open={toastOpen}
                 message={toastMessage}
                 type={toastType}
+                duration={duration}
                 onClose={() => setToastOpen(false)}
                 position="top-right"
             />
