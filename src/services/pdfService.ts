@@ -1,11 +1,121 @@
 import { fromPath } from "pdf2pic";
 import path from "path";
 import fs from "fs";
-
 import { lerLinhaDigitavel } from "./ocrService";
+import sharp from "sharp";
+
+// Cenários de pre-processamento de imagem
+async function preprocessScenarios(imgPath: string): Promise<string[]> {
+    const scenarios = [];
+
+    // Cenário 1
+    scenarios.push(imgPath.replace(".png", ".basic.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .threshold(180)
+        .toFile(scenarios[0]);
+
+    // Cenário 2
+    scenarios.push(imgPath.replace(".png", ".contrast.png"));
+    await sharp(imgPath)
+        .resize({ width: 1500 })
+        .grayscale()
+        .threshold(200)
+        .linear(1.2, -30)
+        .toFile(scenarios[1]);
+
+    // Cenário 3
+    scenarios.push(imgPath.replace(".png", ".smooth.png"));
+    await sharp(imgPath)
+        .resize({ width: 1000 })
+        .grayscale()
+        .threshold(160)
+        .blur(1)
+        .toFile(scenarios[2]);
+
+    // Cenário 4
+    scenarios.push(imgPath.replace(".png", ".lowThresh.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .threshold(140)
+        .toFile(scenarios[3]);
+
+    // Cenário 5
+    scenarios.push(imgPath.replace(".png", ".highThresh.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .threshold(220)
+        .toFile(scenarios[4]);
+
+    // Cenário 6
+    scenarios.push(imgPath.replace(".png", ".bright.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .modulate({ brightness: 1.3 })
+        .threshold(180)
+        .toFile(scenarios[5]);
+
+    // Cenário 7
+    scenarios.push(imgPath.replace(".png", ".bigBlur.png"));
+    await sharp(imgPath)
+        .resize({ width: 2000 })
+        .grayscale()
+        .threshold(180)
+        .blur(0.5)
+        .toFile(scenarios[6]);
+
+    // Cenário 8
+    scenarios.push(imgPath.replace(".png", ".linear.png"));
+    await sharp(imgPath)
+        .resize({ width: 1500 })
+        .grayscale()
+        .threshold(190)
+        .linear(1.4, -40)
+        .toFile(scenarios[7]);
+
+    // Cenário 9
+    scenarios.push(imgPath.replace(".png", ".superBright.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .modulate({ brightness: 1.5 })
+        .threshold(180)
+        .toFile(scenarios[8]);
+
+    // Cenário 10
+    scenarios.push(imgPath.replace(".png", ".superDark.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .threshold(240)
+        .toFile(scenarios[9]);
+
+    // Cenário 11
+    scenarios.push(imgPath.replace(".png", ".noiseReduction.png"));
+    await sharp(imgPath)
+        .resize({ width: 1200 })
+        .grayscale()
+        .threshold(170)
+        .blur(2)
+        .toFile(scenarios[10]);
+
+    // Cenário 12
+    scenarios.push(imgPath.replace(".png", ".maxScale.png"));
+    await sharp(imgPath)
+        .resize({ width: 2500 })
+        .grayscale()
+        .threshold(180)
+        .linear(1.3, -20)
+        .toFile(scenarios[11]);
+
+    return scenarios;
+}
 
 export async function lerPdfComOcr(pdfPath: string) {
-
     const converter = fromPath(pdfPath, {
         density: 400,
         saveFilename: "pagina",
@@ -16,35 +126,36 @@ export async function lerPdfComOcr(pdfPath: string) {
     });
 
     for (let i = 1; i <= 3; i++) {
-
         try {
-
             const page = await converter(i);
-
             if (!page.path) {
                 continue;
             }
 
             const imgPath = path.resolve(page.path);
-
             console.log("PNG GERADA:", imgPath);
 
-            // AQUI o OCR precisa acontecer
-            const linha = await lerLinhaDigitavel(imgPath);
-
+            // const preImgPath = await preprocess(imgPath); // reprocessa a imagem
+            let linha = await lerLinhaDigitavel(imgPath); // tenta por meio padrão
+            if (!linha) {
+                const preImgs = await preprocessScenarios(imgPath); // tenta por cenários de pre-processamento
+                for (const preImg of preImgs) {
+                    linha = await lerLinhaDigitavel(preImg); // tenta por imagem reprocessada
+                    // remove arquivos temporários
+                    fs.unlinkSync(preImg);
+                    if (linha) break;
+                }
+            }
             console.log("LINHA:", linha);
 
-            // comentar temporariamente
-            // fs.unlinkSync(imgPath);
+            // remove arquivos temporários
+            fs.unlinkSync(imgPath);
 
-            if (linha) {
-                return linha;
-            }
+            if (linha) return linha;
 
         } catch (err) {
             console.error(`Erro página ${i}:`, err);
         }
     }
-
     return null;
 }
