@@ -3,6 +3,7 @@ import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
+import parseNumber from '../utils/number';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -107,7 +108,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
-      const valueToRegister = calculatedValue !== null ? calculatedValue : parseFloat(valor.replace(',', '.'));
+      const valueToRegister = calculatedValue !== null ? calculatedValue : parseNumber(valor);
       if (isNaN(valueToRegister)) {
         showToast('Valor inválido.', 'error');
         setLoading(false);

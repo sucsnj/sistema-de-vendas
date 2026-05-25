@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContaDetalhe } from '../services/contasService';
-import dayjs from 'dayjs';
+import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 
 interface ContasAPagarLastTenProps {
@@ -31,7 +31,7 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
         <tbody>
           {ultimasContas.map((conta) => (
             <tr key={conta.id}>
-              <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
+              <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
               <td>{conta.distribuidora}</td>
               <td>R$ {formatCurrency(conta.valor, 2)}</td>
               <td className="actions-cell">

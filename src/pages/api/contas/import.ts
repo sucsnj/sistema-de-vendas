@@ -3,6 +3,7 @@ import { insertConta, getAllContas } from '../../../database/contasDb';
 import { getAllNotas, insertNota } from '../../../database/notasDb';
 import { parseStringPromise } from 'xml2js';
 import { get } from 'http';
+import parseNumber from '../../../utils/number';
 
 // Nomes de distribuidoras válidos
 const nomesValidos = [
@@ -67,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const registros: any[] = [];
 
     for (let i = 0; i < duplicatas.length; i++) {
-      let valor = parseFloat(duplicatas[i].vDup[0]);
+      let valor = parseNumber(duplicatas[i].vDup[0]);
       let vencimento = duplicatas[i].dVenc[0];
 
       valor = ajustarValorPorDistribuidora(distribuidora, valor);

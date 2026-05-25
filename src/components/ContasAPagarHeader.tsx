@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatMonthName } from '../utils/date';
 
 interface ContasAPagarHeaderProps {
   ano: number;
@@ -32,7 +33,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
           <select className="mes-select" value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i + 1}>
-                {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
+                {formatMonthName(i + 1)}
               </option>
             ))}
           </select>

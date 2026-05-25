@@ -1,6 +1,6 @@
 import React from 'react';
 import { VendaDiaria } from '../services/vendasService';
-import dayjs from 'dayjs';
+import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 
 interface SalesTableProps {
@@ -91,7 +91,7 @@ const changeMaxSales = (value: number) => {
             .slice(0, maxSales)
             .map((sale) => (
               <tr key={sale.id}>
-                <td>{dayjs(sale.criado_em).format('DD-MM-YYYY HH:mm:ss')}</td>
+                <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>

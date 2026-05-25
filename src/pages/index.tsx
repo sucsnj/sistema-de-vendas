@@ -5,6 +5,8 @@ import SalesChart from '../components/SalesChart';
 import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
+import parseNumber from '../utils/number';
+import { formatMonthName } from '../utils/date';
 import ExportButtons from '../components/ExportButtons';
 import { buscarVendasDiarias, consolidarMensal, fazerBackup, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
 
@@ -80,7 +82,7 @@ const Home: React.FC = () => {
     if (!editingSale) return;
 
     try {
-      await atualizarVenda(editingSale.id, editData, parseFloat(editValor), editObservacoes);
+      await atualizarVenda(editingSale.id, editData, parseNumber(editValor), editObservacoes);
       showToast('Venda atualizada com sucesso.', 'success');
       setEditingSale(null);
       loadSales();
@@ -191,7 +193,7 @@ const Home: React.FC = () => {
             <select value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
               {Array.from({ length: 12 }, (_, i) => (
                 <option key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
+                  {formatMonthName(i + 1)}
                 </option>
               ))}
             </select>

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import parseNumber from '../../utils/number';
 import {
   insertNota,
   getNotasById,
@@ -20,7 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     // Buscar por valor
     if (valor) {
-      const nota = getNotasByValor(parseFloat(valor as string));
+      const nota = getNotasByValor(parseNumber(valor as string));
       if (!nota) {
         return res.status(404).json({ error: 'Nenhuma nota encontrada com esse valor' });
       }

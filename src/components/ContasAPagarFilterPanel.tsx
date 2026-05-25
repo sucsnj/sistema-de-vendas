@@ -1,6 +1,6 @@
 import React from 'react';
-import dayjs from 'dayjs';
 import { ContaDetalhe } from '../services/contasService';
+import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 
 interface ContasAPagarFilterPanelProps {
@@ -112,7 +112,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
               <tr key={conta.id}>
                 <td>{conta.distribuidora}</td>
                 <td>R$ {formatCurrency(conta.valor, 2)}</td>
-                <td>{dayjs(conta.vencimento).format('DD/MM/YYYY')}</td>
+                <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
                 <td>{conta.documento}</td>
                 <td>
                   <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>

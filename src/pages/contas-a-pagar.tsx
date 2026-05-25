@@ -7,6 +7,7 @@ import Resumo from '@/components/Resumo';
 import ContasAPagarHeader from '@/components/ContasAPagarHeader';
 import ContasAPagarFilterPanel from '@/components/ContasAPagarFilterPanel';
 import ContasAPagarForm from '@/components/ContasAPagarForm';
+import parseNumber from '../utils/number';
 import ContasAPagarLastTen from '@/components/ContasAPagarLastTen';
 import ContasAPagarModals from '@/components/ContasAPagarModals';
 import '@/styles/contas.module.css';
@@ -122,7 +123,7 @@ const ContasAPagar: React.FC = () => {
       return;
     }
 
-    const numericValor = parseFloat(valor);
+    const numericValor = parseNumber(valor);
     if (Number.isNaN(numericValor) || numericValor <= 0) {
       showToast('Valor deve ser um número maior que zero.', 'error');
       return;

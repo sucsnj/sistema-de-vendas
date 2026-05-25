@@ -2,6 +2,7 @@ import { useRef, type ChangeEvent, type FC } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
+import parseNumber from '../utils/number';
 
 interface ExportButtonsProps {
   sales: VendaDiaria[];
@@ -84,9 +85,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
   const normalizeHeader = (header: string) => header.toString().trim().toLowerCase();
 
   const formatValue = (value: any) => {
-    if (typeof value === 'number') return value;
-    if (typeof value !== 'string') return NaN;
-    return parseFloat(value.replace(',', '.'));
+    return parseNumber(value);
   };
 
   const dateMatchesMonth = (dateValue: string) => {

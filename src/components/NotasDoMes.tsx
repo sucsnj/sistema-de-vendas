@@ -1,10 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/notasService';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br';
 import { formatCurrency } from '../utils/formatter';
-
-dayjs.locale('pt-br');
+import { formatDate, getCurrentYear } from '../utils/date';
 
 const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -57,7 +54,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                 </select>
 
                 <select value={ano} onChange={(e) => setAno(Number(e.target.value))}>
-                    {Array.from({ length: 5 }, (_, i) => dayjs().year() - i).map((y) => (
+                    {Array.from({ length: 5 }, (_, i) => getCurrentYear() - i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}
                 </select>
@@ -84,7 +81,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                     <tbody>
                         {notas.map((n) => (
                             <tr key={n.id}>
-                                <td>{dayjs(n.data_emissao).format('DD/MM/YYYY HH:mm')}</td>
+                                <td>{formatDate(n.data_emissao, 'DD/MM/YYYY HH:mm')}</td>
                                 <td>{n.distribuidora}</td>
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
