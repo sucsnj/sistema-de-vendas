@@ -52,7 +52,7 @@ const Historico: React.FC = () => {
     }
   }, [editingSale]);
 
-  const handleSaveEdit = async (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editingSale) return;
 
@@ -87,68 +87,75 @@ const Historico: React.FC = () => {
   };
 
   return (
-    <div className="container-padding">
-      <h1>Histórico de Vendas</h1>
-      <div>
-        <label>
-          Mês:
-          <select value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {formatMonthName(i + 1)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Ano:
-          <input
-            type="number"
-            value={ano}
-            onChange={(e) => setAno(parseInt(e.target.value))}
-          />
-        </label>
-      </div>
-      {editingSale && (
-        <form onSubmit={handleSaveEdit} className="glass-form">
-          <h2>Editar Venda</h2>
+    <>
+      <div className="container-padding">
+        <h1>Histórico de Vendas</h1>
+        <div className="glass-form">
+          <div className="page-actions">
           <label>
-            Data:
-            <input
-              type="date"
-              value={editData}
-              onChange={(e) => setEditData(e.target.value)}
-              required
-            />
+            Mês:
+            <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {formatMonthName(i + 1)}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
-            Valor:
+            Ano:
             <input
-              ref={editValorInputRef}
+              className="headerInput"
               type="number"
-              step="0.01"
-              value={editValor}
-              onChange={(e) => setEditValor(e.target.value)}
-              required
+              value={ano}
+              onChange={(e) => setAno(parseInt(e.target.value))}
             />
           </label>
-          <label>
-            Observações:
-            <textarea
-              value={editObservacoes}
-              onChange={(e) => setEditObservacoes(e.target.value)}
-            />
-          </label>
-          <button type="submit">Salvar Alteração</button>
-          <button type="button" onClick={handleCancelEdit} className="button-spacing">
-            Cancelar
-          </button>
-        </form>
-      )}
-      <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
-      <ExportButtons sales={sales} mes={mes} ano={ano} onMessage={showToast} />
-      <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
-    </div>
+          </div>
+        </div>
+
+        {editingSale && (
+          <form onSubmit={handleSaveEdit} className="glass-form">
+            <h2>Editar Venda</h2>
+            <label>
+              Data:
+              <input
+                type="date"
+                value={editData}
+                onChange={(e) => setEditData(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Valor:
+              <input
+                ref={editValorInputRef}
+                type="number"
+                step="0.01"
+                value={editValor}
+                onChange={(e) => setEditValor(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Observações:
+              <textarea
+                value={editObservacoes}
+                onChange={(e) => setEditObservacoes(e.target.value)}
+              />
+            </label>
+            <button type="submit">Salvar Alteração</button>
+            <button type="button" onClick={handleCancelEdit} className="button-spacing">
+              Cancelar
+            </button>
+          </form>
+        )}
+
+        <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
+        <ExportButtons sales={sales} mes={mes} ano={ano} onMessage={showToast} />
+        <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
+      </div>
+    </>
   );
 };
 

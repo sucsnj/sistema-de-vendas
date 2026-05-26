@@ -2,6 +2,7 @@ import React from 'react';
 import { ContaDetalhe } from '../services/contasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
+import styles from '../styles/contas.module.css';
 
 interface ContasAPagarFilterPanelProps {
   filtroDistribuidora: string;
@@ -39,14 +40,14 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   onClearFilters,
 }) => {
   return (
-    <div className="contas-filter-panel">
-      <div className="panel-header">
+    <div className={styles.contasFilterPanel}>
+      <div className={styles.panelHeader}>
         <h2>Detalhe</h2>
-        <span className="status-chip">Filtro</span>
+        <span className={styles.statusChip}>Filtro</span>
       </div>
 
-      <div className="detail-table-wrapper">
-        <div className="filter-bar">
+      <div className={styles.detailTableWrapper}>
+        <div className={styles.filterBar}>
           <div>
             <label>
               Distribuidora
@@ -81,14 +82,14 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
           <div>
             <label>
               Status
-              <select className="status-select" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
+              <select className={styles.statusSelect} value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
                 <option value="Todos">Todos</option>
                 <option value="Pendente">Pendente</option>
                 <option value="Pago">Pago</option>
               </select>
             </label>
           </div>
-          <div className="filter-actions">
+          <div className={styles.filterActions}>
             <button type="button" onClick={onClearFilters}>
               Limpar filtros
             </button>
@@ -96,7 +97,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
         </div>
 
         <h3>Contas do mês</h3>
-        <table className="detail-table">
+        <table className={styles.detailTable}>
           <thead>
             <tr>
               <th>Distribuidora</th>
@@ -115,19 +116,19 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                 <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
                 <td>{conta.documento}</td>
                 <td>
-                  <span className={`status ${conta.status.toLowerCase()}`}>{conta.status}</span>
+                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]}`}>{conta.status}</span>
                 </td>
-                <td className="actions-cell">
-                  <button type="button" className="view-button" onClick={() => handleView(conta)}>
+                <td className={styles.actionsCell}>
+                  <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
                     Ver
                   </button>
-                  <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>
+                  <button type="button" className={styles.deleteButton} onClick={() => handleDelete(conta.id)}>
                     Excluir
                   </button>
                   {conta.status === 'Pendente' ? (
                     <button
                       type="button"
-                      className="pay-button"
+                      className={styles.payButton}
                       onClick={() => handleStartPayment(conta)}
                     >
                       Pagar
@@ -138,7 +139,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
             ))}
             {filteredContas.length === 0 ? (
               <tr>
-                <td colSpan={6} className="empty-row">
+                <td colSpan={6} className={styles.emptyRow}>
                   Nenhuma conta encontrada para o período selecionado.
                 </td>
               </tr>

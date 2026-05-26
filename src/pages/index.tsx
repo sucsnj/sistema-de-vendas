@@ -5,8 +5,6 @@ import SalesChart from '../components/SalesChart';
 import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
-import parseNumber from '../utils/number';
-import { formatMonthName } from '../utils/date';
 import ExportButtons from '../components/ExportButtons';
 import { buscarVendasDiarias, consolidarMensal, fazerBackup, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
 
@@ -77,12 +75,12 @@ const Home: React.FC = () => {
     }
   }, [editingSale]);
 
-  const handleSaveEdit = async (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editingSale) return;
 
     try {
-      await atualizarVenda(editingSale.id, editData, parseNumber(editValor), editObservacoes);
+      await atualizarVenda(editingSale.id, editData, parseFloat(editValor), editObservacoes);
       showToast('Venda atualizada com sucesso.', 'success');
       setEditingSale(null);
       loadSales();
@@ -118,7 +116,8 @@ const Home: React.FC = () => {
     .slice(0, 4);
 
   return (
-    <div className="page-container">
+    <>
+      <div className="container-padding">
       <div className="top-bar">
         <h1>Dashboard de Vendas</h1>
       </div>
@@ -190,10 +189,10 @@ const Home: React.FC = () => {
         <div className="page-actions">
           <label>
             Mês:
-            <select value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+            <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
               {Array.from({ length: 12 }, (_, i) => (
                 <option key={i + 1} value={i + 1}>
-                  {formatMonthName(i + 1)}
+                  {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
                 </option>
               ))}
             </select>
@@ -201,107 +200,20 @@ const Home: React.FC = () => {
           <label>
             Ano:
             <input
+              className="headerInput"
               type="number"
               value={ano}
               onChange={(e) => setAno(parseInt(e.target.value))}
             />
           </label>
-          <button onClick={handleConsolidate}>Consolidar Mês</button>
-          <button onClick={handleBackup}>Fazer Backup</button>
+          <button className="headerButton" onClick={handleConsolidate}>Consolidar Mês</button>
+          <button className="headerBackupButton" onClick={handleBackup}>Fazer Backup</button>
         </div>
       </div>
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
     </div>
+  </>
   );
 };
 
 export default Home;
-
-<style jsx>{`
-  .page-container {
-    max-width: 1220px;
-    margin: 0 auto;
-    padding: 28px 22px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    font-size: 0.82rem;
-  }
-
-  .top-bar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 12px 18px;
-    border-radius: 14px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-  }
-
-  .top-bar h1 {
-    font-size: 1.25rem;
-    margin: 0;
-  }
-
-  .theme-toggle {
-    position: absolute;
-    top: 50%;
-    right: 18px;
-    transform: translateY(-50%);
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--accent);
-    color: var(--foreground);
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
-  }
-
-  .theme-toggle:hover {
-    transform: translateY(-1px);
-    background: var(--accent);
-    opacity: 0.8;
-  }
-
-  .footer-header {
-    padding: 18px;
-  }
-
-  .page-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: flex-end;
-  }
-
-  .page-actions label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 0.95rem;
-  }
-
-  .page-actions select,
-  .page-actions input {
-    min-width: 140px;
-  }
-
-  .page-actions button {
-    padding: 8px 14px;
-    font-size: 0.92rem;
-  }
-
-  h1 {
-    font-size: 1.35rem;
-    margin-bottom: 0;
-  }
-
-  @media (max-width: 900px) {
-    .page-actions {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  }
-`}</style>

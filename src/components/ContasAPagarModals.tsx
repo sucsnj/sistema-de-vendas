@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
 
@@ -56,31 +57,31 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
   return (
     <>
       {selectedConta ? (
-        <div className="modal-overlay" onClick={onCloseSelectedConta}>
-          <div className="modal-content" onClick={(event) => event.stopPropagation()}>
+        <div className={styles.modalOverlay} onClick={onCloseSelectedConta}>
+          <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
             <h2>
               Detalhes da conta
               {editingConta?.id === selectedConta.id ? (
                 <>
-                  <button type="button" className="save-button" onClick={(event) => onSave(event)}>
+                  <button type="button" className={styles.saveButton} onClick={(event) => onSave(event)}>
                     Salvar
                   </button>
-                  <button type="button" className="close-button" onClick={onCancelEdit}>
+                  <button type="button" className={styles.closeButton} onClick={onCancelEdit}>
                     Cancelar
                   </button>
                 </>
               ) : (
-                <button type="button" className="edit-button" onClick={() => onEditar(selectedConta)}>
+                <button type="button" className={styles.editButton} onClick={() => onEditar(selectedConta)}>
                   Editar
                 </button>
               )}
             </h2>
 
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Distribuidora:</strong>
               {editingConta?.id === selectedConta.id ? (
                 <input
-                  className="modal-edit"
+                  className={styles.modalEdit}
                   value={distribuidora}
                   onChange={(e) => setDistribuidora(e.target.value)}
                 />
@@ -88,11 +89,11 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
                 <span>{selectedConta.distribuidora}</span>
               )}
             </div>
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Valor:</strong>
               {editingConta?.id === selectedConta.id ? (
                 <input
-                  className="modal-edit"
+                  className={styles.modalEdit}
                   type="number"
                   step="0.01"
                   value={valor}
@@ -102,11 +103,11 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
                 <span>R$ {formatCurrency(selectedConta.valor, 2)}</span>
               )}
             </div>
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Vencimento:</strong>
               {editingConta?.id === selectedConta.id ? (
                 <input
-                  className="modal-edit"
+                  className={styles.modalEdit}
                   type="date"
                   value={vencimento}
                   onChange={(e) => setVencimento(e.target.value)}
@@ -115,11 +116,11 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
                 <span>{selectedConta.vencimento}</span>
               )}
             </div>
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Documento:</strong>
               {editingConta?.id === selectedConta.id ? (
                 <input
-                  className="modal-edit"
+                  className={styles.modalEdit}
                   type="text"
                   value={documento}
                   onChange={(e) => setDocumento(e.target.value)}
@@ -128,15 +129,15 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
                 <span>{selectedConta.documento}</span>
               )}
             </div>
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Status:</strong>
-              <span className={`status ${selectedConta.status.toLowerCase()}`}>{selectedConta.status}</span>
+              <span className={`${styles.status} ${styles[selectedConta.status.toLowerCase()]}`}>{selectedConta.status}</span>
             </div>
-            <div className="modal-row">
+            <div className={styles.modalRow}>
               <strong>Banco / Observações:</strong>
               {editingConta?.id === selectedConta.id ? (
                 <textarea
-                  className="modal-edit"
+                  className={styles.modalEdit}
                   rows={4}
                   value={bancoObservacoes}
                   onChange={(e) => setBancoObservacoes(e.target.value)}
@@ -145,11 +146,11 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
                 <span>{selectedConta.banco_observacoes || 'Sem observações'}</span>
               )}
             </div>
-            <div className="modal-actions">
+            <div className={styles.modalActions}>
               {selectedConta.status === 'Pendente' ? (
                 <button
                   type="button"
-                  className="pay-button"
+                  className={styles.payButton}
                   onClick={() => onStartPayment(selectedConta)}
                 >
                   Pagar conta
@@ -157,7 +158,7 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
               ) : (
                 <button
                   type="button"
-                  className="cancel-button"
+                  className={styles.cancelButton}
                   onClick={() => {
                     onCancelPayment(selectedConta.id);
                     onCancelEdit();
@@ -168,7 +169,7 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
               )}
               <button
                 type="button"
-                className="close-button"
+                className={styles.closeButton}
                 onClick={() => {
                   onCloseSelectedConta();
                   onCancelEdit();
@@ -182,22 +183,22 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
       ) : null}
 
       {payModalOpen && (
-        <div className="modal-overlay" onClick={onClosePayModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay} onClick={onClosePayModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2>Observações do pagamento</h2>
             <textarea
-              className="modal-edit"
+              className={styles.modalEdit}
               rows={5}
               value={payObservacao}
               autoFocus
               onChange={(e) => setPayObservacao(e.target.value)}
               placeholder="Digite observações..."
             />
-            <div className="modal-actions">
-              <button type="button" className="pay-button" onClick={onConfirmPayment}>
+            <div className={styles.modalActions}>
+              <button type="button" className={styles.payButton} onClick={onConfirmPayment}>
                 Confirmar pagamento
               </button>
-              <button type="button" className="close-button" onClick={onClosePayModal}>
+              <button type="button" className={styles.closeButton} onClick={onClosePayModal}>
                 Cancelar
               </button>
             </div>

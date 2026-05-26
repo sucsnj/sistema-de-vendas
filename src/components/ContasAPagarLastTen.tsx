@@ -2,6 +2,7 @@ import React from 'react';
 import { ContaDetalhe } from '../services/contasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
+import styles from '../styles/contas.module.css';
 
 interface ContasAPagarLastTenProps {
   ultimasContas: ContaDetalhe[];
@@ -17,9 +18,9 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
   handleEditar,
 }) => {
   return (
-    <div className="last-ten-panel">
+    <div className={styles.lastTenPanel}>
       <h3>Últimas 10 contas registradas</h3>
-      <table className="detail-table compact-table">
+      <table className={`${styles.detailTable} ${styles.compactTable}`}>
         <thead>
           <tr>
             <th>Vencimento</th>
@@ -34,14 +35,14 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
               <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
               <td>{conta.distribuidora}</td>
               <td>R$ {formatCurrency(conta.valor, 2)}</td>
-              <td className="actions-cell">
-                <button type="button" className="view-button" onClick={() => handleView(conta)}>
+              <td className={styles.actionsCell}>
+                <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
                   Ver
                 </button>
-                <button type="button" className="delete-button" onClick={() => handleDelete(conta.id)}>
+                <button type="button" className={styles.deleteButton} onClick={() => handleDelete(conta.id)}>
                   Excluir
                 </button>
-                <button type="button" className="edit-button" onClick={() => handleEditar(conta)}>
+                <button type="button" className={styles.editButton} onClick={() => handleEditar(conta)}>
                   Editar
                 </button>
               </td>
@@ -49,9 +50,9 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
           ))}
           {ultimasContas.length === 0 ? (
             <tr>
-              <td colSpan={4} className="empty-row">
-                Nenhuma conta registrada ainda.
-              </td>
+              <td colSpan={4} className={styles.emptyRow}>
+                  Nenhuma conta registrada ainda.
+                </td>
             </tr>
           ) : null}
         </tbody>

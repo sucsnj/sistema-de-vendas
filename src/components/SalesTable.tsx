@@ -2,6 +2,7 @@ import React from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
+import styles from '../styles/contas.module.css';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -98,12 +99,12 @@ const changeMaxSales = (value: number) => {
                   {canEdit(sale.data) ? (
                     <>
                       {onEditSale ? (
-                        <button type="button" className="edit-button" onClick={() => onEditSale(sale)}>
+                        <button type="button" className={styles.editButton} onClick={() => onEditSale(sale)}>
                           Editar
                         </button>
                       ) : null}
                       {onDeleteSale ? (
-                        <button type="button" className="delete-button button-spacing-small" onClick={() => onDeleteSale(sale.id)}>
+                        <button type="button" className={`${styles.deleteButton} button-spacing-small`} onClick={() => onDeleteSale(sale.id)}>
                           Excluir
                         </button>
                       ) : null}

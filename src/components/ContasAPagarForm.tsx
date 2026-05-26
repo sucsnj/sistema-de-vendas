@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 
 interface ContasAPagarFormProps {
@@ -39,8 +40,8 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
   distribuidoraInputRef,
 }) => {
   return (
-    <form onSubmit={onSubmit} className="contas-form">
-      <div className="form-row">
+    <form onSubmit={onSubmit} className={styles.contasForm}>
+      <div className={styles.formRow}>
         <label>
           Distribuidora
           <input
@@ -88,16 +89,16 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
           onChange={(e) => setBancoObservacoes(e.target.value)}
         />
       </label>
-      <div className="form-actions">
+      <div className={styles.formActions}>
         <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
-        <button type="button" className="secondary" onClick={onReset}>
+        <button type="button" className={styles.secondary} onClick={onReset}>
           Limpar Campos
         </button>
-        <button type="button" className="secondary" onClick={onImportXML}>
+        <button type="button" className={styles.secondary} onClick={onImportXML}>
           Importar XML
         </button>
         {editingConta ? (
-          <button type="button" className="secondary" onClick={onCancelarEdicao}>
+            <button type="button" className={styles.secondary} onClick={onCancelarEdicao}>
             Cancelar
           </button>
         ) : null}

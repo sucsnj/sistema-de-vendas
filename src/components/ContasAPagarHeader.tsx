@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/contas.module.css';
 import { formatMonthName } from '../utils/date';
 
 interface ContasAPagarHeaderProps {
@@ -13,16 +14,16 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
   const today = new Date();
 
   return (
-    <header className="contas-header">
+    <header className={styles.contasHeader}>
       <div>
         <h1>Contas a pagar</h1>
         <p>Cadastro detalhado, agenda automática e resumo analítico de pagamentos.</p>
       </div>
-      <div className="contas-actions">
+      <div className={styles.contasActions}>
         <label>
           Ano:
           <input
-            className="ano-input"
+            className={styles.anoInput}
             type="number"
             value={ano}
             onChange={(e) => setAno(parseInt(e.target.value, 10) || today.getFullYear())}
@@ -30,7 +31,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
         </label>
         <label>
           Mês:
-          <select className="mes-select" value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
+          <select className={styles.mesSelect} value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i + 1}>
                 {formatMonthName(i + 1)}
@@ -38,7 +39,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
             ))}
           </select>
         </label>
-        <button type="button" onClick={handleBackup} className="backup-button">
+        <button type="button" onClick={handleBackup} className={styles.backupButton}>
           Backup Anual
         </button>
       </div>

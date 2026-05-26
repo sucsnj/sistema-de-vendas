@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import ConsolidacaoMensal from './ConsolidacaoMensal';
 import TotaisPorDistribuidora from './TotaisPorDistribuidora';
@@ -45,10 +46,10 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
 
     return (
         <div>
-            <section className="contas-panel resumo-panel">
-                <div className="panel-header">
+            <section className={`${styles.contasPanel} resumo-panel`}>
+                <div className={styles.panelHeader}>
                     <h2>Resumo</h2>
-                    <span className="status-chip">Atualização automática</span>
+                    <span className={styles.statusChip}>Atualização automática</span>
                 </div>
                 <div className="summary-card">
                     <div className="summary-row">

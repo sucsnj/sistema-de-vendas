@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import OcrUpload from '@/components/OcrUpload';
 import { ContaDetalhe, } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
+import styles from '../styles/contas.module.css';
 import { formatDate } from '../utils/date';
 
 interface AgendaProps {
@@ -36,10 +37,10 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
 
     return (
         <div>
-            <section className="contas-panel agenda-panel">
-                <div className="panel-header">
+            <section className={`${styles.contasPanel} ${styles.agendaPanel}`}>
+                <div className={styles.panelHeader}>
                     <h2>Agenda</h2>
-                    <span className="status-chip">Atualização automática</span>
+                    <span className={styles.statusChip}>Atualização automática</span>
                 </div>
                 <div className="agenda-card">
                     <h3>Total pendente por vencimento</h3>
@@ -57,8 +58,8 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                     </div>
                 </div>
 
-                <section className="contas-panel proximas-panel">
-                    <div className="panel-header">
+                <section className={`${styles.contasPanel} ${styles.proximasPanel}`}>
+                    <div className={styles.panelHeader}>
                         <h3>Próximas contas</h3>
                     </div>
                     <div className="proximas-list">
@@ -74,8 +75,8 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
                     </div>
                 </section>
 
-                <section className="contas-panel">
-                    <div className="panel-header">
+                <section className={styles.contasPanel}>
+                    <div className={styles.panelHeader}>
                         <h3>Leitura de Contas</h3>
                     </div>
                     <div className="ocr-upload-wrapper">

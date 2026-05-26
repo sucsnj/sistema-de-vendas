@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Toast from '../components/Toast';
+import styles from '../styles/contas.module.css';
 import {
   uploadTabela,
   searchTabela,
@@ -186,7 +187,7 @@ const Tabela: React.FC = () => {
 
       <div className="results-grid">
         <section className="glass-form results-panel">
-          <div className="panel-header">
+          <div className={styles.panelHeader}>
             <div>
               <h2>Resultados</h2>
               <p>{source ? `Fonte: ${source === 'history' ? 'Histórico cacheado' : 'Tabela carregada'}` : 'Realize uma busca para ver resultados.'}</p>
@@ -231,7 +232,7 @@ const Tabela: React.FC = () => {
         </section>
 
         <aside className="glass-form history-panel">
-          <div className="panel-header">
+          <div className={styles.panelHeader}>
             <div>
               <h2>Histórico de pesquisas</h2>
               <p>Últimas 100 buscas gravadas no cache.</p>

@@ -10,7 +10,7 @@ import ContasAPagarForm from '@/components/ContasAPagarForm';
 import parseNumber from '../utils/number';
 import ContasAPagarLastTen from '@/components/ContasAPagarLastTen';
 import ContasAPagarModals from '@/components/ContasAPagarModals';
-import '@/styles/contas.module.css';
+import styles from '@/styles/contas.module.css';
 import {
   buscarContas,
   atualizarConta,
@@ -307,11 +307,11 @@ const ContasAPagar: React.FC = () => {
   }, [contasAno]);
 
   return (
-    <div className="contas-page">
+    <div className={styles.contasPage}>
       <ContasAPagarHeader ano={ano} mes={mes} setAno={setAno} setMes={setMes} handleBackup={handleBackup} />
 
-      <main className="contas-grid">
-        <section className="contas-panel detail-panel">
+      <main className={styles.contasGrid}>
+        <section className={`${styles.contasPanel} ${styles.detailPanel}`}>
           <ContasAPagarFilterPanel
             filtroDistribuidora={filtroDistribuidora}
             setFiltroDistribuidora={setFiltroDistribuidora}
