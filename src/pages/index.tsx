@@ -118,101 +118,99 @@ const Home: React.FC = () => {
   return (
     <>
       <div className="container-padding">
-      <div className="top-bar">
         <h1>Dashboard de Vendas</h1>
-      </div>
-      <DailySalesTotal
-        sales={sales}
-        selectedDay={selectedDate}
-        recentSales={recentSales}
-        onEditSale={handleEditSale}
-        onDeleteSale={handleDeleteSale}
-      >
-        <DailySaleForm
+        <DailySalesTotal
           sales={sales}
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          onSaleAdded={loadSales}
+          selectedDay={selectedDate}
+          recentSales={recentSales}
           onEditSale={handleEditSale}
           onDeleteSale={handleDeleteSale}
-          showHistory={false}
-        />
-      </DailySalesTotal>
+        >
+          <DailySaleForm
+            sales={sales}
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            onSaleAdded={loadSales}
+            onEditSale={handleEditSale}
+            onDeleteSale={handleDeleteSale}
+            showHistory={false}
+          />
+        </DailySalesTotal>
 
-      {editingSale && (
-        <form onSubmit={handleSaveEdit} className="glass-form">
-          <h2>Editar Venda</h2>
-          <label>
-            Data:
-            <input
-              type="date"
-              value={editData}
-              onChange={(e) => setEditData(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Valor:
-            <input
-              ref={editValorInputRef}
-              type="number"
-              step="0.01"
-              value={editValor}
-              onChange={(e) => setEditValor(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Observações:
-            <textarea
-              value={editObservacoes}
-              onChange={(e) => setEditObservacoes(e.target.value)}
-            />
-          </label>
-          <button type="submit">Salvar Alteração</button>
-          <button type="button" onClick={handleCancelEdit} className="button-spacing">
-            Cancelar
-          </button>
-        </form>
-      )}
-      <SalesChart data={sales} />
-      {/* <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} /> */}
-      <ExportButtons
-        sales={sales}
-        mes={mes}
-        ano={ano}
-        selectedDate={selectedDate}
-        onMessage={showToast}
-        onImportCompleted={loadSales}
-      />
-      <div className="footer-header glass-form">
-        <div className="page-actions">
-          <label>
-            Mês:
-            <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Ano:
-            <input
-              className="headerInput"
-              type="number"
-              value={ano}
-              onChange={(e) => setAno(parseInt(e.target.value))}
-            />
-          </label>
-          <button className="headerButton" onClick={handleConsolidate}>Consolidar Mês</button>
-          <button className="headerBackupButton" onClick={handleBackup}>Fazer Backup</button>
+        {editingSale && (
+          <form onSubmit={handleSaveEdit} className="glass-form">
+            <h2>Editar Venda</h2>
+            <label>
+              Data:
+              <input
+                type="date"
+                value={editData}
+                onChange={(e) => setEditData(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Valor:
+              <input
+                ref={editValorInputRef}
+                type="number"
+                step="0.01"
+                value={editValor}
+                onChange={(e) => setEditValor(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Observações:
+              <textarea
+                value={editObservacoes}
+                onChange={(e) => setEditObservacoes(e.target.value)}
+              />
+            </label>
+            <button type="submit">Salvar Alteração</button>
+            <button type="button" onClick={handleCancelEdit} className="button-spacing">
+              Cancelar
+            </button>
+          </form>
+        )}
+        <SalesChart data={sales} />
+        {/* <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} /> */}
+        <ExportButtons
+          sales={sales}
+          mes={mes}
+          ano={ano}
+          selectedDate={selectedDate}
+          onMessage={showToast}
+          onImportCompleted={loadSales}
+        />
+        <div className="footer-header glass-form">
+          <div className="page-actions">
+            <label>
+              Mês:
+              <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Ano:
+              <input
+                className="headerInput"
+                type="number"
+                value={ano}
+                onChange={(e) => setAno(parseInt(e.target.value))}
+              />
+            </label>
+            <button className="headerButton" onClick={handleConsolidate}>Consolidar Mês</button>
+            <button className="headerBackupButton" onClick={handleBackup}>Fazer Backup</button>
+          </div>
         </div>
+        <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
       </div>
-      <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
-    </div>
-  </>
+    </>
   );
 };
 

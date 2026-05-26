@@ -136,7 +136,7 @@ const Tabela: React.FC = () => {
 
   return (
     <div className="page-container">
-      <div className="top-bar">
+      <div className="container-padding">
         <h1>Tabela de Medicamentos</h1>
       </div>
 
