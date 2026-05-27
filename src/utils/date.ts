@@ -1,18 +1,30 @@
+import { format } from 'date-fns';
+
 function pad(value: number) {
   return String(value).padStart(2, '0');
 }
 
 function toDate(value: string | Date): Date | null {
-  if (value instanceof Date) {
-    return Number.isNaN(value.getTime()) ? null : value;
-  }
+  if (value instanceof Date) return value;
+  if (typeof value === 'string') {
+    // tenta ISO
+    const iso = new Date(value);
+    if (!isNaN(iso.getTime())) return iso;
 
-  if (typeof value !== 'string' && typeof value !== 'number') {
-    return null;
+    // tenta DD-MM-YYYY
+    const parts = value.split('-');
+    if (parts.length === 3) {
+      const [day, month, year] = parts.map(Number);
+      return new Date(year, month - 1, day);
+    }
   }
+  return null;
+}
 
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
+export function formatDateString(value: string, format: 'DD-MM-YYYY' | 'DD/MM/YYYY') {
+  const [year, month, day] = value.split('-');
+  if (format === 'DD-MM-YYYY') return `${day}-${month}-${year}`;
+  return `${day}/${month}/${year}`;
 }
 
 // Aceita apenas string ISO (YYYY-MM-DD)

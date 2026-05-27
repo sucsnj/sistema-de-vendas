@@ -21,13 +21,15 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
   const [range, setRange] = useState<30 | 7 | 3>(30);
 
+  const sortedData = [...data].sort((a, b) => a.id - b.id);
+  
   // Filtra os dados pelo alcance escolhido
-  const chartData = data
-    .slice(-range) // pega os últimos X dias
-    .map((sale) => ({
-      data: sale.criado_em,
-      valor: formatCurrencyNumber(sale.valor, 2),
-    }));
+  const chartData = sortedData
+  .slice(-range)
+  .map((sale) => ({
+    data: sale.criado_em,
+    valor: formatCurrencyNumber(sale.valor, 2),
+  }));
 
   return (
     <div className="chart-container">
@@ -44,9 +46,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
         </button>
 
         <div className="range-buttons">
-          <button onClick={() => setRange(30)}>30 dias</button>
-          <button onClick={() => setRange(7)}>7 dias</button>
-          <button onClick={() => setRange(3)}>3 dias</button>
+          <button onClick={() => setRange(30)}>30 vendas</button>
+          <button onClick={() => setRange(7)}>7 vendas</button>
+          <button onClick={() => setRange(3)}>3 vendas</button>
         </div>
       </div>
 
