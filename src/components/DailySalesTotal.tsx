@@ -149,7 +149,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
       <style jsx>{`
         .daily-sales-total {
           margin: 28px auto 24px;
-          transform: scale(0.85); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
+          transform: scale(0.9); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
           transform-origin: top;
           padding: 18px;
           width: calc(105% - 16px);
@@ -206,11 +206,12 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
         .recent-sales-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 12px;
+          gap: 6px;
         }
 
         .history-item {
           display: flex;
+          transform: scale(0.95);
           flex-direction: column;
           justify-content: space-between;
           gap: 10px;

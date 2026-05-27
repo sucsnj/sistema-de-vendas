@@ -15,6 +15,36 @@ function toDate(value: string | Date): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+// Aceita apenas string ISO (YYYY-MM-DD)
+function toDateFromISO(value: string): Date | null {
+  if (typeof value !== 'string') return null;
+
+  // Força interpretação como UTC para evitar variação de timezone
+  const date = new Date(`${value}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function formatDateISO(
+  value: string,
+  format: 'DD/MM/YYYY' | 'DD-MM-YYYY' = 'DD/MM/YYYY'
+): string {
+  const date = toDateFromISO(value);
+  if (!date) return '';
+
+  const day = pad(date.getUTCDate());
+  const month = pad(date.getUTCMonth() + 1);
+  const year = date.getUTCFullYear();
+
+  switch (format) {
+    case 'DD/MM/YYYY':
+      return `${day}/${month}/${year}`;
+    case 'DD-MM-YYYY':
+      return `${day}-${month}-${year}`;
+    default:
+      return `${day}/${month}/${year}`;
+  }
+}
+
 export function formatMonthName(
   month: number,
   style: 'long' | 'short' = 'long',
