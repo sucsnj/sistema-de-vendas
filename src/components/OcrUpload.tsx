@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Toast from './Toast';
 
 export default function OcrUpload() {
@@ -37,6 +37,10 @@ export default function OcrUpload() {
             const data = await response.json();
             setResultado(data);
 
+            // coloca o ocr recente num json
+            const ocrJson = JSON.stringify(data);
+            localStorage.setItem("ocrRecente", ocrJson);
+
             // Atualiza Toast para sucesso
             showToast("OCR finalizado!", "success");
         } catch (err) {
@@ -46,6 +50,27 @@ export default function OcrUpload() {
             showToast("Erro ao processar OCR", "error");
         }
     }
+
+    // procura o OCR recente no localStorage com nome de "ocrRecente" e converte de volta para objeto
+    const [ocrRecente, setOcrRecente] = useState<any>(null);
+
+    useEffect(() => {
+        const ocrJson = localStorage.getItem("ocrRecente");
+        if (ocrJson) {
+            try {
+                setOcrRecente(JSON.parse(ocrJson));
+            } catch (err) {
+                console.error("Erro ao parsear OCR recente:", err);
+            }
+        }
+    }, []);
+
+    // se houver um OCR recente, mostra ele no resultado
+    useEffect(() => {
+        if (ocrRecente) {
+            setResultado(ocrRecente);
+        }
+    }, [ocrRecente]);
 
     function copiarConteudo(texto: string) {
 
