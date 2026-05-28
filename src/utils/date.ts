@@ -7,7 +7,13 @@ function pad(value: number) {
 function toDate(value: string | Date): Date | null {
   if (value instanceof Date) return value;
   if (typeof value === 'string') {
-    // tenta ISO
+    // trata strings de data sem horário como UTC para evitar deslocamento de fuso horário
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const dateOnly = new Date(`${value}T00:00:00Z`);
+      if (!isNaN(dateOnly.getTime())) return dateOnly;
+    }
+
+    // tenta ISO com horário
     const iso = new Date(value);
     if (!isNaN(iso.getTime())) return iso;
 
@@ -78,12 +84,13 @@ export function formatDate(
   const date = toDate(value);
   if (!date) return '';
 
-  const day = pad(date.getDate());
-  const month = pad(date.getMonth() + 1);
-  const year = date.getFullYear();
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  const seconds = pad(date.getSeconds());
+  const isDateOnly = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const day = pad(isDateOnly ? date.getUTCDate() : date.getDate());
+  const month = pad((isDateOnly ? date.getUTCMonth() : date.getMonth()) + 1);
+  const year = isDateOnly ? date.getUTCFullYear() : date.getFullYear();
+  const hours = pad(isDateOnly ? date.getUTCHours() : date.getHours());
+  const minutes = pad(isDateOnly ? date.getUTCMinutes() : date.getMinutes());
+  const seconds = pad(isDateOnly ? date.getUTCSeconds() : date.getSeconds());
 
   switch (format) {
     case 'DD/MM/YYYY':
