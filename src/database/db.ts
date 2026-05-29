@@ -32,6 +32,11 @@ try {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       mes INTEGER NOT NULL,
       ano INTEGER NOT NULL,
+      ticketMedio REAL NOT NULL DEFAULT 0,
+      mediaClientes INTEGER NOT NULL DEFAULT 0,
+      melhorDia TEXT NOT NULL DEFAULT 'N/A',
+      maiorVenda REAL NOT NULL DEFAULT 0,
+      qtdVendas INTEGER NOT NULL DEFAULT 0,
       total REAL NOT NULL,
       UNIQUE(mes, ano)
     );
@@ -62,7 +67,7 @@ export const getDailySales = (mes: number, ano: number) => {
     const startDate = `${ano}-${String(mes).padStart(2, '0')}-01`;
     // Calcula o último dia do mês selecionado para limitar a consulta de vendas.
     const ultimoDia = new Date(ano, mes, 0).toISOString().split('T')[0];
-    
+
     const stmt = db.prepare('SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ? ORDER BY data DESC');
     const sales = stmt.all(startDate, ultimoDia) as any[];
     console.log(`Buscando vendas de ${startDate} a ${ultimoDia}:`, sales.length, 'registros');
@@ -117,12 +122,78 @@ export const getMonthlyTotal = (mes: number, ano: number) => {
   }
 };
 
+const getTickerMedio = (vendas: { valor: number }[]) => {
+  try {
+    const total = vendas.reduce((acc, v) => acc + v.valor, 0);
+    return vendas.length > 0 ? total / vendas.length : 0;
+  } catch (error) {
+    console.error('Erro ao calcular ticket médio:', error);
+    throw error;
+  }
+};
+
+const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
+  try {
+    if (vendas.length === 0) return 0;
+
+    const diasComVendas = [...new Set(vendas.map((venda) => venda.data))];
+    const quantidadeVendas = vendas.length;
+    const media = quantidadeVendas > 0 && diasComVendas.length > 0 ? quantidadeVendas / diasComVendas.length : 0;
+
+    return media;
+  } catch (error) {
+    console.error('Erro ao calcular média de clientes:', error);
+    throw error;
+  }
+};
+
+const getMelhorDia = (vendas: { data: string; valor: number }[]) => {
+  try {
+    const agrupado = vendas.reduce((acc: Record<string, number>, v) => {
+      acc[v.data] = (acc[v.data] || 0) + v.valor; // retorna o dia com o maior valor acumulado
+      return acc;
+    }, {});
+
+    const melhor = Object.entries(agrupado).sort((a, b) => b[1] - a[1])[0];
+    return melhor ? melhor[0] : null;
+  } catch (error) {
+    console.error('Erro ao calcular melhor dia:', error);
+    throw error;
+  }
+};
+
+const getMaiorVenda = (vendas: { valor: number }[]) => {
+  try {
+    const maiorVenda = vendas.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
+    return maiorVenda || 0;
+  } catch (error) {
+    console.error('Erro ao calcular maior venda:', error);
+    throw error;
+  }
+};
+
+const getQtdVendas = (vendas: { valor: number }[]) => {
+  try {
+    return vendas.length;
+  } catch (error) {
+    console.error('Erro ao calcular quantidade de vendas:', error);
+    throw error;
+  }
+};
+
 export const consolidateMonthly = (mes: number, ano: number) => {
   try {
     const sales = getDailySales(mes, ano) as { valor: number }[];
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
-    const stmt = db.prepare('INSERT OR REPLACE INTO vendas_mensais (mes, ano, total) VALUES (?, ?, ?)');
-    return stmt.run(mes, ano, total);
+    const ticketMedio = getTickerMedio(sales);
+    const mediaClientes = getMediaClientes(sales as any);
+    const melhorDia = getMelhorDia(sales as any);
+    const maiorVenda = getMaiorVenda(sales);
+    const qtdVendas = getQtdVendas(sales);
+
+    const stmt = db.prepare(
+      'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, melhorDia, maiorVenda, qtdVendas, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    return stmt.run(mes, ano, ticketMedio, mediaClientes, melhorDia, maiorVenda, qtdVendas, total);
   } catch (error) {
     console.error('Erro ao consolidar mensal:', error);
     throw error;

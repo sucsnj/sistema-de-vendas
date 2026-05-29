@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import {
   buscarTodosMensais,
   VendaMensal,
-  calcularTicketMedio,
-  calcularQuantidadeVendas,
-  calcularMelhorDia,
-  calcularMediaClientes,
-  calcularMaiorVenda
+  // calcularTicketMedio,
+  // calcularQuantidadeVendas,
+  // calcularMelhorDia,
+  // calcularMediaClientes,
+  // calcularMaiorVenda
 } from '../services/vendasService';
 import { formatCurrency } from '../utils/formatter';
 import dayjs from 'dayjs';
@@ -15,11 +15,11 @@ import { capitalize } from '../utils/captalize';
 dayjs.locale('pt-br');
 
 export interface VendaMensalDetalhado extends VendaMensal {
-  ticketMedio: number;
-  qtdVendas: number;
-  melhorDia: string | null;
-  mediaClientes: number;
-  maiorVenda: number;
+  // ticketMedio: number;
+  // qtdVendas: number;
+  // melhorDia: string | null;
+  // mediaClientes: number;
+  // maiorVenda: number;
 }
 
 const Resumo: React.FC = () => {
@@ -34,11 +34,11 @@ const Resumo: React.FC = () => {
     const enriched = await Promise.all(
       data.map(async (m) => ({
         ...m,
-        ticketMedio: await calcularTicketMedio(m.mes, m.ano),
-        qtdVendas: await calcularQuantidadeVendas(m.mes, m.ano),
-        melhorDia: await calcularMelhorDia(m.mes, m.ano),
-        mediaClientes: await calcularMediaClientes(m.mes, m.ano),
-        maiorVenda: await calcularMaiorVenda(m.mes, m.ano),
+        // ticketMedio: await calcularTicketMedio(m.mes, m.ano),
+        // qtdVendas: await calcularQuantidadeVendas(m.mes, m.ano),
+        // melhorDia: await calcularMelhorDia(m.mes, m.ano),
+        // mediaClientes: await calcularMediaClientes(m.mes, m.ano),
+        // maiorVenda: await calcularMaiorVenda(m.mes, m.ano),
       }))
     );
     setMensais(enriched);
@@ -69,7 +69,7 @@ const Resumo: React.FC = () => {
                 <td>R$ {formatCurrency(m.ticketMedio, 2)}</td>
                 <td>{formatCurrency(m.mediaClientes)}</td>
                 <td>
-                  {`${dayjs(m.melhorDia).format('D')} ${capitalize(dayjs(m.melhorDia).locale('pt-br').format('dddd'))}`}
+                  {`${dayjs(m.melhorDia).format('D')} - ${capitalize(dayjs(m.melhorDia).locale('pt-br').format('dddd'))}`}
                 </td>
                 <td>R$ {formatCurrency(m.maiorVenda, 2)}</td>
                 <td>{m.qtdVendas}</td>
