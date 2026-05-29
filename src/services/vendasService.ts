@@ -1,4 +1,5 @@
 // Camada de serviço do cliente para comunicar a interface com as APIs internas de vendas.
+import { dateToArray } from '../utils/date';
 import dayjs from 'dayjs';
 dayjs.locale('pt-br');
 
@@ -21,6 +22,8 @@ export interface VendaMensal {
   qtdVendas: number;
   total: number;
 }
+
+let consolidado = false;
 
 export const registrarVenda = async (data: string, valor: number, observacoes?: string) => {
   const response = await fetch('/api/vendas', {
@@ -71,6 +74,37 @@ export const consolidarMensal = async (mes: number, ano: number) => {
     body: JSON.stringify({ mes, ano }),
   });
   return response.json();
+};
+
+export const verificarConsolidado = async (): Promise<boolean> => {
+  const [day, month, year] = dateToArray() || [];
+  if (!day || !month || !year) return false;
+
+  if (consolidado) return true;
+  if (day > 2) return false;
+
+  consolidado = false;
+  return false;
+};
+
+export const autoConsolidar = async () => {
+  if (consolidado) return;
+
+  let [day, month, year] = dateToArray() || [];
+  if (!day || !month || !year) return;
+
+  let mesAnterior = month - 1;
+  if (month === 1) {
+    year = year - 1;
+    mesAnterior = 12;
+  } else {
+    mesAnterior = month - 1;
+  }
+
+  if (day > 2) {
+    await consolidarMensal(mesAnterior, year);
+    consolidado = true;
+  }
 };
 
 export const fazerBackup = async () => {

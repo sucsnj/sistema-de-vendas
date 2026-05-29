@@ -6,7 +6,15 @@ import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import ExportButtons from '../components/ExportButtons';
-import { buscarVendasDiarias, consolidarMensal, fazerBackup, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
+import {
+  buscarVendasDiarias,
+  consolidarMensal,
+  fazerBackup,
+  atualizarVenda, excluirVenda,
+  VendaDiaria,
+  verificarConsolidado,
+  autoConsolidar
+} from '../services/vendasService';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -30,6 +38,10 @@ const Home: React.FC = () => {
 
   const loadSales = async () => {
     const data = await buscarVendasDiarias(mes, ano);
+
+    console.log('chegou aqui');
+    // await verificarConsolidado();
+    // await autoConsolidar();
     setSales(data);
   };
 

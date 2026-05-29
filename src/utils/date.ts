@@ -1,4 +1,12 @@
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'dayjs/locale/pt-br';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale('pt-br');
 
 function pad(value: number) {
   return String(value).padStart(2, '0');
@@ -108,6 +116,22 @@ export function formatDate(
 
 export function getCurrentYear(): number {
   return new Date().getFullYear();
+}
+
+// retorna um array com dia, mês e ano de uma data
+export function dateToArray(): [number, number, number] | null {
+  const value = dayjs().tz('America/Recife').locale('pt-br').format('DD-MM-YYYY');
+
+  console.log('data atual: ', value);
+  const date = toDate(value);
+  if (!date) return null;
+
+  const isDateOnly = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const day = isDateOnly ? date.getUTCDate() : date.getDate();
+  const month = (isDateOnly ? date.getUTCMonth() : date.getMonth()) + 1;
+  const year = isDateOnly ? date.getUTCFullYear() : date.getFullYear();
+
+  return [day, month, year];
 }
 
 export default {
