@@ -73,7 +73,8 @@ const changeMaxSales = (value: number) => {
       <table>
         <thead>
           <tr>
-            <th>Data</th>
+            <th>Criado em</th>
+            <th>Data da venda</th>
             <th>Valor</th>
             <th>Observações</th>
             <th>Ações</th>
@@ -93,6 +94,7 @@ const changeMaxSales = (value: number) => {
             .map((sale) => (
               <tr key={sale.id}>
                 <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
+                <td>{formatDate(sale.data, 'DD-MM-YYYY')}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>
