@@ -65,6 +65,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
       <table>
         <thead>
           <tr>
+            <th>Criado em</th>
             <th>Data</th>
             <th>Valor</th>
             <th>Observações</th>
@@ -85,6 +86,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
             .map((sale) => (
               <tr key={sale.id}>
                 <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
+                <td>{sale.data}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>

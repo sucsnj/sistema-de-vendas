@@ -34,6 +34,21 @@ export const registrarVenda = async (data: string, valor: number, observacoes?: 
   return response.json();
 };
 
+// Vai ser usado exclusivamente para importar vendas de um arquivo XLSX
+export const registrarVendaComCriadoEm = async (
+  data: string,
+  valor: number,
+  observacoes?: string,
+  criado_em?: string
+) => {
+  const response = await fetch('/api/vendas', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data, valor, observacoes, criado_em }),
+  });
+  return response.json();
+};
+
 export const buscarVendasDiarias = async (mes: number, ano: number): Promise<VendaDiaria[]> => {
   const response = await fetch(`/api/vendas?mes=${mes}&ano=${ano}`);
   return response.json();

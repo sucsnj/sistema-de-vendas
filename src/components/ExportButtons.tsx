@@ -1,7 +1,7 @@
 import { useRef, type ChangeEvent, type FC } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { registrarVenda, VendaDiaria } from '../services/vendasService';
+import { registrarVendaComCriadoEm, VendaDiaria } from '../services/vendasService';
 import parseNumber from '../utils/number';
 
 interface ExportButtonsProps {
@@ -82,20 +82,13 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     }
   };
 
-  const normalizeHeader = (header: string) => header.toString().trim().toLowerCase();
-
-  const formatValue = (value: any) => {
-    return parseNumber(value);
-  };
-
-  const dateMatchesMonth = (dateValue: string) => {
-    const parsed = new Date(`${dateValue}T00:00:00`);
-    return (
-      !Number.isNaN(parsed.getTime()) &&
-      parsed.getMonth() + 1 === mes &&
-      parsed.getFullYear() === ano
-    );
-  };
+  const normalizeHeader = (header: string) =>
+    header
+      .toString()
+      .trim()
+      .toLowerCase()
+      .normalize("NFD") // remove acentos
+      .replace(/[\u0300-\u036f]/g, "");
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -119,11 +112,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
         return;
       }
 
-      const parsedItems: Array<{
-        data: string;
-        valor: number;
-        observacoes?: string;
-      }> = [];
+      const parsedItems: Array<{ data: string; valor: number; observacoes?: string, criado_em?: string }> = [];
       const errors: string[] = [];
 
       rows.forEach((row, index) => {
@@ -134,10 +123,11 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 
         let dataValue = String(
           normalizedRow['data'] ||
-            normalizedRow['date'] ||
-            normalizedRow['dia'] ||
-            ''
+          normalizedRow['date'] ||
+          normalizedRow['dia'] ||
+          ''
         ).trim();
+
         const valorValue =
           normalizedRow['valor'] || normalizedRow['value'] || normalizedRow['amount'];
         const observacoesValue =
@@ -146,15 +136,22 @@ const ExportButtons: FC<ExportButtonsProps> = ({
           normalizedRow['obs'] ||
           '';
 
-        if (!dataValue && mode === 'day') {
-          dataValue = selectedDate ?? '';
-        }
+        const criadoEmValue =
+          normalizedRow['criado_em'] ||
+          normalizedRow['created_at'] ||
+          '';
 
+        // Se não houver data
         if (!dataValue) {
-          errors.push(`Linha ${index + 1}: data ausente.`);
-          return;
+          if (mode === 'day') {
+            dataValue = selectedDate ?? '';
+          } else {
+            errors.push(`Linha ${index + 1}: data ausente.`);
+            return;
+          }
         }
 
+        // Validação por modo
         if (mode === 'day' && selectedDate && dataValue !== selectedDate) {
           errors.push(
             `Linha ${index + 1}: a data deve ser igual ao dia selecionado (${selectedDate}).`
@@ -179,6 +176,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
           data: dataValue,
           valor,
           observacoes: String(observacoesValue).trim() || undefined,
+          criado_em: String(criadoEmValue).trim() || undefined,
         });
       });
 
@@ -194,19 +192,29 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 
       await Promise.all(
         parsedItems.map((item) =>
-          registrarVenda(item.data, item.valor, item.observacoes)
+          registrarVendaComCriadoEm(item.data, item.valor, item.observacoes, item.criado_em)
         )
       );
 
-      notify(
-        `Importação concluída com ${parsedItems.length} registro(s).`,
-        'success'
-      );
+      notify(`Importação concluída com ${parsedItems.length} registro(s).`, 'success');
       onImportCompleted?.();
     } catch (error) {
       console.error('Erro ao importar XLSX:', error);
       notify('Erro ao importar XLSX.', 'error');
     }
+  };
+
+  const formatValue = (value: any) => {
+    return parseNumber(value);
+  };
+
+  const dateMatchesMonth = (dateValue: string) => {
+    const parsed = new Date(`${dateValue}T00:00:00`);
+    return (
+      !Number.isNaN(parsed.getTime()) &&
+      parsed.getMonth() + 1 === mes &&
+      parsed.getFullYear() === ano
+    );
   };
 
   const exportPDF = async () => {

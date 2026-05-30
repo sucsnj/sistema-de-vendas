@@ -50,12 +50,18 @@ const getLocalTimestamp = () => {
 };
 
 // Funções de acesso ao banco de dados e operações de persistência.
-export const insertDailySale = (data: string, valor: number, observacoes?: string) => {
+export const insertDailySale = (data: string, valor: number, observacoes?: string, criado_em?: string) => {
   try {
-    const criadoEm = getLocalTimestamp();
-    const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
-    const result = stmt.run(data, valor, observacoes || null, criadoEm);
-    return result;
+    if (!criado_em) {
+      const criadoEm = getLocalTimestamp();
+      const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
+      const result = stmt.run(data, valor, observacoes || null, criadoEm);
+      return result;
+    } else {
+      const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
+      const result = stmt.run(data, valor, observacoes || null, criado_em);
+      return result;
+    }
   } catch (error) {
     console.error('Erro ao inserir venda:', error);
     throw error;

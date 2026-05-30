@@ -12,9 +12,13 @@ const isEditableDate = (dateString: string) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { data, valor, observacoes } = req.body;
+    const { data, valor, observacoes, criado_em } = req.body;
     try {
-      insertDailySale(data, valor, observacoes);
+      if (!criado_em) {
+        insertDailySale(data, valor, observacoes);
+      } else {
+        insertDailySale(data, valor, observacoes, criado_em);
+      }
       res.status(200).json({ message: 'Venda registrada com sucesso' });
     } catch (error) {
       console.error('Erro na API POST /api/vendas:', error);
