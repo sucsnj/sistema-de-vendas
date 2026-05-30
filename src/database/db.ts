@@ -147,14 +147,18 @@ const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
   }
 };
 
-const getMelhorDia = (vendas: { data: string; valor: number }[]) => {
+const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, ano: number) => {
   try {
     const agrupado = vendas.reduce((acc: Record<string, number>, v) => {
       acc[v.data] = (acc[v.data] || 0) + v.valor; // retorna o dia com o maior valor acumulado
       return acc;
     }, {});
 
-    const melhor = Object.entries(agrupado).sort((a, b) => b[1] - a[1])[0];
+    let melhor = Object.entries(agrupado).sort((a, b) => b[1] - a[1])[0];
+    // se melhor for vazio, retorna o primeiro dia do mês
+    if (!melhor) {
+      melhor = [`${ano}-${mes}-01`, 0];
+    }
     return melhor ? melhor[0] : null;
   } catch (error) {
     console.error('Erro ao calcular melhor dia:', error);
@@ -187,7 +191,7 @@ export const consolidateMonthly = (mes: number, ano: number) => {
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
     const ticketMedio = getTickerMedio(sales);
     const mediaClientes = getMediaClientes(sales as any);
-    const melhorDia = getMelhorDia(sales as any);
+    const melhorDia = getMelhorDia(sales as any, mes, ano);
     const maiorVenda = getMaiorVenda(sales);
     const qtdVendas = getQtdVendas(sales);
 

@@ -2,7 +2,6 @@ import { FormEvent, useState, useEffect, useRef } from 'react';
 import DailySaleForm from '../components/DailySaleForm';
 import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
-import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import ExportButtons from '../components/ExportButtons';
@@ -12,7 +11,6 @@ import {
   fazerBackup,
   atualizarVenda, excluirVenda,
   VendaDiaria,
-  verificarConsolidado,
   autoConsolidar
 } from '../services/vendasService';
 
@@ -38,11 +36,9 @@ const Home: React.FC = () => {
 
   const loadSales = async () => {
     const data = await buscarVendasDiarias(mes, ano);
-
-    console.log('chegou aqui');
-    // await verificarConsolidado();
-    // await autoConsolidar();
     setSales(data);
+
+    await autoConsolidar();
   };
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {

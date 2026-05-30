@@ -118,11 +118,10 @@ export function getCurrentYear(): number {
   return new Date().getFullYear();
 }
 
-// retorna um array com dia, mês e ano de uma data
+// retorna um array com dia, mês e ano da data atual UTC-03:00
 export function dateToArray(): [number, number, number] | null {
   const value = dayjs().tz('America/Recife').locale('pt-br').format('DD-MM-YYYY');
 
-  console.log('data atual: ', value);
   const date = toDate(value);
   if (!date) return null;
 

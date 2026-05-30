@@ -76,20 +76,20 @@ export const consolidarMensal = async (mes: number, ano: number) => {
   return response.json();
 };
 
-export const verificarConsolidado = async (): Promise<boolean> => {
-  const [day, month, year] = dateToArray() || [];
-  if (!day || !month || !year) return false;
+export const verificarConsolidado = async (mes: number, ano: number): Promise<boolean> => {
+  const response = await fetch(`/api/mensais?mes=${mes}&ano=${ano}`);
 
-  if (consolidado) return true;
-  if (day > 2) return false;
+  // Se não houver corpo, retorna false
+  if (!response.ok) return false;
 
-  consolidado = false;
-  return false;
+  const text = await response.text();
+  if (!text) return false;
+
+  const data = JSON.parse(text);
+  return !!data && data.total !== undefined;
 };
 
 export const autoConsolidar = async () => {
-  if (consolidado) return;
-
   let [day, month, year] = dateToArray() || [];
   if (!day || !month || !year) return;
 
@@ -97,13 +97,16 @@ export const autoConsolidar = async () => {
   if (month === 1) {
     year = year - 1;
     mesAnterior = 12;
-  } else {
-    mesAnterior = month - 1;
+  }
+
+  const jaConsolidado = await verificarConsolidado(mesAnterior, year);
+  if (jaConsolidado) {
+    consolidado = true;
+    return;
   }
 
   if (day > 2) {
     await consolidarMensal(mesAnterior, year);
-    consolidado = true;
   }
 };
 
