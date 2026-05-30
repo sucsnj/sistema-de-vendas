@@ -5,6 +5,8 @@ import ExportButtons from '../components/ExportButtons';
 import parseNumber from '../utils/number';
 import { formatMonthName } from '../utils/date';
 import { buscarVendasDiarias, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
+import { capitalize } from '../utils/captalize';
+import { canEdit } from '../utils/edit';
 
 const Historico: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
@@ -77,10 +79,16 @@ const Historico: React.FC = () => {
   };
 
   const handleDeleteSale = async (id: number) => {
+    const edit = canEdit(sales.find((sale) => sale.id === id)?.data || '');
     try {
-      await excluirVenda(id);
-      showToast('Venda excluída com sucesso.', 'success');
-      loadSales();
+      // mostra outro toast quando a venda tiver mais de 2 dias
+      if (edit) {
+        await excluirVenda(id);
+        showToast('Venda excluída com sucesso.', 'success');
+        loadSales();
+      } else {
+        showToast('Não é possível editar ou excluir.', 'info');
+      }
     } catch (error) {
       showToast('Erro ao excluir venda.', 'error');
     }
@@ -92,25 +100,25 @@ const Historico: React.FC = () => {
         <h1>Histórico de Vendas</h1>
         <div className="glass-form">
           <div className="page-actions">
-          <label>
-            Mês:
-            <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {formatMonthName(i + 1)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Ano:
-            <input
-              className="headerInput"
-              type="number"
-              value={ano}
-              onChange={(e) => setAno(parseInt(e.target.value))}
-            />
-          </label>
+            <label>
+              Mês:
+              <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {capitalize(formatMonthName(i + 1))}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Ano:
+              <input
+                className="headerInput"
+                type="number"
+                value={ano}
+                onChange={(e) => setAno(parseInt(e.target.value))}
+              />
+            </label>
           </div>
         </div>
 

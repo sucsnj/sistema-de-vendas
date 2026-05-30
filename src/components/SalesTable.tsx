@@ -3,6 +3,7 @@ import { VendaDiaria } from '../services/vendasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
+import { canEdit } from '../utils/edit';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -11,30 +12,21 @@ interface SalesTableProps {
 }
 
 const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale }) => {
-  const canEdit = (data: string) => {
-    const saleDate = new Date(`${data}T00:00:00`);
-    const today = new Date();
-    const todayMidnight = new Date(today.toISOString().split('T')[0] + 'T00:00:00');
-    const diffMs = todayMidnight.getTime() - saleDate.getTime();
-    const diffDays = diffMs / (1000 * 60 * 60 * 24);
-    return diffDays >= 0 && diffDays <= 2;
-  };
-
   const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
 
-const [maxSales, setMaxSales] = React.useState(5);
+  const [maxSales, setMaxSales] = React.useState(5);
 
-React.useEffect(() => {
-  const saved = localStorage.getItem("maxSales");
-  if (saved) {
-    setMaxSales(parseInt(saved));
-  }
-}, []);
+  React.useEffect(() => {
+    const saved = localStorage.getItem("maxSales");
+    if (saved) {
+      setMaxSales(parseInt(saved));
+    }
+  }, []);
 
-const changeMaxSales = (value: number) => {
-  setMaxSales(value);
-  localStorage.setItem("maxSales", String(value));
-};
+  const changeMaxSales = (value: number) => {
+    setMaxSales(value);
+    localStorage.setItem("maxSales", String(value));
+  };
 
   return (
     <div className="table-container">
@@ -73,8 +65,7 @@ const changeMaxSales = (value: number) => {
       <table>
         <thead>
           <tr>
-            <th>Criado em</th>
-            <th>Data da venda</th>
+            <th>Data</th>
             <th>Valor</th>
             <th>Observações</th>
             <th>Ações</th>
@@ -94,7 +85,6 @@ const changeMaxSales = (value: number) => {
             .map((sale) => (
               <tr key={sale.id}>
                 <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
-                <td>{formatDate(sale.data, 'DD-MM-YYYY')}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>{sale.observacoes || '-'}</td>
                 <td>

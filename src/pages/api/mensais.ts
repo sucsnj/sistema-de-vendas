@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getMonthlyTotal, getAllMonthly, consolidateMonthly } from '../../database/db';
+import { getMonthlyTotal, getAllMonthly, consolidateMonthly, deleteMonthly } from '../../database/db';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -27,8 +27,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       res.status(500).json({ error: 'Erro na consolidação' });
     }
+  } else if (req.method === 'DELETE') {
+    const { id } = req.body;
+    if (!id) {
+      return res.status(400).json({ error: 'ID do mês é obrigatório para exclusão' });
+    }
+    try {
+      deleteMonthly(id);
+      res.status(200).json({ message: 'Mês excluído com sucesso' });
+    } catch (error) {
+      console.error('Erro na API DELETE /api/mensais:', error);
+      res.status(500).json({ error: 'Erro ao excluir mês', details: String(error) });
+    }
   } else {
-    res.setHeader('Allow', ['GET', 'POST']);
+    res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

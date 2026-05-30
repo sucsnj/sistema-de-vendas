@@ -300,6 +300,13 @@ h2 {
   pointer-events: none;
 }
 
+.color-muted-dark {
+  color: #000000;
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
 .hidden {
   display: none;
 }

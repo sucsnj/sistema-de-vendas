@@ -204,6 +204,16 @@ export const consolidateMonthly = (mes: number, ano: number) => {
   }
 };
 
+export const deleteMonthly = (id: number) => {
+  try {
+    const stmt = db.prepare('DELETE FROM vendas_mensais WHERE id = ?');
+    return stmt.run(id);
+  } catch (error) {
+    console.error('Erro ao excluir mensal:', error);
+    throw error;
+  }
+};
+
 export const getAllMonthly = () => {
   try {
     const stmt = db.prepare('SELECT * FROM vendas_mensais ORDER BY ano DESC, mes DESC');

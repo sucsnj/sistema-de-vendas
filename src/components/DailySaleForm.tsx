@@ -324,7 +324,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           font-size: 1rem;
         }
 
-        .sale-form-fields textarea {
+        .sale-form-fields {
           min-height: 110px;
           resize: vertical;
         }
@@ -360,6 +360,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           font-weight: 700;
           min-width: 110px;
           text-align: right;
+          margin-right: 10px;
         }
 
         .recent-history {

@@ -13,6 +13,8 @@ import {
   VendaDiaria,
   autoConsolidar
 } from '../services/vendasService';
+import { capitalize } from '../utils/captalize';
+import { canEdit } from '../utils/edit';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -105,10 +107,16 @@ const Home: React.FC = () => {
   };
 
   const handleDeleteSale = async (id: number) => {
+    const edit = canEdit(sales.find((sale) => sale.id === id)?.data || '');
     try {
-      await excluirVenda(id);
-      showToast('Venda excluída com sucesso.', 'success');
-      loadSales();
+      // mostra outro toast quando a venda tiver mais de 2 dias
+      if (edit) {
+        await excluirVenda(id);
+        showToast('Venda excluída com sucesso.', 'success');
+        loadSales();
+      } else {
+        showToast('Não é possível editar ou excluir.', 'info');
+      }
     } catch (error) {
       showToast('Erro ao excluir venda.', 'error');
     }
@@ -198,7 +206,7 @@ const Home: React.FC = () => {
               <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}
+                    {capitalize(new Date(0, i).toLocaleString('pt-BR', { month: 'long' }))}
                   </option>
                 ))}
               </select>

@@ -110,6 +110,15 @@ export const autoConsolidar = async () => {
   }
 };
 
+export const excluirMensal = async (id: number) => {
+  const response = await fetch('/api/mensais', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id }),
+  });
+  return response.json();
+};
+
 export const fazerBackup = async () => {
   const response = await fetch('/api/backup', {
     method: 'POST',

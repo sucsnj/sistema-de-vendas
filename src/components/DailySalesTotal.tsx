@@ -1,7 +1,8 @@
 import { ReactNode, useEffect } from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import { formatCurrency } from '../utils/formatter';
-import { formatDate, formatDateString } from '../utils/date';
+import { formatDateString } from '../utils/date';
+import { canEdit } from '../utils/edit';
 
 interface DailySalesTotalProps {
   sales: VendaDiaria[];
@@ -22,12 +23,6 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   const dailyTotal = dailySales.reduce((sum, sale) => sum + sale.valor, 0);
   const dailyCount = dailySales.length;
   const dailyAverage = dailyCount > 0 ? dailyTotal / dailyCount : 0;
-
-  // conta quantos dias houveram vendas
-  const daysWithSales = [...new Set(sales.map((sale) => sale.data))];
-  const clientAverage = quantidadeVendas > 0 && daysWithSales.length > 0 ? quantidadeVendas / daysWithSales.length : 0;
-  // arredondar o clientAerage para 0 casas decimais
-  const clientAverageRounded = Math.round(clientAverage);
 
   useEffect(() => {
     const handleDeleteKey = (event: KeyboardEvent) => {
@@ -66,10 +61,6 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                   <span className="summary-value"> {quantidadeVendas}</span>
                 </div>
                 <div>
-                  <span className="summary-label">Ticket Médio de Clientes</span>
-                  <span className="summary-value"> {clientAverageRounded}</span>
-                </div>
-                <div>
                   <span className="summary-label">Ticket Médio</span>
                   <span className="summary-value"> R$ {formatCurrency(ticketMedio, 2)}</span>
                 </div>
@@ -85,15 +76,15 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                 <div className="summary-metrics">
                   <div>
                     <span className="summary-label">Total</span>
-                    <span className="summary-value">R$ {formatCurrency(dailyTotal, 2)}</span>
+                    <span className="summary-value"> R$ {formatCurrency(dailyTotal, 2)}</span>
                   </div>
                   <div>
                     <span className="summary-label">Vendas</span>
-                    <span className="summary-value">{dailyCount}</span>
+                    <span className="summary-value"> {dailyCount}</span>
                   </div>
                   <div>
                     <span className="summary-label">Média do dia</span>
-                    <span className="summary-value">R$ {formatCurrency(dailyAverage, 2)}</span>
+                    <span className="summary-value"> R$ {formatCurrency(dailyAverage, 2)}</span>
                   </div>
                 </div>
               </div>
@@ -122,22 +113,28 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                       </div>
 
                       <div className="recent-sale-actions">
-                        {onEditSale && (
-                          <button
-                            type="button"
-                            onClick={() => onEditSale(sale)}
-                          >
-                            Editar
-                          </button>
-                        )}
+                        {canEdit(sale.data) ? (
+                          <>
+                            {onEditSale && (
+                              <button
+                                type="button"
+                                onClick={() => onEditSale(sale)}
+                              >
+                                Editar
+                              </button>
+                            )}
 
-                        {onDeleteSale && (
-                          <button
-                            type="button"
-                            onClick={() => onDeleteSale(sale.id)}
-                          >
-                            Excluir
-                          </button>
+                            {onDeleteSale && (
+                              <button
+                                type="button"
+                                onClick={() => onDeleteSale(sale.id)}
+                              >
+                                Excluir
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          <span className="color-muted-dark">Bloqueado</span>
                         )}
                       </div>
                     </div>
@@ -151,7 +148,7 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
       </div>
       <style jsx>{`
         .daily-sales-total {
-          margin: 28px auto 24px;
+          margin: 28px auto 240px;
           transform: scale(0.9); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
           transform-origin: top;
           padding: 18px;

@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../styles/contas.module.css';
 import { formatMonthName } from '../utils/date';
+import { capitalize } from '../utils/captalize';
 
 interface ContasAPagarHeaderProps {
   ano: number;
@@ -34,7 +35,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
           <select className={styles.mesSelect} value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i + 1}>
-                {formatMonthName(i + 1)}
+                {capitalize(formatMonthName(i + 1))}
               </option>
             ))}
           </select>
