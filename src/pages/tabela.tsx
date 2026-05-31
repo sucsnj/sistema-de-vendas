@@ -134,6 +134,24 @@ const Tabela: React.FC = () => {
     }
   };
 
+  // apagar o texto do input de classe 'search-input' quando pressionar escape
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        const input = document.querySelector<HTMLInputElement>('.search-input');
+        
+        if (input) {
+          event.preventDefault();
+          input.value = '';
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className="page-container">
       <div className="container-padding">
