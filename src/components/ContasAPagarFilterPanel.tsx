@@ -128,7 +128,9 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                 <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
                 <td>{conta.documento}</td>
                 <td>
-                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]}`}>{conta.status}</span>
+                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]} status`} 
+                  data-observacoes={conta.banco_observacoes || 'Sem observações'}>{conta.status}
+                  </span>
                 </td>
                 <td className={styles.actionsCell}>
                   <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
@@ -174,6 +176,19 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
         }}
         onCancel={() => setConfirmOpen(false)}
       />
+
+    <style jsx>{`
+    .status:hover::after {
+      content: attr(data-observacoes);
+      position: absolute;
+      background: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      transform: translateY(-120%);
+    }
+    `}</style>
     </div>
   );
 };
