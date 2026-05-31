@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -27,12 +28,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   useEffect(() => {
     if (!open) return;
     const nextFocus = showCancel ? cancelButtonRef.current : confirmButtonRef.current;
-    nextFocus?.focus();
+    nextFocus?.focus({ preventScroll: true });
   }, [open, showCancel]);
 
   useEffect(() => {
     if (!open) return;
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -40,16 +40,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         else onConfirm();
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, onCancel, onConfirm]);
 
-  const focusableButtons = [cancelButtonRef.current, confirmButtonRef.current].filter(
-    Boolean,
-  ) as HTMLButtonElement[];
+  const focusableButtons = [cancelButtonRef.current, confirmButtonRef.current].filter(Boolean) as HTMLButtonElement[];
 
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Tab') {
@@ -105,7 +100,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   if (!open) return null;
 
-  return (
+  const dialog = (
     <div className="confirm-backdrop" role="presentation">
       <div
         className="confirm-dialog"
@@ -120,7 +115,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <h3 id="confirm-dialog-title">{title}</h3>
         <p id="confirm-dialog-message">{message}</p>
         <div className="confirm-actions">
-          {showCancel ? (
+          {showCancel && (
             <button
               type="button"
               className="confirm-button confirm-cancel"
@@ -129,7 +124,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             >
               {cancelText}
             </button>
-          ) : null}
+          )}
           <button
             type="button"
             className="confirm-button confirm-ok"
@@ -215,6 +210,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       `}</style>
     </div>
   );
+
+  return createPortal(dialog, document.body);
 };
 
 export default ConfirmDialog;

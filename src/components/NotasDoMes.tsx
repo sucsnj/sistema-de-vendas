@@ -1,7 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react';
 import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/notasService';
 import { formatCurrency } from '../utils/formatter';
 import { formatDate, getCurrentYear } from '../utils/date';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -17,6 +19,10 @@ interface NotasDoMesProps {
 
 const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => {
     const queryClient = useQueryClient();
+
+    // estado para o diálogo
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
 
     // Hook que busca notas automaticamente
     const { data: notas = [], isLoading } = useQuery<NotaDetalhe[]>({
@@ -37,6 +43,11 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
         } catch (error) {
             console.error('Erro ao excluir nota:', error);
         }
+    };
+
+    const openConfirm = (id: number) => {
+        setSelectedId(id);
+        setConfirmOpen(true);
     };
 
     return (
@@ -85,7 +96,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                                 <td>{n.distribuidora}</td>
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
-                                    <button onClick={() => handleExcluir(n.id)} className="delete-btn">
+                                    <button onClick={() => openConfirm(n.id)} className="delete-btn">
                                         Excluir
                                     </button>
                                 </td>
@@ -94,6 +105,21 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                     </tbody>
                 </table>
             )}
+
+            <ConfirmDialog
+                open={confirmOpen}
+                title="Confirmar exclusão"
+                message="Tem certeza que deseja excluir esta nota?"
+                confirmText="Excluir"
+                cancelText="Cancelar"
+                onConfirm={() => {
+                    if (selectedId !== null) {
+                        handleExcluir(selectedId);
+                    }
+                    setConfirmOpen(false);
+                }}
+                onCancel={() => setConfirmOpen(false)}
+            />
 
             <style jsx>{`
         .summary-card {

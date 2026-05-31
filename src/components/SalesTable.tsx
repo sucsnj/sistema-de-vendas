@@ -1,9 +1,11 @@
 import React from 'react';
+import { useState } from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import { canEdit } from '../utils/edit';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -16,6 +18,10 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
 
   const [maxSales, setMaxSales] = React.useState(5);
 
+  // estado para o diálogo
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   React.useEffect(() => {
     const saved = localStorage.getItem("maxSales");
     if (saved) {
@@ -26,6 +32,11 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
   const changeMaxSales = (value: number) => {
     setMaxSales(value);
     localStorage.setItem("maxSales", String(value));
+  };
+
+  const openConfirm = (id: number) => {
+    setSelectedId(id);
+    setConfirmOpen(true);
   };
 
   return (
@@ -98,7 +109,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
                         </button>
                       ) : null}
                       {onDeleteSale ? (
-                        <button type="button" className={`${styles.deleteButton} button-spacing-small`} onClick={() => onDeleteSale(sale.id)}>
+                        <button type="button" className={`${styles.deleteButton} button-spacing-small`} onClick={() => openConfirm(sale.id)}>
                           Excluir
                         </button>
                       ) : null}
@@ -111,6 +122,21 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
             ))}
         </tbody>
       </table>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir esta venda?"
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (selectedId !== null) {
+            onDeleteSale?.(selectedId);
+          }
+          setConfirmOpen(false);
+        }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useState } from 'react';
 import { ContaDetalhe } from '../services/contasService';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 interface ContasAPagarFilterPanelProps {
   filtroDistribuidora: string;
@@ -39,6 +41,16 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   handleStartPayment,
   onClearFilters,
 }) => {
+
+  // estado para o diálogo
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const openConfirm = (id: number) => {
+    setSelectedId(id);
+    setConfirmOpen(true);
+  };
+
   return (
     <div className={styles.contasFilterPanel}>
       <div className={styles.panelHeader}>
@@ -122,7 +134,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                   <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
                     Ver
                   </button>
-                  <button type="button" className={styles.deleteButton} onClick={() => handleDelete(conta.id)}>
+                  <button type="button" className={styles.deleteButton} onClick={() => openConfirm(conta.id)}>
                     Excluir
                   </button>
                   {conta.status === 'Pendente' ? (
@@ -147,6 +159,21 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
           </tbody>
         </table>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir esta conta?"
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (selectedId !== null) {
+            handleDelete(selectedId);
+          }
+          setConfirmOpen(false);
+        }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 };
