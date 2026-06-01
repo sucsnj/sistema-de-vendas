@@ -120,17 +120,8 @@ export function getCurrentYear(): number {
 
 // retorna um array com dia, mês e ano da data atual UTC-03:00
 export function dateToArray(): [number, number, number] | null {
-  const value = dayjs().tz('America/Recife').locale('pt-br').format('DD-MM-YYYY');
-
-  const date = toDate(value);
-  if (!date) return null;
-
-  const isDateOnly = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
-  const day = isDateOnly ? date.getUTCDate() : date.getDate();
-  const month = (isDateOnly ? date.getUTCMonth() : date.getMonth()) + 1;
-  const year = isDateOnly ? date.getUTCFullYear() : date.getFullYear();
-
-  return [day, month, year];
+  const data = dayjs().tz('America/Recife');
+  return [data.date(), data.month() + 1, data.year()];
 }
 
 export default {
