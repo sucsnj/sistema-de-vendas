@@ -13,7 +13,7 @@ interface AgendaProps {
 const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
     const agenda = useMemo(() => {
         const map = new Map<string, { data: string; totalPendente: number }>();
-        contasMes.forEach((conta) => {
+        contasAno.forEach((conta) => {
             const current = map.get(conta.vencimento) ?? { data: conta.vencimento, totalPendente: 0 };
             if (conta.status === 'Pendente') {
                 current.totalPendente += conta.valor;
@@ -22,8 +22,9 @@ const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
         });
         return Array.from(map.values())
             .filter((item) => item.totalPendente > 0)
-            .sort((a, b) => (b.data < a.data ? 1 : -1));
-    }, [contasMes]);
+            .sort((a, b) => (new Date(a.data).getTime() - new Date(b.data).getTime()))
+            .slice(0, 8);
+    }, [contasAno]);
 
     // Lista de contas pendentes que serão pagas na próxima semana
     const proximasContas = useMemo(() => {
