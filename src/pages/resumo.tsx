@@ -66,6 +66,7 @@ const Resumo: React.FC = () => {
               <th>Ticket Médio</th>
               <th>Média de clientes</th>
               <th>Melhor dia</th>
+              <th>Valor do melhor dia</th>
               <th>Maior venda</th>
               <th>Quantidade de vendas</th>
               <th>Total</th>
@@ -81,6 +82,7 @@ const Resumo: React.FC = () => {
                 <td>
                   {`${dayjs(m.melhorDia).format('D')} - ${capitalize(dayjs(m.melhorDia).locale('pt-br').format('dddd'))}`}
                 </td>
+                <td>R$ {formatCurrency(m.melhorDiaValor, 2)}</td>
                 <td>R$ {formatCurrency(m.maiorVenda, 2)}</td>
                 <td>{m.qtdVendas}</td>
                 <td>R$ {formatCurrency(m.total, 2)}</td>

@@ -18,6 +18,7 @@ export interface VendaMensal {
   ticketMedio: number;
   mediaClientes: number;
   melhorDia: string | null;
+  melhorDiaValor: number;
   maiorVenda: number;
   qtdVendas: number;
   total: number;

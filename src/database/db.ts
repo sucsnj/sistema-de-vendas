@@ -35,6 +35,7 @@ try {
       ticketMedio REAL NOT NULL DEFAULT 0,
       mediaClientes INTEGER NOT NULL DEFAULT 0,
       melhorDia TEXT NOT NULL DEFAULT 'N/A',
+      melhorDiaValor REAL NOT NULL DEFAULT 0,
       maiorVenda REAL NOT NULL DEFAULT 0,
       qtdVendas INTEGER NOT NULL DEFAULT 0,
       total REAL NOT NULL,
@@ -165,7 +166,7 @@ const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, an
     if (!melhor) {
       melhor = [`${ano}-${mes}-01`, 0];
     }
-    return melhor ? melhor[0] : null;
+    return { dia: melhor[0], valor: melhor[1] }
   } catch (error) {
     console.error('Erro ao calcular melhor dia:', error);
     throw error;
@@ -202,8 +203,8 @@ export const consolidateMonthly = (mes: number, ano: number) => {
     const qtdVendas = getQtdVendas(sales);
 
     const stmt = db.prepare(
-      'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, melhorDia, maiorVenda, qtdVendas, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-    return stmt.run(mes, ano, ticketMedio, mediaClientes, melhorDia, maiorVenda, qtdVendas, total);
+      'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, melhorDia, melhorDiaValor, maiorVenda, qtdVendas, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    return stmt.run(mes, ano, ticketMedio, mediaClientes, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, total);
   } catch (error) {
     console.error('Erro ao consolidar mensal:', error);
     throw error;
