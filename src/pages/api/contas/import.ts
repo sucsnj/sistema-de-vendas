@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertConta, getAllContas } from '../../../database/contasDb';
 import { getAllNotas, insertNota } from '../../../database/notasDb';
-import { parseStringPromise } from 'xml2js';
-import { get } from 'http';
 import parseNumber from '../../../utils/number';
+import { validateCurrency, validateDate } from '../../../utils/validation';
 
 // Nomes de distribuidoras válidos
 const nomesValidos = [
@@ -55,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const infNFe = parsed.nfeProc.NFe[0].infNFe[0];
     const distribuidoraRaw = infNFe.emit[0].xNome[0];
     const nNF = infNFe.ide[0].nNF[0];
-    let duplicatas = infNFe.cobr[0].dup;
+    const duplicatas = infNFe.cobr[0].dup;
 
     const dataEmissao = infNFe.ide[0].dhEmi[0]; // emissão
     // const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
@@ -63,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const chave = parsed.nfeProc.protNFe[0].infProt[0].chNFe[0]; // chave
 
     let distribuidora = formatarDistribuidora(distribuidoraRaw);
-    let documentoBase = normalizarDocumento(nNF);
+    const documentoBase = normalizarDocumento(nNF);
 
     const registros: any[] = [];
 
@@ -71,7 +70,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let valor = parseNumber(duplicatas[i].vDup[0]);
       let vencimento = duplicatas[i].dVenc[0];
 
-      valor = ajustarValorPorDistribuidora(distribuidora, valor);
+      // valida e normaliza valores e datas
+      const validatedValor = validateCurrency(String(duplicatas[i].vDup[0])) ?? valor;
+      const validatedVencimento = validateDate(vencimento);
+
+      valor = ajustarValorPorDistribuidora(distribuidora, validatedValor);
+      vencimento = validatedVencimento ? validatedVencimento.toISOString().split('T')[0] : vencimento;
       const documento = `${documentoBase}${i + 1}`;
 
       // se for distribuidora for igual a 'Distribuidora de medicamentos ltda', muda para 'Mbca'

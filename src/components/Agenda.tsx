@@ -6,11 +6,10 @@ import styles from '../styles/contas.module.css';
 import { formatDate } from '../utils/date';
 
 interface AgendaProps {
-    contasMes: ContaDetalhe[];
     contasAno: ContaDetalhe[];
 }
 
-const Agenda: React.FC<AgendaProps> = ({ contasMes, contasAno }) => {
+const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
     const agenda = useMemo(() => {
         const map = new Map<string, { data: string; totalPendente: number }>();
         contasAno.forEach((conta) => {

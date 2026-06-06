@@ -33,11 +33,9 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   setFiltroVencimentoDe,
   filtroVencimentoAte,
   setFiltroVencimentoAte,
-  hoje,
   filteredContas,
   handleView,
   handleDelete,
-  handleEditar,
   handleStartPayment,
   onClearFilters,
 }) => {

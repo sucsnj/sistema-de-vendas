@@ -3,7 +3,7 @@ import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
-import parseNumber from '../utils/number';
+import { validateCurrency, validateDate } from '../utils/validation';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -50,14 +50,14 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     }
     try {
       // Substituir vírgulas por pontos para cálculo
-      let expression = input.replace(/,/g, '.');
+      const expression = input.replace(/,/g, '.');
       const parser = new Parser();
-      let result = parser.evaluate(expression);
+      const result = parser.evaluate(expression);
       if (typeof result === 'number' && !isNaN(result)) {
         setCalculatedValue(result);
         return;
       }
-    } catch (error) {
+    } catch (_error) {
       // Se erro, tentar remover o último operador
       try {
         let expression = input.replace(/,/g, '.');
@@ -71,7 +71,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             return;
           }
         }
-      } catch (innerError) {
+      } catch (_innerError) {
         // Ignorar
       }
     }
@@ -108,15 +108,17 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
-      const valueToRegister = calculatedValue !== null ? calculatedValue : parseNumber(valor);
-      if (isNaN(valueToRegister)) {
-        showToast('Valor inválido.', 'error');
+      // Validar data e valor antes de enviar
+      const dateOk = validateDate(selectedDate);
+      const valueFromInput = calculatedValue !== null ? calculatedValue : validateCurrency(valor);
+      if (!dateOk || valueFromInput == null) {
+        showToast('Data ou valor inválido.', 'error');
         setLoading(false);
         return;
       }
       await registrarVenda(
         selectedDate,
-        valueToRegister,
+        valueFromInput,
         observacoes
       );
 
@@ -132,7 +134,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         });
       }
 
-      showToast(`Venda registrada com sucesso: R$ ${valueToRegister.toFixed(2)}`, 'success');
+      showToast(`Venda registrada com sucesso: R$ ${valueFromInput.toFixed(2)}`, 'success');
       setValor('');
       setObservacoes('');
       setCalculatedValue(0);
@@ -141,7 +143,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       if (onSaleAdded) {
         onSaleAdded();
       }
-    } catch (error) {
+    } catch (_error) {
       showToast('Erro ao registrar venda.', 'error');
     }
     setLoading(false);

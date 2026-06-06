@@ -1,24 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
-
-// Função local ou componente.
-const isEditableDate = (dateString: string) => {
-  const saleDate = new Date(`${dateString}T00:00:00`);
-  const today = new Date();
-  const todayMidnight = new Date(today.toISOString().split('T')[0] + 'T00:00:00');
-  const diffMs = todayMidnight.getTime() - saleDate.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  return diffDays >= 0 && diffDays <= 2;
-};
+import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const { data, valor, observacoes, criado_em } = req.body;
     try {
+      // Validar data e valor
+      const validDate = validateDate(data);
+      const validValue = typeof valor === 'number' ? valor : validateCurrency(String(valor));
+      if (!validDate || validValue == null) {
+        return res.status(400).json({ error: 'Dados inválidos: data ou valor inválidos' });
+      }
+
       if (!criado_em) {
-        insertDailySale(data, valor, observacoes);
+        insertDailySale(data, validValue, observacoes);
       } else {
-        insertDailySale(data, valor, observacoes, criado_em);
+        insertDailySale(data, validValue, observacoes, criado_em);
       }
       res.status(200).json({ message: 'Venda registrada com sucesso' });
     } catch (error) {
@@ -27,7 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'PUT') {
     const { id, data, valor, observacoes } = req.body;
-    if (!id || !data || typeof valor !== 'number') {
+    const validDate = validateDate(data);
+    const validValue = typeof valor === 'number' ? valor : validateCurrency(String(valor));
+    if (!id || !validDate || validValue == null) {
       return res.status(400).json({ error: 'Dados inválidos para atualização' });
     }
 
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(403).json({ error: 'Atualização permitida apenas para vendas dos últimos 2 dias' });
       }
 
-      updateDailySale(id, data, valor, observacoes);
+      updateDailySale(id, data, validValue, observacoes);
       res.status(200).json({ message: 'Venda atualizada com sucesso' });
     } catch (error) {
       console.error('Erro na API PUT /api/vendas:', error);

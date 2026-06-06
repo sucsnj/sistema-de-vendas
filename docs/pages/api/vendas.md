@@ -15,3 +15,6 @@ API REST para operações de vendas diárias.
 
 - A rota impede edição/exclusão fora do período de 2 dias.
 - Retorna erros detalhados em JSON quando os dados são inválidos.
+ - Validações de `data` e `valor` agora são centralizadas em `src/utils/validation.ts`.
+ - `data` é validada usando `dayjs` no timezone de Recife (`America/Recife`) para consistência.
+ - `valor` aceita textos numéricos (vírgula ou ponto) e é normalizado pela função `validateCurrency`.

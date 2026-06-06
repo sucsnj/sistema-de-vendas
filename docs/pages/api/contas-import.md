@@ -12,3 +12,5 @@ Endpoint para importar contas a pagar via XML.
 
 - O frontend usa este endpoint para importar arquivos de notas fiscais.
 - A importação valida campos obrigatórios e salva na base local.
+ - Ao processar duplicatas, os valores monetários são validados/normalizados por `validateCurrency`.
+ - Datas de vencimento são validadas com `validateDate` e normalizadas ao timezone de Recife quando possível.
