@@ -28,6 +28,7 @@ try {
   console.error('Erro ao criar tabela de notas:', error);
 }
 
+// Constante exportada com função.
 export const insertNota = (
   distribuidora: string,
   chave: string,
@@ -40,6 +41,7 @@ export const insertNota = (
   return stmt.run(distribuidora, chave, dataEmissao, valorNota);
 };
 
+// Constante exportada com função.
 export const getNotasById = (id: number) => {
   const stmt = db.prepare('SELECT * FROM notas_detalhes WHERE id = ?');
   return stmt.get(id);
@@ -56,6 +58,7 @@ export const getSumNotasByYear = (ano: number) => {
   return row?.total ?? 0;
 };
 
+// Constante exportada com função.
 export const getNotasByValor = (valor: number) => {
   if (valor < 0) {
     return null;
@@ -65,6 +68,7 @@ export const getNotasByValor = (valor: number) => {
   return stmt.get(valor);
 };
 
+// Constante exportada com função.
 export const getNotasByPeriod = (ano: number, mes?: number) => {
   const startDate = `${ano}-${String(mes ?? 1).padStart(2, '0')}-01`;
   const endDate = mes
@@ -78,16 +82,19 @@ export const getNotasByPeriod = (ano: number, mes?: number) => {
   return stmt.all(startDate, endDate) as any[];
 };
 
+// Constante exportada com função.
 export const getAllNotas = () => {
   const stmt = db.prepare('SELECT * FROM notas_detalhes ORDER BY data_emissao DESC, id DESC');
   return stmt.all() as any[];
 };
 
+// Constante exportada com função.
 export const deleteNota = (id: number) => {
   const stmt = db.prepare('DELETE FROM notas_detalhes WHERE id = ?');
   return stmt.run(id);
 };
 
+// Constante exportada com função.
 export const backupNotasDatabase = () => {
   const backupPath = path.join(process.cwd(), `notas-backup-${new Date().toISOString().split('T')[0]}.db`);
   db.backup(backupPath);

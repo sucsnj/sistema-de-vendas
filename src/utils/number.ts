@@ -1,3 +1,4 @@
+// Função exportada.
 export function parseNumber(value: any): number {
   if (value == null) return NaN;
 

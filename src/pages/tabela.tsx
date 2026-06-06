@@ -11,6 +11,7 @@ import {
   TabelaSearchHistoryItem,
 } from '../services/tabelaService';
 
+// Componente React.
 const Tabela: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [fileName, setFileName] = useState('');

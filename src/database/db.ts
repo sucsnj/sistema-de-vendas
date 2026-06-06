@@ -46,6 +46,7 @@ try {
   console.error('Erro ao criar tabelas:', error);
 }
 
+// Função local ou componente.
 const getLocalTimestamp = () => {
   return format(new Date(), 'yyyy-MM-dd HH:mm:ss', { timeZone: 'America/Recife' });
 };
@@ -69,6 +70,7 @@ export const insertDailySale = (data: string, valor: number, observacoes?: strin
   }
 };
 
+// Constante exportada com função.
 export const getDailySales = (mes: number, ano: number) => {
   try {
     const startDate = `${ano}-${String(mes).padStart(2, '0')}-01`;
@@ -85,6 +87,7 @@ export const getDailySales = (mes: number, ano: number) => {
   }
 };
 
+// Constante exportada com função.
 export const getDailySaleById = (id: number) => {
   try {
     const stmt = db.prepare('SELECT * FROM vendas_diarias WHERE id = ?');
@@ -95,6 +98,7 @@ export const getDailySaleById = (id: number) => {
   }
 };
 
+// Constante exportada com função.
 export const updateDailySale = (id: number, data: string, valor: number, observacoes?: string) => {
   try {
     const stmt = db.prepare('UPDATE vendas_diarias SET data = ?, valor = ?, observacoes = ? WHERE id = ?');
@@ -107,6 +111,7 @@ export const updateDailySale = (id: number, data: string, valor: number, observa
   }
 };
 
+// Constante exportada com função.
 export const deleteDailySale = (id: number) => {
   try {
     const stmt = db.prepare('DELETE FROM vendas_diarias WHERE id = ?');
@@ -119,6 +124,7 @@ export const deleteDailySale = (id: number) => {
   }
 };
 
+// Constante exportada com função.
 export const getMonthlyTotal = (mes: number, ano: number) => {
   try {
     const stmt = db.prepare('SELECT total FROM vendas_mensais WHERE mes = ? AND ano = ?');
@@ -129,6 +135,7 @@ export const getMonthlyTotal = (mes: number, ano: number) => {
   }
 };
 
+// Função local ou componente.
 const getTickerMedio = (vendas: { valor: number }[]) => {
   try {
     const total = vendas.reduce((acc, v) => acc + v.valor, 0);
@@ -139,6 +146,7 @@ const getTickerMedio = (vendas: { valor: number }[]) => {
   }
 };
 
+// Função local ou componente.
 const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
   try {
     if (vendas.length === 0) return 0;
@@ -154,6 +162,7 @@ const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
   }
 };
 
+// Função local ou componente.
 const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, ano: number) => {
   try {
     const agrupado = vendas.reduce((acc: Record<string, number>, v) => {
@@ -173,6 +182,7 @@ const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, an
   }
 };
 
+// Função local ou componente.
 const getMaiorVenda = (vendas: { valor: number }[]) => {
   try {
     const maiorVenda = vendas.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
@@ -183,6 +193,7 @@ const getMaiorVenda = (vendas: { valor: number }[]) => {
   }
 };
 
+// Função local ou componente.
 const getQtdVendas = (vendas: { valor: number }[]) => {
   try {
     return vendas.length;
@@ -192,6 +203,7 @@ const getQtdVendas = (vendas: { valor: number }[]) => {
   }
 };
 
+// Constante exportada com função.
 export const consolidateMonthly = (mes: number, ano: number) => {
   try {
     const sales = getDailySales(mes, ano) as { valor: number }[];
@@ -211,6 +223,7 @@ export const consolidateMonthly = (mes: number, ano: number) => {
   }
 };
 
+// Constante exportada com função.
 export const deleteMonthly = (id: number) => {
   try {
     const stmt = db.prepare('DELETE FROM vendas_mensais WHERE id = ?');
@@ -221,6 +234,7 @@ export const deleteMonthly = (id: number) => {
   }
 };
 
+// Constante exportada com função.
 export const getAllMonthly = () => {
   try {
     const stmt = db.prepare('SELECT * FROM vendas_mensais ORDER BY ano DESC, mes DESC');
@@ -231,6 +245,7 @@ export const getAllMonthly = () => {
   }
 };
 
+// Constante exportada com função.
 export const backupDatabase = () => {
   const backupPath = path.join(process.cwd(), `backup-${new Date().toISOString().split('T')[0]}.db`);
   db.backup(backupPath);

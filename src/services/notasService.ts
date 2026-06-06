@@ -6,6 +6,7 @@ export interface NotaDetalhe {
   valor_nota: number;
 }
 
+// Função assíncrona exportada.
 export const buscarNotasPorPeriodo = async (ano: number, mes?: number): Promise<NotaDetalhe[]> => {
   const params = new URLSearchParams({ ano: String(ano) });
   if (mes !== undefined) {
@@ -16,6 +17,7 @@ export const buscarNotasPorPeriodo = async (ano: number, mes?: number): Promise<
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarNotaPorValor = async (valor: number): Promise<NotaDetalhe | null> => {
   const params = new URLSearchParams({ valor: String(valor) });
   const response = await fetch(`/api/notas?${params.toString()}`);
@@ -25,11 +27,13 @@ export const buscarNotaPorValor = async (valor: number): Promise<NotaDetalhe | n
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarTodasNotas = async (): Promise<NotaDetalhe[]> => {
   const response = await fetch('/api/notas');
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const excluirNota = async (id: number) => {
   const response = await fetch('/api/notas', {
     method: 'DELETE',

@@ -26,6 +26,7 @@ export interface VendaMensal {
 
 let consolidado = false;
 
+// Função assíncrona exportada.
 export const registrarVenda = async (data: string, valor: number, observacoes?: string) => {
   const response = await fetch('/api/vendas', {
     method: 'POST',
@@ -50,11 +51,13 @@ export const registrarVendaComCriadoEm = async (
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarVendasDiarias = async (mes: number, ano: number): Promise<VendaDiaria[]> => {
   const response = await fetch(`/api/vendas?mes=${mes}&ano=${ano}`);
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const atualizarVenda = async (id: number, data: string, valor: number, observacoes?: string) => {
   const response = await fetch('/api/vendas', {
     method: 'PUT',
@@ -64,6 +67,7 @@ export const atualizarVenda = async (id: number, data: string, valor: number, ob
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const excluirVenda = async (id: number) => {
   const response = await fetch('/api/vendas', {
     method: 'DELETE',
@@ -73,16 +77,19 @@ export const excluirVenda = async (id: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarTotalMensal = async (mes: number, ano: number): Promise<VendaMensal | null> => {
   const response = await fetch(`/api/mensais?mes=${mes}&ano=${ano}`);
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarTodosMensais = async (): Promise<VendaMensal[]> => {
   const response = await fetch('/api/mensais');
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const consolidarMensal = async (mes: number, ano: number) => {
   const response = await fetch('/api/mensais', {
     method: 'POST',
@@ -92,6 +99,7 @@ export const consolidarMensal = async (mes: number, ano: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const verificarConsolidado = async (mes: number, ano: number): Promise<boolean> => {
   const response = await fetch(`/api/mensais?mes=${mes}&ano=${ano}`);
 
@@ -105,6 +113,7 @@ export const verificarConsolidado = async (mes: number, ano: number): Promise<bo
   return !!data && data.total !== undefined;
 };
 
+// Função assíncrona exportada.
 export const autoConsolidar = async () => {
   let [day, month, year] = dateToArray() || [];
   if (!day || !month || !year) return;
@@ -126,6 +135,7 @@ export const autoConsolidar = async () => {
   }
 };
 
+// Função assíncrona exportada.
 export const excluirMensal = async (id: number) => {
   const response = await fetch('/api/mensais', {
     method: 'DELETE',
@@ -135,6 +145,7 @@ export const excluirMensal = async (id: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const fazerBackup = async () => {
   const response = await fetch('/api/backup', {
     method: 'POST',

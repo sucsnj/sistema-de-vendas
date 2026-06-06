@@ -35,6 +35,7 @@ const handleJsonResponse = async (response: Response) => {
   return json;
 };
 
+// Função assíncrona exportada.
 export const uploadTabela = async (formData: FormData) => {
   const response = await fetch('/api/tabela', {
     method: 'POST',
@@ -43,16 +44,19 @@ export const uploadTabela = async (formData: FormData) => {
   return handleJsonResponse(response);
 };
 
+// Função assíncrona exportada.
 export const searchTabela = async (query: string): Promise<TabelaSearchResponse> => {
   const response = await fetch(`/api/tabela?query=${encodeURIComponent(query.trim())}`);
   return handleJsonResponse(response);
 };
 
+// Função assíncrona exportada.
 export const fetchTabelaHistory = async (): Promise<TabelaSearchHistoryItem[]> => {
   const response = await fetch('/api/tabela?history=1');
   return handleJsonResponse(response);
 };
 
+// Função assíncrona exportada.
 export const clearTabelaHistory = async () => {
   const response = await fetch('/api/tabela', {
     method: 'DELETE',
@@ -60,6 +64,7 @@ export const clearTabelaHistory = async () => {
   return handleJsonResponse(response);
 };
 
+// Função assíncrona exportada.
 export const fetchTabelaStatus = async (): Promise<TabelaStatusResponse> => {
   const response = await fetch('/api/tabela?status=1');
   return handleJsonResponse(response);

@@ -18,6 +18,7 @@ export const config = {
 
 const upload = multer({ dest: 'uploads/' });
 
+// Função utilitária.
 function runMiddleware(req: any, res: any, fn: any) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result: any) => {
@@ -47,6 +48,7 @@ const normalizeHeader = (header: string) =>
     .replace(/[^a-z0-9]/gi, '')
     .toLowerCase();
 
+// Função local ou componente.
 const parseNumberValue = (value: unknown) => {
   if (value === null || value === undefined) {
     return null;
@@ -60,6 +62,7 @@ const parseNumberValue = (value: unknown) => {
   return Number.isNaN(number) ? null : number;
 };
 
+// Função local ou componente.
 const parseTabelaWorksheet = (filePath: string) => {
   if (!fs.existsSync(filePath)) {
     return null;
@@ -79,6 +82,7 @@ const parseTabelaWorksheet = (filePath: string) => {
 
 let cachedTabelaTable: any[] | null = null;
 
+// Função local ou componente.
 const loadTabelaTable = () => {
   if (cachedTabelaTable) {
     return cachedTabelaTable;
@@ -114,6 +118,7 @@ const loadTabelaTable = () => {
   return null;
 };
 
+// Função local ou componente.
 const searchTabelaTable = (query: string, table: any[]) => {
   const normalizedQuery = normalizeText(query);
   const results = table

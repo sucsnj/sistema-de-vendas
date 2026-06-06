@@ -9,6 +9,7 @@ export interface ContaDetalhe {
   criado_em?: string;
 }
 
+// Função assíncrona exportada.
 export const registrarConta = async (
   distribuidora: string,
   valor: number,
@@ -24,6 +25,7 @@ export const registrarConta = async (
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const importarContasXML = async (xml: string) => {
   const response = await fetch('/api/contas/import', {
     method: 'POST',
@@ -33,6 +35,7 @@ export const importarContasXML = async (xml: string) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const buscarContas = async (ano: number, mes?: number): Promise<ContaDetalhe[]> => {
   const params = new URLSearchParams({ ano: String(ano) });
   if (mes !== undefined) {
@@ -43,6 +46,7 @@ export const buscarContas = async (ano: number, mes?: number): Promise<ContaDeta
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const pagarConta = async (id: number) => {
   const response = await fetch('/api/contas', {
     method: 'POST',
@@ -52,6 +56,7 @@ export const pagarConta = async (id: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const cancelarPagamentoConta = async (id: number) => {
   const response = await fetch('/api/contas', {
     method: 'POST',
@@ -61,6 +66,7 @@ export const cancelarPagamentoConta = async (id: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const atualizarConta = async (
   id: number,
   distribuidora: string,
@@ -77,6 +83,7 @@ export const atualizarConta = async (
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const excluirConta = async (id: number) => {
   const response = await fetch('/api/contas', {
     method: 'DELETE',
@@ -86,6 +93,7 @@ export const excluirConta = async (id: number) => {
   return response.json();
 };
 
+// Função assíncrona exportada.
 export const fazerBackupContas = async () => {
   const response = await fetch('/api/contas/backup', {
     method: 'POST',

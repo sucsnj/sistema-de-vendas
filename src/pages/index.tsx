@@ -18,6 +18,7 @@ import { canEdit } from '../utils/edit';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
+// Componente React.
 const Home: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
   const [mes, setMes] = useState(new Date().getMonth() + 1);

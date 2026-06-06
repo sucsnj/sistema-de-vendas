@@ -8,6 +8,7 @@ import { buscarVendasDiarias, atualizarVenda, excluirVenda, VendaDiaria } from '
 import { capitalize } from '../utils/captalize';
 import { canEdit } from '../utils/edit';
 
+// Componente React.
 const Historico: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
   const [mes, setMes] = useState(new Date().getMonth() + 1);

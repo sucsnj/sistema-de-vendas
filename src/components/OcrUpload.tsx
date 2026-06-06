@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Toast from './Toast';
 
+// Handler de API ou componente exportado.
 export default function OcrUpload() {
     const [resultado, setResultado] = useState<any>(null);
     const [toastOpen, setToastOpen] = useState(false);

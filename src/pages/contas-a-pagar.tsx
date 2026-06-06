@@ -24,6 +24,7 @@ import {
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
+// Componente React.
 const ContasAPagar: React.FC = () => {
   const queryClient = useQueryClient();
   const today = new Date();

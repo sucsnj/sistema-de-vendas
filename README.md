@@ -1,40 +1,8 @@
-# Vendas App
+# Sistema de Gestão de Vendas
 
-Painel de vendas simples para gerenciamento diário e exportação de dados.
+Aplicação de gestão de vendas diárias, contas a pagar e relatórios mensais. O sistema permite cadastrar e gerenciar vendas, controlar contas, gerar backups e consultar dados históricos.
 
-## Sobre o projeto
-
-Este projeto é um sistema de controle de vendas que permite cadastrar, editar, excluir e visualizar vendas diárias. Ele oferece suporte a exportação de dados em formato XLSX e PDF, além de importação de planilhas XLSX para registros do dia ou do mês selecionado. Também oferece ocr em documentos para finalidade de encontrar códigos de barras. Conta com uma busca pela tabela de medicamentos CMED.
-
-A aplicação foi desenvolvida sob supervisão humana e com coautoria da Inteligência Artificial como assistente de criação e revisão em todas as etapas do projeto.
-
-## Autoria
-
-- Desenvolvedor supervisório: usuário responsável pela definição do escopo, revisão e validação técnica.
-- Coautora de IA: assistente de desenvolvimento que ajudou a revisar, documentar e organizar o projeto.
-
-## Funcionalidades principais
-
-- Registro de vendas diárias com valor e observações
-- Visualização de vendas do mês selecionado
-- Resumo do período com total, quantidade e ticket médio
-- Resumo do dia selecionado quando um dia estiver ativo
-- Exportação para XLSX por mês ou dia
-- Importação de XLSX por mês ou dia
-- Exportação de relatório em PDF
-- Tema claro/escuro alternável
-- Backup local do banco de dados SQLite
-
-## Tecnologias usadas
-
-- Next.js 16
-- React 19
-- TypeScript
-- SQLite com `better-sqlite3`
-- XLSX para importação/exportação de planilhas
-- `html2canvas` e `jspdf` para exportação em PDF
-
-## Como executar
+## Instalação
 
 1. Instale as dependências:
 
@@ -48,39 +16,37 @@ npm install
 npm run dev
 ```
 
-3. Abra o navegador em:
+3. Acesse no navegador:
 
 ```bash
 http://localhost:3000
 ```
 
-4. Para gerar uma versão de produção:
+4. Para gerar o build de produção:
 
 ```bash
 npm run build
 ```
 
-## Estrutura do projeto
+## Documentação
 
-- `src/pages/` - páginas da aplicação
-- `src/components/` - componentes de interface
-- `src/services/` - integração com APIs internas
-- `src/database/` - camada de acesso ao SQLite
-- `src/styles/` - estilos globais e modulares
+A documentação detalhada do projeto está disponível em:
 
-## Preparação para GitHub
+- [docs/README.md](docs/README.md) - índice central da documentação.
 
-Este repositório está hospedado no GitHub em: https://github.com/sucsnj/sistema-de-vendas
+Lá você encontra a arquitetura do sistema, detalhes de páginas, endpoints de API, serviços, banco de dados e utilitários.
 
-- Arquivo `.gitignore` configurado para ignorar dependências locais, builds, banco de dados e arquivos temporários
-- `.gitattributes` incluído para manter consistência de final de linha e tratamento de texto
-- `README.md` atualizado com informações de uso e autoria
+## Como começar
 
-## Notas adicionais
+- Abra `src/pages/index.tsx` para ver o dashboard principal de vendas.
+- Use `src/pages/contas-a-pagar.tsx` para gerenciar contas a pagar e importações.
+- Consulte `src/pages/historico.tsx` e `src/pages/resumo.tsx` para relatórios e dados históricos.
 
-Para usar o ocr com precisão, é necessário instalar o Ghostscript e GraphicsMagick no Windows.
+## Estrutura básica
 
-# As isntruções de instalação estão disponíveis em:
-
-- [OCR.md](OCR.md)
+- `src/pages/` - rotas e páginas Next.js
+- `src/components/` - componentes de interface reutilizáveis
+- `src/services/` - chamadas a APIs internas
+- `src/database/` - persistência SQLite local
+- `src/utils/` - utilitários de formatação e lógica auxiliar
 

@@ -12,6 +12,7 @@ import { capitalize } from '../utils/captalize';
 import ConfirmDialog from '@/components/ConfirmDialog';
 dayjs.locale('pt-br');
 
+// Componente React.
 const Resumo: React.FC = () => {
   const [mensais, setMensais] = useState<VendaMensal[]>([]);
   const [toastOpen, setToastOpen] = useState(false);

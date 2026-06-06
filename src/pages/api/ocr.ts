@@ -16,6 +16,7 @@ const upload = multer({
     dest: "uploads/",
 });
 
+// Função utilitária.
 function runMiddleware(req: any, res: any, fn: any) {
     return new Promise((resolve, reject) => {
 

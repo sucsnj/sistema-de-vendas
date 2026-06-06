@@ -10,6 +10,7 @@ import {
   updateConta,
 } from '../../database/contasDb';
 
+// Handler de API ou componente exportado.
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     const { ano, mes } = req.query;

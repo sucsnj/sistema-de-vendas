@@ -31,6 +31,7 @@ try {
   console.error('Erro ao criar tabela de contas:', error);
 }
 
+// Constante exportada com função.
 export const insertConta = (
   distribuidora: string,
   valor: number,
@@ -44,6 +45,7 @@ export const insertConta = (
   return stmt.run(distribuidora, valor, vencimento, documento, 'Pendente', bancoObservacoes || null);
 };
 
+// Constante exportada com função.
 export const getContasByPeriod = (ano: number, mes?: number) => {
   const startDate = `${ano}-${String(mes ?? 1).padStart(2, '0')}-01`;
   const endDate = mes
@@ -57,16 +59,19 @@ export const getContasByPeriod = (ano: number, mes?: number) => {
   return stmt.all(startDate, endDate) as any[];
 };
 
+// Constante exportada com função.
 export const getContaById = (id: number) => {
   const stmt = db.prepare('SELECT * FROM contas_detalhes WHERE id = ?');
   return stmt.get(id);
 };
 
+// Constante exportada com função.
 export const getAllContas = () => {
   const stmt = db.prepare('SELECT * FROM contas_detalhes ORDER BY vencimento DESC, id DESC');
   return stmt.all() as any[];
 };
 
+// Constante exportada com função.
 export const updateConta = (
   id: number,
   distribuidora: string,
@@ -81,21 +86,25 @@ export const updateConta = (
   return stmt.run(distribuidora, valor, vencimento, documento, bancoObservacoes || null, id);
 };
 
+// Constante exportada com função.
 export const deleteConta = (id: number) => {
   const stmt = db.prepare('DELETE FROM contas_detalhes WHERE id = ?');
   return stmt.run(id);
 };
 
+// Constante exportada com função.
 export const payConta = (id: number) => {
   const stmt = db.prepare('UPDATE contas_detalhes SET status = ? WHERE id = ?');
   return stmt.run('Pago', id);
 };
 
+// Constante exportada com função.
 export const cancelPaymentConta = (id: number) => {
   const stmt = db.prepare('UPDATE contas_detalhes SET status = ? WHERE id = ?');
   return stmt.run('Pendente', id);
 };
 
+// Constante exportada com função.
 export const backupContasDatabase = () => {
   const backupPath = path.join(process.cwd(), `contas-backup-${new Date().toISOString().split('T')[0]}.db`);
   db.backup(backupPath);

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
 
+// Função local ou componente.
 const isEditableDate = (dateString: string) => {
   const saleDate = new Date(`${dateString}T00:00:00`);
   const today = new Date();

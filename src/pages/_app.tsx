@@ -6,6 +6,7 @@ import Head from 'next/head';
 
 const queryClient = new QueryClient();
 
+// Handler de API ou componente exportado.
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>

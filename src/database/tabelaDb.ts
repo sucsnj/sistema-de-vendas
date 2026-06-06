@@ -29,11 +29,13 @@ try {
   console.error('Erro ao criar tabela de histórico de tabela:', error);
 }
 
+// Constante exportada com função.
 export const findTabelaSearchHistory = (normalizedQuery: string) => {
   const stmt = db.prepare('SELECT * FROM tabela_search_history WHERE normalized_query = ?');
   return stmt.get(normalizedQuery) as Record<string, any> | null;
 };
 
+// Constante exportada com função.
 export const saveTabelaSearchHistory = (query: string, normalizedQuery: string, results: any[]) => {
   const stmt = db.prepare(
     `INSERT INTO tabela_search_history (query, normalized_query, result_json, result_count, updated_at)
@@ -49,6 +51,7 @@ export const saveTabelaSearchHistory = (query: string, normalizedQuery: string, 
   return result;
 };
 
+// Constante exportada com função.
 export const getRecentTabelaSearchHistory = () => {
   const stmt = db.prepare(
     'SELECT id, query, result_count, updated_at FROM tabela_search_history ORDER BY updated_at DESC LIMIT 100'
@@ -56,11 +59,13 @@ export const getRecentTabelaSearchHistory = () => {
   return stmt.all();
 };
 
+// Constante exportada com função.
 export const clearTabelaSearchHistory = () => {
   const stmt = db.prepare('DELETE FROM tabela_search_history');
   return stmt.run();
 };
 
+// Função local ou componente.
 const pruneTabelaSearchHistory = () => {
   const stmt = db.prepare(
     `DELETE FROM tabela_search_history

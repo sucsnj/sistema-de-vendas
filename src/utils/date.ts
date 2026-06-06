@@ -8,10 +8,12 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale('pt-br');
 
+// Função utilitária.
 function pad(value: number) {
   return String(value).padStart(2, '0');
 }
 
+// Função utilitária.
 function toDate(value: string | Date): Date | null {
   if (value instanceof Date) return value;
   if (typeof value === 'string') {
@@ -35,6 +37,7 @@ function toDate(value: string | Date): Date | null {
   return null;
 }
 
+// Função exportada.
 export function formatDateString(value: string, format: 'DD-MM-YYYY' | 'DD/MM/YYYY') {
   const [year, month, day] = value.split('-');
   if (format === 'DD-MM-YYYY') return `${day}-${month}-${year}`;
@@ -50,6 +53,7 @@ function toDateFromISO(value: string): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+// Função exportada.
 export function formatDateISO(
   value: string,
   format: 'DD/MM/YYYY' | 'DD-MM-YYYY' = 'DD/MM/YYYY'
@@ -71,6 +75,7 @@ export function formatDateISO(
   }
 }
 
+// Função exportada.
 export function formatMonthName(
   month: number,
   style: 'long' | 'short' = 'long',
@@ -85,6 +90,7 @@ export function formatMonthName(
   );
 }
 
+// Função exportada.
 export function formatDate(
   value: string | Date,
   format: 'DD/MM/YYYY' | 'DD/MM/YYYY HH:mm' | 'DD-MM-YYYY' | 'DD-MM-YYYY HH:mm:ss' = 'DD/MM/YYYY'
@@ -114,6 +120,7 @@ export function formatDate(
   }
 }
 
+// Função exportada.
 export function getCurrentYear(): number {
   return new Date().getFullYear();
 }
