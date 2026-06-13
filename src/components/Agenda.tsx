@@ -6,6 +6,7 @@ import styles from '../styles/contas.module.css';
 import { formatDate } from '../utils/date';
 
 interface AgendaProps {
+    contasMes: ContaDetalhe[];
     contasAno: ContaDetalhe[];
 }
 

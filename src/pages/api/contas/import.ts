@@ -3,6 +3,7 @@ import { insertConta, getAllContas } from '../../../database/contasDb';
 import { getAllNotas, insertNota } from '../../../database/notasDb';
 import parseNumber from '../../../utils/number';
 import { validateCurrency, validateDate } from '../../../utils/validation';
+import { parseStringPromise } from 'xml2js';
 
 // Nomes de distribuidoras válidos
 const nomesValidos = [
