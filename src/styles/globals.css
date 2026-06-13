@@ -222,6 +222,16 @@ button:hover {
   transform: translateY(-1px);
 }
 
+button.button-edit {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+button.button-delete {
+  background: var(--danger);
+  color: var(--foreground);
+}
+
 input,
 textarea {
   display: block;
@@ -394,47 +404,25 @@ h2 {
 
 /* Responsividade para 630px */
 @media (max-width: 630px) {
-
-  .glass-form,
-  .chart-container,
-  .table-container {
-    padding: 9px;
-    margin: 9px;
-    border-radius: 7px;
-  }
-
-  button {
-    padding: 5.5px 9px;
-    margin: 2px;
-    font-size: 0.68rem;
-    border-radius: 4px;
-  }
-
-  input,
-  textarea {
-    padding: 5.5px;
-    margin: 4.5px 0;
-    font-size: 0.68rem;
-  }
-
-  th,
-  td {
-    padding: 4.5px;
-    font-size: 0.68rem;
-  }
-
-  h2 {
-    margin-bottom: 9px;
-    font-size: 0.90rem;
-  }
-
+  html,
   body {
-    font-size: 0.68rem;
-    line-height: 1.38;
+    font-size: 1.2rem;
+  }
+}
+
+/* Responsividade para 520px */
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 1.4rem;
   }
 
-  table {
-    font-size: 0.68rem;
+  .container-padding {
+    padding: 0px;
+  }
+
+  .history-item {
+    overflow-wrap: break-word;
   }
 }
 
@@ -442,6 +430,6 @@ h2 {
 @media (max-width: 436px) {
   html,
   body {
-    font-size: 12px;
+    font-size: 1.2rem;
   }
 }

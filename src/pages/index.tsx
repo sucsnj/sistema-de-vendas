@@ -184,8 +184,8 @@ const Home: React.FC = () => {
                 onChange={(e) => setEditObservacoes(e.target.value)}
               />
             </label>
-            <button type="submit">Salvar Alteração</button>
-            <button type="button" onClick={handleCancelEdit} className="button-spacing">
+            <button className="button-edit" type="submit">Salvar Alteração</button>
+            <button onClick={handleCancelEdit} className="button-spacing button-delete">
               Cancelar
             </button>
           </form>
