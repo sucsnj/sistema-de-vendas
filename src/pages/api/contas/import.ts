@@ -26,6 +26,7 @@ const formatarDistribuidora = (nome: string) => {
 const ajustarValorPorDistribuidora = (nome: string, valor: number) => {
   if (nome.toLowerCase() === 'cimed') return valor + 3.99;
   if (nome.toLowerCase() === 'pro') return valor + 1.39;
+  if (nome.toLowerCase() === 'profarma') return valor + 1.39;
   return valor;
 };
 
