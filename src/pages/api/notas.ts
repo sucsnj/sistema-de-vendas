@@ -44,7 +44,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json([]);
     }
 
-    console.log(notas);
+    // console.log(notas); // debug
     return res.status(200).json(notas);
   }
 

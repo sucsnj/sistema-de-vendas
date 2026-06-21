@@ -56,7 +56,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const infNFe = parsed.nfeProc.NFe[0].infNFe[0];
     const distribuidoraRaw = infNFe.emit[0].xNome[0];
     const nNF = infNFe.ide[0].nNF[0];
-    const duplicatas = infNFe.cobr[0].dup;
+    const duplicatas = infNFe.cobr?.[0]?.dup ?? []; // caso não exista duplicatas, retorna []
+    // const duplicatas = infNFe.cobr[0].dup;
 
     const dataEmissao = infNFe.ide[0].dhEmi[0]; // emissão
     // const vPag = infNFe.cobr[0].fat[0].vOrig[0]; // total
