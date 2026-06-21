@@ -4,6 +4,38 @@ import { lerLinhaDigitavel } from "./ocrService";
 import sharp from "sharp";
 import { cleanTemp } from "../utils/cleaner";
 
+
+// Função para extrair regiões de uma imagem
+async function cropRegions(imgPath: string): Promise<string[]> {
+    const metadata = await sharp(imgPath).metadata();
+    const { width, height } = metadata;
+
+    const regions: string[] = [];
+
+    // Região inferior (30% até o fim)
+    const bottomPath = imgPath.replace(".png", ".bottom.png");
+    await sharp(imgPath)
+        .extract({ left: 0, top: Math.floor(height * 0.7), width, height: Math.floor(height * 0.3) })
+        .toFile(bottomPath);
+    regions.push(bottomPath);
+
+    // Região intermediária (40% até 70%)
+    const midPath = imgPath.replace(".png", ".mid.png");
+    await sharp(imgPath)
+        .extract({ left: 0, top: Math.floor(height * 0.4), width, height: Math.floor(height * 0.3) })
+        .toFile(midPath);
+    regions.push(midPath);
+
+    // Região ampla (30% até 80%)
+    const widePath = imgPath.replace(".png", ".wide.png");
+    await sharp(imgPath)
+        .extract({ left: 0, top: Math.floor(height * 0.3), width, height: Math.floor(height * 0.5) })
+        .toFile(widePath);
+    regions.push(widePath);
+
+    return regions;
+}
+
 // Cenários de pre-processamento de imagem
 async function preprocessScenarios(imgPath: string): Promise<string[]> {
     const scenarios = [];
@@ -143,6 +175,15 @@ export async function lerPdfComOcr(pdfPath: string) {
                 const preImgs = await preprocessScenarios(imgPath); // tenta por cenários de pre-processamento
                 for (const preImg of preImgs) {
                     linha = await lerLinhaDigitavel(preImg); // imagem reprocessada
+                    if (linha) break;
+                }
+            }
+
+            // tenta com regiões
+            if (!linha) {
+                const crops = await cropRegions(imgPath);
+                for (const crop of crops) {
+                    linha = await lerLinhaDigitavel(crop);
                     if (linha) break;
                 }
             }

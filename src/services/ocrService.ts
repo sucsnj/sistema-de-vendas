@@ -32,13 +32,16 @@ export async function lerLinhaDigitavel(imagemPath: string, regexConst: string =
         } else {
             regex = regex2;
         }
-        const linha = texto.match(regex);
-        console.log("MATCHES:", linha);
 
-        if (linha) {
-            return linha[0]
+        const matches = texto.match(regex);
+        console.log("MATCHES:", matches);
+
+        if (matches && matches.length > 0) {
+            // pega sempre a última linha encontrada
+            const linha = matches[matches.length - 1]
                 .replace(/\s/g, "")
                 .replace(/\./g, "");
+            return linha;
         }
 
         return null;
