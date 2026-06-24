@@ -3,8 +3,7 @@ import path from 'path';
 import { format } from 'date-fns-tz'
 
 // Conexão local com o banco de dados SQLite usado pelo aplicativo.
-// O arquivo `vendas.db` permanece fora do controle de versão e é mantido no diretório do projeto.
-const dbPath = path.join(process.cwd(), 'vendas.db');
+const dbPath = path.join(process.cwd(), 'db/vendas.db'); // caminho para o arquivo de banco de dados
 
 let db: Database.Database;
 

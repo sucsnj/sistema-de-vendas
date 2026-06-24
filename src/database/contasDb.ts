@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'contas.db');
+const dbPath = path.join(process.cwd(), 'db/contas.db');
 
 let db: Database.Database;
 

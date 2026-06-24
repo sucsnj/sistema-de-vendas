@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Módulo de persistência para notas fiscais. Usa `better-sqlite3` com banco `notas.db`.
+Módulo de persistência para notas fiscais. Usa `better-sqlite3` com banco `db/notas.db`.
 
 ## Responsabilidades
 

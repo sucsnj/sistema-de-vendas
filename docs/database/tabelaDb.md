@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Módulo de persistência para histórico de buscas na tabela de medicamentos. Usa `better-sqlite3` com banco `tabela.db`.
+Módulo de persistência para histórico de buscas na tabela de medicamentos. Usa `better-sqlite3` com banco `db/tabela.db`.
 
 ## Responsabilidades
 

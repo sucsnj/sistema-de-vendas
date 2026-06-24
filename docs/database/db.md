@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persistir vendas diárias e mensais em `vendas.db`.
+Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persistir vendas diárias e mensais em `db/vendas.db`.
 
 ## Responsabilidades
 
