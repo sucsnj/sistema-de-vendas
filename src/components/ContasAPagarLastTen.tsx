@@ -5,6 +5,9 @@ import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface ContasAPagarLastTenProps {
   ultimasContas: ContaDetalhe[];
@@ -49,13 +52,22 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
               <td>R$ {formatCurrency(conta.valor, 2)}</td>
               <td className={styles.actionsCell}>
                 <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
-                  Ver
+                  <span className="icon-responsive">
+                    <VisibilityIcon />
+                  </span>
+                  <span className="text-responsive">Ver</span>
                 </button>
                 <button type="button" className={styles.deleteButton} onClick={() => openConfirm(conta.id)}>
-                  Excluir
+                  <span className="icon-responsive">
+                    <DeleteIcon />
+                  </span>
+                  <span className="text-responsive">Excluir</span>
                 </button>
                 <button type="button" className={styles.editButton} onClick={() => handleEditar(conta)}>
-                  Editar
+                  <span className="icon-responsive">
+                    <EditIcon />
+                  </span>
+                  <span className="text-responsive">Editar</span>
                 </button>
               </td>
             </tr>

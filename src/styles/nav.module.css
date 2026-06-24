@@ -14,6 +14,12 @@
   align-items: center;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+}
+
 .navLinks {
   display: flex;
   align-items: center;
@@ -31,6 +37,11 @@
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
   font-size: 0.78rem;
+
+  display: inline-flex;       /* ativa flexbox */
+  align-items: center;        /* centraliza verticalmente */
+  justify-content: center;    /* centraliza horizontalmente */
+  gap: 8px;                   /* espaço entre ícone e texto */
 }
 
 .themeButton:hover {

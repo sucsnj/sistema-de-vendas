@@ -5,6 +5,13 @@ import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 interface ContasAPagarFilterPanelProps {
   filtroDistribuidora: string;
@@ -101,6 +108,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
           </div>
           <div className={styles.filterActions}>
             <button type="button" onClick={onClearFilters}>
+              <ClearAllIcon className="material-icon"/>
               Limpar filtros
             </button>
           </div>
@@ -126,16 +134,34 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                 <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
                 <td>{conta.documento}</td>
                 <td>
-                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]} status`} 
-                  data-observacoes={conta.banco_observacoes || 'Sem observações'}>{conta.status}
+                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]} status`}
+                    data-observacoes={conta.banco_observacoes || 'Sem observações'}>
+                    <span className="text-responsive">
+                      {conta.status}
+                    </span>
+                    <span className="icon-responsive">
+                      {conta.status === 'Pago' ? (
+                        <CheckCircleIcon />
+                      ) : conta.status === 'Pendente' ? (
+                        <HighlightOffIcon />
+                      ) : (
+                        <CancelIcon />
+                      )}
+                    </span>
                   </span>
                 </td>
                 <td className={styles.actionsCell}>
                   <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
-                    Ver
+                    <span className="icon-responsive">
+                      <VisibilityIcon />
+                    </span>
+                    <span className="text-responsive">Ver</span>
                   </button>
                   <button type="button" className={styles.deleteButton} onClick={() => openConfirm(conta.id)}>
-                    Excluir
+                    <span className="icon-responsive">
+                      <DeleteIcon />
+                    </span>
+                    <span className="text-responsive">Excluir</span>
                   </button>
                   {conta.status === 'Pendente' ? (
                     <button
@@ -143,7 +169,10 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                       className={styles.payButton}
                       onClick={() => handleStartPayment(conta)}
                     >
-                      Pagar
+                      <span className="icon-responsive">
+                        <MonetizationOnIcon />
+                      </span>
+                      <span className="text-responsive">Pagar</span>
                     </button>
                   ) : null}
                 </td>
@@ -175,7 +204,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
         onCancel={() => setConfirmOpen(false)}
       />
 
-    <style jsx>{`
+      <style jsx>{`
     .status:hover::after {
       content: attr(data-observacoes);
       position: absolute;

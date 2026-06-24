@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../styles/contas.module.css';
 import { formatMonthName } from '../utils/date';
 import { capitalize } from '../utils/captalize';
+import BackupIcon from '@mui/icons-material/Backup';
 
 interface ContasAPagarHeaderProps {
   ano: number;
@@ -41,6 +42,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
           </select>
         </label>
         <button type="button" onClick={handleBackup} className={styles.backupButton}>
+          <BackupIcon />
           Backup Anual
         </button>
       </div>

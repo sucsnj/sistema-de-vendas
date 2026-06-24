@@ -104,7 +104,7 @@ a {
   padding: 12px;
   margin: 10px 0px;
   box-shadow: var(--shadow);
-  
+
   overflow-x: auto;
   display: block;
   max-width: 100%;
@@ -316,8 +316,61 @@ h2 {
   display: none;
 }
 
+.math-buttons {
+  display: flex;
+  gap: 8px; /* espaço entre os botões */
+}
+
+.math-button {
+  width: 48px;       /* largura fixa */
+  height: 48px;      /* altura fixa */
+  font-size: 1.2rem; /* tamanho do símbolo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.math-button span {
+  display: inline-block;
+  min-width: 32px;
+  transform: scale(1.0);
+}
+
+.math-button:hover {
+  background: var(--surface-strong);
+  transform: translateY(-1px);
+}
+
+/* Define a visibilidade dos ícones */
+.icon-responsive {
+  display: none;
+}
+
+.material-icon {
+  margin-right: 4px;
+}
+
+/* input do resgistrar venda */
+.flex-grow-1 {
+  font-size: 1.8rem !important;
+}
+
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
+
+  .icon-responsive {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .text-responsive {
+    display: none;
+  }
 
   .glass-form,
   .chart-container,
@@ -433,7 +486,8 @@ h2 {
     overflow-wrap: break-word;
   }
 
-    th, td {
+  th,
+  td {
     padding: 12px;
     font-size: 0.75rem;
   }

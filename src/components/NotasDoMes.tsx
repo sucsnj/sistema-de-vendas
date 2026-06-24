@@ -4,6 +4,7 @@ import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/not
 import { formatCurrency } from '../utils/formatter';
 import { formatDate, getCurrentYear } from '../utils/date';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -97,7 +98,10 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
                                     <button onClick={() => openConfirm(n.id)} className="delete-btn">
-                                        Excluir
+                                        <span className="icon-responsive">
+                                            <DeleteIcon />
+                                        </span>
+                                        <span className="text-responsive">Excluir</span>
                                     </button>
                                 </td>
                             </tr>

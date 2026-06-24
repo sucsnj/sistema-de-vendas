@@ -15,6 +15,8 @@ import {
 } from '../services/vendasService';
 import { capitalize } from '../utils/captalize';
 import { canEdit } from '../utils/edit';
+import BackupIcon from '@mui/icons-material/Backup';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -221,8 +223,14 @@ const Home: React.FC = () => {
                 onChange={(e) => setAno(parseInt(e.target.value))}
               />
             </label>
-            <button className="headerButton" onClick={handleConsolidate}>Consolidar Mês</button>
-            <button className="headerBackupButton" onClick={handleBackup}>Fazer Backup</button>
+            <button className="headerButton" onClick={handleConsolidate}>
+              <DoneAllIcon />
+              Consolidar Mês
+            </button>
+            <button className="headerBackupButton" onClick={handleBackup}>
+              <BackupIcon />
+              Fazer Backup
+            </button>
           </div>
         </div>
         <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />

@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 
 interface ContasAPagarFormProps {
   distribuidora: string;
@@ -90,11 +93,15 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
         />
       </label>
       <div className={styles.formActions}>
-        <button type="submit">{editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
+        <button type="submit">
+          <NoteAddIcon className="material-icon" />
+          {editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
         <button type="button" className={styles.secondary} onClick={onReset}>
+          <ClearAllIcon className="material-icon" />
           Limpar Campos
         </button>
         <button type="button" className={styles.secondary} onClick={onImportXML}>
+          <ImportExportIcon className="material-icon" />
           Importar XML
         </button>
         {editingConta ? (

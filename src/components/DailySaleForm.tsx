@@ -4,6 +4,10 @@ import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
 import { validateCurrency, validateDate } from '../utils/validation';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ClearIcon from '@mui/icons-material/Clear';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -182,46 +186,47 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 value={selectedDate}
                 onChange={(e) => onDateChange(e.target.value)}
                 required
+                className="flex-grow-1"
               />
             </label>
-              <div className="math-buttons">
-                <button
-                  type="button"
-                  className="math-button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => addOperator('+')}
-                >
-                  +
-                </button>
-                <button
-                  type="button"
-                  className="math-button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => addOperator('-')}
-                >
-                  -
-                </button>
-                <button
-                  type="button"
-                  className="math-button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => addOperator('*')}
-                >
-                  ×
-                </button>
-                <button
-                  type="button"
-                  className="math-button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => addOperator('/')}
-                >
-                  ÷
-                </button>
-              </div>
+            <div className="math-buttons">
+              <button
+                type="button"
+                className="math-button"
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+                onClick={() => addOperator('+')}
+              >
+                <span>+</span>
+              </button>
+              <button
+                type="button"
+                className="math-button"
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+                onClick={() => addOperator('-')}
+              >
+                <span>-</span>
+              </button>
+              <button
+                type="button"
+                className="math-button"
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+                onClick={() => addOperator('*')}
+              >
+                <span>×</span>
+              </button>
+              <button
+                type="button"
+                className="math-button"
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+                onClick={() => addOperator('/')}
+              >
+                <span>÷</span>
+              </button>
+            </div>
             <label>
               Valor:
               <div className="flex-center-gap">
@@ -240,15 +245,16 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   className="flex-grow-1"
                 />
               </div>
-                <span className="display-value">
-                  {formatCurrency(calculatedValue ?? 0, 2)}
-                </span>
+              <span className="display-value">
+                {formatCurrency(calculatedValue ?? 0, 2)}
+              </span>
             </label>
             <label>
               Observações:
               <textarea
                 value={observacoes}
                 onChange={(e) => setObservacoes(e.target.value)}
+                className="flex-grow-1"
               />
             </label>
             <button type="submit" disabled={loading}>

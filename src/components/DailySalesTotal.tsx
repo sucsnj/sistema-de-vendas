@@ -3,6 +3,8 @@ import { VendaDiaria } from '../services/vendasService';
 import { formatCurrency } from '../utils/formatter';
 import { formatDateString } from '../utils/date';
 import { canEdit } from '../utils/edit';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface DailySalesTotalProps {
   sales: VendaDiaria[];
@@ -120,7 +122,10 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                                 type="button"
                                 onClick={() => onEditSale(sale)}
                               >
-                                Editar
+                                <span className="icon-responsive">
+                                  <EditIcon />
+                                </span>
+                                <span className="text-responsive">Editar</span>
                               </button>
                             )}
 
@@ -129,7 +134,10 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                                 type="button"
                                 onClick={() => onDeleteSale(sale.id)}
                               >
-                                Excluir
+                                <span className="icon-responsive">
+                                  <DeleteIcon />
+                                </span>
+                                <span className="text-responsive">Excluir</span>
                               </button>
                             )}
                           </>

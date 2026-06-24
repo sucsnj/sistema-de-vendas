@@ -6,6 +6,8 @@ import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import { canEdit } from '../utils/edit';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -105,12 +107,18 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
                     <>
                       {onEditSale ? (
                         <button type="button" className={styles.editButton} onClick={() => onEditSale(sale)}>
-                          Editar
+                          <span className="icon-responsive">
+                            <EditIcon />
+                          </span>
+                          <span className="text-responsive">Editar</span>
                         </button>
                       ) : null}
                       {onDeleteSale ? (
                         <button type="button" className={`${styles.deleteButton} button-spacing-small`} onClick={() => openConfirm(sale.id)}>
-                          Excluir
+                          <span className="icon-responsive">
+                            <DeleteIcon />
+                          </span>
+                          <span className="text-responsive">Excluir</span>
                         </button>
                       ) : null}
                     </>

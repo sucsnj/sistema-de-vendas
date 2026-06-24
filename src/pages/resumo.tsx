@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { capitalize } from '../utils/captalize';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
 dayjs.locale('pt-br');
 
 // Componente React.
@@ -90,7 +91,10 @@ const Resumo: React.FC = () => {
                   <td>R$ {formatCurrency(m.total, 2)}</td>
                   <td>
                     <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
-                      Excluir
+                      <span className="icon-responsive">
+                        <DeleteIcon />
+                      </span>
+                      <span className="text-responsive">Excluir</span>
                     </button>
                   </td>
                 </tr>
