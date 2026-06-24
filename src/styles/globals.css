@@ -104,6 +104,10 @@ a {
   padding: 12px;
   margin: 10px 0px;
   box-shadow: var(--shadow);
+  
+  overflow-x: auto;
+  display: block;
+  max-width: 100%;
 }
 
 .top-bar {
@@ -196,13 +200,6 @@ a {
   background: var(--accent);
   color: white;
   margin-bottom: 0px;
-}
-
-@media (max-width: 900px) {
-  .page-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }
 
 button {
@@ -356,6 +353,14 @@ h2 {
   }
 }
 
+/* Responsividade para 900px */
+@media (max-width: 900px) {
+  .page-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /* Responsividade para 840px */
 @media (max-width: 840px) {
 
@@ -385,6 +390,7 @@ h2 {
   td {
     padding: 5px;
     font-size: 0.7rem;
+    white-space: nowrap;
   }
 
   h2 {
@@ -404,14 +410,16 @@ h2 {
 
 /* Responsividade para 630px */
 @media (max-width: 630px) {
+
   html,
   body {
     font-size: 1.2rem;
   }
 }
 
-/* Responsividade para 520px */
+/* Responsividade para 480px */
 @media (max-width: 480px) {
+
   html,
   body {
     font-size: 1.4rem;
@@ -424,10 +432,16 @@ h2 {
   .history-item {
     overflow-wrap: break-word;
   }
+
+    th, td {
+    padding: 12px;
+    font-size: 0.75rem;
+  }
 }
 
 /* Responsividade para 436px */
 @media (max-width: 436px) {
+
   html,
   body {
     font-size: 1.2rem;

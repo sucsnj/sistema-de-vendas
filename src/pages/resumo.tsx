@@ -60,42 +60,44 @@ const Resumo: React.FC = () => {
     <div className="container-padding">
       <h1>Resumo Mensal</h1>
       <div className="glass-form">
-        <table className="table-container">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Ticket Médio</th>
-              <th>Média de clientes</th>
-              <th>Melhor dia</th>
-              <th>Valor do melhor dia</th>
-              <th>Maior venda</th>
-              <th>Quantidade de vendas</th>
-              <th>Total</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mensais.map((m) => (
-              <tr key={m.id}>
-                <td>{capitalize(dayjs().month(m.mes - 1).format('MMMM'))} - {m.ano}</td>
-                <td>R$ {formatCurrency(m.ticketMedio, 2)}</td>
-                <td>{formatCurrency(m.mediaClientes)}</td>
-                <td>
-                  {`${dayjs(m.melhorDia).format('D')} - ${capitalize(dayjs(m.melhorDia).locale('pt-br').format('dddd'))}`}
-                </td>
-                <td>R$ {formatCurrency(m.melhorDiaValor, 2)}</td>
-                <td>R$ {formatCurrency(m.maiorVenda, 2)}</td>
-                <td>{m.qtdVendas}</td>
-                <td>R$ {formatCurrency(m.total, 2)}</td>
-                <td>
-                  <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
-                    Excluir
-                  </button>
-                </td>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Ticket Médio</th>
+                <th>Média de clientes</th>
+                <th>Melhor dia</th>
+                <th>Valor do melhor dia</th>
+                <th>Maior venda</th>
+                <th>Quantidade de vendas</th>
+                <th>Total</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {mensais.map((m) => (
+                <tr key={m.id}>
+                  <td>{capitalize(dayjs().month(m.mes - 1).format('MMMM'))} - {m.ano}</td>
+                  <td>R$ {formatCurrency(m.ticketMedio, 2)}</td>
+                  <td>{formatCurrency(m.mediaClientes)}</td>
+                  <td>
+                    {`${dayjs(m.melhorDia).format('D')} - ${capitalize(dayjs(m.melhorDia).locale('pt-br').format('dddd'))}`}
+                  </td>
+                  <td>R$ {formatCurrency(m.melhorDiaValor, 2)}</td>
+                  <td>R$ {formatCurrency(m.maiorVenda, 2)}</td>
+                  <td>{m.qtdVendas}</td>
+                  <td>R$ {formatCurrency(m.total, 2)}</td>
+                  <td>
+                    <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ConfirmDialog
