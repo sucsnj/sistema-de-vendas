@@ -3,12 +3,6 @@ import '../styles/globals.css';
 import Nav from '../components/Nav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Head from 'next/head';
-import fs from 'fs';
-
-// Cria a pasta db caso não exista.
-if (!fs.existsSync('db')) {
-  fs.mkdirSync('db');
-}
 
 const queryClient = new QueryClient();
 
