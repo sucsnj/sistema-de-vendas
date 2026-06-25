@@ -4,6 +4,11 @@ import styles from '@/styles/nav.module.css';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import TuneIcon from '@mui/icons-material/Tune';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import HistoryIcon from '@mui/icons-material/History';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import TableChartIcon from '@mui/icons-material/TableChart';
 
 // Componente React.
 const Nav: React.FC = () => {
@@ -39,15 +44,30 @@ const Nav: React.FC = () => {
   return (
     <nav className={styles.nav}>
       <div className={styles.navLinks}>
-        <Link href="/">Dashboard</Link>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/"><DashboardIcon /></Link></span>
+          <span className="text-responsive"><Link href="/">Dashboard</Link></span>
+        </div>
         <span>·</span>
-        <Link href="/resumo">Resumo Mensal</Link>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/resumo"><BarChartIcon /></Link></span>
+          <span className="text-responsive"><Link href="/resumo">Resumo Mensal</Link></span>
+        </div>
         <span>·</span>
-        <Link href="/historico">Histórico</Link>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/historico"><HistoryIcon /></Link></span>
+          <span className="text-responsive"><Link href="/historico">Histórico</Link></span>
+        </div>
         <span>·</span>
-        <Link href="/contas-a-pagar">Contas a pagar</Link>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/contas-a-pagar"><AccountBalanceIcon /></Link></span>
+          <span className="text-responsive"><Link href="/contas-a-pagar">Contas a pagar</Link></span>
+        </div>
         <span>·</span>
-        <Link href="/tabela">Tabela</Link>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/tabela"><TableChartIcon /></Link></span>
+          <span className="text-responsive"><Link href="/tabela">Tabela</Link></span>
+        </div>
       </div>
 
       <div className={styles.rightSide}>
