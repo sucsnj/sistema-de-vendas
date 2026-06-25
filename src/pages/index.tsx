@@ -182,6 +182,7 @@ const Home: React.FC = () => {
             <label>
               Observações:
               <textarea
+                className="flex-grow-edit-observacoes"
                 value={editObservacoes}
                 onChange={(e) => setEditObservacoes(e.target.value)}
               />

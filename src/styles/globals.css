@@ -374,6 +374,17 @@ h2 {
   font-size: 1.6rem !important;
 }
 
+.flex-grow-edit-observacoes {
+  font-size: 1.0rem !important;
+  width: 80%;
+  height: 100px;
+}
+
+.recent-sale-observacoes {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
 .buttons-wrapper {
   display: flex;
   justify-content: space-between;
