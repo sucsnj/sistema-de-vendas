@@ -4,10 +4,6 @@ import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
 import { validateCurrency, validateDate } from '../utils/validation';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import ClearIcon from '@mui/icons-material/Clear';
-import CloseIcon from '@mui/icons-material/Close';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -31,6 +27,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [valor, setValor] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [limpando, setLimpando] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
   const [toastOpen, setToastOpen] = useState(false);
@@ -107,6 +104,15 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  // botão para limpar valor e observações
+  const handleClear = () => {
+    setValor('');
+    setObservacoes('');
+    setCalculatedValue(0);
+    // manda o foco para o input de valor
+    valorInputRef.current?.focus();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,9 +265,21 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 placeholder={'Observações...'}
               />
             </label>
-            <button type="submit" disabled={loading}>
-              {loading ? 'Registrando...' : 'Registrar'}
-            </button>
+            <div className="buttons-wrapper">
+              <button
+                type="submit"
+                className='register-button'
+                disabled={loading}>
+                {loading ? 'Registrando...' : 'Registrar'}
+              </button>
+              <button
+                type="submit"
+                className='clear-button'
+                disabled={limpando}
+                onClick={handleClear}>
+                {limpando ? 'Limpando...' : 'Limpar'}
+              </button>
+            </div>
           </div>
 
           {showHistory ? (

@@ -374,6 +374,39 @@ h2 {
   font-size: 1.6rem !important;
 }
 
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-button {
+  width: 48px;       /* largura fixa */
+  height: 48px;      /* altura fixa */
+  font-size: 1.1rem; /* tamanho do símbolo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.clear-button {
+  width: 48px;       /* largura fixa */
+  height: 48px;      /* altura fixa */
+  font-size: 1.1rem; /* tamanho do símbolo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft) !important;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
 
