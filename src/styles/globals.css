@@ -361,9 +361,17 @@ h2 {
   margin-right: 4px;
 }
 
-/* input do resgistrar venda */
-.flex-grow-1 {
+/* inputs do resgistrar venda */
+.flex-grow-data {
+  font-size: 1.4rem !important;
+}
+
+.flex-grow-valor {
   font-size: 1.8rem !important;
+}
+
+.flex-grow-observacoes {
+  font-size: 1.6rem !important;
 }
 
 /* Responsividade para 1180px */

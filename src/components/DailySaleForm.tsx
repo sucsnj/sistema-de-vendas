@@ -180,13 +180,13 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         <div className="sale-form-grid">
           <div className="sale-form-fields">
             <label>
-              Data:
+              {/* Data:  */}
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => onDateChange(e.target.value)}
                 required
-                className="flex-grow-1"
+                className="flex-grow-data"
               />
             </label>
             <div className="math-buttons">
@@ -228,7 +228,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </button>
             </div>
             <label>
-              Valor:
+              {/* Valor: */}
               <div className="flex-center-gap">
                 <input
                   ref={valorInputRef}
@@ -242,7 +242,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   }}
                   required
                   autoFocus
-                  className="flex-grow-1"
+                  className="flex-grow-valor"
+                  placeholder={'Valor'}
                 />
               </div>
               <span className="display-value">
@@ -250,11 +251,12 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </span>
             </label>
             <label>
-              Observações:
+              {/* Observações: */}
               <textarea
                 value={observacoes}
                 onChange={(e) => setObservacoes(e.target.value)}
-                className="flex-grow-1"
+                className="flex-grow-observacoes"
+                placeholder={'Observações...'}
               />
             </label>
             <button type="submit" disabled={loading}>
