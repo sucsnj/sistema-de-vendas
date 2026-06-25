@@ -8,6 +8,7 @@ import { canEdit } from '../utils/edit';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -101,7 +102,18 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
                 <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
                 <td>{sale.data}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
-                <td>{sale.observacoes || '-'}</td>
+                <td>
+                  <Tooltip
+                    title={sale.observacoes || 'Sem observações'}
+                    enterTouchDelay={0}
+                    leaveTouchDelay={5000}
+                    classes={{ tooltip: styles.customTooltip }}
+                  >
+                    <span className={styles.hoverEllipsis}>
+                      {sale.observacoes || 'Sem observações'}
+                    </span>
+                  </Tooltip>
+                </td>
                 <td>
                   {canEdit(sale.data) ? (
                     <>
