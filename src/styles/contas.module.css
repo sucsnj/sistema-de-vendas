@@ -187,6 +187,8 @@
 
 .modalContent {
   width: min(560px, calc(100% - 32px));
+  max-height: 80vh; /* limita a altura ao viewport */
+  overflow-y: auto; /* ativa a rolagem vertical */
   background: var(--surface-strong);
   color: var(--foreground);
   border-radius: 20px;

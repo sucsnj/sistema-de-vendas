@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
@@ -54,6 +55,20 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
   onClosePayModal,
   onCancelPayment,
 }) => {
+
+  // adiciona classe modal-open ao body quando a modal estiver aberta
+  useEffect(() => {
+    if (selectedConta || payModalOpen) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [selectedConta, payModalOpen]);
+
   return (
     <>
       {selectedConta ? (

@@ -35,6 +35,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+  height: 100%; /* garante que não haja scroll residual */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
