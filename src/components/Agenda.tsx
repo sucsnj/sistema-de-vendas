@@ -128,6 +128,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
                     border: 1px solid var(--border);
                     border-radius: 22px;
                     padding: 20px;
+                    margin-bottom: 15px;
                     min-height: 220px;
                 }
 

@@ -238,6 +238,7 @@
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 22px;
+  margin-bottom: 15px;
   box-shadow: var(--shadow);
   min-width: 0;
 }
