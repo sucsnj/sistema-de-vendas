@@ -47,6 +47,9 @@ const ContasAPagar: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
   const distribuidoraInputRef = useRef<HTMLInputElement | null>(null);
+  const valorInputRef = useRef<HTMLInputElement | null>(null);
+  const dataInputRef = useRef<HTMLInputElement | null>(null);
+  const documentoInputRef = useRef<HTMLInputElement | null>(null);
 
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState('');
@@ -117,27 +120,45 @@ const ContasAPagar: React.FC = () => {
     setEditingConta(null);
   };
 
+  const highlightField = (ref: React.RefObject<HTMLInputElement | null>) => {
+    const input = ref.current;
+    if (!input) return;
+
+    input.focus();
+
+    input.classList.add(styles.errorHighlight);
+
+    setTimeout(() => {
+      input.classList.remove(styles.errorHighlight);
+    }, 400);
+  };
+
+  // Adiciona classe para validação de campos obrigatórios
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Validações para campos vazios
     if (!distribuidora.trim()) {
       showToast('Informe a distribuidora.', 'error');
-      distribuidoraInputRef.current?.focus();
+      highlightField(distribuidoraInputRef);
       return;
     }
 
     if (!valor.trim()) {
       showToast('Informe o valor.', 'error');
+      highlightField(valorInputRef);
       return;
     }
 
     if (!vencimento) {
       showToast('Informe a data de vencimento.', 'error');
+      highlightField(dataInputRef);
       return;
     }
 
     if (!documento.trim()) {
       showToast('Informe o documento.', 'error');
+      highlightField(documentoInputRef);
       return;
     }
 
@@ -379,6 +400,9 @@ const ContasAPagar: React.FC = () => {
             onImportXML={handleImportXML}
             onCancelarEdicao={handleCancelarEdicao}
             distribuidoraInputRef={distribuidoraInputRef}
+            valorInputRef={valorInputRef}
+            dataInputRef={dataInputRef}
+            documentoInputRef={documentoInputRef}
           />
 
           <ContasAPagarLastTen

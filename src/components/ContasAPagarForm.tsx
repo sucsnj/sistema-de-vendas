@@ -22,6 +22,9 @@ interface ContasAPagarFormProps {
   onImportXML: () => Promise<void>;
   onCancelarEdicao: () => void;
   distribuidoraInputRef: React.RefObject<HTMLInputElement | null>;
+  valorInputRef: React.RefObject<HTMLInputElement | null>;
+  dataInputRef: React.RefObject<HTMLInputElement | null>;
+  documentoInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
@@ -41,6 +44,9 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
   onImportXML,
   onCancelarEdicao,
   distribuidoraInputRef,
+  valorInputRef,
+  dataInputRef,
+  documentoInputRef,
 }) => {
   return (
     <form onSubmit={onSubmit} className={styles.contasForm}>
@@ -57,6 +63,7 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
         <label>
           Valor
           <input
+            ref={valorInputRef}
             type="number"
             step="0.01"
             value={valor}
@@ -66,6 +73,7 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
         <label>
           Vencimento
           <input
+            ref={dataInputRef}
             type="date"
             value={vencimento}
             onChange={(e) => setVencimento(e.target.value)}
@@ -74,6 +82,7 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
         <label>
           Documento
           <input
+            ref={documentoInputRef}
             type="text"
             value={documento}
             onChange={(e) => setDocumento(e.target.value)}

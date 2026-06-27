@@ -160,10 +160,14 @@
   border: 1px solid var(--border);
   color: var(--foreground);
 
-  display: inline-flex;       /* ativa flexbox */
-  align-items: center;        /* centraliza verticalmente */
-  justify-content: center;    /* centraliza horizontalmente */
-  gap: 8px;                   /* espaço entre ícone e texto */
+  display: inline-flex;
+  /* ativa flexbox */
+  align-items: center;
+  /* centraliza verticalmente */
+  justify-content: center;
+  /* centraliza horizontalmente */
+  gap: 8px;
+  /* espaço entre ícone e texto */
 }
 
 .lastTenPanel {
@@ -177,7 +181,8 @@
 
 .observacoesCell {
   display: inline-block;
-  max-width: 200px; /* limite de largura */
+  max-width: 200px;
+  /* limite de largura */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -197,8 +202,10 @@
 
 .modalContent {
   width: min(560px, calc(100% - 32px));
-  max-height: 80vh; /* limita a altura ao viewport */
-  overflow-y: auto; /* ativa a rolagem vertical */
+  max-height: 80vh;
+  /* limita a altura ao viewport */
+  overflow-y: auto;
+  /* ativa a rolagem vertical */
   background: var(--surface-strong);
   color: var(--foreground);
   border-radius: 20px;
@@ -243,7 +250,7 @@
   min-width: 0;
 }
 
-.contasPanel > * {
+.contasPanel>* {
   min-width: 0;
 }
 
@@ -307,10 +314,14 @@
   cursor: pointer;
   font-weight: 700;
 
-  display: inline-flex;       /* ativa flexbox */
-  align-items: center;        /* centraliza verticalmente */
-  justify-content: center;    /* centraliza horizontalmente */
-  gap: 8px;                   /* espaço entre ícone e texto */
+  display: inline-flex;
+  /* ativa flexbox */
+  align-items: center;
+  /* centraliza verticalmente */
+  justify-content: center;
+  /* centraliza horizontalmente */
+  gap: 8px;
+  /* espaço entre ícone e texto */
 }
 
 .formActions button:first-of-type {
@@ -339,8 +350,8 @@
   min-width: 0;
 }
 
-.filterBar > div,
-.formRow > label,
+.filterBar>div,
+.formRow>label,
 .actionsCell {
   min-width: 0;
 }
@@ -488,6 +499,19 @@
   border-color: #1e1e1e transparent transparent transparent;
 }
 
+/* erros de preenchimento */
+.errorHighlight {
+  border-color: red !important;
+  animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
 
 @media (max-width: 1180px) {
   .contasGrid {
@@ -654,10 +678,12 @@
 }
 
 @media (max-width: 436px) {
+
   :global(html),
   :global(body) {
     font-size: 12px;
   }
+
   .detailTable {
     min-width: unset;
     display: block;
