@@ -119,8 +119,25 @@ const ContasAPagar: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!distribuidora || !valor || !vencimento || !documento) {
-      showToast('Preencha todos os campos obrigatórios.', 'error');
+
+    if (!distribuidora.trim()) {
+      showToast('Informe a distribuidora.', 'error');
+      distribuidoraInputRef.current?.focus();
+      return;
+    }
+
+    if (!valor.trim()) {
+      showToast('Informe o valor.', 'error');
+      return;
+    }
+
+    if (!vencimento) {
+      showToast('Informe a data de vencimento.', 'error');
+      return;
+    }
+
+    if (!documento.trim()) {
+      showToast('Informe o documento.', 'error');
       return;
     }
 

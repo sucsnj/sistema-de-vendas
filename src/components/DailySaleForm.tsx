@@ -117,15 +117,32 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       // Validar data e valor antes de enviar
       const dateOk = validateDate(selectedDate);
       const valueFromInput = calculatedValue !== null ? calculatedValue : validateCurrency(valor);
-      if (!dateOk || valueFromInput == null) {
-        showToast('Data ou valor inválido.', 'error');
+      if (!dateOk) {
+        showToast('Data inválida.', 'error');
         setLoading(false);
         return;
       }
+
+      // Toast para o campo valor vazio
+      if (!valor.trim()) {
+        showToast('Informe o valor da venda.', 'error');
+        setLoading(false);
+        valorInputRef.current?.focus();
+        return;
+      }
+
+      // Toast para o campo valor inválido
+      if (valueFromInput == null) {
+        showToast('Valor inválido.', 'error');
+        setLoading(false);
+        return;
+      }
+
       await registrarVenda(
         selectedDate,
         valueFromInput,
@@ -191,7 +208,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 type="date"
                 value={selectedDate}
                 onChange={(e) => onDateChange(e.target.value)}
-                required
                 className="flex-grow-data"
               />
             </label>
@@ -246,7 +262,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                     setValor(e.target.value);
                     calculateValue(e.target.value);
                   }}
-                  required
                   autoFocus
                   className="flex-grow-valor"
                   placeholder={'Valor'}

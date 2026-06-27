@@ -52,7 +52,6 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
             type="text"
             value={distribuidora}
             onChange={(e) => setDistribuidora(e.target.value)}
-            required
           />
         </label>
         <label>
@@ -62,7 +61,6 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
             step="0.01"
             value={valor}
             onChange={(e) => setValor(e.target.value)}
-            required
           />
         </label>
         <label>
@@ -71,7 +69,6 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
             type="date"
             value={vencimento}
             onChange={(e) => setVencimento(e.target.value)}
-            required
           />
         </label>
         <label>
@@ -80,7 +77,6 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
             type="text"
             value={documento}
             onChange={(e) => setDocumento(e.target.value)}
-            required
           />
         </label>
       </div>
