@@ -273,7 +273,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 {loading ? 'Registrando...' : 'Registrar'}
               </button>
               <button
-                type="submit"
+                type="button"
                 className='clear-button'
                 disabled={limpando}
                 onClick={handleClear}>
