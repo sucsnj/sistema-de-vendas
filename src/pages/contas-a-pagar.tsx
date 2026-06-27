@@ -21,6 +21,7 @@ import {
   registrarConta,
   ContaDetalhe,
 } from '../services/contasService';
+import { highlightField } from '../utils/forms';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -120,20 +121,6 @@ const ContasAPagar: React.FC = () => {
     setEditingConta(null);
   };
 
-  const highlightField = (ref: React.RefObject<HTMLInputElement | null>) => {
-    const input = ref.current;
-    if (!input) return;
-
-    input.focus();
-
-    input.classList.add(styles.errorHighlight);
-
-    setTimeout(() => {
-      input.classList.remove(styles.errorHighlight);
-    }, 400);
-  };
-
-  // Adiciona classe para validação de campos obrigatórios
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 

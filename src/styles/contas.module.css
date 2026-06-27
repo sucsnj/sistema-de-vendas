@@ -499,20 +499,6 @@
   border-color: #1e1e1e transparent transparent transparent;
 }
 
-/* erros de preenchimento */
-.errorHighlight {
-  border-color: red !important;
-  animation: shake 0.35s ease;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-}
-
 @media (max-width: 1180px) {
   .contasGrid {
     grid-template-columns: 1fr;
