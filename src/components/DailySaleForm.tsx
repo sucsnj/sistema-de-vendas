@@ -325,7 +325,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
         .sale-form-grid {
           display: grid;
-          grid-template-columns: 1.5fr 1fr;
+          grid-template-columns: 1.5fr 0.1fr;
           gap: 24px;
           align-items: start;
           margin-top: 20px;
