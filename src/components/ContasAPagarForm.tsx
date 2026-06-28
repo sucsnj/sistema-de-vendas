@@ -64,7 +64,6 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
           Valor
           <input
             ref={valorInputRef}
-            type="number"
             step="0.01"
             value={valor}
             onChange={(e) => setValor(e.target.value)}

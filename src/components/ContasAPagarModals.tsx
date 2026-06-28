@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
+import { useShortcuts } from '../utils/shortcuts';
 
 interface ContasAPagarModalsProps {
   selectedConta: ContaDetalhe | null;
@@ -69,10 +70,25 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
     };
   }, [selectedConta, payModalOpen]);
 
+  // Fecha o modal ao pressionar esc
+  useShortcuts(['Escape'], () => {
+    // Se o modal de edição estiver aberto, fecha
+    if (editingConta) {
+      onCancelEdit();
+      return;
+    }
+
+    // Se o modal principal estiver aberto, fecha
+    if (selectedConta) {
+      onCloseSelectedConta();
+      return;
+    }
+  });
+
   return (
     <>
       {selectedConta ? (
-        <div className={styles.modalOverlay} onClick={onCloseSelectedConta}>
+        <div className={styles.modalOverlay} >
           <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
             <h2>
               Detalhes da conta

@@ -4,6 +4,8 @@ import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
 import { validateCurrency, validateDate } from '../utils/validation';
+import { useShortcuts } from '../utils/shortcuts';
+import { highlightField } from '../utils/forms';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -89,21 +91,10 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     .slice(0, 4);
 
   // apagar se pressionar esc no teclado
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setCalculatedValue(0); // limpa o somatório
-        event.preventDefault();
-        setValor('');
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  useShortcuts(['Escape'], () => {
+    setCalculatedValue(0); // limpa o somatório
+    setValor('');
+  });
 
   // botão para limpar valor e observações
   const handleClear = () => {
@@ -131,6 +122,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       // Toast para o campo valor vazio
       if (!valor.trim()) {
         showToast('Informe o valor da venda.', 'error');
+        highlightField(valorInputRef);
         setLoading(false);
         valorInputRef.current?.focus();
         return;
@@ -138,6 +130,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
       // Toast para o campo valor inválido
       if (valueFromInput == null) {
+        highlightField(valorInputRef);
         showToast('Valor inválido.', 'error');
         setLoading(false);
         return;

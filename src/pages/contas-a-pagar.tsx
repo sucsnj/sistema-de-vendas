@@ -22,6 +22,7 @@ import {
   ContaDetalhe,
 } from '../services/contasService';
 import { highlightField } from '../utils/forms';
+import { useShortcuts } from '../utils/shortcuts';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
@@ -133,6 +134,13 @@ const ContasAPagar: React.FC = () => {
 
     if (!valor.trim()) {
       showToast('Informe o valor.', 'error');
+      highlightField(valorInputRef);
+      return;
+    }
+
+    // Se valor não for um número
+    if (isNaN(Number(valor))) {
+      showToast('Informe um número válido.', 'error');
       highlightField(valorInputRef);
       return;
     }
@@ -331,6 +339,11 @@ const ContasAPagar: React.FC = () => {
       })
       .slice(0, 10);
   }, [contasAno]);
+
+  // Limpa formulário de registro de conta ao pressionar esc
+  useShortcuts(['Escape'], () => {
+    resetForm();
+  });
 
   return (
     <div className={styles.contasPage}>
