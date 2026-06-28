@@ -54,7 +54,7 @@ export const saveTabelaSearchHistory = (query: string, normalizedQuery: string, 
 // Constante exportada com função.
 export const getRecentTabelaSearchHistory = () => {
   const stmt = db.prepare(
-    'SELECT id, query, result_count, updated_at FROM tabela_search_history ORDER BY updated_at DESC LIMIT 100'
+    'SELECT id, query, result_count, updated_at FROM tabela_search_history ORDER BY updated_at DESC LIMIT 25'
   );
   return stmt.all();
 };
@@ -70,7 +70,7 @@ const pruneTabelaSearchHistory = () => {
   const stmt = db.prepare(
     `DELETE FROM tabela_search_history
      WHERE id NOT IN (
-       SELECT id FROM tabela_search_history ORDER BY updated_at DESC LIMIT 100
+       SELECT id FROM tabela_search_history ORDER BY updated_at DESC LIMIT 25
      )`
   );
   return stmt.run();

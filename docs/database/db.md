@@ -7,7 +7,7 @@ Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persi
 ## Responsabilidades
 
 - Inicializar conexão SQLite.
-- Criar tabelas `vendas_diarias` e `vendas_mensais`.
+- Criar tabelas `vendas_diarias`, `vendas_diarias_especiais` e `vendas_mensais`.
 - Inserir, buscar, atualizar e excluir vendas diárias.
 - Calcular métricas mensais e consolidar dados em `vendas_mensais`.
 - Criar backup do banco de vendas.
@@ -15,6 +15,7 @@ Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persi
 ## Funções Principais
 
 - `insertDailySale(data, valor, observacoes, criado_em)`
+- `insertSpecialSale(data, valor, observacoes, criado_em)`
 - `getDailySales(mes, ano)`
 - `getDailySaleById(id)`
 - `updateDailySale(id, data, valor, observacoes)`
@@ -29,4 +30,4 @@ Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persi
 
 - Usa `date-fns-tz` para gerar timestamp local em `America/Recife`.
 - A lógica de cálculo de métricas está encapsulada em funções auxiliares locais.
-- O backup grava arquivo `.db` no diretório do projeto.
+- O backup grava arquivo `.db` no diretório db do projeto.

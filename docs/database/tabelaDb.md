@@ -21,5 +21,5 @@ Módulo de persistência para histórico de buscas na tabela de medicamentos. Us
 
 ## Observações
 
-- O módulo mantém o histórico restrito às 100 consultas mais recentes.
+- O módulo mantém o histórico restrito às 25 consultas mais recentes.
 - Armazena resultados como JSON bruto, o que facilita o cache, mas pode ser pesado.
