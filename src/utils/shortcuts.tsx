@@ -1,6 +1,8 @@
 // shortcuts.tsx
 import { useEffect } from 'react';
 
+type ShortcutHandler = (event: KeyboardEvent) => void;
+
 // Função para adicionar atalhos de teclado
 const useShortcuts = (shortcuts: string[], callback: (shortcut: string) => void) => {
     useEffect(() => {
@@ -20,4 +22,20 @@ const useShortcuts = (shortcuts: string[], callback: (shortcut: string) => void)
     }, [shortcuts, callback]);
 };
 
-export { useShortcuts };
+
+const useShortcutsHanlers = (handlers: Record<string, ShortcutHandler>) => {
+    useEffect(() => {
+        const handleShortcut = (event: KeyboardEvent) => {
+            const handler = handlers[event.key];
+            if (handler) {
+                event.preventDefault();
+                handler(event);
+            }
+        };
+
+        document.addEventListener('keydown', handleShortcut);
+        return () => document.removeEventListener('keydown', handleShortcut);
+    }, [handlers]);
+};
+
+export { useShortcuts, useShortcutsHanlers };

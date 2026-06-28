@@ -5,6 +5,7 @@ import { formatDateString } from '../utils/date';
 import { canEdit } from '../utils/edit';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useShortcuts } from '../utils/shortcuts';
 
 interface DailySalesTotalProps {
   sales: VendaDiaria[];
@@ -26,24 +27,17 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   const dailyCount = dailySales.length;
   const dailyAverage = dailyCount > 0 ? dailyTotal / dailyCount : 0;
 
-  useEffect(() => {
-    const handleDeleteKey = (event: KeyboardEvent) => {
-      if (event.key === 'Delete' && recentSales.length > 0 && onDeleteSale) {
-        const ultimaVenda = [...recentSales]
-          .sort((a, b) => b.id - a.id)[0];
+  // Deleta a última venda do histórico de vendas
+  useShortcuts(['Delete'], () => {
+    if (recentSales.length > 0 && onDeleteSale) {
+      const ultimaVenda = [...recentSales]
+        .sort((a, b) => b.id - a.id)[0];
 
-        if (ultimaVenda) {
-          onDeleteSale(ultimaVenda.id);
-        }
+      if (ultimaVenda) {
+        onDeleteSale(ultimaVenda.id);
       }
-    };
-
-    window.addEventListener('keydown', handleDeleteKey);
-
-    return () => {
-      window.removeEventListener('keydown', handleDeleteKey);
-    };
-  }, [recentSales, onDeleteSale]);
+    }
+  });
 
   return (
     <div className="daily-sales-total">

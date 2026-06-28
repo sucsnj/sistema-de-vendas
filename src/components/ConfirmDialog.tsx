@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useShortcuts, useShortcutsHanlers } from '../utils/shortcuts';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -31,72 +32,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     nextFocus?.focus({ preventScroll: true });
   }, [open, showCancel]);
 
-  useEffect(() => {
+  useShortcuts(['Escape'], () => {
     if (!open) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        if (onCancel) onCancel();
-        else onConfirm();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, onCancel, onConfirm]);
-
-  const focusableButtons = [cancelButtonRef.current, confirmButtonRef.current].filter(Boolean) as HTMLButtonElement[];
-
-  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Tab') {
-      if (focusableButtons.length === 0) return;
-
-      const firstButton = focusableButtons[0];
-      const lastButton = focusableButtons[focusableButtons.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstButton) {
-        event.preventDefault();
-        lastButton.focus();
-      } else if (!event.shiftKey && document.activeElement === lastButton) {
-        event.preventDefault();
-        firstButton.focus();
-      }
-      return;
-    }
-
-    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-      if (focusableButtons.length < 2) return;
-      event.preventDefault();
-      const currentIndex = focusableButtons.findIndex(
-        (button) => button === document.activeElement,
-      );
-      const nextButton = focusableButtons[(currentIndex + 1) % focusableButtons.length];
-      nextButton?.focus();
-      return;
-    }
-
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-      if (focusableButtons.length < 2) return;
-      event.preventDefault();
-      const currentIndex = focusableButtons.findIndex(
-        (button) => button === document.activeElement,
-      );
-      const prevButton = focusableButtons[
-        (currentIndex - 1 + focusableButtons.length) % focusableButtons.length
-      ];
-      prevButton?.focus();
-      return;
-    }
-
-    if (event.key === 'Enter' || event.key === ' ') {
-      if (document.activeElement === confirmButtonRef.current) {
-        event.preventDefault();
-        onConfirm();
-      } else if (document.activeElement === cancelButtonRef.current) {
-        event.preventDefault();
-        onCancel?.();
-      }
-    }
-  };
+    if (onCancel) onCancel();
+    else onConfirm();
+  });
 
   if (!open) return null;
 
@@ -109,7 +49,6 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
         aria-describedby="confirm-dialog-message"
-        onKeyDown={handleDialogKeyDown}
         tabIndex={-1}
       >
         <h3 id="confirm-dialog-title">{title}</h3>
