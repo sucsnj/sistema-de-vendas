@@ -52,6 +52,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         aria-labelledby="confirm-dialog-title"
         aria-describedby="confirm-dialog-message"
         tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 id="confirm-dialog-title">{title}</h3>
         <p id="confirm-dialog-message">{message}</p>
