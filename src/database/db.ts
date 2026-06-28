@@ -27,6 +27,14 @@ try {
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
+    CREATE TABLE IF NOT EXISTS vendas_diarias_especiais (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      data TEXT NOT NULL,
+      valor REAL NOT NULL,
+      observacoes TEXT,
+      criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS vendas_mensais (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       mes INTEGER NOT NULL,
@@ -54,12 +62,43 @@ const getLocalTimestamp = () => {
 export const insertDailySale = (data: string, valor: number, observacoes?: string, criado_em?: string) => {
   try {
     if (!criado_em) {
+
+      if (valor <= 0) {
+        console.log('Venda ignorada: valor menor ou igual a zero');
+        return null; // não insere nada
+      }
+
       const criadoEm = getLocalTimestamp();
       const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
       const result = stmt.run(data, valor, observacoes || null, criadoEm);
       return result;
     } else {
       const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
+      const result = stmt.run(data, valor, observacoes || null, criado_em);
+      return result;
+    }
+  } catch (error) {
+    console.error('Erro ao inserir venda:', error);
+    throw error;
+  }
+};
+
+// Função para vendas especiais, com valor menor ou igual a zero.
+export const insertSpecialSale = (data: string, valor: number, observacoes?: string, criado_em?: string) => {
+  try {
+    if (!criado_em) {
+
+      if (valor > 0) {
+        console.log('Venda ignorada por ser uma venda comum');
+        return null; // não insere nada
+      }
+
+      const criadoEm = getLocalTimestamp();
+      const stmt = db.prepare('INSERT INTO vendas_diarias_especiais (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
+      const result = stmt.run(data, valor, observacoes || null, criadoEm);
+      return result;
+    } else {
+      const stmt = db.prepare('INSERT INTO vendas_diarias_especiais (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
       const result = stmt.run(data, valor, observacoes || null, criado_em);
       return result;
     }
@@ -76,7 +115,9 @@ export const getDailySales = (mes: number, ano: number) => {
     // Calcula o último dia do mês selecionado para limitar a consulta de vendas.
     const ultimoDia = new Date(ano, mes, 0).toISOString().split('T')[0];
 
-    const stmt = db.prepare('SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ? ORDER BY data DESC');
+    // const stmt = db.prepare('SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ? ORDER BY data DESC');
+    const stmt = db.prepare('SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ? AND valor > 0 ORDER BY data DESC');
+
     const sales = stmt.all(startDate, ultimoDia) as any[];
     console.log(`Buscando vendas de ${startDate} a ${ultimoDia}:`, sales.length, 'registros');
     return sales;

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
+import { insertDailySale, insertSpecialSale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
 import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -14,9 +14,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (!criado_em) {
-        insertDailySale(data, validValue, observacoes);
+        if (valor > 0) {
+          insertDailySale(data, validValue, observacoes);
+        } else {
+          insertSpecialSale(data, validValue, observacoes);
+        }
       } else {
-        insertDailySale(data, validValue, observacoes, criado_em);
+        if (valor > 0) {
+          insertDailySale(data, validValue, observacoes, criado_em);
+        } else {
+          insertSpecialSale(data, validValue, observacoes, criado_em);
+        }
       }
       res.status(200).json({ message: 'Venda registrada com sucesso' });
     } catch (error) {
