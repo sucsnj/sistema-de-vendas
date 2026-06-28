@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertDailySale, insertSpecialSale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
+import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
 import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -14,17 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (!criado_em) {
-        if (valor > 0) {
-          insertDailySale(data, validValue, observacoes);
-        } else {
-          insertSpecialSale(data, validValue, observacoes);
-        }
+        insertDailySale(data, validValue, observacoes);
       } else {
-        if (valor > 0) {
-          insertDailySale(data, validValue, observacoes, criado_em);
-        } else {
-          insertSpecialSale(data, validValue, observacoes, criado_em);
-        }
+        insertDailySale(data, validValue, observacoes, criado_em);
       }
       res.status(200).json({ message: 'Venda registrada com sucesso' });
     } catch (error) {
@@ -76,9 +68,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Erro ao excluir venda', details: String(error) });
     }
   } else if (req.method === 'GET') {
-    const { mes, ano } = req.query;
+    const { mes, ano, filtro } = req.query;
     try {
-      const sales = getDailySales(parseInt(mes as string), parseInt(ano as string));
+      // validação do filtro
+      const filtroValido = ['positivas', 'negativas', 'todas'].includes(filtro as string)
+        ? (filtro as 'positivas' | 'negativas' | 'todas')
+        : 'todas';
+
+      const sales = getDailySales(
+        parseInt(mes as string),
+        parseInt(ano as string),
+        filtroValido
+      );
       res.status(200).json(sales);
     } catch (error) {
       console.error('Erro na API GET /api/vendas:', error);

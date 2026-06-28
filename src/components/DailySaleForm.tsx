@@ -82,15 +82,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setCalculatedValue(null);
   };
 
-  const recentSales = [...sales]
-    .sort((a, b) => {
-      const dateA = new Date(`${a.data}T00:00:00`).getTime();
-      const dateB = new Date(`${b.data}T00:00:00`).getTime();
-      if (dateA !== dateB) return dateB - dateA;
-      return b.id - a.id;
-    })
-    .slice(0, 4);
-
   // apagar se pressionar esc no teclado
   useShortcuts(['Escape'], () => {
     setCalculatedValue(0); // limpa o somatório
@@ -300,39 +291,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             </div>
           </div>
 
-          {showHistory ? (
-            <div className="recent-history">
-              <h3>Últimas 4 vendas</h3>
-              {recentSales.length === 0 ? (
-                <p>Nenhuma venda registrada ainda.</p>
-              ) : (
-                <ul>
-                  {recentSales.map((sale) => (
-                    <li key={sale.id} className="recent-sale-item">
-                      <div>
-                        <strong>{sale.data}</strong> • R$ {sale.valor.toFixed(2)}
-                        <div className="recent-sale-observacoes">
-                          {sale.observacoes || 'Sem observações'}
-                        </div>
-                      </div>
-                      <div className="recent-sale-actions">
-                        {onEditSale ? (
-                          <button type="button" onClick={() => onEditSale(sale)}>
-                            Editar
-                          </button>
-                        ) : null}
-                        {onDeleteSale ? (
-                          <button type="button" onClick={() => onDeleteSale(sale.id)}>
-                            Excluir
-                          </button>
-                        ) : null}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : null}
         </div>
       </form>
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="local-top-right" />

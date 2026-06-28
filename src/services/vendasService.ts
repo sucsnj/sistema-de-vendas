@@ -52,8 +52,12 @@ export const registrarVendaComCriadoEm = async (
 };
 
 // Função assíncrona exportada.
-export const buscarVendasDiarias = async (mes: number, ano: number): Promise<VendaDiaria[]> => {
-  const response = await fetch(`/api/vendas?mes=${mes}&ano=${ano}`);
+export const buscarVendasDiarias = async (
+  mes: number,
+  ano: number,
+  filtro: 'positivas' | 'negativas' | 'todas' = 'todas'
+): Promise<VendaDiaria[]> => {
+  const response = await fetch(`/api/vendas?mes=${mes}&ano=${ano}&filtro=${filtro}`);
   return response.json();
 };
 

@@ -40,7 +40,7 @@ const Home: React.FC = () => {
   }, [mes, ano]);
 
   const loadSales = async () => {
-    const data = await buscarVendasDiarias(mes, ano);
+    const data = await buscarVendasDiarias(mes, ano, 'positivas');
     setSales(data);
 
     await autoConsolidar();

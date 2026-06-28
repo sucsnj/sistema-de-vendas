@@ -21,13 +21,21 @@ const Historico: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
   const editValorInputRef = useRef<HTMLInputElement | null>(null);
+  const [filtro, setFiltro] = useState<'todas' | 'positivas' | 'negativas'>('todas');
 
   useEffect(() => {
     loadSales();
-  }, [mes, ano]);
+  }, [mes, ano, filtro]);
 
   const loadSales = async () => {
-    const data = await buscarVendasDiarias(mes, ano);
+    const data = await buscarVendasDiarias(mes, ano, filtro);
+    setSales(data);
+  };
+
+  // Filtra as vendas por valor
+  const handleFiltro = async (value: 'todas' | 'positivas' | 'negativas') => {
+    setFiltro(value);
+    const data = await buscarVendasDiarias(mes, ano, value); // usa o novo valor diretamente
     setSales(data);
   };
 
@@ -120,6 +128,18 @@ const Historico: React.FC = () => {
                 onChange={(e) => setAno(parseInt(e.target.value))}
               />
             </label>
+            <div className="buttons-filter">
+              <button className="button-filter" onClick={() => handleFiltro('todas')}>
+                Todas
+              </button>
+              <button className="button-filter" onClick={() => handleFiltro('positivas')}>
+                Positivas
+              </button>
+              <button className="button-filter" onClick={() => handleFiltro('negativas')}>
+                Negativas
+              </button>
+
+            </div>
           </div>
         </div>
 
