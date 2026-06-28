@@ -432,6 +432,11 @@ h2 {
   80% { transform: translateX(4px); }
 }
 
+/* Foco no modal de dialog */
+body.modal-open {
+  overflow: hidden;
+}
+
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
 

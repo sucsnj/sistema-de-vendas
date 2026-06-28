@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useShortcuts, useShortcutsHanlers } from '../utils/shortcuts';
+import { useShortcuts } from '../utils/shortcuts';
+import { useFocusTrap } from '../utils/focus';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -26,11 +27,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const showCancel = Boolean(onCancel && cancelText);
 
-  useEffect(() => {
-    if (!open) return;
-    const nextFocus = showCancel ? cancelButtonRef.current : confirmButtonRef.current;
-    nextFocus?.focus({ preventScroll: true });
-  }, [open, showCancel]);
+  useFocusTrap(dialogRef, open);
 
   useShortcuts(['Escape'], () => {
     if (!open) return;
@@ -38,10 +35,15 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     else onConfirm();
   });
 
+  const onClose = () => {
+    if (onCancel) onCancel();
+    else onConfirm();
+  };
+
   if (!open) return null;
 
   const dialog = (
-    <div className="confirm-backdrop" role="presentation">
+    <div className="confirm-backdrop" role="presentation" onClick={onClose}>
       <div
         className="confirm-dialog"
         ref={dialogRef}

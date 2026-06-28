@@ -1,9 +1,10 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
 import { useShortcuts } from '../utils/shortcuts';
+import { useFocusTrap } from '../utils/focus';
 
 interface ContasAPagarModalsProps {
   selectedConta: ContaDetalhe | null;
@@ -57,18 +58,10 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
   onCancelPayment,
 }) => {
 
-  // adiciona classe modal-open ao body quando a modal estiver aberta
-  useEffect(() => {
-    if (selectedConta || payModalOpen) {
-      document.body.classList.add("modal-open");
-    } else {
-      document.body.classList.remove("modal-open");
-    }
+  const modalRef = useRef<HTMLDivElement>(null);
 
-    return () => {
-      document.body.classList.remove("modal-open");
-    };
-  }, [selectedConta, payModalOpen]);
+  // adiciona classe modal-open ao body quando a modal estiver aberta
+  useFocusTrap(modalRef, Boolean(selectedConta || payModalOpen));
 
   // Fecha o modal ao pressionar esc
   useShortcuts(['Escape'], () => {
@@ -85,11 +78,20 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
     }
   });
 
+  const onClose = () => {
+    onCloseSelectedConta();
+    onCancelEdit();
+  };
+
   return (
     <>
       {selectedConta ? (
-        <div className={styles.modalOverlay} >
-          <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
+        <div className={styles.modalOverlay} onClick={onClose}>
+          <div
+            ref={modalRef}
+            tabIndex={-1} // Permite foco na div do modal
+            className={styles.modalContent}
+            onClick={(event) => event.stopPropagation()}>
             <h2>
               Detalhes da conta
               {editingConta?.id === selectedConta.id ? (
@@ -215,7 +217,11 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
 
       {payModalOpen && (
         <div className={styles.modalOverlay} onClick={onClosePayModal}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div
+            ref={modalRef}
+            tabIndex={-1}
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}>
             <h2>Observações do pagamento</h2>
             <textarea
               className={styles.modalEdit}
