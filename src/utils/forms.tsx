@@ -3,7 +3,7 @@ import React from 'react';
 import stylesContas from '@/styles/contas.module.css';
 
 // Adiciona classe para validação de campos obrigatórios
-const highlightField = (ref: React.RefObject<HTMLInputElement | null>) => {
+const highlightField = (ref: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>) => {
     const input = ref.current;
     if (!input) return;
 

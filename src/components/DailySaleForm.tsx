@@ -34,6 +34,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
   const [toastOpen, setToastOpen] = useState(false);
   const valorInputRef = useRef<HTMLInputElement | null>(null);
+  const observacoesTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
@@ -132,6 +133,14 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       if (valueFromInput == null) {
         highlightField(valorInputRef);
         showToast('Valor inválido.', 'error');
+        setLoading(false);
+        return;
+      }
+
+      // Se for 0, pede o preenchimento do campo de observações
+      if (observacoes.trim() === '' && valueFromInput <= 0) {
+        showToast('Informe o motivo da venda.', 'error');
+        highlightField(observacoesTextareaRef);
         setLoading(false);
         return;
       }
@@ -268,6 +277,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               {/* Observações: */}
               <textarea
                 value={observacoes}
+                ref={observacoesTextareaRef}
                 onChange={(e) => setObservacoes(e.target.value)}
                 className="flex-grow-observacoes"
                 placeholder={'Observações...'}
