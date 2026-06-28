@@ -98,6 +98,25 @@ const Resumo: React.FC = () => {
                   </td>
                 </tr>
               ))}
+              {/* Subcabeçalho para Especiais */}
+              <tr className="subheader">
+                <td colSpan={8}>
+                  <span className="color-muted">Especiais</span>
+                </td>
+              </tr>
+              <tr>
+                <th>Média de clientes</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+                <th colSpan={5}></th>
+              </tr>
+
+              <tr>
+                <td>0</td>
+                <td>0</td>
+                <td>R$ 0,00</td>
+                <td colSpan={5}></td>
+              </tr>
             </tbody>
 
           </table>

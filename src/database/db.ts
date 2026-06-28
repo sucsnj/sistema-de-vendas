@@ -33,11 +33,14 @@ try {
       ano INTEGER NOT NULL,
       ticketMedio REAL NOT NULL DEFAULT 0,
       mediaClientes INTEGER NOT NULL DEFAULT 0,
+      mediaClientesEsp INTEGER NOT NULL DEFAULT 0,
       melhorDia TEXT NOT NULL DEFAULT 'N/A',
       melhorDiaValor REAL NOT NULL DEFAULT 0,
       maiorVenda REAL NOT NULL DEFAULT 0,
       qtdVendas INTEGER NOT NULL DEFAULT 0,
+      qtdVendasEsp INTEGER NOT NULL DEFAULT 0,
       total REAL NOT NULL,
+      totalEsp REAL NOT NULL,
       UNIQUE(mes, ano)
     );
   `);
