@@ -99,19 +99,19 @@ const Resumo: React.FC = () => {
                 </tr>
               ))}
               {/* Subcabeçalho para Especiais */}
-              <tr className="subheader">
+              <tr className="subheader hidden">
                 <td colSpan={8}>
                   <span className="color-muted">Especiais</span>
                 </td>
               </tr>
-              <tr>
+              <tr className="hidden">
                 <th>Média de clientes</th>
                 <th>Quantidade</th>
                 <th>Total</th>
                 <th colSpan={5}></th>
               </tr>
 
-              <tr>
+              <tr className="hidden">
                 <td>0</td>
                 <td>0</td>
                 <td>R$ 0,00</td>
