@@ -17,11 +17,14 @@ export interface VendaMensal {
   ano: number;
   ticketMedio: number;
   mediaClientes: number;
+  mediaClientesEsp: number;
   melhorDia: string | null;
   melhorDiaValor: number;
   maiorVenda: number;
   qtdVendas: number;
+  qtdVendasEsp: number;
   total: number;
+  totalEsp: number;
 }
 
 let consolidado = false;

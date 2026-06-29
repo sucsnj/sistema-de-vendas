@@ -19,6 +19,7 @@ Módulo principal de banco de dados para vendas. Usa `better-sqlite3` para persi
 - `getDailySaleById(id)`
 - `updateDailySale(id, data, valor, observacoes)`
 - `deleteDailySale(id)`
+- `getVendasEsp(mes, ano)`
 - `consolidateMonthly(mes, ano)`
 - `getMonthlyTotal(mes, ano)`
 - `getAllMonthly()`

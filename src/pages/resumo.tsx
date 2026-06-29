@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   buscarTodosMensais,
   VendaMensal,
@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { capitalize } from '../utils/captalize';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { hideField, showField } from '../utils/forms';
 import DeleteIcon from '@mui/icons-material/Delete';
 dayjs.locale('pt-br');
 
@@ -24,6 +25,12 @@ const Resumo: React.FC = () => {
   // estado para o diálogo
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  // esconder tabela
+  const comumRef = useRef<HTMLTableElement>(null);
+  const especialRef = useRef<HTMLTableElement>(null);
+  const buttonComumRef = useRef<HTMLButtonElement>(null);
+  const buttonEspecialRef = useRef<HTMLButtonElement>(null);
 
   // Função utilitária para abrir toast
   function showToast(message: string, type: "success" | "error" | "info", duration: number | null = 3000) {
@@ -57,12 +64,32 @@ const Resumo: React.FC = () => {
     setConfirmOpen(true);
   };
 
+  // alterna
+  const toggleTables = (view: 'comum' | 'especial') => {
+    showField(comumRef, view === 'comum');
+    hideField(comumRef, view !== 'comum');
+    showField(buttonComumRef, view === 'comum');
+    hideField(buttonComumRef, view !== 'comum');
+
+    showField(especialRef, view === 'especial');
+    hideField(especialRef, view !== 'especial');
+    showField(buttonEspecialRef, view === 'especial');
+    hideField(buttonEspecialRef, view !== 'especial');
+  };
+
   return (
     <div className="container-padding">
       <h1>Resumo Mensal</h1>
+
+      {/* Botões de alternância */}
+      <div className="toggle-buttons">
+        <button className="especial-button hidden" ref={buttonEspecialRef} onClick={() => toggleTables('comum')}>Mostrar Consolidado Normal</button>
+        <button className="comum-button" ref={buttonComumRef} onClick={() => toggleTables('especial')}>Mostrar Consolidado Especial</button>
+      </div>
+
       <div className="glass-form">
         <div className="table-container">
-          <table>
+          <table ref={comumRef} className="comum-table">
             <thead>
               <tr>
                 <th>Data</th>
@@ -98,25 +125,37 @@ const Resumo: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {/* Subcabeçalho para Especiais */}
-              <tr className="subheader hidden">
-                <td colSpan={8}>
-                  <span className="color-muted">Especiais</span>
-                </td>
-              </tr>
-              <tr className="hidden">
+            </tbody>
+          </table>
+
+          {/* especiais */}
+          <table ref={especialRef} className="epecial-table hidden">
+            <thead>
+              <tr>
+                <th>Data</th>
                 <th>Média de clientes</th>
                 <th>Quantidade</th>
                 <th>Total</th>
-                <th colSpan={5}></th>
+                <th>Ações</th>
               </tr>
-
-              <tr className="hidden">
-                <td>0</td>
-                <td>0</td>
-                <td>R$ 0,00</td>
-                <td colSpan={5}></td>
-              </tr>
+            </thead>
+            <tbody>
+              {mensais.map((m) => (
+                <tr key={m.id}>
+                  <td>{capitalize(dayjs().month(m.mes - 1).format('MMMM'))} - {m.ano}</td>
+                  <td>{formatCurrency(m.mediaClientesEsp)}</td>
+                  <td>{m.qtdVendasEsp}</td>
+                  <td>R$ {formatCurrency(m.totalEsp, 2)}</td>
+                  <td>
+                    <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
+                      <span className="icon-responsive">
+                        <DeleteIcon />
+                      </span>
+                      <span className="text-responsive">Excluir</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
 
           </table>

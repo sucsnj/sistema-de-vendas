@@ -11,7 +11,7 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 - `date.ts` - formatação e manipulação de datas, nomes de meses e conversão de strings.
 - `edit.ts` - regra de edição de vendas com limite de 2 dias.
 - `formatter.tsx` - formatação de valores monetários.
-- `forms.tsx` - validação de campos obrigatórios.
+- `forms.tsx` - validação de campos obrigatórios e ocultação de campos.
 - `number.ts` - parsing de números com suporte a formatos brasileiros.
 - `shortcuts.tsx` - atalhos de teclado.
 - `validation.ts` - validações centralizadas (email, currency, date, regras de edição).

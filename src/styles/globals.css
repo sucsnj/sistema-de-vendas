@@ -322,6 +322,11 @@ h2 {
   display: none;
 }
 
+.separator {
+  /* borda de acordo com o tema */
+  border-top: 8px solid var(--border); /* linha grossa branca */
+}
+
 .math-buttons {
   display: flex;
   gap: 8px; /* espaço entre os botões */

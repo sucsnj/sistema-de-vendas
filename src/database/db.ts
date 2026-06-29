@@ -159,13 +159,24 @@ const getTickerMedio = (vendas: { valor: number }[]) => {
 // Função local ou componente.
 const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
   try {
-    if (vendas.length === 0) return 0;
+    if (vendas.length === 0) {
+      return { media: 0, mediaNegativa: 0 };
+    }
 
-    const diasComVendas = [...new Set(vendas.map((venda) => venda.data))];
-    const quantidadeVendas = vendas.length;
+    const vendasPositivas = vendas.filter((v) => v.valor > 0);
+    const vendasNegativas = vendas.filter((v) => v.valor <= 0);
+
+    // Média para dias negativos
+    const diasComVendasNegativos = [...new Set(vendasNegativas.map((venda) => venda.data))];
+    const quantidadeVendasNegativas = vendasNegativas.length;
+    const mediaNegativa =
+      quantidadeVendasNegativas > 0 && diasComVendasNegativos.length > 0 ? quantidadeVendasNegativas / diasComVendasNegativos.length : 0;
+
+    const diasComVendas = [...new Set(vendasPositivas.map((venda) => venda.data))];
+    const quantidadeVendas = vendasPositivas.length;
     const media = quantidadeVendas > 0 && diasComVendas.length > 0 ? quantidadeVendas / diasComVendas.length : 0;
 
-    return media;
+    return { media, mediaNegativa };
   } catch (error) {
     console.error('Erro ao calcular média de clientes:', error);
     throw error;
@@ -213,20 +224,43 @@ const getQtdVendas = (vendas: { valor: number }[]) => {
   }
 };
 
+const getVendasEsp = (mes: number, ano: number) => {
+  try {
+    // Retorna a quantidade e total de vendas negativas no mês
+    const vendasEspeciais = getDailySales(mes, ano, 'negativas') as { valor: number }[];
+    const totalEspeciais = vendasEspeciais.reduce((sum, sale) => sum + sale.valor, 0);
+
+    return [vendasEspeciais.length, totalEspeciais];
+  } catch (error) {
+    console.error('Erro ao calcular quantidade de vendas espéciais:', error);
+    throw error;
+  }
+};
+
 // Constante exportada com função.
 export const consolidateMonthly = (mes: number, ano: number) => {
   try {
+    // Vendas Especiais
+    const vendasEspeciais = getVendasEsp(mes, ano);
+    const qtdVendasEspeciais = vendasEspeciais[0];
+
+    // Vendas Diárias
     const sales = getDailySales(mes, ano) as { valor: number }[];
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
     const ticketMedio = getTickerMedio(sales);
-    const mediaClientes = getMediaClientes(sales as any);
+    const { media, mediaNegativa } = getMediaClientes(sales as any);
+    const mediaClientes = media;
     const melhorDia = getMelhorDia(sales as any, mes, ano);
     const maiorVenda = getMaiorVenda(sales);
-    const qtdVendas = getQtdVendas(sales);
+    const qtdVendas = getQtdVendas(sales) - qtdVendasEspeciais;
+
+    const mediaClientesEsp = mediaNegativa;
+    const qtdVendasEsp = qtdVendasEspeciais;
+    const totalEsp = vendasEspeciais[1];
 
     const stmt = db.prepare(
-      'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, melhorDia, melhorDiaValor, maiorVenda, qtdVendas, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    return stmt.run(mes, ano, ticketMedio, mediaClientes, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, total);
+      'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia, melhorDiaValor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    return stmt.run(mes, ano, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp);
   } catch (error) {
     console.error('Erro ao consolidar mensal:', error);
     throw error;

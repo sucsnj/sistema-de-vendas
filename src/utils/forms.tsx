@@ -24,4 +24,28 @@ const highlightField = (ref: React.RefObject<HTMLInputElement | HTMLTextAreaElem
     // }, 400);
 };
 
-export { highlightField };
+// Adiciona classe hidden com base no ref e classe
+const hideField = (ref: React.RefObject<HTMLElement | null>, hide: boolean) => {
+    const element = ref.current;
+    if (!element) return;
+
+    if (hide) {
+        element.classList.add('hidden');
+    } else {
+        element.classList.remove('hidden');
+    }
+};
+
+// Remove a classe hidden com base no ref e classe
+const showField = (ref: React.RefObject<HTMLElement | null>, show: boolean) => {
+    const element = ref.current;
+    if (!element) return;
+
+    if (show) {
+        element.classList.remove('hidden');
+    } else {
+        element.classList.add('hidden');
+    }
+};
+
+export { highlightField, hideField, showField };
