@@ -103,6 +103,18 @@ const Historico: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const saved = localStorage.getItem("historicoFiltro");
+    if (saved) {
+      setFiltro(saved as 'todas' | 'positivas' | 'negativas');
+    }
+  }, []);
+
+  const changeFiltro = (value: 'todas' | 'positivas' | 'negativas') => {
+    setFiltro(value);
+    localStorage.setItem("historicoFiltro", value);
+  }
+
   return (
     <>
       <div className="container-padding">
@@ -129,13 +141,13 @@ const Historico: React.FC = () => {
               />
             </label>
             <div className="buttons-filter">
-              <button className="button-filter" onClick={() => handleFiltro('todas')}>
+              <button className={filtro === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFiltro('todas')}>
                 Todas
               </button>
-              <button className="button-filter" onClick={() => handleFiltro('positivas')}>
+              <button className={filtro === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFiltro('positivas')}>
                 Positivas
               </button>
-              <button className="button-filter" onClick={() => handleFiltro('negativas')}>
+              <button className={filtro === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFiltro('negativas')}>
                 Negativas
               </button>
 
