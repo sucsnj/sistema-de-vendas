@@ -181,3 +181,68 @@ body {
     font-size: 0.65rem;
   }
 }
+
+/* Nav vertical */
+.nav.vertical {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  bottom: 0;        /* ocupa toda a altura */
+  width: 220px;     /* largura fixa da sidebar */
+  height: 100%;     /* altura total */
+  flex-direction: column;
+  justify-content: flex-start;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none; /* remove a borda inferior */
+  z-index: 1000;
+}
+
+body.vertical-nav {
+  padding-top: 0;        /* remove compensação da horizontal */
+  padding-left: 220px;   /* compensa a largura da sidebar */
+}
+
+.nav.vertical .navLinks {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.nav.vertical .navItem {
+  justify-content: flex-start;
+  min-width: auto;
+}
+
+.rightSide.vertical {
+  flex-direction: column;   /* empilha os itens */
+  align-items: flex-start;  /* alinha à esquerda */
+  gap: 12px;                /* espaço entre os botões */
+}
+
+/* TopBar */
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  z-index: 1100; /* acima da sidebar */
+}
+
+.menuButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.rightSideTopBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

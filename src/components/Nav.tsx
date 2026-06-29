@@ -10,9 +10,31 @@ import HistoryIcon from '@mui/icons-material/History';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import TableChartIcon from '@mui/icons-material/TableChart';
 
+interface NavProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+
 // Componente React.
-const Nav: React.FC = () => {
+const Nav: React.FC<NavProps> = ({ orientation = 'horizontal' }) => {
   const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
+  const [navOrientation, setNavOrientation] = useState<'horizontal' | 'vertical'>(orientation);
+
+  // Carregar orientação da nav
+  useEffect(() => {
+    const savedOrientation = localStorage.getItem('navOrientation');
+    if (savedOrientation === 'horizontal' || savedOrientation === 'vertical') {
+      setNavOrientation(savedOrientation);
+    }
+  }, []);
+
+  // Salvar quando mudar
+  useEffect(() => {
+    localStorage.setItem('navOrientation', navOrientation);
+  }, [navOrientation]);
+
+  const toggleOrientation = () => {
+    setNavOrientation((current) => (current === 'horizontal' ? 'vertical' : 'horizontal'));
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -42,71 +64,107 @@ const Nav: React.FC = () => {
   };
 
   return (
-    <nav className={styles.nav}>
-      <div className={styles.navLinks}>
-        <div className={styles.navItem}>
-          <span className="icon"><Link href="/"><DashboardIcon /></Link></span>
-          <span className="text-responsive"><Link href="/">Dashboard</Link></span>
+    <>
+      {navOrientation === 'vertical' && (
+        <div className={styles.topBar}>
+          <button className={styles.menuButton}>
+            ☰
+          </button>
+          <div className={styles.rightSideTopBar}>
+            <div className={styles.logo}>
+              <Link href="/">
+                <img src="/favicon.png" alt="logo" width={40} height={36} />
+              </Link>
+            </div>
+            <button
+              type="button"
+              onClick={toggleThemeMode}
+              className={styles.themeButton}
+            >
+              {themeMode === 'system' ? (
+                <>
+                  <span className="responsive-icon"><TuneIcon /></span>
+                  <span className="text-responsive">Sistema</span>
+                </>
+              ) : themeMode === 'light' ? (
+                <>
+                  <span className="responsive-icon"><Brightness7Icon /></span>
+                  <span className="text-responsive">Claro</span>
+                </>
+              ) : (
+                <>
+                  <span className="responsive-icon"><Brightness4Icon /></span>
+                  <span className="text-responsive">Escuro</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
-        <span>·</span>
-        <div className={styles.navItem}>
-          <span className="icon"><Link href="/resumo"><BarChartIcon /></Link></span>
-          <span className="text-responsive"><Link href="/resumo">Resumo Mensal</Link></span>
-        </div>
-        <span>·</span>
-        <div className={styles.navItem}>
-          <span className="icon"><Link href="/historico"><HistoryIcon /></Link></span>
-          <span className="text-responsive"><Link href="/historico">Histórico</Link></span>
-        </div>
-        <span>·</span>
-        <div className={styles.navItem}>
-          <span className="icon"><Link href="/contas-a-pagar"><AccountBalanceIcon /></Link></span>
-          <span className="text-responsive"><Link href="/contas-a-pagar">Contas a pagar</Link></span>
-        </div>
-        <span>·</span>
-        <div className={styles.navItem}>
-          <span className="icon"><Link href="/tabela"><TableChartIcon /></Link></span>
-          <span className="text-responsive"><Link href="/tabela">Tabela</Link></span>
-        </div>
-      </div>
+      )}
 
-      <div className={styles.rightSide}>
-        <div className={styles.logo}>
-          <Link href="/">
-            <img src="/favicon.png" alt="logo" width={40} height={36} />
-          </Link>
+      <nav className={`${styles.nav} ${navOrientation === 'vertical' ? styles.vertical : ''}`}>
+        <div className={styles.navLinks}>
+          <div className={styles.navItem}>
+            <span className="icon"><Link href="/"><DashboardIcon /></Link></span>
+            <span className="text-responsive"><Link href="/">Dashboard</Link></span>
+          </div>
+          <span>·</span>
+          <div className={styles.navItem}>
+            <span className="icon"><Link href="/resumo"><BarChartIcon /></Link></span>
+            <span className="text-responsive"><Link href="/resumo">Resumo Mensal</Link></span>
+          </div>
+          <span>·</span>
+          <div className={styles.navItem}>
+            <span className="icon"><Link href="/historico"><HistoryIcon /></Link></span>
+            <span className="text-responsive"><Link href="/historico">Histórico</Link></span>
+          </div>
+          <span>·</span>
+          <div className={styles.navItem}>
+            <span className="icon"><Link href="/contas-a-pagar"><AccountBalanceIcon /></Link></span>
+            <span className="text-responsive"><Link href="/contas-a-pagar">Contas a pagar</Link></span>
+          </div>
+          <span>·</span>
+          <div className={styles.navItem}>
+            <span className="icon"><Link href="/tabela"><TableChartIcon /></Link></span>
+            <span className="text-responsive"><Link href="/tabela">Tabela</Link></span>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={toggleThemeMode}
-          className={styles.themeButton}
-        >
-          {themeMode === 'system' ? (
-            <>
-              <span className="responsive-icon">
-                <TuneIcon />
-              </span>
-              <span className="text-responsive">Sistema</span>
-            </>
-          ) : themeMode === 'light' ? (
-            <>
-              <span className="responsive-icon">
-                <Brightness7Icon />
-              </span>
-              <span className="text-responsive">&nbsp;&nbsp;Claro&nbsp;&nbsp;</span>
-            </>
-          ) : (
-            <>
-              <span className="responsive-icon">
-                <Brightness4Icon />
-              </span>
-              <span className="text-responsive">Escuro&nbsp;&nbsp;</span>
-            </>
-          )}
-        </button>
-      </div>
-    </nav>
 
+        <div className={`${styles.rightSide} ${navOrientation === 'vertical' ? styles.vertical : ''}`}>
+          <button onClick={toggleOrientation} className="hidden">
+            {navOrientation === 'horizontal' ? 'Vertical' : 'Horizontal'}
+          </button>
+          <div className={styles.logo}>
+            <Link href="/">
+              <img src="/favicon.png" alt="logo" width={40} height={36} />
+            </Link>
+          </div>
+          <button
+            type="button"
+            onClick={toggleThemeMode}
+            className={styles.themeButton}
+          >
+            {themeMode === 'system' ? (
+              <>
+                <span className="responsive-icon"><TuneIcon /></span>
+                <span className="text-responsive">Sistema</span>
+              </>
+            ) : themeMode === 'light' ? (
+              <>
+                <span className="responsive-icon"><Brightness7Icon /></span>
+                <span className="text-responsive">Claro</span>
+              </>
+            ) : (
+              <>
+                <span className="responsive-icon"><Brightness4Icon /></span>
+                <span className="text-responsive">Escuro</span>
+              </>
+            )}
+          </button>
+        </div>
+
+      </nav>
+    </>
   );
 };
 
