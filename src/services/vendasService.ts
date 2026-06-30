@@ -131,6 +131,11 @@ export const autoConsolidar = async () => {
     mesAnterior = 12;
   }
 
+  // Todo dia 03 do mês atual faz uma consolidação
+  if (day === 3) {
+    await consolidarMensal(mesAnterior, year);
+  }
+
   const jaConsolidado = await verificarConsolidado(mesAnterior, year);
   if (jaConsolidado) {
     consolidado = true;
