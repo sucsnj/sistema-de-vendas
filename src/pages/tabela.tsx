@@ -11,6 +11,7 @@ import {
   TabelaSearchHistoryItem,
 } from '../services/tabelaService';
 import { useShortcuts } from '../utils/shortcuts';
+import { parseDate } from '../utils/date';
 
 // Componente React.
 const Tabela: React.FC = () => {
@@ -260,7 +261,7 @@ const Tabela: React.FC = () => {
                     <strong>{item.query.replace(/;/g, ";\n")}</strong>
                     <span> {item.result_count} resultados</span>
                   </div>
-                  <small>{new Date(item.updated_at).toLocaleString('pt-BR')}</small>
+                  <small>{parseDate(item.updated_at).format('DD/MM/YYYY, HH:mm:ss')}</small>
                 </button>
               ))}
             </div>

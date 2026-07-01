@@ -3,16 +3,16 @@ import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import ExportButtons from '../components/ExportButtons';
 import parseNumber from '../utils/number';
-import { formatMonthName } from '../utils/date';
 import { buscarVendasDiarias, atualizarVenda, excluirVenda, VendaDiaria } from '../services/vendasService';
 import { capitalize } from '../utils/captalize';
 import { canEdit } from '../utils/edit';
+import { getDateArray, formatMonthName } from '../utils/date';
 
 // Componente React.
 const Historico: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
-  const [mes, setMes] = useState(new Date().getMonth() + 1);
-  const [ano, setAno] = useState(new Date().getFullYear());
+  const [mes, setMes] = useState(getDateArray()[1]);
+  const [ano, setAno] = useState(getDateArray()[2]);
   const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
   const [editData, setEditData] = useState('');
   const [editValor, setEditValor] = useState('');

@@ -1,5 +1,7 @@
 import React from 'react';
 import { formatCurrency } from '../utils/formatter';
+import { formatMonthName } from '../utils/date';
+import { capitalize } from '../utils/captalize';
 
 interface ConsolidacaoMensalProps {
     meses: { mes: number; pago: number; pendente: number }[];
@@ -21,7 +23,7 @@ const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps> = ({ meses }) => {
                     <tbody>
                         {meses.map((m) => (
                             <tr key={m.mes}>
-                                <td>{new Date(0, m.mes - 1).toLocaleString('pt-BR', { month: 'short' })}</td>
+                                <td>{capitalize(formatMonthName(m.mes).slice(0, 3)) + '.'}</td>
                                 <td>R$ {formatCurrency(m.pago, 2)}</td>
                                 <td>R$ {formatCurrency(m.pendente, 2)}</td>
                             </tr>

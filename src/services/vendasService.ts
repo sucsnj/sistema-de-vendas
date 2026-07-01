@@ -1,5 +1,5 @@
 // Camada de serviço do cliente para comunicar a interface com as APIs internas de vendas.
-import { dateToArray } from '../utils/date';
+import { getDateArray } from '../utils/date';
 import dayjs from 'dayjs';
 dayjs.locale('pt-br');
 
@@ -122,7 +122,7 @@ export const verificarConsolidado = async (mes: number, ano: number): Promise<bo
 
 // Função assíncrona exportada.
 export const autoConsolidar = async () => {
-  let [day, month, year] = dateToArray() || [];
+  let [day, month, year] = getDateArray();
   if (!day || !month || !year) return;
 
   let mesAnterior = month - 1;

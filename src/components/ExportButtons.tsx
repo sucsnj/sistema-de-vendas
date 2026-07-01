@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { registrarVendaComCriadoEm, VendaDiaria } from '../services/vendasService';
 import parseNumber from '../utils/number';
+import { parseDate } from '../utils/date';
 
 interface ExportButtonsProps {
   sales: VendaDiaria[];
@@ -209,11 +210,11 @@ const ExportButtons: FC<ExportButtonsProps> = ({
   };
 
   const dateMatchesMonth = (dateValue: string) => {
-    const parsed = new Date(`${dateValue}T00:00:00`);
+    const parsed = parseDate(`${dateValue}T00:00:00`);
     return (
-      !Number.isNaN(parsed.getTime()) &&
-      parsed.getMonth() + 1 === mes &&
-      parsed.getFullYear() === ano
+      !Number.isNaN(parsed.valueOf()) &&
+      parsed.month() + 1 === mes &&
+      parsed.year() === ano
     );
   };
 

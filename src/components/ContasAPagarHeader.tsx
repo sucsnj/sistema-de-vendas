@@ -3,6 +3,7 @@ import styles from '../styles/contas.module.css';
 import { formatMonthName } from '../utils/date';
 import { capitalize } from '../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
+import { now } from '../utils/date';
 
 interface ContasAPagarHeaderProps {
   ano: number;
@@ -13,7 +14,7 @@ interface ContasAPagarHeaderProps {
 }
 
 const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAno, setMes, handleBackup }) => {
-  const today = new Date();
+  const today = now();
 
   return (
     <header className={styles.contasHeader}>
@@ -28,7 +29,7 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
             className={styles.anoInput}
             type="number"
             value={ano}
-            onChange={(e) => setAno(parseInt(e.target.value, 10) || today.getFullYear())}
+            onChange={(e) => setAno(parseInt(e.target.value, 10) || today.year())}
           />
         </label>
         <label>

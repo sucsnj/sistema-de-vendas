@@ -17,14 +17,15 @@ import { capitalize } from '../utils/captalize';
 import { canEdit } from '../utils/edit';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { getDateArray, toTimestamp, formatMonthName } from '../utils/date';
 
 const hoje = dayjs().format('YYYY-MM-DD');
 
 // Componente React.
 const Home: React.FC = () => {
   const [sales, setSales] = useState<VendaDiaria[]>([]);
-  const [mes, setMes] = useState(new Date().getMonth() + 1);
-  const [ano, setAno] = useState(new Date().getFullYear());
+  const [mes, setMes] = useState(getDateArray()[1]);
+  const [ano, setAno] = useState(getDateArray()[2]);
   const [selectedDate, setSelectedDate] = useState(hoje);
   const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
   const [editData, setEditData] = useState('');
@@ -127,8 +128,8 @@ const Home: React.FC = () => {
 
   const recentSales = [...sales]
     .sort((a, b) => {
-      const dateA = new Date(`${a.data}T00:00:00`).getTime();
-      const dateB = new Date(`${b.data}T00:00:00`).getTime();
+      const dateA = toTimestamp(`${a.data}T00:00:00`);
+      const dateB = toTimestamp(`${b.data}T00:00:00`);
       if (dateA !== dateB) return dateB - dateA;
       return b.id - a.id;
     })
@@ -210,7 +211,7 @@ const Home: React.FC = () => {
               <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {capitalize(new Date(0, i).toLocaleString('pt-BR', { month: 'long' }))}
+                    {capitalize(formatMonthName(i + 1))}
                   </option>
                 ))}
               </select>

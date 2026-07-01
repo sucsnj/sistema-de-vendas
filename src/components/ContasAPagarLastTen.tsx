@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { ContaDetalhe } from '../services/contasService';
-import { formatDate } from '../utils/date';
+import { formatDateString } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -47,7 +47,7 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
         <tbody>
           {ultimasContas.map((conta) => (
             <tr key={conta.id}>
-              <td>{formatDate(conta.vencimento, 'DD/MM/YYYY')}</td>
+              <td>{formatDateString(conta.vencimento, 'DD/MM/YYYY')}</td>
               <td>{conta.distribuidora}</td>
               <td>R$ {formatCurrency(conta.valor, 2)}</td>
               <td className={styles.actionsCell}>

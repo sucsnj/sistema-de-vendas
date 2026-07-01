@@ -3,7 +3,8 @@ import OcrUpload from '@/components/OcrUpload';
 import { ContaDetalhe, } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
-import { formatDate } from '../utils/date';
+import { formatDateString } from '../utils/date';
+import { toTimestamp } from '../utils/date';
 
 interface AgendaProps {
     contasMes: ContaDetalhe[];
@@ -22,17 +23,15 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
         });
         return Array.from(map.values())
             .filter((item) => item.totalPendente > 0)
-            .sort((a, b) => (new Date(a.data).getTime() - new Date(b.data).getTime()))
+            .sort((a, b) => toTimestamp(a.data) - toTimestamp(b.data))
             .slice(0, 8);
     }, [contasAno]);
 
     // Lista de contas pendentes que serão pagas na próxima semana
     const proximasContas = useMemo(() => {
-        // const hoje = dayjs().format('YYYY-MM-DD');
         return contasAno
             .filter((conta) => conta.status === 'Pendente')
-            .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime())
-            // .filter((conta) => conta.vencimento >= hoje)
+            .sort((a, b) => toTimestamp(a.vencimento) - toTimestamp(b.vencimento))
             .slice(0, 12);
     }, [contasAno]);
 
@@ -51,7 +50,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
                         ) : (
                             agenda.map((item) => (
                                 <div key={item.data} className="agenda-row">
-                                    <strong>{formatDate(item.data, 'DD-MM-YYYY')}</strong>
+                                    <strong>{formatDateString(item.data, 'DD-MM-YYYY')}</strong>
                                     <span>R$ {formatCurrency(item.totalPendente, 2)}</span>
                                 </div>
                             ))
@@ -69,7 +68,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
                         ) : (
                             proximasContas.map((conta) => (
                                 <div key={conta.id} className="proxima-row">
-                                    <strong>{formatDate(conta.vencimento, 'DD-MM-YYYY')}</strong> - {conta.distribuidora} - <span>R$ {formatCurrency(conta.valor, 2)}</span>
+                                    <strong>{formatDateString(conta.vencimento, 'DD-MM-YYYY')}</strong> - {conta.distribuidora} - <span>R$ {formatCurrency(conta.valor, 2)}</span>
                                 </div>
                             ))
                         )}

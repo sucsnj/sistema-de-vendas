@@ -5,13 +5,14 @@ import ConsolidacaoMensal from './ConsolidacaoMensal';
 import TotaisPorDistribuidora from './TotaisPorDistribuidora';
 import NotasDoMes from './NotasDoMes';
 import { formatCurrency } from '../utils/formatter';
+import { parseDate } from '../utils/date';
 
 interface ResumoProps {
-  contasAno: ContaDetalhe[];
-  ano: number;
-  mes: number;
-  setAno: (ano: number) => void;
-  setMes: (mes: number) => void;
+    contasAno: ContaDetalhe[];
+    ano: number;
+    mes: number;
+    setAno: (ano: number) => void;
+    setMes: (mes: number) => void;
 }
 
 const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) => {
@@ -27,7 +28,7 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
 
         const meses = Array.from({ length: 12 }, (_, i) => {
             const monthIndex = i + 1;
-            const contasNoMes = contasAno.filter((conta) => new Date(`${conta.vencimento}T00:00:00`).getMonth() + 1 === monthIndex);
+            const contasNoMes = contasAno.filter((conta) => parseDate(`${conta.vencimento}T00:00:00`).month() + 1 === monthIndex);
             return {
                 mes: monthIndex,
                 pago: contasNoMes.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0),

@@ -23,15 +23,15 @@ import {
 } from '../services/contasService';
 import { highlightField } from '../utils/forms';
 import { useShortcuts } from '../utils/shortcuts';
+import { getDateArray, toTimestamp, now } from '../utils/date';
 
-const hoje = dayjs().format('YYYY-MM-DD');
+const hoje = now().format('YYYY-MM-DD');
 
 // Componente React.
 const ContasAPagar: React.FC = () => {
   const queryClient = useQueryClient();
-  const today = new Date();
-  const [ano, setAno] = useState(today.getFullYear());
-  const [mes, setMes] = useState(today.getMonth() + 1);
+  const [ano, setAno] = useState(getDateArray()[2]);
+  const [mes, setMes] = useState(getDateArray()[1]);
   const [contasMes, setContasMes] = useState<ContaDetalhe[]>([]);
   const [contasAno, setContasAno] = useState<ContaDetalhe[]>([]);
   const [distribuidora, setDistribuidora] = useState('');
@@ -333,8 +333,8 @@ const ContasAPagar: React.FC = () => {
   const ultimasContas = useMemo(() => {
     return [...contasAno]
       .sort((a, b) => {
-        const dateA = new Date(a.criado_em || '1970-01-01T00:00:00').getTime();
-        const dateB = new Date(b.criado_em || '1970-01-01T00:00:00').getTime();
+        const dateA = toTimestamp(a.criado_em || '1970-01-01T00:00:00');
+        const dateB = toTimestamp(b.criado_em || '1970-01-01T00:00:00');
         return dateB - dateA;
       })
       .slice(0, 10);

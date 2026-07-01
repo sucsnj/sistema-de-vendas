@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react';
 import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../services/notasService';
 import { formatCurrency } from '../utils/formatter';
-import { formatDate, getCurrentYear } from '../utils/date';
+import { formatDateString, getCurrentYear } from '../utils/date';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -93,7 +93,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                     <tbody>
                         {notas.map((n) => (
                             <tr key={n.id}>
-                                <td>{formatDate(n.data_emissao, 'DD/MM/YYYY HH:mm')}</td>
+                                <td>{formatDateString(n.data_emissao, 'DD/MM/YYYY HH:mm')}</td>
                                 <td>{n.distribuidora}</td>
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>

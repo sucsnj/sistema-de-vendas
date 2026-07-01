@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { VendaDiaria } from '../services/vendasService';
-import { formatDate } from '../utils/date';
+import { formatDateString } from '../utils/date';
 import { formatCurrency } from '../utils/formatter';
 import styles from '../styles/contas.module.css';
 import { canEdit } from '../utils/edit';
@@ -9,6 +9,7 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Tooltip from '@mui/material/Tooltip';
+import { toTimestamp } from '../utils/date';
 
 interface SalesTableProps {
   sales: VendaDiaria[];
@@ -90,7 +91,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
           {[...sales]
             .sort((a, b) => {
               const diffDate =
-                new Date(b.data).getTime() - new Date(a.data).getTime();
+                toTimestamp(b.data) - toTimestamp(a.data);
 
               if (diffDate !== 0) return diffDate;
 
@@ -99,7 +100,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
             .slice(0, maxSales)
             .map((sale) => (
               <tr key={sale.id}>
-                <td>{formatDate(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
+                <td>{formatDateString(sale.criado_em, 'DD-MM-YYYY HH:mm:ss')}</td>
                 <td>{sale.data}</td>
                 <td>R$ {formatCurrency(sale.valor, 2)}</td>
                 <td>
