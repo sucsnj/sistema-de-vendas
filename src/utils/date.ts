@@ -19,6 +19,11 @@ export function now() {
   return dayjs().tz(TZ);
 }
 
+// Último dia do mês
+export function getLastDayOfMonth(year: number, month: number): number {
+  return dayjs(`${year}-${month}-01`).endOf('month').date();
+}
+
 // Função genérica para criar um objeto dayjs já com timezone
 export function parseDate(value: string) {
   return dayjs.tz(value, TZ);

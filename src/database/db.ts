@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import { format } from 'date-fns-tz'
+import { now, getLastDayOfMonth } from '../utils/date';
 
 // Conexão local com o banco de dados SQLite usado pelo aplicativo.
 const dbPath = path.join(process.cwd(), 'db/vendas.db'); // caminho para o arquivo de banco de dados
@@ -50,7 +51,7 @@ try {
 
 // Função local ou componente.
 const getLocalTimestamp = () => {
-  return format(new Date(), 'yyyy-MM-dd HH:mm:ss', { timeZone: 'America/Recife' });
+  return now().format('YYYY-MM-DD HH:mm:ss');
 };
 
 // Funções de acesso ao banco de dados e operações de persistência.
@@ -77,7 +78,7 @@ export const insertDailySale = (data: string, valor: number, observacoes?: strin
 export const getDailySales = (mes: number, ano: number, filtro?: 'positivas' | 'negativas' | 'todas') => {
   try {
     const startDate = `${ano}-${String(mes).padStart(2, '0')}-01`;
-    const ultimoDia = new Date(ano, mes, 0).toISOString().split('T')[0];
+    const ultimoDia = getLastDayOfMonth(ano, mes);
 
     let query = 'SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ?';
     if (filtro === 'positivas') {
