@@ -1,6 +1,5 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { format } from 'date-fns-tz'
 import { now, getLastDayOfMonth } from '../utils/date';
 
 // Conexão local com o banco de dados SQLite usado pelo aplicativo.
@@ -77,8 +76,9 @@ export const insertDailySale = (data: string, valor: number, observacoes?: strin
 // Constante exportada com função.
 export const getDailySales = (mes: number, ano: number, filtro?: 'positivas' | 'negativas' | 'todas') => {
   try {
-    const startDate = `${ano}-${String(mes).padStart(2, '0')}-01`;
-    const ultimoDia = getLastDayOfMonth(ano, mes);
+    const mesAno = `${ano}-${String(mes).padStart(2, '0')}`;
+    const startDate = `${mesAno}-01`;
+    const ultimoDia = `${mesAno}-${String(getLastDayOfMonth(ano, mes)).padStart(2, '0')}`;
 
     let query = 'SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ?';
     if (filtro === 'positivas') {
@@ -292,7 +292,7 @@ export const getAllMonthly = () => {
 
 // Constante exportada com função.
 export const backupDatabase = () => {
-  const backupPath = path.join(process.cwd(), `backup-${new Date().toISOString().split('T')[0]}.db`);
+  const backupPath = path.join(process.cwd(), `backup-${now().format('YYYY-MM-DD')}.db`);
   db.backup(backupPath);
   return backupPath;
 };

@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { now, parseDate } from '../utils/date';
 
 const dbPath = path.join(process.cwd(), 'db/notas.db');
 
@@ -71,9 +72,10 @@ export const getNotasByValor = (valor: number) => {
 // Constante exportada com função.
 export const getNotasByPeriod = (ano: number, mes?: number) => {
   const startDate = `${ano}-${String(mes ?? 1).padStart(2, '0')}-01`;
-  const endDate = mes
-    ? `${ano}-${String(mes).padStart(2, '0')}-${new Date(ano, mes, 0).getDate()}`
-    : `${ano}-12-31`;
+  const endDate = mes ? parseDate(`${ano}-${mes}-01`).endOf('month').format('YYYY-MM-DD') : `${ano}-12-31`;
+  // const endDate = mes
+  //   ? `${ano}-${String(mes).padStart(2, '0')}-${new Date(ano, mes, 0).getDate()}`
+  //   : `${ano}-12-31`;
 
   const stmt = db.prepare(
     'SELECT * FROM notas_detalhes WHERE date(data_emissao) >= ? AND date(data_emissao) <= ? ORDER BY data_emissao DESC, id DESC'
@@ -96,7 +98,7 @@ export const deleteNota = (id: number) => {
 
 // Constante exportada com função.
 export const backupNotasDatabase = () => {
-  const backupPath = path.join(process.cwd(), `notas-backup-${new Date().toISOString().split('T')[0]}.db`);
+  const backupPath = path.join(process.cwd(), `notas-backup-${now().format('YYYY-MM-DD')}.db`);
   db.backup(backupPath);
   return backupPath;
 };

@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { now, parseDate } from '../utils/date';
 
 const dbPath = path.join(process.cwd(), 'db/contas.db');
 
@@ -48,9 +49,7 @@ export const insertConta = (
 // Constante exportada com função.
 export const getContasByPeriod = (ano: number, mes?: number) => {
   const startDate = `${ano}-${String(mes ?? 1).padStart(2, '0')}-01`;
-  const endDate = mes
-    ? new Date(ano, mes, 0).toISOString().split('T')[0]
-    : `${ano}-12-31`;
+  const endDate = mes ? parseDate(`${ano}-${mes}-01`).endOf('month').format('YYYY-MM-DD') : `${ano}-12-31`;
 
   const stmt = mes
     ? db.prepare('SELECT * FROM contas_detalhes WHERE vencimento >= ? AND vencimento <= ? ORDER BY vencimento DESC, id DESC')
@@ -106,7 +105,7 @@ export const cancelPaymentConta = (id: number) => {
 
 // Constante exportada com função.
 export const backupContasDatabase = () => {
-  const backupPath = path.join(process.cwd(), `contas-backup-${new Date().toISOString().split('T')[0]}.db`);
+  const backupPath = path.join(process.cwd(), `contas-backup-${now().format('YYYY-MM-DD')}.db`);
   db.backup(backupPath);
   return backupPath;
 };
