@@ -105,7 +105,7 @@ export const cancelPaymentConta = (id: number) => {
 
 // Constante exportada com função.
 export const backupContasDatabase = () => {
-  const backupPath = path.join(process.cwd(), `contas-backup-${now().format('YYYY-MM-DD')}.db`);
+  const backupPath = path.join(process.cwd(), `db/contas-backup-${now().format('YYYY-MM-DD')}.db`);
   db.backup(backupPath);
   return backupPath;
 };

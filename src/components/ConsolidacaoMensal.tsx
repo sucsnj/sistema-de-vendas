@@ -23,7 +23,7 @@ const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps> = ({ meses }) => {
                     <tbody>
                         {meses.map((m) => (
                             <tr key={m.mes}>
-                                <td>{capitalize(formatMonthName(m.mes).slice(0, 3)) + '.'}</td>
+                                <td>{capitalize(formatMonthName(m.mes))}</td>
                                 <td>R$ {formatCurrency(m.pago, 2)}</td>
                                 <td>R$ {formatCurrency(m.pendente, 2)}</td>
                             </tr>
