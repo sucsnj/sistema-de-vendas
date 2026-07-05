@@ -128,9 +128,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         return;
       }
 
-      // Se for 0, pede o preenchimento do campo de observações
+      // Se for 0 ou menos, pede o preenchimento do campo de observações
       if (observacoes.trim() === '' && valueFromInput <= 0) {
-        showToast('Informe o motivo da venda.', 'error');
+        showToast('Informe o motivo da venda.', 'info');
         highlightField(observacoesTextareaRef);
         setLoading(false);
         return;
@@ -169,10 +169,26 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setLoading(false);
   };
 
+  // Trata de manter o input de valor visível a cada 3 minutos
   useEffect(() => {
     const interval = setInterval(() => {
-      valorInputRef.current?.focus();
-    }, 180000);
+      const input = valorInputRef.current;
+      if (input) {
+        const rect = input.getBoundingClientRect();
+
+        const estaVisivel =
+          rect.top >= 0 &&
+          rect.bottom <= window.innerHeight;
+
+        if (!estaVisivel) {
+          input?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+          valorInputRef.current?.focus({ preventScroll: true });
+        }
+      }
+    }, 180000); // 3 minutos
 
     return () => clearInterval(interval);
   }, []);
