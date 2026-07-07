@@ -19,10 +19,21 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
     const resumo = useMemo(() => {
         const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
         const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
+        
+        // Conta a quantidade pendente
+        const qtdPendente = contasAno.filter((conta) => conta.status === 'Pendente').length;
+
+        // Conta a quantidade de contas pagas
+        const qtdPago = contasAno.filter((conta) => conta.status === 'Pago').length;
+
+        // Conta o total de contas
+        const qtdTotal = contasAno.length;
+
         const totaisPorDistribuidora = contasAno.reduce<Record<string, number>>((acc, conta) => {
             if (conta.status === 'Pendente') {
                 acc[conta.distribuidora] = (acc[conta.distribuidora] || 0) + conta.valor;
             }
+            
             return acc;
         }, {});
 
@@ -42,6 +53,9 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
             totalAnual: totalPago + totalPendente,
             meses,
             totaisPorDistribuidora,
+            qtdPendente,
+            qtdPago,
+            qtdTotal,
         };
     }, [contasAno]);
 
@@ -53,18 +67,51 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
                     <span className={styles.statusChip}>Atualização automática</span>
                 </div>
                 <div className="summary-card">
-                    <div className="summary-row">
-                        <strong>Total pago</strong>
-                        <span>R$ {formatCurrency(resumo.totalPago, 2)}</span>
-                    </div>
-                    <div className="summary-row">
-                        <strong>Total pendente</strong>
-                        <span>R$ {formatCurrency(resumo.totalPendente, 2)}</span>
-                    </div>
-                    <div className="summary-row">
-                        <strong>Total acumulado anual</strong>
-                        <span>R$ {formatCurrency(resumo.totalAnual, 2)}</span>
-                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><strong>Totais</strong></th>
+                                <th><strong>Contadores</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div className="summary-row">
+                                            <strong>Pago</strong>
+                                            <span>R$ {formatCurrency(resumo.totalPago, 2)}</span>
+                                        </div>
+                                        <div className="summary-row">
+                                            <strong>Pendente</strong>
+                                            <span>R$ {formatCurrency(resumo.totalPendente, 2)}</span>
+                                        </div>
+                                        <div className="summary-row">
+                                            <strong>Acumulado anual</strong>
+                                            <span>R$ {formatCurrency(resumo.totalAnual, 2)}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div className="summary-row">
+                                            <strong>Pago</strong>
+                                            <span>{resumo.qtdPago}</span>
+                                        </div>
+                                        <div className="summary-row">
+                                            <strong>Pendente</strong>
+                                            <span>{resumo.qtdPendente}</span>
+                                        </div>
+                                        <div className="summary-row">
+                                            <strong>Acumulado anual</strong>
+                                            <span>{resumo.qtdTotal}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </div>
                 {/* #Totais por distribuidora */}
                 <TotaisPorDistribuidora totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
