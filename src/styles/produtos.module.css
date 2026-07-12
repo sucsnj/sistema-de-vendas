@@ -1,10 +1,9 @@
 .produtosPage {
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 22px 22px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .produtosGrid {

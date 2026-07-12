@@ -341,12 +341,12 @@ const ProdutosPage: React.FC = () => {
     try {
       const response = await criarCategoria(novaCatNome.trim(), novaCatDesc.trim());
       showToast(response.message || 'Categoria criada com sucesso.', 'success');
-      
+
       // Re-carrega lista de categorias e seleciona a criada
       const cats = await buscarCategorias();
       setCategorias(cats);
       setFormCategoriaId(response.id);
-      
+
       // Fecha modal
       setModalCategoriaOpen(false);
       setNovaCatNome('');
@@ -366,12 +366,12 @@ const ProdutosPage: React.FC = () => {
     try {
       const response = await criarMarca(novaMarcaNome.trim());
       showToast(response.message || 'Marca criada com sucesso.', 'success');
-      
+
       // Re-carrega lista de marcas e seleciona a criada
       const brands = await buscarMarcas();
       setMarcas(brands);
       setFormMarcaId(response.id);
-      
+
       // Fecha modal
       setModalMarcaOpen(false);
       setNovaMarcaNome('');
@@ -391,8 +391,10 @@ const ProdutosPage: React.FC = () => {
       </Head>
 
       <div className={styles.produtosPage}>
-        <div className="top-bar">
+
+        <div>
           <h1 id="page-title">Produtos e Serviços</h1>
+          <p>Cadastro de produtos e serviços, listagem com filtros, paginação e suporte a múltiplos códigos de barras.</p>
         </div>
 
         <div className={styles.produtosGrid}>
@@ -536,11 +538,10 @@ const ProdutosPage: React.FC = () => {
                           <tr key={item.id}>
                             <td>
                               <span
-                                className={`${styles.badge} ${
-                                  item.tipo === 'PRODUTO'
+                                className={`${styles.badge} ${item.tipo === 'PRODUTO'
                                     ? styles.badgeProduto
                                     : styles.badgeServico
-                                }`}
+                                  }`}
                               >
                                 {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
                               </span>
@@ -586,11 +587,10 @@ const ProdutosPage: React.FC = () => {
                             </td>
                             <td>
                               <span
-                                className={`${styles.badge} ${
-                                  item.ativo === 1
+                                className={`${styles.badge} ${item.ativo === 1
                                     ? styles.badgeAtivo
                                     : styles.badgeInativo
-                                }`}
+                                  }`}
                               >
                                 {item.ativo === 1 ? 'Ativo' : 'Inativo'}
                               </span>
