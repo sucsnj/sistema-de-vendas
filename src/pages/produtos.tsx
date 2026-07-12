@@ -1,14 +1,8 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
-import BlockIcon from '@mui/icons-material/Block';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CloseIcon from '@mui/icons-material/Close';
@@ -29,6 +23,8 @@ import {
   UnidadeMedidaData,
   BarcodeData,
 } from '../services/produtosService';
+import ProdutosList from '@/components/ProdutosList';
+import Filtros from '@/components/Filtros';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -401,264 +397,36 @@ const ProdutosPage: React.FC = () => {
           {/* Coluna Esquerda: Listagem e Filtros */}
           <div>
             {/* Filtros */}
-            <section className="glass-form" aria-labelledby="filtros-title">
-              <h2 id="filtros-title" className="hidden">Filtros de Pesquisa</h2>
-              <form onSubmit={handleSearchSubmit} className="page-actions">
-                <label htmlFor="search-input">
-                  Buscar:
-                  <input
-                    id="search-input"
-                    className="headerInput"
-                    type="text"
-                    placeholder="Nome, código ou EAN..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </label>
-
-                <label htmlFor="filtro-tipo">
-                  Tipo:
-                  <select
-                    id="filtro-tipo"
-                    className="headerSelect"
-                    value={filtroTipo}
-                    onChange={(e) => {
-                      setFiltroTipo(e.target.value as any);
-                      setPage(1);
-                    }}
-                  >
-                    <option value="TODOS">Todos</option>
-                    <option value="PRODUTO">Produto</option>
-                    <option value="SERVICO">Serviço</option>
-                  </select>
-                </label>
-
-                <label htmlFor="filtro-categoria">
-                  Categoria:
-                  <select
-                    id="filtro-categoria"
-                    className="headerSelect"
-                    value={filtroCategoria}
-                    onChange={(e) => {
-                      setFiltroCategoria(e.target.value ? Number(e.target.value) : '');
-                      setPage(1);
-                    }}>
-                    <option value="">Todas</option>
-                    {categorias.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.nome}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label htmlFor="filtro-marca">
-                  Marca:
-                  <select
-                    id="filtro-marca"
-                    className="headerSelect"
-                    value={filtroMarca}
-                    onChange={(e) => {
-                      setFiltroMarca(e.target.value ? Number(e.target.value) : '');
-                      setPage(1);
-                    }}>
-                    <option value="">Todas</option>
-                    {marcas.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.nome}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label htmlFor="filtro-status">
-                  Status:
-                  <select
-                    id="filtro-status"
-                    className="headerSelect"
-                    value={filtroStatus}
-                    onChange={(e) => {
-                      setFiltroStatus(e.target.value as any);
-                      setPage(1);
-                    }}
-                  >
-                    <option value="TODOS">Todos</option>
-                    <option value="ATIVO">Ativos</option>
-                    <option value="INATIVO">Inativos</option>
-                  </select>
-                </label>
-
-                <button type="submit" className="headerBackupButton">
-                  Filtrar
-                </button>
-                <button
-                  type="button"
-                  className="headerButton"
-                  onClick={handleLimparFiltros}
-                >
-                  Limpar
-                </button>
-              </form>
-            </section>
+            <Filtros
+              search={search}
+              setSearch={setSearch}
+              filtroTipo={filtroTipo}
+              setFiltroTipo={setFiltroTipo}
+              filtroCategoria={filtroCategoria}
+              setFiltroCategoria={setFiltroCategoria}
+              filtroMarca={filtroMarca}
+              setFiltroMarca={setFiltroMarca}
+              filtroStatus={filtroStatus}
+              setFiltroStatus={setFiltroStatus}
+              categorias={categorias}
+              marcas={marcas}
+              handleSearchSubmit={handleSearchSubmit}
+              handleLimparFiltros={handleLimparFiltros}
+              onPageChange={setPage}
+            />
 
             {/* Listagem */}
-            <section className="glass-form" style={{ marginTop: '15px' }} aria-labelledby="listagem-title">
-              <div className={styles.panelHeader}>
-                <h2 id="listagem-title" style={{ margin: 0 }}>Listagem</h2>
-                <div style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>
-                  Total: {total} registro(s)
-                </div>
-              </div>
-
-              {loading ? (
-                <div className={styles.emptyState}>Carregando...</div>
-              ) : items.length === 0 ? (
-                <div className={styles.emptyState}>Nenhum registro encontrado.</div>
-              ) : (
-                <div style={{ overflowX: 'auto' }}>
-                  <table className="table-container" style={{ minWidth: '600px' }}>
-                    <thead>
-                      <tr>
-                        <th>Tipo</th>
-                        <th>Cód. Interno</th>
-                        <th>Nome</th>
-                        <th>Categoria / Marca</th>
-                        <th>U.M.</th>
-                        <th>Cód. Barras Principal</th>
-                        <th>Status</th>
-                        <th style={{ width: '100px' }}>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item) => {
-                        const principalBarcode = item.codigos_barras?.find((c) => c.principal === 1)?.codigo_barras || '—';
-                        const extraBarcodesCount = (item.codigos_barras?.length || 0) - 1;
-
-                        return (
-                          <tr key={item.id}>
-                            <td>
-                              <span
-                                className={`${styles.badge} ${item.tipo === 'PRODUTO'
-                                    ? styles.badgeProduto
-                                    : styles.badgeServico
-                                  }`}
-                              >
-                                {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
-                              </span>
-                            </td>
-                            <td>{item.codigo_interno || '—'}</td>
-                            <td>
-                              <strong>{item.nome}</strong>
-                              {item.descricao && (
-                                <div
-                                  style={{
-                                    fontSize: '0.72rem',
-                                    color: 'var(--muted)',
-                                    marginTop: '2px',
-                                  }}
-                                >
-                                  {item.descricao.length > 50
-                                    ? `${item.descricao.substring(0, 50)}...`
-                                    : item.descricao}
-                                </div>
-                              )}
-                            </td>
-                            <td>
-                              {item.categoria_nome || '—'} / {item.marca_nome || '—'}
-                            </td>
-                            <td>{item.unidade_medida_sigla || '—'}</td>
-                            <td>
-                              <span>{principalBarcode}</span>
-                              {extraBarcodesCount > 0 && (
-                                <span
-                                  style={{
-                                    marginLeft: '5px',
-                                    fontSize: '0.7rem',
-                                    padding: '2px 5px',
-                                    backgroundColor: 'var(--border)',
-                                    borderRadius: '4px',
-                                    color: 'var(--muted)',
-                                    fontWeight: 'bold',
-                                  }}
-                                >
-                                  +{extraBarcodesCount}
-                                </span>
-                              )}
-                            </td>
-                            <td>
-                              <span
-                                className={`${styles.badge} ${item.ativo === 1
-                                    ? styles.badgeAtivo
-                                    : styles.badgeInativo
-                                  }`}
-                              >
-                                {item.ativo === 1 ? 'Ativo' : 'Inativo'}
-                              </span>
-                            </td>
-                            <td>
-                              <div className={styles.actionsCell}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleToggleStatus(item)}
-                                  className={`${styles.iconButton} ${styles.statusIcon}`}
-                                  title={item.ativo === 1 ? 'Desativar' : 'Ativar'}
-                                  id={`toggle-status-${item.id}`}
-                                >
-                                  {item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleEditarClick(item)}
-                                  className={`${styles.iconButton} ${styles.editIcon}`}
-                                  title="Editar"
-                                  id={`edit-item-${item.id}`}
-                                >
-                                  <EditIcon fontSize="small" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleExcluirClick(item)}
-                                  className={`${styles.iconButton} ${styles.deleteIcon}`}
-                                  title="Excluir"
-                                  id={`delete-item-${item.id}`}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {/* Paginação */}
-              {totalPages > 1 && (
-                <div className={styles.paginationRow}>
-                  <div style={{ color: 'var(--muted)' }}>
-                    Página {page} de {totalPages}
-                  </div>
-                  <div className={styles.paginationButtons}>
-                    <button
-                      type="button"
-                      disabled={page === 1}
-                      onClick={() => setPage(page - 1)}
-                    >
-                      Anterior
-                    </button>
-                    <button
-                      type="button"
-                      disabled={page === totalPages}
-                      onClick={() => setPage(page + 1)}
-                    >
-                      Próxima
-                    </button>
-                  </div>
-                </div>
-              )}
-            </section>
+            <ProdutosList
+              items={items}
+              loading={loading}
+              total={total}
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              onToggleStatus={handleToggleStatus}
+              onEdit={handleEditarClick}
+              onDelete={handleExcluirClick}
+            />
           </div>
 
           {/* Coluna Direita: Formulário de Cadastro/Edição */}

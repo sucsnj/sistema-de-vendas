@@ -1,0 +1,190 @@
+import styles from '../styles/produtos.module.css';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import BlockIcon from '@mui/icons-material/Block';
+import {
+    ItemData,
+} from '../services/produtosService';
+
+interface ListagemProps {
+    items: ItemData[];
+    loading: boolean;
+
+    onEdit(item: ItemData): void;
+    onDelete(item: ItemData): void;
+    onToggleStatus(item: ItemData): void;
+
+    total: number;
+    page: number;
+    totalPages: number;
+
+    onPageChange(page: number): void;
+}
+
+const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loading, onEdit, onDelete, onPageChange, onToggleStatus }) => {
+
+    return (
+        <div>
+            <section className="glass-form" style={{ marginTop: '15px' }} aria-labelledby="listagem-title">
+                <div className={styles.panelHeader}>
+                    <h2 id="listagem-title" style={{ margin: 0 }}>Listagem</h2>
+                    <div style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>
+                        Total: {total} registro(s)
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div className={styles.emptyState}>Carregando...</div>
+                ) : items.length === 0 ? (
+                    <div className={styles.emptyState}>Nenhum registro encontrado.</div>
+                ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                        <table className="table-container" style={{ minWidth: '600px' }}>
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Cód. Interno</th>
+                                    <th>Nome</th>
+                                    <th>Categoria / Marca</th>
+                                    <th>U.M.</th>
+                                    <th>Cód. Barras Principal</th>
+                                    <th>Status</th>
+                                    <th style={{ width: '100px' }}>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {items.map((item) => {
+                                    const principalBarcode = item.codigos_barras?.find((c) => c.principal === 1)?.codigo_barras || '—';
+                                    const extraBarcodesCount = (item.codigos_barras?.length || 0) - 1;
+
+                                    return (
+                                        <tr key={item.id}>
+                                            <td>
+                                                <span
+                                                    className={`${styles.badge} ${item.tipo === 'PRODUTO'
+                                                        ? styles.badgeProduto
+                                                        : styles.badgeServico
+                                                        }`}
+                                                >
+                                                    {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
+                                                </span>
+                                            </td>
+                                            <td>{item.codigo_interno || '—'}</td>
+                                            <td>
+                                                <strong>{item.nome}</strong>
+                                                {item.descricao && (
+                                                    <div
+                                                        style={{
+                                                            fontSize: '0.72rem',
+                                                            color: 'var(--muted)',
+                                                            marginTop: '2px',
+                                                        }}
+                                                    >
+                                                        {item.descricao.length > 50
+                                                            ? `${item.descricao.substring(0, 50)}...`
+                                                            : item.descricao}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {item.categoria_nome || '—'} / {item.marca_nome || '—'}
+                                            </td>
+                                            <td>{item.unidade_medida_sigla || '—'}</td>
+                                            <td>
+                                                <span>{principalBarcode}</span>
+                                                {extraBarcodesCount > 0 && (
+                                                    <span
+                                                        style={{
+                                                            marginLeft: '5px',
+                                                            fontSize: '0.7rem',
+                                                            padding: '2px 5px',
+                                                            backgroundColor: 'var(--border)',
+                                                            borderRadius: '4px',
+                                                            color: 'var(--muted)',
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        +{extraBarcodesCount}
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <span
+                                                    className={`${styles.badge} ${item.ativo === 1
+                                                        ? styles.badgeAtivo
+                                                        : styles.badgeInativo
+                                                        }`}
+                                                >
+                                                    {item.ativo === 1 ? 'Ativo' : 'Inativo'}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div className={styles.actionsCell}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onToggleStatus(item)}
+                                                        className={`${styles.iconButton} ${styles.statusIcon}`}
+                                                        title={item.ativo === 1 ? 'Desativar' : 'Ativar'}
+                                                        id={`toggle-status-${item.id}`}
+                                                    >
+                                                        {item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onEdit(item)}
+                                                        className={`${styles.iconButton} ${styles.editIcon}`}
+                                                        title="Editar"
+                                                        id={`edit-item-${item.id}`}
+                                                    >
+                                                        <EditIcon fontSize="small" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onDelete(item)}
+                                                        className={`${styles.iconButton} ${styles.deleteIcon}`}
+                                                        title="Excluir"
+                                                        id={`delete-item-${item.id}`}
+                                                    >
+                                                        <DeleteIcon fontSize="small" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                    <div className={styles.paginationRow}>
+                        <div style={{ color: 'var(--muted)' }}>
+                            Página {page} de {totalPages}
+                        </div>
+                        <div className={styles.paginationButtons}>
+                            <button
+                                type="button"
+                                disabled={page === 1}
+                                onClick={() => onPageChange(page - 1)}
+                            >
+                                Anterior
+                            </button>
+                            <button
+                                type="button"
+                                disabled={page === totalPages}
+                                onClick={() => onPageChange(page + 1)}
+                            >
+                                Próxima
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </section>
+        </div>
+    );
+};
+
+export default Listagem;
