@@ -12,6 +12,7 @@ interface AgendaProps {
 }
 
 const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
+    // Mapeamento de contas por data de vencimento
     const agenda = useMemo(() => {
         const map = new Map<string, { data: string; totalPendente: number }>();
         contasAno.forEach((conta) => {
@@ -32,7 +33,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
         return contasAno
             .filter((conta) => conta.status === 'Pendente')
             .sort((a, b) => toTimestamp(a.vencimento) - toTimestamp(b.vencimento))
-            .slice(0, 12);
+            .slice(0, 12); // Quantidade de contas a serem exibidas (12)
     }, [contasAno]);
 
     return (

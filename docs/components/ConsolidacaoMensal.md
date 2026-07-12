@@ -1,8 +1,11 @@
 # `src/components/ConsolidacaoMensal.tsx`
 
 ## Descrição
-
 Componente de resumo que exibe valores pagos e pendentes por mês.
+
+## Contexto
+
+Utilizado no resumo de pagamentos para exibir valores pagos e pendentes por mês.
 
 ## Responsabilidades
 
@@ -13,6 +16,18 @@ Componente de resumo que exibe valores pagos e pendentes por mês.
 
 - `meses` - lista de objetos com `mes`, `pago` e `pendente`.
 
+## Dependências
+
+- `formatter` (formatação de moeda).
+- `date` (formatação e timestamp).
+- `capitalize` (capitalização de texto).
+
+## Exemplo de uso
+
+```tsx
+<ConsolidacaoMensal meses={meses} />
+```
+
 ## Observações
 
-- Usa `toLocaleString('pt-BR', { month: 'short' })` para exibir o nome do mês.
+- Utiliza `capitalize` para formatar o nome do mês.

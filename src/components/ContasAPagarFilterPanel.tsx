@@ -47,7 +47,7 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   onClearFilters,
 }) => {
 
-  // estado para o diálogo
+  // Estado para o diálogo
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useShortcuts } from '../utils/shortcuts';
 import { useFocusTrap } from '../utils/focus';
@@ -29,6 +29,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   useFocusTrap(dialogRef, open);
 
+  // Atalhos de teclado
   useShortcuts(['Escape'], () => {
     if (!open) return;
     if (onCancel) onCancel();

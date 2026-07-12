@@ -60,7 +60,7 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // adiciona classe modal-open ao body quando a modal estiver aberta
+  // Adiciona classe modal-open ao body quando a modal estiver aberta
   useFocusTrap(modalRef, Boolean(selectedConta || payModalOpen));
 
   // Fecha o modal ao pressionar esc

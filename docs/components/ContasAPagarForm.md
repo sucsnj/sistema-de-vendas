@@ -4,6 +4,9 @@
 
 Formulário de cadastro e edição de contas a pagar.
 
+## Contexto
+Utilizado no Contas a Pagar para cadastrar e editar contas.
+
 ## Responsabilidades
 
 - Receber dados básicos da conta: distribuidora, valor, vencimento, documento e observações.
@@ -20,6 +23,10 @@ Formulário de cadastro e edição de contas a pagar.
 - `editingConta` - conta atualmente em edição.
 - `onSubmit` / `onReset` / `onImportXML` / `onCancelarEdicao`
 - `distribuidoraInputRef` - ref para foco automático.
+
+## Dependências
+
+- `date` (formatação e timestamp).
 
 ## Observações
 

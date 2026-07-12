@@ -17,8 +17,8 @@ interface DailySalesTotalProps {
 }
 
 const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, recentSales = [], onEditSale, onDeleteSale, children }) => {
+  
   const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
-
   const quantidadeVendas = sales.length;
   const ticketMedio = quantidadeVendas > 0 ? total / quantidadeVendas : 0;
 

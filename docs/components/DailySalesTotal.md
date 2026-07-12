@@ -4,6 +4,10 @@
 
 Painel de resumo de vendas. Exibe total do período, total do dia selecionado, ticket médio e ações recentes.
 
+## Contexto
+
+Utilizado no Dashboard de Vendas para exibir resumo de vendas.
+
 ## Responsabilidades
 
 - Calcular total acumulado do período.
@@ -18,6 +22,25 @@ Painel de resumo de vendas. Exibe total do período, total do dia selecionado, t
 - `recentSales` - vendas recentes para exibição rápida.
 - `onEditSale` / `onDeleteSale` - callbacks de ação.
 - `children` - componente adicional, como `DailySaleForm`.
+
+## Dependências
+
+- `formatter` (formatação de moeda).
+- `date` (formatação e timestamp).
+- `canEdit` (verifica permissão de edição).
+- `useShortcuts` (captura de atalhos de teclado).
+
+## Exemplo de uso
+
+```tsx
+<DailySalesTotal
+  sales={sales}
+  selectedDay={selectedDay}
+  recentSales={recentSales}
+  onEditSale={onEditSale}
+  onDeleteSale={onDeleteSale}
+/>
+```
 
 ## Observações
 

@@ -37,6 +37,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const observacoesTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
 
+  // Exibe mensagem de sucesso, erro ou informação
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToastMessage(message);
     setToastType(type);
@@ -47,6 +48,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setToastOpen(false);
   };
 
+  // Calcula o valor do campo de valor
   const calculateValue = (input: string) => {
     if (!input.trim()) {
       setCalculatedValue(0);
@@ -97,6 +99,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     valorInputRef.current?.focus();
   };
 
+  // envia dados para o serviço de vendas
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -136,6 +139,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         return;
       }
 
+      // Registra a venda
       await registrarVenda(
         selectedDate,
         valueFromInput,
