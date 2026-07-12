@@ -9,6 +9,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import HistoryIcon from '@mui/icons-material/History';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const Nav: React.FC = () => {
   const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
@@ -69,6 +70,11 @@ const Nav: React.FC = () => {
         <div className={styles.navItem}>
           <span className="icon"><Link href="/tabela"><TableChartIcon /></Link></span>
           <span className="text-responsive"><Link href="/tabela">Tabela</Link></span>
+        </div>
+        <span>·</span>
+        <div className={styles.navItem}>
+          <span className="icon"><Link href="/produtos"><InventoryIcon /></Link></span>
+          <span className="text-responsive"><Link href="/produtos">Produtos e Serviços</Link></span>
         </div>
       </div>
 
