@@ -4,6 +4,10 @@
 
 Componente simples de resumo que lista valores pendentes agrupados por distribuidora.
 
+## Contexto
+
+Usado para exibir totais pendentes por distribuidora em um painel de resumo financeiro.
+
 ## Responsabilidades
 
 - Renderizar totais pendentes por distribuidora.
@@ -12,6 +16,10 @@ Componente simples de resumo que lista valores pendentes agrupados por distribui
 ## Props
 
 - `totaisPorDistribuidora` - mapa de distribuidora para valor.
+
+## Dependências
+
+- `formatCurrency`
 
 ## Observações
 

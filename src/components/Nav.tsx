@@ -10,10 +10,10 @@ import HistoryIcon from '@mui/icons-material/History';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import TableChartIcon from '@mui/icons-material/TableChart';
 
-// Componente React.
 const Nav: React.FC = () => {
   const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
 
+  // Pega o tema salvo no localStorage.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const saved = localStorage.getItem('themeMode');
@@ -22,6 +22,7 @@ const Nav: React.FC = () => {
     }
   }, []);
 
+  // Controla o tema.
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (themeMode === 'system') {
@@ -35,6 +36,7 @@ const Nav: React.FC = () => {
     }
   }, [themeMode]);
 
+  // Alterna o tema.
   const toggleThemeMode = () => {
     setThemeMode((current) =>
       current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system',

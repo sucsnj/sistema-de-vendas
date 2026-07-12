@@ -4,6 +4,10 @@
 
 Painel que exibe notas fiscais do mês e permite excluir registros.
 
+## Contexto
+
+É usado também em todas as páginas do sistema, para visualização das notas do mês. Cada página tem um período pré-definido, mas pode ser alterado pelo usuário.
+
 ## Responsabilidades
 
 - Buscar notas do período usando React Query.
@@ -14,6 +18,13 @@ Painel que exibe notas fiscais do mês e permite excluir registros.
 ## Props
 
 - `ano`, `mes`, `setAno`, `setMes`
+
+## Dependências
+
+- React Query (`@tanstack/react-query`)
+- Material Icons (`@mui/icons-material`)
+- `utils/formatter.ts`
+- `utils/date.ts`
 
 ## Observações
 

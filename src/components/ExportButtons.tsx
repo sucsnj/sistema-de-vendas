@@ -24,10 +24,12 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Função para notificar mensagens.
   const notify = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     onMessage?.(message, type);
   };
 
+  // Função para exportar vendas para XLSX.
   const exportXLSX = async (mode: 'day' | 'month') => {
     if (mode === 'day' && !selectedDate) {
       notify('Selecione um dia antes de exportar por dia.', 'error');
@@ -49,7 +51,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       return;
     }
 
-    try {
+    try { // Importa, cria a planilha, adiciona ao workbook, escreve o workbook e cria um blob.
       const XLSX = await import('xlsx');
       const worksheet = XLSX.utils.json_to_sheet(dataToExport);
       const workbook = XLSX.utils.book_new();
@@ -72,6 +74,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     }
   };
 
+  // Função para disparar a importação.
   const triggerImport = (mode: 'day' | 'month') => {
     if (mode === 'day' && !selectedDate) {
       notify('Selecione um dia antes de importar por dia.', 'error');
@@ -83,6 +86,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     }
   };
 
+  // Função para normalizar o header.
   const normalizeHeader = (header: string) =>
     header
       .toString()
@@ -91,6 +95,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       .normalize("NFD") // remove acentos
       .replace(/[\u0300-\u036f]/g, "");
 
+  // Função para manipular a mudança do arquivo.
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     const mode = event.currentTarget.dataset.mode as 'day' | 'month';
@@ -98,7 +103,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 
     if (!file) return;
 
-    try {
+    try { // Pega o arquivo, importa o XLSX, cria a planilha, adiciona ao workbook, escreve o workbook e cria um blob.
       const data = await file.arrayBuffer();
       const XLSX = await import('xlsx');
       const workbook = XLSX.read(data, { type: 'array' });
@@ -205,10 +210,12 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     }
   };
 
+  // Formata o valor.
   const formatValue = (value: any) => {
     return parseNumber(value);
   };
 
+  // Verifica se a data pertence ao mês.
   const dateMatchesMonth = (dateValue: string) => {
     const parsed = parseDate(`${dateValue}T00:00:00`);
     return (
@@ -218,6 +225,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     );
   };
 
+  // Exporta vendas para PDF.
   const exportPDF = async () => {
     const element = document.querySelector('.table-container') as HTMLElement;
     if (element) {

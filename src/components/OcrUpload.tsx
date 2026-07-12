@@ -17,6 +17,7 @@ export default function OcrUpload() {
         setToastOpen(true);
     }
 
+    // Função de upload
     async function uploadArquivo(e: React.ChangeEvent<HTMLInputElement>) {
 
         if (!e.target.files?.[0]) return;
@@ -55,6 +56,7 @@ export default function OcrUpload() {
     // procura o OCR recente no localStorage com nome de "ocrRecente" e converte de volta para objeto
     const [ocrRecente, setOcrRecente] = useState<any>(null);
 
+    // Procura o OCR recente no localStorage com nome de "ocrRecente"
     useEffect(() => {
         const ocrJson = localStorage.getItem("ocrRecente");
         if (ocrJson) {
@@ -73,6 +75,7 @@ export default function OcrUpload() {
         }
     }, [ocrRecente]);
 
+    // Função de copiar conteúdo para a área de transferência (cópia apenas a linha digitável)
     function copiarConteudo(texto: string) {
 
         navigator.clipboard.writeText(texto)

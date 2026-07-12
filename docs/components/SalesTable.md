@@ -4,6 +4,10 @@
 
 Tabela de vendas que exibe registros históricos e operações de edição/exclusão.
 
+## Contexto
+
+É usado em Vendas Diárias com a finalidade de exibir uma tabela de vendas diárias, permitindo uma visão panorâmica da evolução das vendas.
+
 ## Responsabilidades
 
 - Exibir registros de vendas ordenados por data e ID.
@@ -15,6 +19,17 @@ Tabela de vendas que exibe registros históricos e operações de edição/exclu
 - `sales` - lista de vendas.
 - `onEditSale` - callback de edição.
 - `onDeleteSale` - callback de exclusão.
+
+## Dependências
+
+- `ConfirmDialog`
+- `EditIcon`
+- `DeleteIcon`
+- `Tooltip`
+- `VendaDiaria`
+- `formatCurrency`
+- `formatDateString`
+- `toTimestamp`
 
 ## Observações
 

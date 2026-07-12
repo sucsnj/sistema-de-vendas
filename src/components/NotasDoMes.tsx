@@ -6,6 +6,7 @@ import { formatDateString, getCurrentYear } from '../utils/date';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+// Array com os meses
 const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'

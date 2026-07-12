@@ -4,6 +4,10 @@
 
 Componente de visualização de gráfico de vendas usando `recharts`.
 
+## Contexto
+
+É usado em Vendas Diárias com a finalidade de exibir um gráfico de linha ou barras das vendas diárias, permitindo uma visão panorâmica da evolução das vendas.
+
 ## Responsabilidades
 
 - Exibir gráfico de linha ou barras.
@@ -13,6 +17,17 @@ Componente de visualização de gráfico de vendas usando `recharts`.
 ## Props
 
 - `data` - array de vendas diárias.
+
+## Dependências
+
+- `LineChart`
+- `BarChart`
+- `XAxis`
+- `YAxis`
+- `CartesianGrid`
+- `Tooltip`
+- `ResponsiveContainer`
+- `VendaDiaria`
 
 ## Observações
 
