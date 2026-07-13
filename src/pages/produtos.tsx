@@ -2,10 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
-import AddIcon from '@mui/icons-material/Add';
-import StarIcon from '@mui/icons-material/Star';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import CloseIcon from '@mui/icons-material/Close';
 import {
   buscarProdutos,
   registrarProduto,
