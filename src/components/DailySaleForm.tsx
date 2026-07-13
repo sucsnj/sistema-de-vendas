@@ -48,6 +48,40 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setToastOpen(false);
   };
 
+  // Constante com as teclas permitidas para o input de valor
+  const allowedKeys = [
+    "Backspace", "Delete", "Enter", "Tab", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"
+  ];
+
+  // Quando uma tecla é pressionada no input de valor, verifica se é permitida
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const { key, currentTarget } = event;
+
+    // Teclas permitidas: números, operadores matemáticos, parênteses, vírgula e ponto
+    if (allowedKeys.includes(key)) return;
+    if (/^[0-9]$/.test(key)) return;
+    if (["+", "-", "*", "/", "(", ")", ".", ","].includes(key)) {
+      const value = currentTarget.value;
+      const lastChar = value.slice(-1);
+
+      // Bloquear duplicação do mesmo símbolo
+      if (lastChar === key) {
+        event.preventDefault();
+        return;
+      }
+
+      // Bloquear dois operadores diferentes seguidos (ex: "+*")
+      if (/[+\-*/.,]/.test(lastChar) && /[+\-*/.,]/.test(key)) {
+        event.preventDefault();
+        return;
+      }
+      return;
+    };
+
+    // Bloquear qualquer outro caractere
+    event.preventDefault();
+  };
+
   // Calcula o valor do campo de valor
   const calculateValue = (input: string) => {
     if (!input.trim()) {
@@ -268,10 +302,14 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 <input
                   ref={valorInputRef}
                   type="text"
+                  onKeyDown={handleKeyDown}
                   inputMode="decimal"
                   enterKeyHint="done"
                   value={valor}
                   onChange={(e) => {
+                    // Limpa o input em caso de caracteres inválidos
+                    const value = e.target.value.replace(/[^0-9+\-*/(),.]/g, "");
+                    e.target.value = value;
                     setValor(e.target.value);
                     calculateValue(e.target.value);
                   }}
