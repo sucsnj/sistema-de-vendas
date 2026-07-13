@@ -25,6 +25,7 @@ import {
 } from '../services/produtosService';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
+import BarcodeManager from '@/components/BarcodeManager';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -436,241 +437,180 @@ const ProdutosPage: React.FC = () => {
             </h2>
 
             <form onSubmit={handleSubmitForm}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-tipo">
-                  Tipo:
-                </label>
-                <select
-                  id="form-tipo"
-                  className={styles.selectField}
-                  value={formTipo}
-                  onChange={(e) => setFormTipo(e.target.value as any)}
-                >
-                  <option value="PRODUTO">Produto</option>
-                  <option value="SERVICO">Serviço</option>
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-nome">
-                  Nome:*
-                </label>
-                <input
-                  id="form-nome"
-                  ref={nomeInputRef}
-                  type="text"
-                  className={styles.inputField}
-                  placeholder="Nome do item"
-                  value={formNome}
-                  onChange={(e) => setFormNome(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-descricao">
-                  Descrição:
-                </label>
-                <textarea
-                  id="form-descricao"
-                  className={styles.textareaField}
-                  placeholder="Detalhes ou especificações"
-                  rows={3}
-                  value={formDescricao}
-                  onChange={(e) => setFormDescricao(e.target.value)}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-categoria">
-                  Categoria:*
-                </label>
-                <div className={styles.selectWrapper}>
+              <div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-tipo">
+                    Tipo:
+                  </label>
                   <select
-                    id="form-categoria"
+                    id="form-tipo"
                     className={styles.selectField}
-                    value={formCategoriaId}
+                    value={formTipo}
+                    onChange={(e) => setFormTipo(e.target.value as any)}
+                  >
+                    <option value="PRODUTO">Produto</option>
+                    <option value="SERVICO">Serviço</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-nome">
+                    Nome:*
+                  </label>
+                  <input
+                    id="form-nome"
+                    ref={nomeInputRef}
+                    type="text"
+                    className={styles.inputField}
+                    placeholder="Nome do item"
+                    value={formNome}
+                    onChange={(e) => setFormNome(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-descricao">
+                    Descrição:
+                  </label>
+                  <textarea
+                    id="form-descricao"
+                    className={styles.textareaField}
+                    placeholder="Detalhes ou especificações"
+                    rows={3}
+                    value={formDescricao}
+                    onChange={(e) => setFormDescricao(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-categoria">
+                    Categoria:*
+                  </label>
+                  <div className={styles.selectWrapper}>
+                    <select
+                      id="form-categoria"
+                      className={styles.selectField}
+                      value={formCategoriaId}
+                      onChange={(e) =>
+                        setFormCategoriaId(e.target.value ? Number(e.target.value) : '')
+                      }
+                      required>
+                      <option value="">Selecione...</option>
+                      {categorias.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.nome}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className={styles.addButton}
+                      onClick={() => setModalCategoriaOpen(true)}
+                      title="Adicionar Categoria"
+                      id="add-categoria-btn"
+                    >
+                      <AddIcon fontSize="small" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-marca">
+                    Marca:*
+                  </label>
+                  <div className={styles.selectWrapper}>
+                    <select
+                      id="form-marca"
+                      className={styles.selectField}
+                      value={formMarcaId}
+                      onChange={(e) =>
+                        setFormMarcaId(e.target.value ? Number(e.target.value) : '')
+                      }
+                      required>
+                      <option value="">Selecione...</option>
+                      {marcas.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.nome}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className={styles.addButton}
+                      onClick={() => setModalMarcaOpen(true)}
+                      title="Adicionar Marca"
+                      id="add-marca-btn"
+                    >
+                      <AddIcon fontSize="small" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-unidade">
+                    Unidade de Medida:*
+                  </label>
+                  <select
+                    id="form-unidade"
+                    className={styles.selectField}
+                    value={formUnidadeMedidaId}
                     onChange={(e) =>
-                      setFormCategoriaId(e.target.value ? Number(e.target.value) : '')
+                      setFormUnidadeMedidaId(e.target.value ? Number(e.target.value) : '')
                     }
-                    required>
+                    required
+                  >
                     <option value="">Selecione...</option>
-                    {categorias.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.nome}
+                    {unidadesMedida.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.sigla} - {u.descricao}
                       </option>
                     ))}
                   </select>
-                  <button
-                    type="button"
-                    className={styles.addButton}
-                    onClick={() => setModalCategoriaOpen(true)}
-                    title="Adicionar Categoria"
-                    id="add-categoria-btn"
-                  >
-                    <AddIcon fontSize="small" />
-                  </button>
                 </div>
-              </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-marca">
-                  Marca:*
-                </label>
-                <div className={styles.selectWrapper}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-cod-interno">
+                    Código Interno:
+                  </label>
+                  <input
+                    id="form-cod-interno"
+                    type="text"
+                    className={styles.inputField}
+                    placeholder="Ex: PROD-001"
+                    value={formCodigoInterno}
+                    onChange={(e) => setFormCodigoInterno(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} htmlFor="form-ativo">
+                    Ativo:
+                  </label>
                   <select
-                    id="form-marca"
+                    id="form-ativo"
                     className={styles.selectField}
-                    value={formMarcaId}
-                    onChange={(e) =>
-                      setFormMarcaId(e.target.value ? Number(e.target.value) : '')
-                    }
-                    required>
-                    <option value="">Selecione...</option>
-                    {marcas.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.nome}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    className={styles.addButton}
-                    onClick={() => setModalMarcaOpen(true)}
-                    title="Adicionar Marca"
-                    id="add-marca-btn"
+                    value={formAtivo}
+                    onChange={(e) => setFormAtivo(Number(e.target.value))}
                   >
-                    <AddIcon fontSize="small" />
-                  </button>
+                    <option value={1}>Sim</option>
+                    <option value={0}>Não</option>
+                  </select>
                 </div>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-unidade">
-                  Unidade de Medida:*
-                </label>
-                <select
-                  id="form-unidade"
-                  className={styles.selectField}
-                  value={formUnidadeMedidaId}
-                  onChange={(e) =>
-                    setFormUnidadeMedidaId(e.target.value ? Number(e.target.value) : '')
-                  }
-                  required
-                >
-                  <option value="">Selecione...</option>
-                  {unidadesMedida.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.sigla} - {u.descricao}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-cod-interno">
-                  Código Interno:
-                </label>
-                <input
-                  id="form-cod-interno"
-                  type="text"
-                  className={styles.inputField}
-                  placeholder="Ex: PROD-001"
-                  value={formCodigoInterno}
-                  onChange={(e) => setFormCodigoInterno(e.target.value)}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-ativo">
-                  Ativo:
-                </label>
-                <select
-                  id="form-ativo"
-                  className={styles.selectField}
-                  value={formAtivo}
-                  onChange={(e) => setFormAtivo(Number(e.target.value))}
-                >
-                  <option value={1}>Sim</option>
-                  <option value={0}>Não</option>
-                </select>
               </div>
 
               {/* Códigos de Barras */}
-              <div className={styles.barcodeSection}>
-                <div className={styles.barcodeTitle}>Códigos de Barras</div>
-                <div className={styles.barcodeInputRow}>
-                  <input
-                    ref={barcodeInputRef}
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Digitar código de barras..."
-                    value={novoCodigoBarras}
-                    onChange={(e) => setNovoCodigoBarras(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddBarcode();
-                      }
-                    }}
-                    id="barcode-input-field"
-                  />
-                  <button
-                    type="button"
-                    className={styles.primaryButton}
-                    onClick={handleAddBarcode}
-                    style={{ padding: '8px 14px', marginTop: 0, marginBottom: 0 }}
-                    id="add-barcode-action-btn"
-                  >
-                    Adicionar
-                  </button>
-                </div>
-
-                {formCodigosBarras.length === 0 ? (
-                  <div
-                    style={{
-                      textAlign: 'center',
-                      color: 'var(--muted)',
-                      fontSize: '0.75rem',
-                      padding: '10px',
-                    }}
-                  >
-                    Nenhum código de barras adicionado.
-                  </div>
-                ) : (
-                  <div className={styles.barcodeList}>
-                    {formCodigosBarras.map((cb) => (
-                      <div key={cb.codigo_barras} className={styles.barcodeItem}>
-                        <div className={styles.barcodeLeft}>
-                          <span style={{ fontWeight: 'bold' }}>{cb.codigo_barras}</span>
-                          <span
-                            onClick={() => handleSetPrincipalBarcode(cb.codigo_barras)}
-                            className={styles.barcodeRadioLabel}
-                            title={cb.principal === 1 ? 'Código Principal' : 'Marcar como Principal'}
-                            id={`principal-star-${cb.codigo_barras}`}
-                          >
-                            {cb.principal === 1 ? (
-                              <StarIcon style={{ color: '#eab308' }} fontSize="small" />
-                            ) : (
-                              <StarBorderIcon style={{ color: 'var(--muted)' }} fontSize="small" />
-                            )}
-                            {cb.principal === 1 ? 'Principal' : 'Tornar Principal'}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveBarcode(cb.codigo_barras)}
-                          className={styles.removeBtn}
-                          title="Remover"
-                          id={`remove-barcode-${cb.codigo_barras}`}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <BarcodeManager
+                formCodigosBarras={formCodigosBarras}
+                setFormCodigosBarras={setFormCodigosBarras}
+                novoCodigoBarras={novoCodigoBarras}
+                setNovoCodigoBarras={setNovoCodigoBarras}
+                barcodeInputRef={barcodeInputRef}
+                handleAddBarcode={handleAddBarcode}
+                handleSetPrincipalBarcode={handleSetPrincipalBarcode}
+                handleRemoveBarcode={handleRemoveBarcode}
+                showToast={showToast}
+              />
 
               {/* Botões de Ação */}
               <div className={styles.actionButtons}>
@@ -834,7 +774,7 @@ const ProdutosPage: React.FC = () => {
           onClose={closeToast}
           position="top-right"
         />
-      </div>
+      </div >
     </>
   );
 };
