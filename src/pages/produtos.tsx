@@ -26,6 +26,10 @@ import {
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
+import FormularioProduto from '@/components/FormularioProduto';
+import ModalProdCategoria from '@/components/ModalProdCategoria';
+import ModalProdMarca from '@/components/ModalProdMarca';
+import ModalProdExclusao from '@/components/ModalProdExclusao';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -437,167 +441,41 @@ const ProdutosPage: React.FC = () => {
             </h2>
 
             <form onSubmit={handleSubmitForm}>
-              <div>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-tipo">
-                    Tipo:
-                  </label>
-                  <select
-                    id="form-tipo"
-                    className={styles.selectField}
-                    value={formTipo}
-                    onChange={(e) => setFormTipo(e.target.value as any)}
-                  >
-                    <option value="PRODUTO">Produto</option>
-                    <option value="SERVICO">Serviço</option>
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-nome">
-                    Nome:*
-                  </label>
-                  <input
-                    id="form-nome"
-                    ref={nomeInputRef}
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Nome do item"
-                    value={formNome}
-                    onChange={(e) => setFormNome(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-descricao">
-                    Descrição:
-                  </label>
-                  <textarea
-                    id="form-descricao"
-                    className={styles.textareaField}
-                    placeholder="Detalhes ou especificações"
-                    rows={3}
-                    value={formDescricao}
-                    onChange={(e) => setFormDescricao(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-categoria">
-                    Categoria:*
-                  </label>
-                  <div className={styles.selectWrapper}>
-                    <select
-                      id="form-categoria"
-                      className={styles.selectField}
-                      value={formCategoriaId}
-                      onChange={(e) =>
-                        setFormCategoriaId(e.target.value ? Number(e.target.value) : '')
-                      }
-                      required>
-                      <option value="">Selecione...</option>
-                      {categorias.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.nome}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className={styles.addButton}
-                      onClick={() => setModalCategoriaOpen(true)}
-                      title="Adicionar Categoria"
-                      id="add-categoria-btn"
-                    >
-                      <AddIcon fontSize="small" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-marca">
-                    Marca:*
-                  </label>
-                  <div className={styles.selectWrapper}>
-                    <select
-                      id="form-marca"
-                      className={styles.selectField}
-                      value={formMarcaId}
-                      onChange={(e) =>
-                        setFormMarcaId(e.target.value ? Number(e.target.value) : '')
-                      }
-                      required>
-                      <option value="">Selecione...</option>
-                      {marcas.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.nome}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className={styles.addButton}
-                      onClick={() => setModalMarcaOpen(true)}
-                      title="Adicionar Marca"
-                      id="add-marca-btn"
-                    >
-                      <AddIcon fontSize="small" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-unidade">
-                    Unidade de Medida:*
-                  </label>
-                  <select
-                    id="form-unidade"
-                    className={styles.selectField}
-                    value={formUnidadeMedidaId}
-                    onChange={(e) =>
-                      setFormUnidadeMedidaId(e.target.value ? Number(e.target.value) : '')
-                    }
-                    required
-                  >
-                    <option value="">Selecione...</option>
-                    {unidadesMedida.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.sigla} - {u.descricao}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-cod-interno">
-                    Código Interno:
-                  </label>
-                  <input
-                    id="form-cod-interno"
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Ex: PROD-001"
-                    value={formCodigoInterno}
-                    onChange={(e) => setFormCodigoInterno(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="form-ativo">
-                    Ativo:
-                  </label>
-                  <select
-                    id="form-ativo"
-                    className={styles.selectField}
-                    value={formAtivo}
-                    onChange={(e) => setFormAtivo(Number(e.target.value))}
-                  >
-                    <option value={1}>Sim</option>
-                    <option value={0}>Não</option>
-                  </select>
-                </div>
-              </div>
+              <FormularioProduto
+                editingId={editingId}
+                formTipo={formTipo}
+                formNome={formNome}
+                formDescricao={formDescricao}
+                formCategoriaId={formCategoriaId}
+                formMarcaId={formMarcaId}
+                formUnidadeMedidaId={formUnidadeMedidaId}
+                formCodigoInterno={formCodigoInterno}
+                formAtivo={formAtivo}
+                formCodigosBarras={formCodigosBarras}
+                novoCodigoBarras={novoCodigoBarras}
+                setEditingId={setEditingId}
+                setFormTipo={setFormTipo}
+                setFormNome={setFormNome}
+                setFormDescricao={setFormDescricao}
+                setFormCategoriaId={setFormCategoriaId}
+                setFormMarcaId={setFormMarcaId}
+                setFormUnidadeMedidaId={setFormUnidadeMedidaId}
+                setFormCodigoInterno={setFormCodigoInterno}
+                setFormAtivo={setFormAtivo}
+                setFormCodigosBarras={setFormCodigosBarras}
+                setNovoCodigoBarras={setNovoCodigoBarras}
+                handleSubmitForm={handleSubmitForm}
+                resetForm={resetForm}
+                categorias={categorias}
+                marcas={marcas}
+                unidadesMedida={unidadesMedida}
+                nomeInputRef={nomeInputRef}
+                barcodeInputRef={barcodeInputRef}
+                handleAddBarcode={handleAddBarcode}
+                showToast={showToast}
+                setModalCategoriaOpen={setModalCategoriaOpen}
+                setModalMarcaOpen={setModalMarcaOpen}
+              />
 
               {/* Códigos de Barras */}
               <BarcodeManager
@@ -632,138 +510,37 @@ const ProdutosPage: React.FC = () => {
 
         {/* Modal: Cadastro de Categoria */}
         {modalCategoriaOpen && (
-          <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-title">
-            <div className={styles.modalContent}>
-              <h3 id="modal-cat-title" className={styles.modalTitle}>Adicionar Categoria</h3>
-              <form onSubmit={handleSalvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="new-cat-nome">
-                    Nome:*
-                  </label>
-                  <input
-                    id="new-cat-nome"
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Nome da categoria"
-                    value={novaCatNome}
-                    onChange={(e) => setNovaCatNome(e.target.value)}
-                    required
-                    autoFocus
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="new-cat-desc">
-                    Descrição:
-                  </label>
-                  <input
-                    id="new-cat-desc"
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Descrição opcional"
-                    value={novaCatDesc}
-                    onChange={(e) => setNovaCatDesc(e.target.value)}
-                  />
-                </div>
-                <div className={styles.modalActions}>
-                  <button type="submit" className={styles.primaryButton} id="save-new-cat-btn">
-                    Salvar
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={() => {
-                      setModalCategoriaOpen(false);
-                      setNovaCatNome('');
-                      setNovaCatDesc('');
-                    }}
-                    id="cancel-new-cat-btn"
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ModalProdCategoria
+            setModalCategoriaOpen={setModalCategoriaOpen}
+            novaCatNome={novaCatNome}
+            setNovaCatNome={setNovaCatNome}
+            novaCatDesc={novaCatDesc}
+            setNovaCatDesc={setNovaCatDesc}
+            handleSalvarCategoria={handleSalvarCategoria}
+          />
         )}
 
         {/* Modal: Cadastro de Marca */}
         {modalMarcaOpen && (
-          <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-marca-title">
-            <div className={styles.modalContent}>
-              <h3 id="modal-marca-title" className={styles.modalTitle}>Adicionar Marca</h3>
-              <form onSubmit={handleSalvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="new-marca-nome">
-                    Nome:*
-                  </label>
-                  <input
-                    id="new-marca-nome"
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Nome da marca"
-                    value={novaMarcaNome}
-                    onChange={(e) => setNovaMarcaNome(e.target.value)}
-                    required
-                    autoFocus
-                  />
-                </div>
-                <div className={styles.modalActions}>
-                  <button type="submit" className={styles.primaryButton} id="save-new-marca-btn">
-                    Salvar
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={() => {
-                      setModalMarcaOpen(false);
-                      setNovaMarcaNome('');
-                    }}
-                    id="cancel-new-marca-btn"
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ModalProdMarca
+            setModalMarcaOpen={setModalMarcaOpen}
+            novaMarcaNome={novaMarcaNome}
+            setNovaMarcaNome={setNovaMarcaNome}
+            handleSalvarMarca={handleSalvarMarca}
+          />
         )}
 
         {/* Modal: Confirmação de Exclusão */}
         {deleteConfirmOpen && itemParaExcluir && (
-          <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-delete-title">
-            <div className={styles.modalContent}>
-              <h3 id="modal-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--foreground)' }}>
-                Tem certeza de que deseja excluir o item{' '}
-                <strong>{itemParaExcluir.nome}</strong>?
-              </p>
-              <p style={{ fontSize: '0.72rem', color: 'var(--danger)', fontWeight: 'bold' }}>
-                Esta ação é irreversível e excluirá todos os códigos de barras associados a ele.
-              </p>
-              <div className={styles.modalActions}>
-                <button
-                  type="button"
-                  className={styles.primaryButton}
-                  onClick={handleConfirmExcluir}
-                  style={{ backgroundColor: 'var(--danger)' }}
-                  id="confirm-delete-action-btn"
-                >
-                  Excluir
-                </button>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={() => {
-                    setDeleteConfirmOpen(false);
-                    setItemParaExcluir(null);
-                  }}
-                  id="cancel-delete-action-btn"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>
+          <ModalProdExclusao
+            open={deleteConfirmOpen}
+            item={itemParaExcluir}
+            onConfirm={handleConfirmExcluir}
+            onClose={() => {
+              setDeleteConfirmOpen(false);
+              setItemParaExcluir(null);
+            }}
+          />
         )}
 
         {/* Notificações Toast */}
