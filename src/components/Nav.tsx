@@ -73,8 +73,8 @@ const Nav: React.FC = () => {
         </div>
         <span>·</span>
         <div className={styles.navItem}>
-          <span className="icon"><Link href="/produtos"><InventoryIcon /></Link></span>
-          <span className="text-responsive"><Link href="/produtos">Produtos e Serviços</Link></span>
+          <span className="icon hidden"><Link href="/produtos"><InventoryIcon /></Link></span>
+          <span className="text-responsive hidden"><Link href="/produtos">Produtos e Serviços</Link></span>
         </div>
       </div>
 
