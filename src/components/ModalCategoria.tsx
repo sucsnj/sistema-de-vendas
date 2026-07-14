@@ -1,6 +1,6 @@
 import styles from '../styles/produtos.module.css';
 
-interface ModalProdCategoriaProps {
+interface ModalAddCategoriaProps {
     setModalCategoriaOpen: (value: boolean) => void;
     novaCatNome: string;
     setNovaCatNome: (value: string) => void;
@@ -9,7 +9,7 @@ interface ModalProdCategoriaProps {
     handleSalvarCategoria: (e: React.FormEvent) => void;
 }
 
-const ModalProdCategoria: React.FC<ModalProdCategoriaProps> = ({
+const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
     setModalCategoriaOpen,
     novaCatNome,
     setNovaCatNome,
@@ -73,4 +73,5 @@ const ModalProdCategoria: React.FC<ModalProdCategoriaProps> = ({
     )
 };
 
-export default ModalProdCategoria;
+
+export default ModalAddCategoria;

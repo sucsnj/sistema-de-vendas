@@ -105,6 +105,24 @@ export const insertCategoria = (nome: string, descricao?: string) => {
   return stmt.run(nome, descricao || null);
 };
 
+// Apaga uma categoria, se houver itens associados, renomeia para a categoria "Geral" (id=1)
+export const deleteCategoria = (id: number) => {
+  if (id === 1) {
+    throw new Error('Não é possível apagar a categoria Geral.');
+  }
+  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE categoria_id = ?').get(id) as { count: number };
+  if (countItens.count > 0) {
+    // Atualiza os itens para a categoria Geral
+    db.prepare('UPDATE itens SET categoria_id = 1 WHERE categoria_id = ?').run(id);
+  }
+  return db.prepare('DELETE FROM categorias WHERE id = ?').run(id);
+};
+
+// Renomeia uma categoria e atualiza em todos os itens associados
+export const updateCategoria = (id: number, nome: string, descricao?: string) => {
+  return db.prepare('UPDATE categorias SET nome = ?, descricao = ? WHERE id = ?').run(nome, descricao || null, id);
+};
+
 // Helpers para Marcas
 export const getMarcas = () => {
   return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as any[];

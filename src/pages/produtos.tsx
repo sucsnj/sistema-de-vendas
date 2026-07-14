@@ -10,6 +10,8 @@ import {
   toggleStatusProduto,
   buscarCategorias,
   criarCategoria,
+  deletarCategoria,
+  atualizarCategoria,
   buscarMarcas,
   criarMarca,
   buscarUnidadesMedida,
@@ -23,7 +25,7 @@ import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
 import FormularioProduto from '@/components/FormularioProduto';
-import ModalProdCategoria from '@/components/ModalProdCategoria';
+import ModalCategoria from '@/components/ModalCategoria';
 import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 
@@ -53,7 +55,7 @@ const ProdutosPage: React.FC = () => {
   const [formTipo, setFormTipo] = useState<'PRODUTO' | 'SERVICO'>('PRODUTO');
   const [formNome, setFormNome] = useState('');
   const [formDescricao, setFormDescricao] = useState('');
-  const [formCategoriaId, setFormCategoriaId] = useState<number | ''>('');
+  const [formCategoriaId, setFormCategoriaId] = useState<number | 1>(1);
   const [formMarcaId, setFormMarcaId] = useState<number | ''>('');
   const [formUnidadeMedidaId, setFormUnidadeMedidaId] = useState<number | ''>('');
   const [formCodigoInterno, setFormCodigoInterno] = useState('');
@@ -162,7 +164,7 @@ const ProdutosPage: React.FC = () => {
     setFormTipo('PRODUTO');
     setFormNome('');
     setFormDescricao('');
-    setFormCategoriaId('');
+    setFormCategoriaId(1);
     setFormMarcaId('');
     setFormUnidadeMedidaId('');
     setFormCodigoInterno('');
@@ -506,7 +508,7 @@ const ProdutosPage: React.FC = () => {
 
         {/* Modal: Cadastro de Categoria */}
         {modalCategoriaOpen && (
-          <ModalProdCategoria
+          <ModalCategoria
             setModalCategoriaOpen={setModalCategoriaOpen}
             novaCatNome={novaCatNome}
             setNovaCatNome={setNovaCatNome}

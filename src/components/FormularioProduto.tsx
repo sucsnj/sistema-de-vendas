@@ -1,5 +1,6 @@
 import styles from '../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
+import MoreVert from '@mui/icons-material/MoreVert';
 import {
     CategoriaData,
     MarcaData,
@@ -23,7 +24,7 @@ interface FormularioProdutoProps {
     setFormTipo: (tipo: 'PRODUTO' | 'SERVICO') => void;
     setFormNome: (nome: string) => void;
     setFormDescricao: (descricao: string) => void;
-    setFormCategoriaId: (id: number | '') => void;
+    setFormCategoriaId: (id: number) => void;
     setFormMarcaId: (id: number | '') => void;
     setFormUnidadeMedidaId: (id: number | '') => void;
     setFormCodigoInterno: (codigo: string) => void;
@@ -135,10 +136,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.selectField}
                         value={formCategoriaId}
                         onChange={(e) =>
-                            setFormCategoriaId(e.target.value ? Number(e.target.value) : '')
+                            setFormCategoriaId(e.target.value ? Number(e.target.value) : 1)
                         }
                         required>
-                        <option value="">Selecione...</option>
                         {categorias.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.nome}
@@ -153,6 +153,16 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         id="add-categoria-btn"
                     >
                         <AddIcon fontSize="small" />
+                    </button>
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de categorias */}
+                    <button
+                        type="button"
+                        className={styles.manageButton}
+                        onClick={() => setModalCategoriaOpen(true)}
+                        title="Gerenciar Categorias"
+                        id="manage-categoria-btn"
+                    >
+                        <MoreVert fontSize="small" />
                     </button>
                 </div>
             </div>

@@ -119,6 +119,24 @@
   color: var(--accent);
 }
 
+.manageButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--foreground);
+  transition: background 0.2s;
+}
+
+.manageButton:hover {
+  background: var(--surface-strong);
+  color: var(--accent);
+}
+
 .barcodeSection {
   border: 1px solid var(--border);
   border-radius: 10px;

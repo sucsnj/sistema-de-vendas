@@ -144,6 +144,30 @@ export const criarCategoria = async (nome: string, descricao?: string): Promise<
   return response.json();
 };
 
+export const deletarCategoria = async (id: number): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/categorias?id=${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao deletar categoria.');
+  }
+  return response.json();
+};
+
+export const atualizarCategoria = async (id: number, nome: string, descricao?: string): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/categorias?id=${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, descricao }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao atualizar categoria.');
+  }
+  return response.json();
+};
+
 export const buscarMarcas = async (): Promise<MarcaData[]> => {
   const response = await fetch('/api/produtos/marcas');
   if (!response.ok) throw new Error('Erro ao buscar marcas.');
