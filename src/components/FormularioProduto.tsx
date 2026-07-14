@@ -42,6 +42,8 @@ interface FormularioProdutoProps {
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
     setModalCategoriaOpen: (open: boolean) => void;
     setModalMarcaOpen: (open: boolean) => void;
+    setModalCategoriaEditOpen: (open: boolean) => void;
+    handleOpenEditModal: (cat: CategoriaData) => void;
 }
 
 const FormularioProduto: React.FC<FormularioProdutoProps> = ({
@@ -78,6 +80,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
     showToast,
     setModalCategoriaOpen,
     setModalMarcaOpen,
+    setModalCategoriaEditOpen,
+    handleOpenEditModal
 }) => {
     return (
         <div className="CadastroEdicao">
@@ -158,9 +162,16 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.manageButton}
-                        onClick={() => setModalCategoriaOpen(true)}
-                        title="Gerenciar Categorias"
-                        id="manage-categoria-btn"
+                        onClick={() => {
+                            const categoriaSelecionada = categorias.find(
+                                (c) => c.id === formCategoriaId
+                            );
+                            if (categoriaSelecionada) {
+                                handleOpenEditModal(categoriaSelecionada);
+                            }
+                        }}
+                        title="Editar Categoria Selecionada"
+                        id="edit-categoria-btn"
                     >
                         <MoreVert fontSize="small" />
                     </button>

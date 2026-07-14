@@ -28,6 +28,7 @@ import FormularioProduto from '@/components/FormularioProduto';
 import ModalCategoria from '@/components/ModalCategoria';
 import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
+import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -67,6 +68,9 @@ const ProdutosPage: React.FC = () => {
   const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
   const [novaCatNome, setNovaCatNome] = useState('');
   const [novaCatDesc, setNovaCatDesc] = useState('');
+
+  // Modais de Edição
+  const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
 
   const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
   const [novaMarcaNome, setNovaMarcaNome] = useState('');
@@ -355,6 +359,42 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
+  // Handler para abrir modal de edição
+  const handleOpenEditModal = (categoria: { id: number; nome: string; descricao?: string }) => {
+    setFormCategoriaId(categoria.id);
+    setNovaCatNome(categoria.nome);
+    setNovaCatDesc(categoria.descricao || '');
+    setModalCategoriaEditOpen(true);
+  };
+
+  // Ediçao de categoria
+  const handleAtualizarCategoria = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!novaCatNome.trim()) {
+      showToast('O nome da categoria é obrigatório.', 'error');
+      return;
+    }
+    try {
+      const response = await atualizarCategoria(formCategoriaId, novaCatNome.trim(), novaCatDesc.trim());
+
+      // Atualiza na interface após confirmação da API
+      setCategorias((prev) =>
+        prev.map((cat) =>
+          cat.id === formCategoriaId
+            ? { ...cat, nome: novaCatNome.trim(), descricao: novaCatDesc.trim() }
+            : cat
+        )
+      );
+
+      showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
+      setModalCategoriaEditOpen(false);
+      setNovaCatNome('');
+      setNovaCatDesc('');
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao atualizar categoria.', 'error');
+    }
+  };
+
   // Cadastro de Marca Inline
   const handleSalvarMarca = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -473,6 +513,8 @@ const ProdutosPage: React.FC = () => {
                 showToast={showToast}
                 setModalCategoriaOpen={setModalCategoriaOpen}
                 setModalMarcaOpen={setModalMarcaOpen}
+                setModalCategoriaEditOpen={setModalCategoriaEditOpen}
+                handleOpenEditModal={handleOpenEditModal}
               />
 
               {/* Códigos de Barras */}
@@ -515,6 +557,18 @@ const ProdutosPage: React.FC = () => {
             novaCatDesc={novaCatDesc}
             setNovaCatDesc={setNovaCatDesc}
             handleSalvarCategoria={handleSalvarCategoria}
+          />
+        )}
+
+        {/* Modal: Edição de Categoria */}
+        {modalCategoriaEditOpen && (
+          <ModalCategoriaEdit
+            setModalCategoriaEditOpen={setModalCategoriaEditOpen}
+            novaCatNome={novaCatNome}
+            setNovaCatNome={setNovaCatNome}
+            novaCatDesc={novaCatDesc}
+            setNovaCatDesc={setNovaCatDesc}
+            handleAtualizarCategoria={handleAtualizarCategoria}
           />
         )}
 

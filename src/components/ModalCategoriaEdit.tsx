@@ -1,34 +1,33 @@
 import styles from '../styles/produtos.module.css';
 
-interface ModalAddCategoriaProps {
-    setModalCategoriaOpen: (value: boolean) => void;
+interface ModalCategoriaEditProps {
+    setModalCategoriaEditOpen: (value: boolean) => void;
     novaCatNome: string;
     setNovaCatNome: (value: string) => void;
     novaCatDesc: string;
     setNovaCatDesc: (value: string) => void;
-    handleSalvarCategoria: (e: React.FormEvent) => void;
+    handleAtualizarCategoria: (e: React.FormEvent) => void;
 }
 
-
-const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
-    setModalCategoriaOpen,
+const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
+    setModalCategoriaEditOpen,
     novaCatNome,
     setNovaCatNome,
     novaCatDesc,
     setNovaCatDesc,
-    handleSalvarCategoria,
+    handleAtualizarCategoria,
 }) => {
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-title">
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-edit-title">
             <div className={styles.modalContent}>
-                <h3 id="modal-cat-title" className={styles.modalTitle}>Adicionar Categoria</h3>
-                <form onSubmit={handleSalvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <h3 id="modal-cat-edit-title" className={styles.modalTitle}>Editar Categoria</h3>
+                <form onSubmit={handleAtualizarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="new-cat-nome">
+                        <label className={styles.formLabel} htmlFor="edit-cat-nome">
                             Nome:*
                         </label>
                         <input
-                            id="new-cat-nome"
+                            id="edit-cat-nome"
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da categoria"
@@ -39,11 +38,11 @@ const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
                         />
                     </div>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="new-cat-desc">
+                        <label className={styles.formLabel} htmlFor="edit-cat-desc">
                             Descrição:
                         </label>
                         <input
-                            id="new-cat-desc"
+                            id="edit-cat-desc"
                             type="text"
                             className={styles.inputField}
                             placeholder="Descrição opcional"
@@ -52,18 +51,18 @@ const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
                         />
                     </div>
                     <div className={styles.modalActions}>
-                        <button type="submit" className={styles.primaryButton} id="save-new-cat-btn">
-                            Salvar
+                        <button type="submit" className={styles.primaryButton} id="update-cat-btn">
+                            Atualizar
                         </button>
                         <button
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                setModalCategoriaOpen(false);
+                                setModalCategoriaEditOpen(false);
                                 setNovaCatNome('');
                                 setNovaCatDesc('');
                             }}
-                            id="cancel-new-cat-btn"
+                            id="cancel-edit-cat-btn"
                         >
                             Fechar
                         </button>
@@ -74,4 +73,4 @@ const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
     )
 };
 
-export default ModalAddCategoria;
+export default ModalCategoriaEdit;
