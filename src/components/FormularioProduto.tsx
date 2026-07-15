@@ -8,79 +8,38 @@ import {
     BarcodeData,
 } from '../services/produtosService';
 
+export interface ProdutoFormData {
+    tipo: 'PRODUTO' | 'SERVICO';
+    nome: string;
+    descricao: string;
+    categoriaId: number;
+    marcaId: number | '';
+    unidadeMedidaId: number | '';
+    codigoInterno: string;
+    ativo: number;
+}
+
 interface FormularioProdutoProps {
-    editingId: number | null;
-    formTipo: 'PRODUTO' | 'SERVICO';
-    formNome: string;
-    formDescricao: string;
-    formCategoriaId: number | '';
-    formMarcaId: number | '';
-    formUnidadeMedidaId: number | '';
-    formCodigoInterno: string;
-    formAtivo: number;
-    formCodigosBarras: BarcodeData[];
-    novoCodigoBarras: string;
-    setEditingId: (id: number | null) => void;
-    setFormTipo: (tipo: 'PRODUTO' | 'SERVICO') => void;
-    setFormNome: (nome: string) => void;
-    setFormDescricao: (descricao: string) => void;
-    setFormCategoriaId: (id: number) => void;
-    setFormMarcaId: (id: number | '') => void;
-    setFormUnidadeMedidaId: (id: number | '') => void;
-    setFormCodigoInterno: (codigo: string) => void;
-    setFormAtivo: (ativo: number) => void;
-    setFormCodigosBarras: (barras: BarcodeData[]) => void;
-    setNovoCodigoBarras: (codigo: string) => void;
-    handleSubmitForm: (e: React.FormEvent) => void;
-    resetForm: () => void;
+    form: ProdutoFormData;
+    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
     categorias: CategoriaData[];
     marcas: MarcaData[];
     unidadesMedida: UnidadeMedidaData[];
     nomeInputRef: React.RefObject<HTMLInputElement | null>;
-    barcodeInputRef: React.RefObject<HTMLInputElement | null>;
-    handleAddBarcode: () => void;
-    showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
     setModalCategoriaOpen: (open: boolean) => void;
     setModalMarcaOpen: (open: boolean) => void;
-    setModalCategoriaEditOpen: (open: boolean) => void;
     handleOpenEditModal: (cat: CategoriaData) => void;
 }
 
 const FormularioProduto: React.FC<FormularioProdutoProps> = ({
-    editingId,
-    formTipo,
-    formNome,
-    formDescricao,
-    formCategoriaId,
-    formMarcaId,
-    formUnidadeMedidaId,
-    formCodigoInterno,
-    formAtivo,
-    formCodigosBarras,
-    novoCodigoBarras,
-    setEditingId,
-    setFormTipo,
-    setFormNome,
-    setFormDescricao,
-    setFormCategoriaId,
-    setFormMarcaId,
-    setFormUnidadeMedidaId,
-    setFormCodigoInterno,
-    setFormAtivo,
-    setFormCodigosBarras,
-    setNovoCodigoBarras,
-    handleSubmitForm,
-    resetForm,
+    form,
+    setForm,
     categorias,
     marcas,
     unidadesMedida,
     nomeInputRef,
-    barcodeInputRef,
-    handleAddBarcode,
-    showToast,
     setModalCategoriaOpen,
     setModalMarcaOpen,
-    setModalCategoriaEditOpen,
     handleOpenEditModal
 }) => {
     return (
@@ -92,8 +51,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 <select
                     id="form-tipo"
                     className={styles.selectField}
-                    value={formTipo}
-                    onChange={(e) => setFormTipo(e.target.value as any)}
+                    value={form.tipo}
+                    onChange={(e) => setForm(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' }))}
                 >
                     <option value="PRODUTO">Produto</option>
                     <option value="SERVICO">Serviço</option>
@@ -110,8 +69,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     type="text"
                     className={styles.inputField}
                     placeholder="Nome do item"
-                    value={formNome}
-                    onChange={(e) => setFormNome(e.target.value)}
+                    value={form.nome}
+                    onChange={(e) => setForm(prev => ({ ...prev, nome: e.target.value }))}
                     required
                 />
             </div>
@@ -125,8 +84,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     className={styles.textareaField}
                     placeholder="Detalhes ou especificações"
                     rows={3}
-                    value={formDescricao}
-                    onChange={(e) => setFormDescricao(e.target.value)}
+                    value={form.descricao}
+                    onChange={(e) => setForm(prev => ({ ...prev, descricao: e.target.value }))}
                 />
             </div>
 
@@ -138,9 +97,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-categoria"
                         className={styles.selectField}
-                        value={formCategoriaId}
+                        value={form.categoriaId}
                         onChange={(e) =>
-                            setFormCategoriaId(e.target.value ? Number(e.target.value) : 1)
+                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                         required>
                         {categorias.map((c) => (
@@ -164,7 +123,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.manageButton}
                         onClick={() => {
                             const categoriaSelecionada = categorias.find(
-                                (c) => c.id === formCategoriaId
+                                (c) => c.id === form.categoriaId
                             );
                             if (categoriaSelecionada) {
                                 handleOpenEditModal(categoriaSelecionada);
@@ -186,9 +145,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-marca"
                         className={styles.selectField}
-                        value={formMarcaId}
+                        value={form.marcaId}
                         onChange={(e) =>
-                            setFormMarcaId(e.target.value ? Number(e.target.value) : '')
+                            setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : '' }))
                         }
                         required>
                         <option value="">Selecione...</option>
@@ -217,9 +176,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 <select
                     id="form-unidade"
                     className={styles.selectField}
-                    value={formUnidadeMedidaId}
+                    value={form.unidadeMedidaId}
                     onChange={(e) =>
-                        setFormUnidadeMedidaId(e.target.value ? Number(e.target.value) : '')
+                        setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : '' }))
                     }
                     required
                 >
@@ -241,8 +200,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     type="text"
                     className={styles.inputField}
                     placeholder="Ex: PROD-001"
-                    value={formCodigoInterno}
-                    onChange={(e) => setFormCodigoInterno(e.target.value)}
+                    value={form.codigoInterno}
+                    onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
                 />
             </div>
 
@@ -253,8 +212,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 <select
                     id="form-ativo"
                     className={styles.selectField}
-                    value={formAtivo}
-                    onChange={(e) => setFormAtivo(Number(e.target.value))}
+                    value={form.ativo}
+                    onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
                 >
                     <option value={1}>Sim</option>
                     <option value={0}>Não</option>

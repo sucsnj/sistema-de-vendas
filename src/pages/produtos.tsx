@@ -29,6 +29,7 @@ import ModalCategoria from '@/components/ModalCategoria';
 import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
+import { ProdutoFormData } from '@/components/FormularioProduto';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -53,14 +54,16 @@ const ProdutosPage: React.FC = () => {
 
   // Estado do formulário de Cadastro/Edição
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formTipo, setFormTipo] = useState<'PRODUTO' | 'SERVICO'>('PRODUTO');
-  const [formNome, setFormNome] = useState('');
-  const [formDescricao, setFormDescricao] = useState('');
-  const [formCategoriaId, setFormCategoriaId] = useState<number | 1>(1);
-  const [formMarcaId, setFormMarcaId] = useState<number | ''>('');
-  const [formUnidadeMedidaId, setFormUnidadeMedidaId] = useState<number | ''>('');
-  const [formCodigoInterno, setFormCodigoInterno] = useState('');
-  const [formAtivo, setFormAtivo] = useState(1);
+  const [form, setForm] = useState<ProdutoFormData>({
+    tipo: 'PRODUTO',
+    nome: '',
+    descricao: '',
+    categoriaId: 1,
+    marcaId: '',
+    unidadeMedidaId: '',
+    codigoInterno: '',
+    ativo: 1,
+  });
   const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
   const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
 
@@ -165,14 +168,16 @@ const ProdutosPage: React.FC = () => {
   // Reseta Formulário
   const resetForm = () => {
     setEditingId(null);
-    setFormTipo('PRODUTO');
-    setFormNome('');
-    setFormDescricao('');
-    setFormCategoriaId(1);
-    setFormMarcaId('');
-    setFormUnidadeMedidaId('');
-    setFormCodigoInterno('');
-    setFormAtivo(1);
+    setForm({
+      tipo: 'PRODUTO',
+      nome: '',
+      descricao: '',
+      categoriaId: 1,
+      marcaId: '',
+      unidadeMedidaId: '',
+      codigoInterno: '',
+      ativo: 1,
+    });
     setFormCodigosBarras([]);
     setNovoCodigoBarras('');
   };
@@ -195,6 +200,7 @@ const ProdutosPage: React.FC = () => {
     // Se for o primeiro, ele será o principal
     const principal = formCodigosBarras.length === 0 ? 1 : 0;
     setFormCodigosBarras([...formCodigosBarras, { codigo_barras: code, principal }]);
+
     setNovoCodigoBarras('');
     barcodeInputRef.current?.focus();
   };
@@ -225,20 +231,20 @@ const ProdutosPage: React.FC = () => {
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formNome.trim()) {
+    if (!form.nome.trim()) {
       showToast('O nome do item é obrigatório.', 'error');
       nomeInputRef.current?.focus();
       return;
     }
-    if (!formCategoriaId) {
+    if (!form.categoriaId) {
       showToast('Selecione uma categoria.', 'error');
       return;
     }
-    if (!formMarcaId) {
+    if (!form.marcaId) {
       showToast('Selecione uma marca.', 'error');
       return;
     }
-    if (!formUnidadeMedidaId) {
+    if (!form.unidadeMedidaId) {
       showToast('Selecione uma unidade de medida.', 'error');
       return;
     }
@@ -253,14 +259,14 @@ const ProdutosPage: React.FC = () => {
     }
 
     const payload = {
-      tipo: formTipo,
-      nome: formNome.trim(),
-      descricao: formDescricao.trim() || undefined,
-      categoria_id: Number(formCategoriaId),
-      marca_id: Number(formMarcaId),
-      unidade_medida_id: Number(formUnidadeMedidaId),
-      codigo_interno: formCodigoInterno.trim() || undefined,
-      ativo: formAtivo,
+      tipo: form.tipo,
+      nome: form.nome.trim(),
+      descricao: form.descricao.trim() || undefined,
+      categoria_id: Number(form.categoriaId),
+      marca_id: Number(form.marcaId),
+      unidade_medida_id: Number(form.unidadeMedidaId),
+      codigo_interno: form.codigoInterno.trim() || undefined,
+      ativo: form.ativo,
       codigos_barras: formCodigosBarras,
     };
 
@@ -282,14 +288,16 @@ const ProdutosPage: React.FC = () => {
   // Carrega item para edição
   const handleEditarClick = (item: ItemData) => {
     setEditingId(item.id);
-    setFormTipo(item.tipo);
-    setFormNome(item.nome);
-    setFormDescricao(item.descricao || '');
-    setFormCategoriaId(item.categoria_id);
-    setFormMarcaId(item.marca_id);
-    setFormUnidadeMedidaId(item.unidade_medida_id);
-    setFormCodigoInterno(item.codigo_interno || '');
-    setFormAtivo(item.ativo);
+    setForm({
+      tipo: item.tipo,
+      nome: item.nome,
+      descricao: item.descricao || '',
+      categoriaId: item.categoria_id,
+      marcaId: item.marca_id,
+      unidadeMedidaId: item.unidade_medida_id,
+      codigoInterno: item.codigo_interno || '',
+      ativo: item.ativo,
+    });
     setFormCodigosBarras(item.codigos_barras || []);
     setNovoCodigoBarras('');
     nomeInputRef.current?.focus();
@@ -348,8 +356,8 @@ const ProdutosPage: React.FC = () => {
       // Re-carrega lista de categorias e seleciona a criada
       const cats = await buscarCategorias();
       setCategorias(cats);
-      setFormCategoriaId(response.id);
-
+      setForm(prev => ({ ...prev, categoriaId: response.id }));
+      
       // Fecha modal
       setModalCategoriaOpen(false);
       setNovaCatNome('');
@@ -361,7 +369,7 @@ const ProdutosPage: React.FC = () => {
 
   // Handler para abrir modal de edição
   const handleOpenEditModal = (categoria: { id: number; nome: string; descricao?: string }) => {
-    setFormCategoriaId(categoria.id);
+    setForm(prev => ({ ...prev, categoriaId: categoria.id }));
     setNovaCatNome(categoria.nome);
     setNovaCatDesc(categoria.descricao || '');
     setModalCategoriaEditOpen(true);
@@ -375,12 +383,12 @@ const ProdutosPage: React.FC = () => {
       return;
     }
     try {
-      const response = await atualizarCategoria(formCategoriaId, novaCatNome.trim(), novaCatDesc.trim());
+      const response = await atualizarCategoria(form.categoriaId, novaCatNome.trim(), novaCatDesc.trim());
 
       // Atualiza na interface após confirmação da API
       setCategorias((prev) =>
         prev.map((cat) =>
-          cat.id === formCategoriaId
+          cat.id === form.categoriaId
             ? { ...cat, nome: novaCatNome.trim(), descricao: novaCatDesc.trim() }
             : cat
         )
@@ -409,7 +417,7 @@ const ProdutosPage: React.FC = () => {
       // Re-carrega lista de marcas e seleciona a criada
       const brands = await buscarMarcas();
       setMarcas(brands);
-      setFormMarcaId(response.id);
+      setForm(prev => ({ ...prev, marcaId: response.id }));
 
       // Fecha modal
       setModalMarcaOpen(false);
@@ -480,54 +488,26 @@ const ProdutosPage: React.FC = () => {
 
             <form onSubmit={handleSubmitForm}>
               <FormularioProduto
-                editingId={editingId}
-                formTipo={formTipo}
-                formNome={formNome}
-                formDescricao={formDescricao}
-                formCategoriaId={formCategoriaId}
-                formMarcaId={formMarcaId}
-                formUnidadeMedidaId={formUnidadeMedidaId}
-                formCodigoInterno={formCodigoInterno}
-                formAtivo={formAtivo}
-                formCodigosBarras={formCodigosBarras}
-                novoCodigoBarras={novoCodigoBarras}
-                setEditingId={setEditingId}
-                setFormTipo={setFormTipo}
-                setFormNome={setFormNome}
-                setFormDescricao={setFormDescricao}
-                setFormCategoriaId={setFormCategoriaId}
-                setFormMarcaId={setFormMarcaId}
-                setFormUnidadeMedidaId={setFormUnidadeMedidaId}
-                setFormCodigoInterno={setFormCodigoInterno}
-                setFormAtivo={setFormAtivo}
-                setFormCodigosBarras={setFormCodigosBarras}
-                setNovoCodigoBarras={setNovoCodigoBarras}
-                handleSubmitForm={handleSubmitForm}
-                resetForm={resetForm}
+                form={form}
+                setForm={setForm}
                 categorias={categorias}
                 marcas={marcas}
                 unidadesMedida={unidadesMedida}
                 nomeInputRef={nomeInputRef}
-                barcodeInputRef={barcodeInputRef}
-                handleAddBarcode={handleAddBarcode}
-                showToast={showToast}
                 setModalCategoriaOpen={setModalCategoriaOpen}
                 setModalMarcaOpen={setModalMarcaOpen}
-                setModalCategoriaEditOpen={setModalCategoriaEditOpen}
                 handleOpenEditModal={handleOpenEditModal}
               />
 
               {/* Códigos de Barras */}
               <BarcodeManager
                 formCodigosBarras={formCodigosBarras}
-                setFormCodigosBarras={setFormCodigosBarras}
                 novoCodigoBarras={novoCodigoBarras}
                 setNovoCodigoBarras={setNovoCodigoBarras}
                 barcodeInputRef={barcodeInputRef}
                 handleAddBarcode={handleAddBarcode}
                 handleSetPrincipalBarcode={handleSetPrincipalBarcode}
                 handleRemoveBarcode={handleRemoveBarcode}
-                showToast={showToast}
               />
 
               {/* Botões de Ação */}

@@ -8,26 +8,22 @@ import {
 
 interface BarcodeManagerProps {
   formCodigosBarras: BarcodeData[];
-  setFormCodigosBarras: React.Dispatch<React.SetStateAction<BarcodeData[]>>;
   novoCodigoBarras: string;
   setNovoCodigoBarras: React.Dispatch<React.SetStateAction<string>>;
   barcodeInputRef: React.RefObject<HTMLInputElement | null>;
   handleAddBarcode: () => void;
   handleSetPrincipalBarcode: (barcode: string) => void;
   handleRemoveBarcode: (barcode: string) => void;
-  showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
 const BarcodeManager: React.FC<BarcodeManagerProps> = ({
   formCodigosBarras,
-  setFormCodigosBarras,
   novoCodigoBarras,
   setNovoCodigoBarras,
   barcodeInputRef,
   handleAddBarcode,
   handleSetPrincipalBarcode,
   handleRemoveBarcode,
-  showToast,
 }) => {
   return (
     <div className={styles.barcodeSection}>
