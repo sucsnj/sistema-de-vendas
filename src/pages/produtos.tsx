@@ -16,9 +16,6 @@ import {
   criarMarca,
   buscarUnidadesMedida,
   ItemData,
-  CategoriaData,
-  MarcaData,
-  UnidadeMedidaData,
   BarcodeData,
 } from '../services/produtosService';
 import ProdutosList from '@/components/ProdutosList';
@@ -29,7 +26,7 @@ import ModalCategoria from '@/components/ModalCategoria';
 import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
-import { ProdutoFormData } from '@/components/FormularioProduto';
+import { ProdutoFormData, ProdutoOptions, ProdutoActions } from '@/components/FormularioProduto';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -48,9 +45,11 @@ const ProdutosPage: React.FC = () => {
   const [filtroStatus, setFiltroStatus] = useState<'ATIVO' | 'INATIVO' | 'TODOS'>('TODOS');
 
   // Listas auxiliares para dropdowns
-  const [categorias, setCategorias] = useState<CategoriaData[]>([]);
-  const [marcas, setMarcas] = useState<MarcaData[]>([]);
-  const [unidadesMedida, setUnidadesMedida] = useState<UnidadeMedidaData[]>([]);
+  const [options, setOptions] = useState<ProdutoOptions>({
+    categorias: [],
+    marcas: [],
+    unidadesMedida: [],
+  });
 
   // Estado do formulário de Cadastro/Edição
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -107,9 +106,11 @@ const ProdutosPage: React.FC = () => {
         buscarMarcas(),
         buscarUnidadesMedida(),
       ]);
-      setCategorias(cats);
-      setMarcas(brands);
-      setUnidadesMedida(uoms);
+      setOptions({
+        categorias: cats,
+        marcas: brands,
+        unidadesMedida: uoms,
+      });
     } catch (error) {
       console.error(error);
       showToast('Erro ao carregar dados auxiliares (categorias, marcas, etc.).', 'error');
@@ -355,9 +356,9 @@ const ProdutosPage: React.FC = () => {
 
       // Re-carrega lista de categorias e seleciona a criada
       const cats = await buscarCategorias();
-      setCategorias(cats);
+      setOptions(prev => ({ ...prev, categorias: cats }));
       setForm(prev => ({ ...prev, categoriaId: response.id }));
-      
+
       // Fecha modal
       setModalCategoriaOpen(false);
       setNovaCatNome('');
@@ -386,13 +387,13 @@ const ProdutosPage: React.FC = () => {
       const response = await atualizarCategoria(form.categoriaId, novaCatNome.trim(), novaCatDesc.trim());
 
       // Atualiza na interface após confirmação da API
-      setCategorias((prev) =>
-        prev.map((cat) =>
-          cat.id === form.categoriaId
-            ? { ...cat, nome: novaCatNome.trim(), descricao: novaCatDesc.trim() }
-            : cat
+      setOptions(prev =>
+      ({
+        ...prev, categorias: prev.categorias.map(cat =>
+          cat.id === form.categoriaId ?
+            { ...cat, nome: novaCatNome.trim(), descricao: novaCatDesc.trim() } : cat
         )
-      );
+      }));
 
       showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
       setModalCategoriaEditOpen(false);
@@ -416,7 +417,7 @@ const ProdutosPage: React.FC = () => {
 
       // Re-carrega lista de marcas e seleciona a criada
       const brands = await buscarMarcas();
-      setMarcas(brands);
+      setOptions(prev => ({ ...prev, marcas: brands }));
       setForm(prev => ({ ...prev, marcaId: response.id }));
 
       // Fecha modal
@@ -459,8 +460,8 @@ const ProdutosPage: React.FC = () => {
               setFiltroMarca={setFiltroMarca}
               filtroStatus={filtroStatus}
               setFiltroStatus={setFiltroStatus}
-              categorias={categorias}
-              marcas={marcas}
+              categorias={options.categorias}
+              marcas={options.marcas}
               handleSearchSubmit={handleSearchSubmit}
               handleLimparFiltros={handleLimparFiltros}
               onPageChange={setPage}
@@ -490,13 +491,14 @@ const ProdutosPage: React.FC = () => {
               <FormularioProduto
                 form={form}
                 setForm={setForm}
-                categorias={categorias}
-                marcas={marcas}
-                unidadesMedida={unidadesMedida}
-                nomeInputRef={nomeInputRef}
-                setModalCategoriaOpen={setModalCategoriaOpen}
-                setModalMarcaOpen={setModalMarcaOpen}
-                handleOpenEditModal={handleOpenEditModal}
+                options={options}
+                setOptions={setOptions}
+                inputRef={nomeInputRef}
+                actions={{
+                  abrirModalCategoria: () => setModalCategoriaOpen(true),
+                  abrirModalMarca: () => setModalMarcaOpen(true),
+                  editarCategoria: handleOpenEditModal,
+                }}
               />
 
               {/* Códigos de Barras */}

@@ -5,7 +5,6 @@ import {
     CategoriaData,
     MarcaData,
     UnidadeMedidaData,
-    BarcodeData,
 } from '../services/produtosService';
 
 export interface ProdutoFormData {
@@ -19,28 +18,34 @@ export interface ProdutoFormData {
     ativo: number;
 }
 
-interface FormularioProdutoProps {
-    form: ProdutoFormData;
-    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
+export interface ProdutoOptions {
     categorias: CategoriaData[];
     marcas: MarcaData[];
     unidadesMedida: UnidadeMedidaData[];
-    nomeInputRef: React.RefObject<HTMLInputElement | null>;
-    setModalCategoriaOpen: (open: boolean) => void;
-    setModalMarcaOpen: (open: boolean) => void;
-    handleOpenEditModal: (cat: CategoriaData) => void;
+}
+
+export interface ProdutoActions {
+    abrirModalCategoria: () => void;
+    abrirModalMarca: () => void;
+    editarCategoria: (categoria: CategoriaData) => void;
+}
+
+// Props do Componente
+interface FormularioProdutoProps {
+    form: ProdutoFormData;
+    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
+    options: ProdutoOptions;
+    setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
+    actions: ProdutoActions;
+    inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const FormularioProduto: React.FC<FormularioProdutoProps> = ({
     form,
     setForm,
-    categorias,
-    marcas,
-    unidadesMedida,
-    nomeInputRef,
-    setModalCategoriaOpen,
-    setModalMarcaOpen,
-    handleOpenEditModal
+    options,
+    inputRef,
+    actions,
 }) => {
     return (
         <div className="CadastroEdicao">
@@ -65,7 +70,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </label>
                 <input
                     id="form-nome"
-                    ref={nomeInputRef}
+                    ref={inputRef}
                     type="text"
                     className={styles.inputField}
                     placeholder="Nome do item"
@@ -102,7 +107,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                         required>
-                        {categorias.map((c) => (
+                        {options.categorias.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.nome}
                             </option>
@@ -111,7 +116,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.addButton}
-                        onClick={() => setModalCategoriaOpen(true)}
+                        onClick={actions.abrirModalCategoria}
                         title="Adicionar Categoria"
                         id="add-categoria-btn"
                     >
@@ -122,11 +127,11 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const categoriaSelecionada = categorias.find(
+                            const categoriaSelecionada = options.categorias.find(
                                 (c) => c.id === form.categoriaId
                             );
                             if (categoriaSelecionada) {
-                                handleOpenEditModal(categoriaSelecionada);
+                                actions.editarCategoria(categoriaSelecionada);
                             }
                         }}
                         title="Editar Categoria Selecionada"
@@ -151,7 +156,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         }
                         required>
                         <option value="">Selecione...</option>
-                        {marcas.map((m) => (
+                        {options.marcas.map((m) => (
                             <option key={m.id} value={m.id}>
                                 {m.nome}
                             </option>
@@ -160,7 +165,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.addButton}
-                        onClick={() => setModalMarcaOpen(true)}
+                        onClick={() => actions.abrirModalMarca()}
                         title="Adicionar Marca"
                         id="add-marca-btn"
                     >
@@ -183,7 +188,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     required
                 >
                     <option value="">Selecione...</option>
-                    {unidadesMedida.map((u) => (
+                    {options.unidadesMedida.map((u) => (
                         <option key={u.id} value={u.id}>
                             {u.sigla} - {u.descricao}
                         </option>
