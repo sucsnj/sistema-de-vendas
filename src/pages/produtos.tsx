@@ -27,6 +27,7 @@ import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import { ProdutoFormData, ProdutoOptions, ProdutoActions } from '@/components/FormularioProduto';
+import { CategoriaFormData } from '@/components/ModalCategoria';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -68,8 +69,7 @@ const ProdutosPage: React.FC = () => {
 
   // Modais de cadastro rápido
   const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
-  const [novaCatNome, setNovaCatNome] = useState('');
-  const [novaCatDesc, setNovaCatDesc] = useState('');
+  const [ catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
 
   // Modais de Edição
   const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
@@ -346,12 +346,12 @@ const ProdutosPage: React.FC = () => {
   // Cadastro de Categoria Inline
   const handleSalvarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!novaCatNome.trim()) {
+    if (!catForm.nome.trim()) {
       showToast('O nome da categoria é obrigatório.', 'error');
       return;
     }
     try {
-      const response = await criarCategoria(novaCatNome.trim(), novaCatDesc.trim());
+      const response = await criarCategoria(catForm.nome.trim(), catForm.descricao.trim());
       showToast(response.message || 'Categoria criada com sucesso.', 'success');
 
       // Re-carrega lista de categorias e seleciona a criada
@@ -361,8 +361,7 @@ const ProdutosPage: React.FC = () => {
 
       // Fecha modal
       setModalCategoriaOpen(false);
-      setNovaCatNome('');
-      setNovaCatDesc('');
+      setCatForm({ nome: '', descricao: '' });
     } catch (error: any) {
       showToast(error.message || 'Erro ao criar categoria.', 'error');
     }
@@ -371,34 +370,32 @@ const ProdutosPage: React.FC = () => {
   // Handler para abrir modal de edição
   const handleOpenEditModal = (categoria: { id: number; nome: string; descricao?: string }) => {
     setForm(prev => ({ ...prev, categoriaId: categoria.id }));
-    setNovaCatNome(categoria.nome);
-    setNovaCatDesc(categoria.descricao || '');
+    setCatForm({ nome: categoria.nome, descricao: categoria.descricao || '' });
     setModalCategoriaEditOpen(true);
   };
 
   // Ediçao de categoria
   const handleAtualizarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!novaCatNome.trim()) {
+    if (!catForm.nome.trim()) {
       showToast('O nome da categoria é obrigatório.', 'error');
       return;
     }
     try {
-      const response = await atualizarCategoria(form.categoriaId, novaCatNome.trim(), novaCatDesc.trim());
+      const response = await atualizarCategoria(form.categoriaId, catForm.nome.trim(), catForm.descricao.trim());
 
       // Atualiza na interface após confirmação da API
       setOptions(prev =>
       ({
         ...prev, categorias: prev.categorias.map(cat =>
           cat.id === form.categoriaId ?
-            { ...cat, nome: novaCatNome.trim(), descricao: novaCatDesc.trim() } : cat
+            { ...cat, nome: catForm.nome.trim(), descricao: catForm.descricao.trim() } : cat
         )
       }));
 
       showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
       setModalCategoriaEditOpen(false);
-      setNovaCatNome('');
-      setNovaCatDesc('');
+      setCatForm({ nome: '', descricao: '' });
     } catch (error: any) {
       showToast(error.message || 'Erro ao atualizar categoria.', 'error');
     }
@@ -533,17 +530,17 @@ const ProdutosPage: React.FC = () => {
         {/* Modal: Cadastro de Categoria */}
         {modalCategoriaOpen && (
           <ModalCategoria
-            setModalCategoriaOpen={setModalCategoriaOpen}
-            novaCatNome={novaCatNome}
-            setNovaCatNome={setNovaCatNome}
-            novaCatDesc={novaCatDesc}
-            setNovaCatDesc={setNovaCatDesc}
-            handleSalvarCategoria={handleSalvarCategoria}
+            catForm={catForm}
+            setCatForm={setCatForm}
+            options={{
+              abrirModalCategoria: () => setModalCategoriaOpen(false),
+              salvarCategoria: handleSalvarCategoria,
+            }}
           />
         )}
 
         {/* Modal: Edição de Categoria */}
-        {modalCategoriaEditOpen && (
+        {/* {modalCategoriaEditOpen && (
           <ModalCategoriaEdit
             setModalCategoriaEditOpen={setModalCategoriaEditOpen}
             novaCatNome={novaCatNome}
@@ -552,7 +549,7 @@ const ProdutosPage: React.FC = () => {
             setNovaCatDesc={setNovaCatDesc}
             handleAtualizarCategoria={handleAtualizarCategoria}
           />
-        )}
+        )} */}
 
         {/* Modal: Cadastro de Marca */}
         {modalMarcaOpen && (
