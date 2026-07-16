@@ -17,6 +17,7 @@ import {
   buscarUnidadesMedida,
   ItemData,
   BarcodeData,
+  CategoriaData,
 } from '../services/produtosService';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
@@ -27,7 +28,8 @@ import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import { ProdutoFormData, ProdutoOptions, ProdutoActions } from '@/components/FormularioProduto';
-import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
+import { CategoriaFormData } from '@/types/categoria';
+import { FiltrosState } from '@/components/Filtros';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -38,12 +40,14 @@ const ProdutosPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   // Filtros de busca
-  const [search, setSearch] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filtroTipo, setFiltroTipo] = useState<'PRODUTO' | 'SERVICO' | 'TODOS'>('TODOS');
-  const [filtroCategoria, setFiltroCategoria] = useState<number | ''>('');
-  const [filtroMarca, setFiltroMarca] = useState<number | ''>('');
-  const [filtroStatus, setFiltroStatus] = useState<'ATIVO' | 'INATIVO' | 'TODOS'>('TODOS');
+  const [state, setState] = useState<FiltrosState>({
+    search: '',
+    tipo: 'PRODUTO',
+    categoriaId: '',
+    marcaId: '',
+    status: 'TODOS',
+  });
 
   // Listas auxiliares para dropdowns
   const [options, setOptions] = useState<ProdutoOptions>({
@@ -69,7 +73,7 @@ const ProdutosPage: React.FC = () => {
 
   // Modais de cadastro rápido
   const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
-  const [ catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
+  const [catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
 
   // Modais de Edição
   const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
@@ -123,10 +127,10 @@ const ProdutosPage: React.FC = () => {
     try {
       const data = await buscarProdutos({
         search: searchQuery || undefined,
-        tipo: filtroTipo,
-        categoria_id: filtroCategoria || undefined,
-        marca_id: filtroMarca || undefined,
-        ativo: filtroStatus,
+        tipo: state.tipo,
+        categoria_id: state.categoriaId || undefined,
+        marca_id: state.marcaId || undefined,
+        ativo: state.status,
         page,
         pageSize: 10,
       });
@@ -147,22 +151,24 @@ const ProdutosPage: React.FC = () => {
 
   useEffect(() => {
     carregarItens();
-  }, [page, searchQuery, filtroTipo, filtroCategoria, filtroMarca, filtroStatus]);
+  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.status]);
 
   // Handler de Busca
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    setSearchQuery(search);
+    setSearchQuery(state.search);
   };
 
   const handleLimparFiltros = () => {
-    setSearch('');
     setSearchQuery('');
-    setFiltroTipo('TODOS');
-    setFiltroCategoria('');
-    setFiltroMarca('');
-    setFiltroStatus('TODOS');
+    setState({
+      search: '',
+      tipo: 'TODOS',
+      categoriaId: '',
+      marcaId: '',
+      status: 'TODOS',
+    });
     setPage(1);
   };
 
@@ -447,21 +453,14 @@ const ProdutosPage: React.FC = () => {
           <div>
             {/* Filtros */}
             <Filtros
-              search={search}
-              setSearch={setSearch}
-              filtroTipo={filtroTipo}
-              setFiltroTipo={setFiltroTipo}
-              filtroCategoria={filtroCategoria}
-              setFiltroCategoria={setFiltroCategoria}
-              filtroMarca={filtroMarca}
-              setFiltroMarca={setFiltroMarca}
-              filtroStatus={filtroStatus}
-              setFiltroStatus={setFiltroStatus}
-              categorias={options.categorias}
-              marcas={options.marcas}
-              handleSearchSubmit={handleSearchSubmit}
-              handleLimparFiltros={handleLimparFiltros}
-              onPageChange={setPage}
+              state={state}
+              data={options}
+              setFiltros={setState}
+              actions={{
+                buscar: handleSearchSubmit,
+                limpar: handleLimparFiltros,
+                mudarPagina: setPage,
+              }}
             />
 
             {/* Listagem */}
