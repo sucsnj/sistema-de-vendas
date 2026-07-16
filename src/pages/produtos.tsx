@@ -402,6 +402,7 @@ const ProdutosPage: React.FC = () => {
       showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
       setModalCategoriaEditOpen(false);
       setCatForm({ nome: '', descricao: '' });
+      carregarItens();
     } catch (error: any) {
       showToast(error.message || 'Erro ao atualizar categoria.', 'error');
     }
