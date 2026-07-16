@@ -27,7 +27,7 @@ import ModalProdMarca from '@/components/ModalProdMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import { ProdutoFormData, ProdutoOptions, ProdutoActions } from '@/components/FormularioProduto';
-import { CategoriaFormData } from '@/components/ModalCategoria';
+import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -540,16 +540,16 @@ const ProdutosPage: React.FC = () => {
         )}
 
         {/* Modal: Edição de Categoria */}
-        {/* {modalCategoriaEditOpen && (
+        {modalCategoriaEditOpen && (
           <ModalCategoriaEdit
-            setModalCategoriaEditOpen={setModalCategoriaEditOpen}
-            novaCatNome={novaCatNome}
-            setNovaCatNome={setNovaCatNome}
-            novaCatDesc={novaCatDesc}
-            setNovaCatDesc={setNovaCatDesc}
-            handleAtualizarCategoria={handleAtualizarCategoria}
+            catForm={catForm}
+            setCatForm={setCatForm}
+            options={{
+              abrirModalCategoria: () => setModalCategoriaEditOpen(false),
+              salvarCategoria: handleAtualizarCategoria,
+            }}
           />
-        )} */}
+        )}
 
         {/* Modal: Cadastro de Marca */}
         {modalMarcaOpen && (

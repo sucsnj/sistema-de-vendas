@@ -1,21 +1,11 @@
 import styles from '../styles/produtos.module.css';
-
-export interface CategoriaFormData {
-    nome: string;
-    descricao: string;
-}
-
-export interface CategoriaOptions {
-    abrirModalCategoria: () => void;
-    salvarCategoria: React.FormEventHandler<HTMLFormElement>;
-}
+import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
 
 interface ModalAddCategoriaProps {
     catForm: CategoriaFormData;
     setCatForm: React.Dispatch<React.SetStateAction<CategoriaFormData>>;
     options: CategoriaOptions;
 }
-
 
 const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
     catForm,
