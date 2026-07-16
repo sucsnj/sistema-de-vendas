@@ -6,40 +6,43 @@ import {
   BarcodeData,
 } from '../services/produtosService';
 
-interface BarcodeManagerProps {
-  formCodigosBarras: BarcodeData[];
+export interface BarcodeManagerData {
+  codigosBarras: BarcodeData[];
   novoCodigoBarras: string;
-  setNovoCodigoBarras: React.Dispatch<React.SetStateAction<string>>;
-  barcodeInputRef: React.RefObject<HTMLInputElement | null>;
-  handleAddBarcode: () => void;
-  handleSetPrincipalBarcode: (barcode: string) => void;
-  handleRemoveBarcode: (barcode: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+export interface BarcodeManagerActions {
+  adicionar: () => void;
+  definirPrincipal: (barcode: string) => void;
+  alterar: (barcode: string) => void;
+  remover: (barcode: string) => void;
+}
+
+interface BarcodeManagerProps {
+  data: BarcodeManagerData;
+  actions: BarcodeManagerActions;
 }
 
 const BarcodeManager: React.FC<BarcodeManagerProps> = ({
-  formCodigosBarras,
-  novoCodigoBarras,
-  setNovoCodigoBarras,
-  barcodeInputRef,
-  handleAddBarcode,
-  handleSetPrincipalBarcode,
-  handleRemoveBarcode,
+  data,
+  actions,
 }) => {
   return (
     <div className={styles.barcodeSection}>
       <div className={styles.barcodeTitle}>Códigos de Barras</div>
       <div className={styles.barcodeInputRow}>
         <input
-          ref={barcodeInputRef}
+          ref={data.inputRef}
           type="text"
           className={styles.inputField}
           placeholder="Digitar código de barras..."
-          value={novoCodigoBarras}
-          onChange={(e) => setNovoCodigoBarras(e.target.value)}
+          value={data.novoCodigoBarras}
+          onChange={(e) => actions.alterar(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              handleAddBarcode();
+              actions.adicionar();
             }
           }}
           id="barcode-input-field"
@@ -47,7 +50,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         <button
           type="button"
           className={styles.primaryButton}
-          onClick={handleAddBarcode}
+          onClick={actions.adicionar}
           style={{ padding: '8px 14px', marginTop: 0, marginBottom: 0 }}
           id="add-barcode-action-btn"
         >
@@ -55,7 +58,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         </button>
       </div>
 
-      {formCodigosBarras.length === 0 ? (
+      {data.codigosBarras.length === 0 ? (
         <div
           style={{
             textAlign: 'center',
@@ -68,12 +71,12 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         </div>
       ) : (
         <div className={styles.barcodeList}>
-          {formCodigosBarras.map((cb) => (
+          {data.codigosBarras.map((cb) => (
             <div key={cb.codigo_barras} className={styles.barcodeItem}>
               <div className={styles.barcodeLeft}>
                 <span style={{ fontWeight: 'bold' }}>{cb.codigo_barras}</span>
                 <span
-                  onClick={() => handleSetPrincipalBarcode(cb.codigo_barras)}
+                  onClick={() => actions.definirPrincipal(cb.codigo_barras)}
                   className={styles.barcodeRadioLabel}
                   title={cb.principal === 1 ? 'Código Principal' : 'Marcar como Principal'}
                   id={`principal-star-${cb.codigo_barras}`}
@@ -88,7 +91,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
               </div>
               <button
                 type="button"
-                onClick={() => handleRemoveBarcode(cb.codigo_barras)}
+                onClick={() => actions.remover(cb.codigo_barras)}
                 className={styles.removeBtn}
                 title="Remover"
                 id={`remove-barcode-${cb.codigo_barras}`}

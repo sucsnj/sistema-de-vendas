@@ -500,13 +500,17 @@ const ProdutosPage: React.FC = () => {
 
               {/* Códigos de Barras */}
               <BarcodeManager
-                formCodigosBarras={formCodigosBarras}
-                novoCodigoBarras={novoCodigoBarras}
-                setNovoCodigoBarras={setNovoCodigoBarras}
-                barcodeInputRef={barcodeInputRef}
-                handleAddBarcode={handleAddBarcode}
-                handleSetPrincipalBarcode={handleSetPrincipalBarcode}
-                handleRemoveBarcode={handleRemoveBarcode}
+                data={{
+                  codigosBarras: formCodigosBarras,
+                  novoCodigoBarras: novoCodigoBarras,
+                  inputRef: barcodeInputRef,
+                }}
+                actions={{
+                  adicionar: handleAddBarcode,
+                  definirPrincipal: handleSetPrincipalBarcode,
+                  alterar: setNovoCodigoBarras,
+                  remover: handleRemoveBarcode,
+                }}
               />
 
               {/* Botões de Ação */}
