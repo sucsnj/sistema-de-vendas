@@ -26,6 +26,7 @@ import ModalCategoria from '@/components/ModalCategoria';
 import ModalMarca from '@/components/ModalMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
+import ModalMarcaEdit from '@/components/ModalMarcaEdit';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { CategoriaFormData } from '@/types/categoria';
 import { FiltrosState } from '@/components/Filtros';
@@ -630,6 +631,19 @@ const ProdutosPage: React.FC = () => {
             novaMarcaNome={novaMarcaNome}
             setNovaMarcaNome={setNovaMarcaNome}
             handleSalvarMarca={handleSalvarMarca}
+          />
+        )}
+
+        {/* Modal: Edição de Marca */}
+        {modalMarcaEditOpen && (
+          <ModalMarcaEdit
+            catForm={catForm}
+            setCatForm={setCatForm}
+            onDelete={handleDeletarMarca}
+            options={{
+              abrirModalMarca: () => setModalMarcaEditOpen(false),
+              salvarMarca: handleAtualizarMarca,
+            }}
           />
         )}
 
