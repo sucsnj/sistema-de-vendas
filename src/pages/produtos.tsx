@@ -63,7 +63,7 @@ const ProdutosPage: React.FC = () => {
     nome: '',
     descricao: '',
     categoriaId: 1,
-    marcaId: '',
+    marcaId: 1,
     unidadeMedidaId: '',
     codigoInterno: '',
     ativo: 1,
@@ -180,7 +180,7 @@ const ProdutosPage: React.FC = () => {
       nome: '',
       descricao: '',
       categoriaId: 1,
-      marcaId: '',
+      marcaId: 1,
       unidadeMedidaId: '',
       codigoInterno: '',
       ativo: 1,
@@ -526,6 +526,7 @@ const ProdutosPage: React.FC = () => {
                   abrirModalCategoria: () => setModalCategoriaOpen(true),
                   abrirModalMarca: () => setModalMarcaOpen(true),
                   editarCategoria: handleOpenEditModal,
+                  editarMarca: handleOpenEditModal,
                 }}
               />
 

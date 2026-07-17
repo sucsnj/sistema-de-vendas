@@ -12,7 +12,7 @@ export interface ProdutoFormData {
     nome: string;
     descricao: string;
     categoriaId: number;
-    marcaId: number | '';
+    marcaId: number;
     unidadeMedidaId: number | '';
     codigoInterno: string;
     ativo: number;
@@ -28,6 +28,7 @@ export interface ProdutoActions {
     abrirModalCategoria: () => void;
     abrirModalMarca: () => void;
     editarCategoria: (categoria: CategoriaData) => void;
+    editarMarca: (marca: MarcaData) => void;
 }
 
 // Props do Componente
@@ -96,7 +97,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-categoria">
-                    Categoria:*
+                    Categoria:
                 </label>
                 <div className={styles.selectWrapper}>
                     <select
@@ -104,9 +105,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.selectField}
                         value={form.categoriaId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))
+                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 28 }))
                         }
-                        required>
+                    >
                         {options.categorias.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.nome}
@@ -144,7 +145,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-marca">
-                    Marca:*
+                    Marca:
                 </label>
                 <div className={styles.selectWrapper}>
                     <select
@@ -152,10 +153,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.selectField}
                         value={form.marcaId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : '' }))
+                            setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : 1 }))
                         }
-                        required>
-                        <option value="">Selecione...</option>
+                    >
                         {options.marcas.map((m) => (
                             <option key={m.id} value={m.id}>
                                 {m.nome}
@@ -170,6 +170,23 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         id="add-marca-btn"
                     >
                         <AddIcon fontSize="small" />
+                    </button>
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
+                    <button
+                        type="button"
+                        className={styles.manageButton}
+                        onClick={() => {
+                            const marcaSelecionada = options.marcas.find(
+                                (m) => m.id === form.marcaId
+                            );
+                            if (marcaSelecionada) {
+                                actions.editarMarca(marcaSelecionada);
+                            }
+                        }}
+                        title="Editar Marca Selecionada"
+                        id="edit-marca-btn"
+                    >
+                        <MoreVert fontSize="small" />
                     </button>
                 </div>
             </div>
