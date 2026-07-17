@@ -3,6 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import BlockIcon from '@mui/icons-material/Block';
+import { formatCurrency } from '../utils/formatter';
 import {
     ItemData,
 } from '../services/produtosService';
@@ -45,10 +46,10 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Cód. Interno</th>
+                                    <th>Cód. Barras</th>
                                     <th>Nome</th>
-                                    <th>Categoria / Marca</th>
-                                    <th>U.M.</th>
-                                    <th>Cód. Barras Principal</th>
+                                    <th>Preço Venda</th>
+                                    <th>Estoque</th>
                                     <th>Status</th>
                                     <th style={{ width: '100px' }}>Ações</th>
                                 </tr>
@@ -72,26 +73,6 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                             </td>
                                             <td>{item.codigo_interno || '—'}</td>
                                             <td>
-                                                <strong>{item.nome}</strong>
-                                                {item.descricao && (
-                                                    <div
-                                                        style={{
-                                                            fontSize: '0.72rem',
-                                                            color: 'var(--muted)',
-                                                            marginTop: '2px',
-                                                        }}
-                                                    >
-                                                        {item.descricao.length > 50
-                                                            ? `${item.descricao.substring(0, 50)}...`
-                                                            : item.descricao}
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td>
-                                                {item.categoria_nome || '—'} / {item.marca_nome || '—'}
-                                            </td>
-                                            <td>{item.unidade_medida_sigla || '—'}</td>
-                                            <td>
                                                 <span>{principalBarcode}</span>
                                                 {extraBarcodesCount > 0 && (
                                                     <span
@@ -109,6 +90,25 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                                     </span>
                                                 )}
                                             </td>
+                                            <td>
+                                                <strong>{item.nome}</strong>
+                                                {item.descricao && (
+                                                    <div
+                                                        style={{
+                                                            fontSize: '0.72rem',
+                                                            color: 'var(--muted)',
+                                                            marginTop: '2px',
+                                                        }}
+                                                    >
+                                                        {item.descricao.length > 50
+                                                            ? `${item.descricao.substring(0, 50)}...`
+                                                            : item.descricao}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td>R$ {formatCurrency(item.preco_venda || 0, 2)}</td>
+                                            <td>{item.estoque} {item.unidade_medida_sigla}</td>
+
                                             <td>
                                                 <span
                                                     className={`${styles.badge} ${item.ativo === 1

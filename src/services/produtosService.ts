@@ -12,12 +12,12 @@ export interface ItemData {
   unidade_medida_id: number;
   marca_id: number;
   fornecedor_id: number;
-  preco_compra?: number;
-  margem_lucro?: number;
-  preco_venda?: number;
-  estoque?: number;
+  preco_compra: number;
+  margem_lucro: number;
+  preco_venda: number;
+  estoque: number;
   codigo_interno?: string;
-  referencia?: string;
+  referencia: string;
   ativo: number;
   data_criacao?: string;
   data_atualizacao?: string;
@@ -64,6 +64,7 @@ export const buscarProdutos = async (options: {
   categoria_id?: number;
   marca_id?: number;
   fornecedor_id?: number;
+  preco_venda?: number;
   ativo?: 'ATIVO' | 'INATIVO' | 'TODOS';
   page?: number;
   pageSize?: number;
@@ -74,6 +75,7 @@ export const buscarProdutos = async (options: {
   if (options.categoria_id) params.append('categoria_id', String(options.categoria_id));
   if (options.marca_id) params.append('marca_id', String(options.marca_id));
   if (options.fornecedor_id) params.append('fornecedor_id', String(options.fornecedor_id));
+  if (options.preco_venda) params.append('preco_venda', String(options.preco_venda));
   if (options.ativo) params.append('ativo', options.ativo);
   if (options.page) params.append('page', String(options.page));
   if (options.pageSize) params.append('pageSize', String(options.pageSize));

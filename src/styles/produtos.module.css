@@ -345,3 +345,11 @@
   border-radius: 10px;
   background: var(--surface-soft);
 }
+
+.valoresGroup {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

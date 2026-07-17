@@ -15,8 +15,13 @@ export interface ProdutoFormData {
     categoriaId: number;
     marcaId: number;
     fornecedorId: number;
+    precoCompra: number | 0;
+    margemLucro: number | 0;
+    precoVenda: number | 0;
+    estoque: number | 0;
     unidadeMedidaId: number | '';
     codigoInterno: string;
+    referencia: string;
     ativo: number;
 }
 
@@ -198,7 +203,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-fornecedor">
-                    Fornecedor:*
+                    Fornecedor:
                 </label>
                 <div className={styles.selectWrapper}>
                     <select
@@ -245,6 +250,75 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </div>
             </div>
 
+            <label className={styles.formLabel}>Preço, margem e estoque</label>
+            <div className={styles.valoresGroup}>
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-preco-compra">
+                        Compra:
+                    </label>
+                    <input
+                        id="form-preco-compra"
+                        type="number"
+                        className={styles.inputField}
+                        placeholder="0,00"
+                        step="0.01"
+                        min="0"
+                        value={form.precoCompra}
+                        onChange={(e) => setForm(prev => ({ ...prev, precoCompra: Number(e.target.value) }))}
+                    />
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-margem-lucro">
+                        Margem (%):
+                    </label>
+                    <input
+                        id="form-margem-lucro"
+                        type="number"
+                        className={styles.inputField}
+                        placeholder="0"
+                        step="0.01"
+                        min="0"
+                        value={form.margemLucro}
+                        onChange={(e) => setForm(prev => ({ ...prev, margemLucro: Number(e.target.value) }))}
+                    />
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-preco-venda">
+                        Venda:
+                    </label>
+                    <input
+                        id="form-preco-venda"
+                        type="number"
+                        className={styles.inputField}
+                        placeholder="0,00"
+                        step="0.01"
+                        min="0"
+                        value={form.precoVenda}
+                        onChange={(e) => setForm(prev => ({ ...prev, precoVenda: Number(e.target.value) }))}
+                        required
+                    />
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-estoque">
+                        Estoque:
+                    </label>
+                    <input
+                        id="form-estoque"
+                        type="number"
+                        className={styles.inputField}
+                        placeholder="0"
+                        step="1"
+                        min="0"
+                        value={form.estoque}
+                        onChange={(e) => setForm(prev => ({ ...prev, estoque: Number(e.target.value) }))}
+                        required
+                    />
+                </div>
+            </div>
+
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-unidade">
                     Unidade de Medida:*
@@ -275,9 +349,23 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     id="form-cod-interno"
                     type="text"
                     className={styles.inputField}
-                    placeholder="Ex: PROD-001"
+                    placeholder="Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"
                     value={form.codigoInterno}
                     onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
+                />
+            </div>
+
+            <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="form-referencia">
+                    Referência:
+                </label>
+                <input
+                    id="form-referencia"
+                    type="text"
+                    className={styles.inputField}
+                    placeholder="Ex: REF-001"
+                    value={form.referencia}
+                    onChange={(e) => setForm(prev => ({ ...prev, referencia: e.target.value }))}
                 />
             </div>
 

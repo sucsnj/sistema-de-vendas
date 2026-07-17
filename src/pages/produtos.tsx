@@ -77,8 +77,13 @@ const ProdutosPage: React.FC = () => {
     categoriaId: 1,
     marcaId: 1,
     fornecedorId: 1,
+    precoCompra: 0,
+    margemLucro: 0,
+    precoVenda: 0,
+    estoque: 0,
     unidadeMedidaId: '',
     codigoInterno: '',
+    referencia: '',
     ativo: 1,
   });
   const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
@@ -206,8 +211,13 @@ const ProdutosPage: React.FC = () => {
       categoriaId: 1,
       marcaId: 1,
       fornecedorId: 1,
+      precoCompra: 0,
+      margemLucro: 0,
+      precoVenda: 0,
+      estoque: 0,
       unidadeMedidaId: '',
       codigoInterno: '',
+      referencia: '',
       ativo: 1,
     });
     setFormCodigosBarras([]);
@@ -301,8 +311,13 @@ const ProdutosPage: React.FC = () => {
       categoria_id: Number(form.categoriaId),
       marca_id: Number(form.marcaId),
       fornecedor_id: Number(form.fornecedorId),
+      preco_compra: form.precoCompra,
+      margem_lucro: form.margemLucro,
+      preco_venda: form.precoVenda,
+      estoque: form.estoque,
       unidade_medida_id: Number(form.unidadeMedidaId),
       codigo_interno: form.codigoInterno.trim() || undefined,
+      referencia: form.referencia.trim(),
       ativo: form.ativo,
       codigos_barras: formCodigosBarras,
     };
@@ -332,8 +347,13 @@ const ProdutosPage: React.FC = () => {
       categoriaId: item.categoria_id,
       marcaId: item.marca_id,
       fornecedorId: item.fornecedor_id,
+      precoCompra: item.preco_compra,
+      margemLucro: item.margem_lucro,
+      precoVenda: item.preco_venda,
+      estoque: item.estoque,
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
+      referencia: item.referencia || '',
       ativo: item.ativo,
     });
     setFormCodigosBarras(item.codigos_barras || []);

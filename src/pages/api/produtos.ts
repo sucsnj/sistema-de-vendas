@@ -13,7 +13,7 @@ import {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const { search, tipo, categoria_id, marca_id, fornecedor_id, ativo, page, pageSize } = req.query;
+      const { search, tipo, categoria_id, marca_id, fornecedor_id, preco_venda, ativo, page, pageSize } = req.query;
 
       const parsedOptions: any = {
         search: search ? String(search) : undefined,
@@ -21,6 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         categoria_id: categoria_id ? Number(categoria_id) : undefined,
         marca_id: marca_id ? Number(marca_id) : undefined,
         fornecedor_id: fornecedor_id ? Number(fornecedor_id) : undefined,
+        preco_venda: preco_venda ? Number(preco_venda) : undefined,
         ativo: ativo !== undefined && ativo !== 'TODOS' ? (ativo === 'ATIVO' ? 1 : 0) : undefined,
         page: page ? Number(page) : 1,
         pageSize: pageSize ? Number(pageSize) : 10,
