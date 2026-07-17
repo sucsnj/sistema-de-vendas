@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import styles from '../styles/produtos.module.css';
+import { ModalMarcaExclusao } from '@/components/ModalProdExclusao';
 
 export interface MarcaFormData {
     nome: string;
@@ -22,17 +24,18 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
     onDelete,
     options,
 }) => {
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-edit-title">
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-mar-edit-title">
             <div className={styles.modalContent}>
-                <h3 id="modal-cat-edit-title" className={styles.modalTitle}>Editar Marca</h3>
+                <h3 id="modal-mar-edit-title" className={styles.modalTitle}>Editar Marca</h3>
                 <form onSubmit={options.salvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="edit-cat-nome">
+                        <label className={styles.formLabel} htmlFor="edit-mar-nome">
                             Nome:*
                         </label>
                         <input
-                            id="edit-cat-nome"
+                            id="edit-mar-nome"
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da marca"
@@ -47,13 +50,13 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
                             type="button"
                             className={styles.deleteButton}
                             onClick={() => {
-                                onDelete();
+                                setDeleteConfirmOpen(true)
                             }}
                             id="confirm-delete-action-btn"
                         >
                             Excluir
                         </button>
-                        <button type="submit" className={styles.primaryButton} id="update-cat-btn">
+                        <button type="submit" className={styles.primaryButton} id="update-mar-btn">
                             Atualizar
                         </button>
                         <button
@@ -63,13 +66,26 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
                                 options.abrirModalMarca();
                                 setMarcaForm({ nome: '' });
                             }}
-                            id="cancel-edit-cat-btn"
+                            id="cancel-edit-mar-btn"
                         >
                             Fechar
                         </button>
                     </div>
                 </form>
             </div>
+            {deleteConfirmOpen && (
+                <ModalMarcaExclusao
+                    open={deleteConfirmOpen}
+                    marca={marcaForm}
+                    onConfirm={() => {
+                        onDelete();
+                        setDeleteConfirmOpen(false);
+                        options.abrirModalMarca(); // fecha modal de edição
+                        setMarcaForm({ nome: '' }); // limpa formulário
+                    }}
+                    onClose={() => setDeleteConfirmOpen(false)}
+                />
+            )}
         </div>
     )
 };

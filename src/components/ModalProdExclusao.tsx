@@ -10,6 +10,20 @@ interface ModalProdExclusaoProps {
     onClose: () => void;
 }
 
+interface ModalCatExclusaoProps {
+    open: boolean;
+    categoria: { nome: string; descricao?: string };
+    onConfirm: () => void;
+    onClose: () => void;
+}
+
+interface ModalMarcaExclusaoProps {
+    open: boolean;
+    marca: { nome: string };
+    onConfirm: () => void;
+    onClose: () => void;
+}
+
 const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     open,
     item,
@@ -51,6 +65,48 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
             </div>
         </div>
     )
+};
+
+export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
+    if (!open) return null;
+
+    return (
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-delete-title">
+            <div className={styles.modalContent}>
+                <h3 id="modal-cat-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
+                <p>Tem certeza que deseja excluir a categoria <strong>{categoria.nome}</strong>?</p>
+                <div className={styles.modalActions}>
+                    <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-cat-btn">
+                        Excluir
+                    </button>
+                    <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-cat-btn">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
+    if (!open) return null;
+
+    return (
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-mar-delete-title">
+            <div className={styles.modalContent}>
+                <h3 id="modal-mar-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
+                <p>Tem certeza que deseja excluir a marca <strong>{marca.nome}</strong>?</p>
+                <div className={styles.modalActions}>
+                    <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-mar-btn">
+                        Excluir
+                    </button>
+                    <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-mar-btn">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default ModalProdExclusao;

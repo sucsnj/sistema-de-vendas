@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import styles from '../styles/produtos.module.css';
 import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
+import { ModalCatExclusao } from '@/components/ModalProdExclusao';
 
 interface ModalCategoriaEditProps {
     catForm: CategoriaFormData;
@@ -14,6 +16,7 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
     onDelete,
     options,
 }) => {
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     return (
         <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-edit-title">
             <div className={styles.modalContent}>
@@ -52,7 +55,7 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
                             type="button"
                             className={styles.deleteButton}
                             onClick={() => {
-                                onDelete();
+                                setDeleteConfirmOpen(true)
                             }}
                             id="confirm-delete-action-btn"
                         >
@@ -75,6 +78,19 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
                     </div>
                 </form>
             </div>
+            {deleteConfirmOpen && (
+                <ModalCatExclusao
+                    open={deleteConfirmOpen}
+                    categoria={catForm}
+                    onConfirm={() => {
+                        onDelete();
+                        setDeleteConfirmOpen(false);
+                        options.abrirModalCategoria(); // fecha modal de edição
+                        setCatForm({ nome: '', descricao: '' }); // limpa formulário
+                    }}
+                    onClose={() => setDeleteConfirmOpen(false)}
+                />
+            )}
         </div>
     )
 };
