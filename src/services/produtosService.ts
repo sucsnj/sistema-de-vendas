@@ -11,7 +11,13 @@ export interface ItemData {
   categoria_id: number;
   unidade_medida_id: number;
   marca_id: number;
+  fornecedor_id: number;
+  preco_compra?: number;
+  margem_lucro?: number;
+  preco_venda?: number;
+  estoque?: number;
   codigo_interno?: string;
+  referencia?: string;
   ativo: number;
   data_criacao?: string;
   data_atualizacao?: string;
@@ -41,6 +47,11 @@ export interface MarcaData {
   nome: string;
 }
 
+export interface FornecedorData {
+  id: number;
+  nome: string;
+}
+
 export interface UnidadeMedidaData {
   id: number;
   sigla: string;
@@ -52,6 +63,7 @@ export const buscarProdutos = async (options: {
   tipo?: 'PRODUTO' | 'SERVICO' | 'TODOS';
   categoria_id?: number;
   marca_id?: number;
+  fornecedor_id?: number;
   ativo?: 'ATIVO' | 'INATIVO' | 'TODOS';
   page?: number;
   pageSize?: number;
@@ -61,6 +73,7 @@ export const buscarProdutos = async (options: {
   if (options.tipo) params.append('tipo', options.tipo);
   if (options.categoria_id) params.append('categoria_id', String(options.categoria_id));
   if (options.marca_id) params.append('marca_id', String(options.marca_id));
+  if (options.fornecedor_id) params.append('fornecedor_id', String(options.fornecedor_id));
   if (options.ativo) params.append('ativo', options.ativo);
   if (options.page) params.append('page', String(options.page));
   if (options.pageSize) params.append('pageSize', String(options.pageSize));
@@ -125,6 +138,7 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   return response.json();
 };
 
+// Chamadas de API para Categorias
 export const buscarCategorias = async (): Promise<CategoriaData[]> => {
   const response = await fetch('/api/produtos/categorias');
   if (!response.ok) throw new Error('Erro ao buscar categorias.');
@@ -168,6 +182,26 @@ export const atualizarCategoria = async (id: number, nome: string, descricao?: s
   return response.json();
 };
 
+// Chamadas de API para Marcas
+export const buscarMarcas = async (): Promise<MarcaData[]> => {
+  const response = await fetch('/api/produtos/marcas');
+  if (!response.ok) throw new Error('Erro ao buscar marcas.');
+  return response.json();
+};
+
+export const criarMarca = async (nome: string): Promise<{ id: number; message: string }> => {
+  const response = await fetch('/api/produtos/marcas', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao criar marca.');
+  }
+  return response.json();
+};
+
 export const deletarMarca = async (id: number): Promise<{ message: string }> => {
   const response = await fetch(`/api/produtos/marcas?id=${id}`, {
     method: 'DELETE',
@@ -192,25 +226,51 @@ export const atualizarMarca = async (id: number, nome: string): Promise<{ messag
   return response.json();
 };
 
-export const buscarMarcas = async (): Promise<MarcaData[]> => {
-  const response = await fetch('/api/produtos/marcas');
-  if (!response.ok) throw new Error('Erro ao buscar marcas.');
+// Chamadas de API para Fornecedores
+export const buscarFornecedores = async (): Promise<FornecedorData[]> => {
+  const response = await fetch('/api/produtos/fornecedores');
+  if (!response.ok) throw new Error('Erro ao buscar fornecedores.');
   return response.json();
 };
 
-export const criarMarca = async (nome: string): Promise<{ id: number; message: string }> => {
-  const response = await fetch('/api/produtos/marcas', {
+export const criarFornecedor = async (nome: string): Promise<{ id: number; message: string }> => {
+  const response = await fetch('/api/produtos/fornecedores', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nome }),
   });
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Erro ao criar marca.');
+    throw new Error(errorData.error || 'Erro ao criar fornecedor.');
   }
   return response.json();
 };
 
+export const deletarFornecedor = async (id: number): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/fornecedores?id=${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao deletar fornecedor.');
+  }
+  return response.json();
+};
+
+export const atualizarFornecedor = async (id: number, nome: string): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/fornecedores?id=${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao atualizar fornecedor.');
+  }
+  return response.json();
+};
+
+// Chamadas de API para Unidades de Medida
 export const buscarUnidadesMedida = async (): Promise<UnidadeMedidaData[]> => {
   const response = await fetch('/api/produtos/unidades-medida');
   if (!response.ok) throw new Error('Erro ao buscar unidades de medida.');

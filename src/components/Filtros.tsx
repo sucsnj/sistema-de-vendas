@@ -1,6 +1,7 @@
 import {
     CategoriaData,
     MarcaData,
+    FornecedorData
 } from '../services/produtosService';
 
 export interface FiltrosState {
@@ -8,12 +9,14 @@ export interface FiltrosState {
     tipo: 'PRODUTO' | 'SERVICO' | 'TODOS';
     categoriaId: number | '';
     marcaId: number | '';
+    fornecedorId: number | '';
     status: 'ATIVO' | 'INATIVO' | 'TODOS';
 }
 
 export interface FiltrosData {
     categorias: CategoriaData[];
     marcas: MarcaData[];
+    fornecedores: FornecedorData[];
 }
 
 export interface FiltrosActions {
@@ -102,6 +105,25 @@ const Filtros: React.FC<FiltrosProps> = ({
                         {data.marcas.map((m) => (
                             <option key={m.id} value={m.id}>
                                 {m.nome}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label htmlFor="filtro-fornecedor">
+                    Fornecedor:
+                    <select
+                        id="filtro-fornecedor"
+                        className="headerSelect"
+                        value={state.fornecedorId}
+                        onChange={(e) => {
+                            setFiltros(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : '' }));
+                            actions.mudarPagina(1);
+                        }}>
+                        <option value="">Todos</option>
+                        {data.fornecedores.map((f) => (
+                            <option key={f.id} value={f.id}>
+                                {f.nome}
                             </option>
                         ))}
                     </select>

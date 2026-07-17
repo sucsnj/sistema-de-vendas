@@ -24,6 +24,13 @@ interface ModalMarcaExclusaoProps {
     onClose: () => void;
 }
 
+interface ModalFornecedorExclusaoProps {
+    open: boolean;
+    fornecedor: { nome: string };
+    onConfirm: () => void;
+    onClose: () => void;
+}
+
 const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     open,
     item,
@@ -101,6 +108,27 @@ export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, ma
                         Excluir
                     </button>
                     <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-mar-btn">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
+    if (!open) return null;
+
+    return (
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-fornecedor-delete-title">
+            <div className={styles.modalContent}>
+                <h3 id="modal-fornecedor-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
+                <p>Tem certeza que deseja excluir o fornecedor <strong>{fornecedor.nome}</strong>?</p>
+                <div className={styles.modalActions}>
+                    <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-fornecedor-btn">
+                        Excluir
+                    </button>
+                    <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-fornecedor-btn">
                         Cancelar
                     </button>
                 </div>

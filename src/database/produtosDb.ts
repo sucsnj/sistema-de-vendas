@@ -29,6 +29,11 @@ try {
       nome TEXT NOT NULL UNIQUE
     );
 
+    CREATE TABLE IF NOT EXISTS fornecedores (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL UNIQUE
+    );
+
     CREATE TABLE IF NOT EXISTS unidades_medida (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       sigla TEXT NOT NULL UNIQUE,
@@ -43,7 +48,13 @@ try {
       categoria_id INTEGER NOT NULL REFERENCES categorias(id),
       unidade_medida_id INTEGER NOT NULL REFERENCES unidades_medida(id),
       marca_id INTEGER NOT NULL REFERENCES marcas(id),
+      fornecedor_id INTEGER NOT NULL REFERENCES fornecedores(id),
+      preco_compra REAL DEFAULT 0,
+      margem_lucro REAL DEFAULT 0,
+      preco_venda REAL DEFAULT 0,
+      estoque INTEGER DEFAULT 0,
       codigo_interno TEXT UNIQUE,
+      referencia TEXT UNIQUE,
       ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
       data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
       data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -68,6 +79,7 @@ try {
       { sigla: 'L', descricao: 'Litro' },
       { sigla: 'ML', descricao: 'Mililitro' },
       { sigla: 'MT', descricao: 'Metro' },
+      { sigla: 'PC', descricao: 'Pacote' },
     ];
     const insertUom = db.prepare('INSERT INTO unidades_medida (sigla, descricao) VALUES (?, ?)');
     for (const uom of seedUoms) {
@@ -84,7 +96,13 @@ try {
   // Seeding inicial para Marca Padrão
   const countBrand = db.prepare('SELECT count(*) as count FROM marcas').get() as { count: number };
   if (countBrand.count === 0) {
-    db.prepare('INSERT INTO marcas (nome) VALUES (?)').run('Sem Marca');
+    db.prepare('INSERT INTO marcas (nome) VALUES (?)').run('Outros');
+  }
+
+  // Seeding inicial para Fornecedores
+  const countFornecedor = db.prepare('SELECT count(*) as count FROM fornecedores').get() as { count: number };
+  if (countFornecedor.count === 0) {
+    db.prepare('INSERT INTO fornecedores (nome) VALUES (?)').run('Sem fornecedor');
   }
 
 } catch (error) {
@@ -118,12 +136,11 @@ export const deleteCategoria = (id: number) => {
   return db.prepare('DELETE FROM categorias WHERE id = ?').run(id);
 };
 
-// Renomeia uma categoria e atualiza em todos os itens associados
+// Atualiza uma categoria em todos os itens associados
 export const updateCategoria = (id: number, nome: string, descricao?: string) => {
   if (id === 1) {
     throw new Error('Não é possível atualizar a categoria Geral.');
   }
-
   return db.prepare('UPDATE categorias SET nome = ?, descricao = ? WHERE id = ?').run(nome, descricao || null, id);
 };
 
@@ -141,26 +158,62 @@ export const insertMarca = (nome: string) => {
   return stmt.run(nome);
 };
 
-// Apaga uma marca, se houver itens associados, renomeia para a marca "Sem marca" (id=1)
+// Deleta uma marca, se houver itens associados, renomeia para a marca "Outros" (id=1)
 export const deleteMarca = (id: number) => {
   if (id === 1) {
-    throw new Error('Não é possível apagar a marca Sem marca.');
+    throw new Error('Não é possível apagar a marca Outros.');
   }
   const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE marca_id = ?').get(id) as { count: number };
   if (countItens.count > 0) {
-    // Atualiza os itens para a marca Sem marca
+    // Atualiza os itens para a marca Outros
     db.prepare('UPDATE itens SET marca_id = 1 WHERE marca_id = ?').run(id);
   }
   return db.prepare('DELETE FROM marcas WHERE id = ?').run(id);
 };
 
-// Renomeia uma marca e atualiza em todos os itens associados
+// Atualiza uma marca em todos os itens associados
 export const updateMarca = (id: number, nome: string) => {
   if (id === 1) {
-    throw new Error('Não é possível atualizar a marca Sem marca.');
+    throw new Error('Não é possível atualizar a marca Outros.');
   }
 
   return db.prepare('UPDATE marcas SET nome = ? WHERE id = ?').run(nome || null, id);
+};
+
+// Helpers para Fornecedores
+export const getFornecedores = () => {
+  return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as any[];
+};
+
+export const getFornecedorById = (id: number) => {
+  return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as any;
+};
+
+export const insertFornecedor = (nome: string) => {
+  const stmt = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
+  return stmt.run(nome);
+};
+
+// Deleta um fornecedor, se houver itens associados, renomeia para o fornecedor "Sem fornecedor" (id=1)
+export const deleteFornecedor = (id: number) => {
+  if (id === 1) {
+    throw new Error('Não é possível apagar o fornecedor Sem fornecedor.');
+  }
+  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE fornecedor_id = ?').get(id) as { count: number };
+  if (countItens.count > 0) {
+    // Atualiza os itens para o fornecedor Sem fornecedor
+    db.prepare('UPDATE itens SET fornecedor_id = 1 WHERE fornecedor_id = ?').run(id);
+  }
+  return db.prepare('DELETE FROM fornecedores WHERE id = ?').run(id);
+};
+
+// Atualiza um fornecedor em todos os itens associados
+export const updateFornecedor = (id: number, nome: string) => {
+  if (id === 1) {
+    throw new Error('Não é possível atualizar o fornecedor Sem fornecedor.');
+  }
+
+  return db.prepare('UPDATE fornecedores SET nome = ? WHERE id = ?').run(nome || null, id);
 };
 
 // Helpers para Unidades de Medida
@@ -216,7 +269,13 @@ export interface ItemInput {
   categoria_id: number;
   unidade_medida_id: number;
   marca_id: number;
+  fornecedor_id: number;
+  preco_compra: number;
+  margem_lucro: number;
+  preco_venda: number;
+  estoque: number;
   codigo_interno?: string;
+  referencia: string;
   ativo?: number;
   codigos_barras?: BarcodeData[];
 }
@@ -226,6 +285,7 @@ export const getItens = (options: {
   tipo?: 'PRODUTO' | 'SERVICO' | 'TODOS';
   categoria_id?: number;
   marca_id?: number;
+  fornecedor_id?: number;
   ativo?: number; // 0 para Inativo, 1 para Ativo, undefined para Todos
   page?: number;
   pageSize?: number;
@@ -250,6 +310,11 @@ export const getItens = (options: {
   if (options.marca_id) {
     queryConditions.push('i.marca_id = ?');
     params.push(options.marca_id);
+  }
+
+  if (options.fornecedor_id) {
+    queryConditions.push('i.fornecedor_id = ?');
+    params.push(options.fornecedor_id);
   }
 
   if (options.ativo !== undefined) {
@@ -281,7 +346,13 @@ export const getItens = (options: {
       i.categoria_id,
       i.unidade_medida_id,
       i.marca_id,
+      i.fornecedor_id,
+      i.preco_compra,
+      i.margem_lucro,
+      i.preco_venda,
+      i.estoque,
       i.codigo_interno,
+      i.referencia,
       i.ativo,
       i.data_criacao,
       i.data_atualizacao,
@@ -292,6 +363,7 @@ export const getItens = (options: {
     FROM itens i
     JOIN categorias c ON i.categoria_id = c.id
     JOIN marcas m ON i.marca_id = m.id
+    JOIN fornecedores f ON i.fornecedor_id = f.id
     JOIN unidades_medida u ON i.unidade_medida_id = u.id
     ${whereClause}
     ORDER BY i.nome ASC
@@ -325,7 +397,13 @@ export const getItemById = (id: number) => {
       i.categoria_id,
       i.unidade_medida_id,
       i.marca_id,
+      i.fornecedor_id,
+      i.preco_compra,
+      i.margem_lucro,
+      i.preco_venda,
+      i.estoque,
       i.codigo_interno,
+      i.referencia,
       i.ativo,
       i.data_criacao,
       i.data_atualizacao,
@@ -336,6 +414,7 @@ export const getItemById = (id: number) => {
     FROM itens i
     JOIN categorias c ON i.categoria_id = c.id
     JOIN marcas m ON i.marca_id = m.id
+    JOIN fornecedores f ON i.fornecedor_id = f.id
     JOIN unidades_medida u ON i.unidade_medida_id = u.id
     WHERE i.id = ?
   `).get(id) as any;
@@ -348,8 +427,8 @@ export const getItemById = (id: number) => {
 
 export const insertItem = db.transaction((itemData: ItemInput) => {
   const itemStmt = db.prepare(`
-    INSERT INTO itens (tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, codigo_interno, ativo, data_criacao, data_atualizacao)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
+    INSERT INTO itens (tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, ativo, data_criacao, data_atualizacao)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
   `);
 
   const result = itemStmt.run(
@@ -359,9 +438,25 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     itemData.categoria_id,
     itemData.unidade_medida_id,
     itemData.marca_id,
+    itemData.fornecedor_id,
+    itemData.preco_compra,
+    itemData.margem_lucro,
+    itemData.preco_venda,
+    itemData.estoque,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
+    itemData.referencia,
     itemData.ativo !== undefined ? itemData.ativo : 1
   );
+
+  // Se não houve codigo_interno, coloca o id no lugar
+  if (!itemData.codigo_interno) {
+    const updateCodigoInterno = db.prepare(`
+      UPDATE itens
+      SET codigo_interno = ?
+      WHERE id = ?
+    `);
+    updateCodigoInterno.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
+  }
 
   const itemId = result.lastInsertRowid as number;
 
@@ -381,7 +476,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
 export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
   const itemStmt = db.prepare(`
     UPDATE itens 
-    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, codigo_interno = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, estoque = ?, codigo_interno = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
     WHERE id = ?
   `);
 
@@ -392,7 +487,13 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.categoria_id,
     itemData.unidade_medida_id,
     itemData.marca_id,
+    itemData.fornecedor_id,
+    itemData.preco_compra,
+    itemData.margem_lucro,
+    itemData.preco_venda,
+    itemData.estoque,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
+    itemData.referencia,
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id
   );

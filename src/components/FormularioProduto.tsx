@@ -5,6 +5,7 @@ import {
     CategoriaData,
     MarcaData,
     UnidadeMedidaData,
+    FornecedorData
 } from '../services/produtosService';
 
 export interface ProdutoFormData {
@@ -13,6 +14,7 @@ export interface ProdutoFormData {
     descricao: string;
     categoriaId: number;
     marcaId: number;
+    fornecedorId: number;
     unidadeMedidaId: number | '';
     codigoInterno: string;
     ativo: number;
@@ -21,14 +23,17 @@ export interface ProdutoFormData {
 export interface ProdutoOptions {
     categorias: CategoriaData[];
     marcas: MarcaData[];
+    fornecedores: FornecedorData[];
     unidadesMedida: UnidadeMedidaData[];
 }
 
 export interface ProdutoActions {
     abrirModalCategoria: () => void;
     abrirModalMarca: () => void;
+    abrirModalFornecedor: () => void;
     editarCategoria: (categoria: CategoriaData) => void;
     editarMarca: (marca: MarcaData) => void;
+    editarFornecedor: (fornecedor: FornecedorData) => void;
 }
 
 // Props do Componente
@@ -185,6 +190,55 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         }}
                         title="Editar Marca Selecionada"
                         id="edit-marca-btn"
+                    >
+                        <MoreVert fontSize="small" />
+                    </button>
+                </div>
+            </div>
+
+            <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="form-fornecedor">
+                    Fornecedor:*
+                </label>
+                <div className={styles.selectWrapper}>
+                    <select
+                        id="form-fornecedor"
+                        className={styles.selectField}
+                        value={form.fornecedorId}
+                        onChange={(e) =>
+                            setForm(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : 1 }))
+                        }
+                        required
+                    >
+                        {options.fornecedores.map((f) => (
+                            <option key={f.id} value={f.id}>
+                                {f.nome}
+                            </option>
+                        ))}
+                    </select>
+                    <button
+                        type="button"
+                        className={styles.addButton}
+                        onClick={actions.abrirModalFornecedor}
+                        title="Adicionar Fornecedor"
+                        id="add-fornecedor-btn"
+                    >
+                        <AddIcon fontSize="small" />
+                    </button>
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de fornecedores*/}
+                    <button
+                        type="button"
+                        className={styles.manageButton}
+                        onClick={() => {
+                            const fornecedorSelecionado = options.fornecedores.find(
+                                (f) => f.id === form.fornecedorId
+                            );
+                            if (fornecedorSelecionado) {
+                                actions.editarFornecedor(fornecedorSelecionado);
+                            }
+                        }}
+                        title="Editar Fornecedor Selecionado"
+                        id="edit-fornecedor-btn"
                     >
                         <MoreVert fontSize="small" />
                     </button>

@@ -13,13 +13,14 @@ import {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const { search, tipo, categoria_id, marca_id, ativo, page, pageSize } = req.query;
+      const { search, tipo, categoria_id, marca_id, fornecedor_id, ativo, page, pageSize } = req.query;
 
       const parsedOptions: any = {
         search: search ? String(search) : undefined,
         tipo: tipo ? String(tipo) : undefined,
         categoria_id: categoria_id ? Number(categoria_id) : undefined,
         marca_id: marca_id ? Number(marca_id) : undefined,
+        fornecedor_id: fornecedor_id ? Number(fornecedor_id) : undefined,
         ativo: ativo !== undefined && ativo !== 'TODOS' ? (ativo === 'ATIVO' ? 1 : 0) : undefined,
         page: page ? Number(page) : 1,
         pageSize: pageSize ? Number(pageSize) : 10,
@@ -35,7 +36,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
-      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, codigo_interno, codigos_barras } = req.body;
+      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, codigos_barras } = req.body;
 
       // Altera status de ativo/inativo
       if (action === 'toggle-status') {
@@ -70,6 +71,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
       if (!marca_id || isNaN(Number(marca_id))) {
         return res.status(400).json({ error: 'Selecione uma marca válida.' });
+      }
+
+      if (!fornecedor_id || isNaN(Number(fornecedor_id))) {
+        return res.status(400).json({ error: 'Selecione um fornecedor válido.' });
       }
 
       // Validação de código interno duplicado
@@ -121,7 +126,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         categoria_id: Number(categoria_id),
         unidade_medida_id: Number(unidade_medida_id),
         marca_id: Number(marca_id),
+        fornecedor_id: Number(fornecedor_id),
+        preco_compra: Number(preco_compra),
+        margem_lucro: Number(margem_lucro),
+        preco_venda: Number(preco_venda),
+        estoque: Number(estoque),
         codigo_interno: codigo_interno || undefined,
+        referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
         codigos_barras: listBarcodes,
       });
@@ -135,7 +146,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'PUT') {
     try {
-      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, codigo_interno, ativo, codigos_barras } = req.body;
+      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, ativo, codigos_barras } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: 'O ID do item é obrigatório para atualização.' });
@@ -161,6 +172,26 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
       if (!marca_id || isNaN(Number(marca_id))) {
         return res.status(400).json({ error: 'Selecione uma marca válida.' });
+      }
+
+      if (!fornecedor_id || isNaN(Number(fornecedor_id))) {
+        return res.status(400).json({ error: 'Selecione um fornecedor válido.' });
+      }
+
+      if (!preco_compra || isNaN(Number(preco_compra))) {
+        return res.status(400).json({ error: 'O preço de compra deve ser um número.' });
+      }
+
+      if (!margem_lucro || isNaN(Number(margem_lucro))) {
+        return res.status(400).json({ error: 'A margem de lucro deve ser um número.' });
+      }
+
+      if (!preco_venda || isNaN(Number(preco_venda))) {
+        return res.status(400).json({ error: 'O preço de venda deve ser um número.' });
+      }
+
+      if (!estoque || isNaN(Number(estoque))) {
+        return res.status(400).json({ error: 'O estoque deve ser um número.' });
       }
 
       // Validação de código interno duplicado
@@ -212,7 +243,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         categoria_id: Number(categoria_id),
         unidade_medida_id: Number(unidade_medida_id),
         marca_id: Number(marca_id),
+        fornecedor_id: Number(fornecedor_id),
+        preco_compra: Number(preco_compra),
+        margem_lucro: Number(margem_lucro),
+        preco_venda: Number(preco_venda),
+        estoque: Number(estoque),
         codigo_interno: codigo_interno || undefined,
+        referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
         codigos_barras: listBarcodes,
       });

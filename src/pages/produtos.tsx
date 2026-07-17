@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
-import { now, formatDateString } from '@/utils/date';
 import {
   buscarProdutos,
   registrarProduto,
@@ -17,6 +16,10 @@ import {
   criarMarca,
   deletarMarca,
   atualizarMarca,
+  buscarFornecedores,
+  criarFornecedor,
+  deletarFornecedor,
+  atualizarFornecedor,
   buscarUnidadesMedida,
   ItemData,
   BarcodeData,
@@ -30,10 +33,13 @@ import ModalMarca from '@/components/ModalMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import ModalMarcaEdit from '@/components/ModalMarcaEdit';
+import ModalFornecedor from '@/components/ModalFornecedor';
+import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { CategoriaFormData } from '@/types/categoria';
 import { MarcaFormData } from '@/components/ModalMarcaEdit';
 import { FiltrosState } from '@/components/Filtros';
+import { FornecedorFormData } from '@/components/ModalFornecedorEdit';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -50,6 +56,7 @@ const ProdutosPage: React.FC = () => {
     tipo: 'PRODUTO',
     categoriaId: '',
     marcaId: '',
+    fornecedorId: '',
     status: 'TODOS',
   });
 
@@ -57,6 +64,7 @@ const ProdutosPage: React.FC = () => {
   const [options, setOptions] = useState<ProdutoOptions>({
     categorias: [],
     marcas: [],
+    fornecedores: [],
     unidadesMedida: [],
   });
 
@@ -68,6 +76,7 @@ const ProdutosPage: React.FC = () => {
     descricao: '',
     categoriaId: 1,
     marcaId: 1,
+    fornecedorId: 1,
     unidadeMedidaId: '',
     codigoInterno: '',
     ativo: 1,
@@ -79,13 +88,18 @@ const ProdutosPage: React.FC = () => {
   const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
   const [catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
   const [marcaForm, setMarcaForm] = useState<MarcaFormData>({ nome: '' });
+  const [fornecedorForm, setFornecedorForm] = useState<FornecedorFormData>({ nome: '' });
 
   // Modais de Edição
   const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
   const [modalMarcaEditOpen, setModalMarcaEditOpen] = useState(false);
+  const [modalFornecedorEditOpen, setModalFornecedorEditOpen] = useState(false);
 
   const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
   const [novaMarcaNome, setNovaMarcaNome] = useState('');
+
+  const [modalFornecedorOpen, setModalFornecedorOpen] = useState(false);
+  const [novoFornecedorNome, setNovoFornecedorNome] = useState('');
 
   // Modal de confirmação de exclusão
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -111,19 +125,21 @@ const ProdutosPage: React.FC = () => {
   // Carrega opções auxiliares
   const carregarAuxiliares = async () => {
     try {
-      const [cats, brands, uoms] = await Promise.all([
+      const [cats, brands, forns, uoms] = await Promise.all([
         buscarCategorias(),
         buscarMarcas(),
+        buscarFornecedores(),
         buscarUnidadesMedida(),
       ]);
       setOptions({
         categorias: cats,
         marcas: brands,
+        fornecedores: forns,
         unidadesMedida: uoms,
       });
     } catch (error) {
       console.error(error);
-      showToast('Erro ao carregar dados auxiliares (categorias, marcas, etc.).', 'error');
+      showToast('Erro ao carregar dados auxiliares (categorias, marcas, fornecedores, unidades de medida).', 'error');
     }
   };
 
@@ -136,6 +152,7 @@ const ProdutosPage: React.FC = () => {
         tipo: state.tipo,
         categoria_id: state.categoriaId || undefined,
         marca_id: state.marcaId || undefined,
+        fornecedor_id: state.fornecedorId || undefined,
         ativo: state.status,
         page,
         pageSize: 10,
@@ -157,7 +174,7 @@ const ProdutosPage: React.FC = () => {
 
   useEffect(() => {
     carregarItens();
-  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.status]);
+  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.fornecedorId, state.status]);
 
   // Handler de Busca
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -173,6 +190,7 @@ const ProdutosPage: React.FC = () => {
       tipo: 'TODOS',
       categoriaId: '',
       marcaId: '',
+      fornecedorId: '',
       status: 'TODOS',
     });
     setPage(1);
@@ -187,6 +205,7 @@ const ProdutosPage: React.FC = () => {
       descricao: '',
       categoriaId: 1,
       marcaId: 1,
+      fornecedorId: 1,
       unidadeMedidaId: '',
       codigoInterno: '',
       ativo: 1,
@@ -240,24 +259,6 @@ const ProdutosPage: React.FC = () => {
     setFormCodigosBarras(updated);
   };
 
-  // Handle para gerar de código interno com base no tipo de criado e data/hora atual
-  const handleCreateCodigoInterno = (codigoInterno: string) => {
-    // usa now para gerar o timestamp
-    const date = now().format('DDMMYYYY');
-    const time = now().format('HHmmss');
-
-    // Captura o valor no select de tipo
-    const tipo = form.tipo;
-
-    // Cria o código interno
-    if (tipo === 'PRODUTO') {
-      codigoInterno = `PROD-${date}-${time}`;
-    } else if (tipo === 'SERVICO') {
-      codigoInterno = `SERV-${date}-${time}`;
-    }
-    return codigoInterno;
-  };
-
   // Submit do formulário de Cadastro/Edição
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -275,12 +276,13 @@ const ProdutosPage: React.FC = () => {
       showToast('Selecione uma marca.', 'error');
       return;
     }
+    if (!form.fornecedorId) {
+      showToast('Selecione um fornecedor.', 'error');
+      return;
+    }
     if (!form.unidadeMedidaId) {
       showToast('Selecione uma unidade de medida.', 'error');
       return;
-    }
-    if (!form.codigoInterno) {
-      form.codigoInterno = handleCreateCodigoInterno(form.codigoInterno);
     }
 
     // Validação de código principal nos códigos de barras
@@ -298,6 +300,7 @@ const ProdutosPage: React.FC = () => {
       descricao: form.descricao.trim() || undefined,
       categoria_id: Number(form.categoriaId),
       marca_id: Number(form.marcaId),
+      fornecedor_id: Number(form.fornecedorId),
       unidade_medida_id: Number(form.unidadeMedidaId),
       codigo_interno: form.codigoInterno.trim() || undefined,
       ativo: form.ativo,
@@ -328,6 +331,7 @@ const ProdutosPage: React.FC = () => {
       descricao: item.descricao || '',
       categoriaId: item.categoria_id,
       marcaId: item.marca_id,
+      fornecedorId: item.fornecedor_id,
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
       ativo: item.ativo,
@@ -376,6 +380,8 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
+  // Categorias
+
   // Cadastro de Categoria Inline
   const handleSalvarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -407,13 +413,6 @@ const ProdutosPage: React.FC = () => {
     setModalCategoriaEditOpen(true);
   };
 
-  // Handler para abrir modal de edição de marca
-  const handleOpenEditMarcaModal = (marca: { id: number; nome: string }) => {
-    setForm(prev => ({ ...prev, marcaId: marca.id }));
-    setMarcaForm({ nome: marca.nome || '' });
-    setModalMarcaEditOpen(true);
-  };
-
   // Ediçao de categoria
   const handleAtualizarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -439,34 +438,6 @@ const ProdutosPage: React.FC = () => {
       carregarItens();
     } catch (error: any) {
       showToast(error.message || 'Erro ao atualizar categoria.', 'error');
-    }
-  };
-
-  // Ediçao de marca
-  const handleAtualizarMarca = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!marcaForm.nome.trim()) {
-      showToast('O nome da marca é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await atualizarMarca(form.marcaId, marcaForm.nome.trim());
-
-      // Atualiza na interface após confirmação da API
-      setOptions(prev =>
-      ({
-        ...prev, marcas: prev.marcas.map(mar =>
-          mar.id === form.marcaId ?
-            { ...mar, nome: marcaForm.nome.trim() } : mar
-        )
-      }));
-
-      showToast(response.message || 'Marca atualizada com sucesso.', 'success');
-      setModalMarcaEditOpen(false);
-      setMarcaForm({ nome: '' });
-      carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar marca.', 'error');
     }
   };
 
@@ -498,6 +469,42 @@ const ProdutosPage: React.FC = () => {
       }
     } catch (error: any) {
       showToast(error.message || 'Erro ao deletar categoria.', 'error');
+    }
+  };
+
+  // Marcas
+  // Handler para abrir modal de edição de marca
+  const handleOpenEditMarcaModal = (marca: { id: number; nome: string }) => {
+    setForm(prev => ({ ...prev, marcaId: marca.id }));
+    setMarcaForm({ nome: marca.nome || '' });
+    setModalMarcaEditOpen(true);
+  };
+
+  // Ediçao de marca
+  const handleAtualizarMarca = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!marcaForm.nome.trim()) {
+      showToast('O nome da marca é obrigatório.', 'error');
+      return;
+    }
+    try {
+      const response = await atualizarMarca(form.marcaId, marcaForm.nome.trim());
+
+      // Atualiza na interface após confirmação da API
+      setOptions(prev =>
+      ({
+        ...prev, marcas: prev.marcas.map(mar =>
+          mar.id === form.marcaId ?
+            { ...mar, nome: marcaForm.nome.trim() } : mar
+        )
+      }));
+
+      showToast(response.message || 'Marca atualizada com sucesso.', 'success');
+      setModalMarcaEditOpen(false);
+      setMarcaForm({ nome: '' });
+      carregarItens();
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao atualizar marca.', 'error');
     }
   };
 
@@ -553,6 +560,98 @@ const ProdutosPage: React.FC = () => {
       setNovaMarcaNome('');
     } catch (error: any) {
       showToast(error.message || 'Erro ao criar marca.', 'error');
+    }
+  };
+
+  // Fornecedores
+
+  // Cadastro de Fornecedor Inline
+  const handleSalvarFornecedor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!novoFornecedorNome.trim()) {
+      showToast('O nome do fornecedor é obrigatório.', 'error');
+      return;
+    }
+    try {
+      const response = await criarFornecedor(novoFornecedorNome.trim());
+      showToast(response.message || 'Fornecedor criado com sucesso.', 'success');
+
+      // Re-carrega lista de fornecedores e seleciona o criado
+      const forns = await buscarFornecedores();
+      setOptions(prev => ({ ...prev, fornecedores: forns }));
+      setForm(prev => ({ ...prev, fornecedorId: response.id }));
+
+      // Fecha modal
+      setModalFornecedorOpen(false);
+      setFornecedorForm({ nome: '' });
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao criar fornecedor.', 'error');
+    }
+  };
+
+  // Handler para abrir modal de edição de fornecedor
+  const handleOpenEditFornecedorModal = (fornecedor: { id: number; nome: string }) => {
+    setForm(prev => ({ ...prev, fornecedorId: fornecedor.id }));
+    setFornecedorForm({ nome: fornecedor.nome || '' });
+    setModalFornecedorEditOpen(true);
+  };
+
+  // Ediçao de fornecedor
+  const handleAtualizarFornecedor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fornecedorForm.nome.trim()) {
+      showToast('O nome do fornecedor é obrigatório.', 'error');
+      return;
+    }
+    try {
+      const response = await atualizarFornecedor(form.fornecedorId, fornecedorForm.nome.trim());
+
+      // Atualiza na interface após confirmação da API
+      setOptions(prev =>
+      ({
+        ...prev, fornecedores: prev.fornecedores.map(forn =>
+          forn.id === form.fornecedorId ?
+            { ...forn, nome: fornecedorForm.nome.trim() } : forn
+        )
+      }));
+
+      showToast(response.message || 'Fornecedor atualizado com sucesso.', 'success');
+      setModalFornecedorEditOpen(false);
+      setFornecedorForm({ nome: '' });
+      carregarItens();
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao atualizar fornecedor.', 'error');
+    }
+  };
+
+  // Handle para deletar fornecedor
+  const handleDeletarFornecedor = async () => {
+    try {
+      await deletarFornecedor(form.fornecedorId);
+      showToast('Fornecedor deletado com sucesso.', 'success');
+      setDeleteConfirmOpen(false);
+      setItemParaExcluir(null);
+
+      // Atualiza a interface após confirmação da API
+      setOptions(prev => ({
+        ...prev,
+        fornecedores: prev.fornecedores.filter(forn => forn.id !== form.fornecedorId)
+      }));
+
+      // Fecha o modal após a exclusão
+      setModalFornecedorOpen(false);
+      setFornecedorForm({ nome: '' });
+
+      // Coloca o Id para 1
+      setForm(prev => ({ ...prev, fornecedorId: 1 }));
+
+      if (items.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        carregarItens();
+      }
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao deletar fornecedor.', 'error');
     }
   };
 
@@ -618,8 +717,10 @@ const ProdutosPage: React.FC = () => {
                 actions={{
                   abrirModalCategoria: () => setModalCategoriaOpen(true),
                   abrirModalMarca: () => setModalMarcaOpen(true),
+                  abrirModalFornecedor: () => setModalFornecedorOpen(true),
                   editarCategoria: handleOpenEditModal,
                   editarMarca: handleOpenEditMarcaModal,
+                  editarFornecedor: handleOpenEditFornecedorModal,
                 }}
               />
 
@@ -700,6 +801,29 @@ const ProdutosPage: React.FC = () => {
             options={{
               abrirModalMarca: () => setModalMarcaEditOpen(false),
               salvarMarca: handleAtualizarMarca,
+            }}
+          />
+        )}
+
+        {/* Modal: Cadastro de Fornecedor */}
+        {modalFornecedorOpen && (
+          <ModalFornecedor
+            setModalFornecedorOpen={setModalFornecedorOpen}
+            novoFornecedorNome={novoFornecedorNome}
+            setNovoFornecedorNome={setNovoFornecedorNome}
+            handleSalvarFornecedor={handleSalvarFornecedor}
+          />
+        )}
+
+        {/* Modal: Edição de Fornecedor */}
+        {modalFornecedorEditOpen && (
+          <ModalFornecedorEdit
+            fornecedorForm={fornecedorForm}
+            setFornecedorForm={setFornecedorForm}
+            onDelete={handleDeletarFornecedor}
+            options={{
+              abrirModalFornecedor: () => setModalFornecedorEditOpen(false),
+              salvarFornecedor: handleAtualizarFornecedor,
             }}
           />
         )}
