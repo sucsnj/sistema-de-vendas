@@ -14,6 +14,8 @@ import {
   atualizarCategoria,
   buscarMarcas,
   criarMarca,
+  deletarMarca,
+  atualizarMarca,
   buscarUnidadesMedida,
   ItemData,
   BarcodeData,
@@ -29,6 +31,7 @@ import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import ModalMarcaEdit from '@/components/ModalMarcaEdit';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { CategoriaFormData } from '@/types/categoria';
+import { MarcaFormData } from '@/components/ModalMarcaEdit';
 import { FiltrosState } from '@/components/Filtros';
 
 const ProdutosPage: React.FC = () => {
@@ -74,6 +77,7 @@ const ProdutosPage: React.FC = () => {
   // Modais de cadastro rápido
   const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
   const [catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
+  const [marcaForm, setMarcaForm] = useState<MarcaFormData>({ nome: '' });
 
   // Modais de Edição
   const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
@@ -382,9 +386,9 @@ const ProdutosPage: React.FC = () => {
   };
 
   // Handler para abrir modal de edição de marca
-  const handleOpenEditMarcaModal = (marca: { id: number; nome: string; descricao?: string }) => {
+  const handleOpenEditMarcaModal = (marca: { id: number; nome: string }) => {
     setForm(prev => ({ ...prev, marcaId: marca.id }));
-    setCatForm({ nome: marca.nome, descricao: marca.descricao || '' });
+    setMarcaForm({ nome: marca.nome || '' });
     setModalMarcaEditOpen(true);
   };
 
@@ -419,25 +423,25 @@ const ProdutosPage: React.FC = () => {
   // Ediçao de marca
   const handleAtualizarMarca = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!catForm.nome.trim()) {
+    if (!marcaForm.nome.trim()) {
       showToast('O nome da marca é obrigatório.', 'error');
       return;
     }
     try {
-      const response = await atualizarMarca(form.marcaId, catForm.nome.trim(), catForm.descricao.trim());
+      const response = await atualizarMarca(form.marcaId, marcaForm.nome.trim());
 
       // Atualiza na interface após confirmação da API
       setOptions(prev =>
       ({
         ...prev, marcas: prev.marcas.map(mar =>
           mar.id === form.marcaId ?
-            { ...mar, nome: catForm.nome.trim(), descricao: catForm.descricao.trim() } : mar
+            { ...mar, nome: marcaForm.nome.trim() } : mar
         )
       }));
 
       showToast(response.message || 'Marca atualizada com sucesso.', 'success');
       setModalMarcaEditOpen(false);
-      setCatForm({ nome: '', descricao: '' });
+      setMarcaForm({ nome: '' });
       carregarItens();
     } catch (error: any) {
       showToast(error.message || 'Erro ao atualizar marca.', 'error');
@@ -448,7 +452,7 @@ const ProdutosPage: React.FC = () => {
   const handleDeletarCategoria = async () => {
     try {
       await deletarCategoria(form.categoriaId);
-      showToast('Categoria deletada com sucesso.', 'success');
+      showToast('Marca deletada com sucesso.', 'success');
       setDeleteConfirmOpen(false);
       setItemParaExcluir(null);
 
@@ -459,7 +463,7 @@ const ProdutosPage: React.FC = () => {
       }));
 
       // Fecha o modal após a exclusão
-      setModalCategoriaEditOpen(false);
+      setModalCategoriaOpen(false);
       setCatForm({ nome: '', descricao: '' });
 
       // Coloca o Id para 1
@@ -472,6 +476,37 @@ const ProdutosPage: React.FC = () => {
       }
     } catch (error: any) {
       showToast(error.message || 'Erro ao deletar categoria.', 'error');
+    }
+  };
+
+    // Handle para deletar marca
+  const handleDeletarMarca = async () => {
+    try {
+      await deletarMarca(form.marcaId);
+      showToast('Marca deletada com sucesso.', 'success');
+      setDeleteConfirmOpen(false);
+      setItemParaExcluir(null);
+
+      // Atualiza a interface após confirmação da API
+      setOptions(prev => ({
+        ...prev,
+        marcas: prev.marcas.filter(mar => mar.id !== form.marcaId)
+      }));
+
+      // Fecha o modal após a exclusão
+      setModalMarcaEditOpen(false);
+      setMarcaForm({ nome: '' });
+
+      // Coloca o Id para 1
+      setForm(prev => ({ ...prev, marcaId: 1 }));
+
+      if (items.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        carregarItens();
+      }
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao deletar marca.', 'error');
     }
   };
 
@@ -562,7 +597,7 @@ const ProdutosPage: React.FC = () => {
                   abrirModalCategoria: () => setModalCategoriaOpen(true),
                   abrirModalMarca: () => setModalMarcaOpen(true),
                   editarCategoria: handleOpenEditModal,
-                  editarMarca: handleOpenEditModal,
+                  editarMarca: handleOpenEditMarcaModal,
                 }}
               />
 
@@ -637,8 +672,8 @@ const ProdutosPage: React.FC = () => {
         {/* Modal: Edição de Marca */}
         {modalMarcaEditOpen && (
           <ModalMarcaEdit
-            catForm={catForm}
-            setCatForm={setCatForm}
+            marcaForm={marcaForm}
+            setMarcaForm={setMarcaForm}
             onDelete={handleDeletarMarca}
             options={{
               abrirModalMarca: () => setModalMarcaEditOpen(false),

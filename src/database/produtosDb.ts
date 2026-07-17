@@ -141,6 +141,28 @@ export const insertMarca = (nome: string) => {
   return stmt.run(nome);
 };
 
+// Apaga uma marca, se houver itens associados, renomeia para a marca "Sem marca" (id=1)
+export const deleteMarca = (id: number) => {
+  if (id === 1) {
+    throw new Error('Não é possível apagar a marca Sem marca.');
+  }
+  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE marca_id = ?').get(id) as { count: number };
+  if (countItens.count > 0) {
+    // Atualiza os itens para a marca Sem marca
+    db.prepare('UPDATE itens SET marca_id = 1 WHERE marca_id = ?').run(id);
+  }
+  return db.prepare('DELETE FROM marcas WHERE id = ?').run(id);
+};
+
+// Renomeia uma marca e atualiza em todos os itens associados
+export const updateMarca = (id: number, nome: string) => {
+  if (id === 1) {
+    throw new Error('Não é possível atualizar a marca Sem marca.');
+  }
+
+  return db.prepare('UPDATE marcas SET nome = ? WHERE id = ?').run(nome || null, id);
+};
+
 // Helpers para Unidades de Medida
 export const getUnidadesMedida = () => {
   return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as any[];

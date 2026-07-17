@@ -168,6 +168,30 @@ export const atualizarCategoria = async (id: number, nome: string, descricao?: s
   return response.json();
 };
 
+export const deletarMarca = async (id: number): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/marcas?id=${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao deletar marca.');
+  }
+  return response.json();
+};
+
+export const atualizarMarca = async (id: number, nome: string): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/marcas?id=${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao atualizar marca.');
+  }
+  return response.json();
+};
+
 export const buscarMarcas = async (): Promise<MarcaData[]> => {
   const response = await fetch('/api/produtos/marcas');
   if (!response.ok) throw new Error('Erro ao buscar marcas.');
