@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
+import { now, formatDateString } from '@/utils/date';
 import {
   buscarProdutos,
   registrarProduto,
@@ -239,6 +240,24 @@ const ProdutosPage: React.FC = () => {
     setFormCodigosBarras(updated);
   };
 
+  // Handle para gerar de código interno com base no tipo de criado e data/hora atual
+  const handleCreateCodigoInterno = (codigoInterno: string) => {
+    // usa now para gerar o timestamp
+    const date = now().format('DDMMYYYY');
+    const time = now().format('HHmmss');
+
+    // Captura o valor no select de tipo
+    const tipo = form.tipo;
+
+    // Cria o código interno
+    if (tipo === 'PRODUTO') {
+      codigoInterno = `PROD-${date}-${time}`;
+    } else if (tipo === 'SERVICO') {
+      codigoInterno = `SERV-${date}-${time}`;
+    }
+    return codigoInterno;
+  };
+
   // Submit do formulário de Cadastro/Edição
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,6 +278,9 @@ const ProdutosPage: React.FC = () => {
     if (!form.unidadeMedidaId) {
       showToast('Selecione uma unidade de medida.', 'error');
       return;
+    }
+    if (!form.codigoInterno) {
+      form.codigoInterno = handleCreateCodigoInterno(form.codigoInterno);
     }
 
     // Validação de código principal nos códigos de barras
@@ -479,7 +501,7 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
-    // Handle para deletar marca
+  // Handle para deletar marca
   const handleDeletarMarca = async () => {
     try {
       await deletarMarca(form.marcaId);
