@@ -1,13 +1,13 @@
 import styles from '../styles/produtos.module.css';
 
-interface ModalProdMarcaProps {
+interface ModalMarcaProps {
     setModalMarcaOpen: (value: boolean) => void;
     novaMarcaNome: string;
     setNovaMarcaNome: (value: string) => void;
     handleSalvarMarca: (e: React.FormEvent) => void;
 }
 
-const ModalProdMarca: React.FC<ModalProdMarcaProps> = ({
+const ModalMarca: React.FC<ModalMarcaProps> = ({
     setModalMarcaOpen,
     novaMarcaNome,
     setNovaMarcaNome,
@@ -55,4 +55,4 @@ const ModalProdMarca: React.FC<ModalProdMarcaProps> = ({
     )
 };
 
-export default ModalProdMarca;
+export default ModalMarca;

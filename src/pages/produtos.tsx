@@ -17,17 +17,16 @@ import {
   buscarUnidadesMedida,
   ItemData,
   BarcodeData,
-  CategoriaData,
 } from '../services/produtosService';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
 import FormularioProduto from '@/components/FormularioProduto';
 import ModalCategoria from '@/components/ModalCategoria';
-import ModalProdMarca from '@/components/ModalProdMarca';
+import ModalMarca from '@/components/ModalMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
 import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
-import { ProdutoFormData, ProdutoOptions, ProdutoActions } from '@/components/FormularioProduto';
+import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { CategoriaFormData } from '@/types/categoria';
 import { FiltrosState } from '@/components/Filtros';
 
@@ -77,6 +76,7 @@ const ProdutosPage: React.FC = () => {
 
   // Modais de Edição
   const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
+  const [modalMarcaEditOpen, setModalMarcaEditOpen] = useState(false);
 
   const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
   const [novaMarcaNome, setNovaMarcaNome] = useState('');
@@ -373,11 +373,18 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
-  // Handler para abrir modal de edição
+  // Handler para abrir modal de edição de categoria
   const handleOpenEditModal = (categoria: { id: number; nome: string; descricao?: string }) => {
     setForm(prev => ({ ...prev, categoriaId: categoria.id }));
     setCatForm({ nome: categoria.nome, descricao: categoria.descricao || '' });
     setModalCategoriaEditOpen(true);
+  };
+
+  // Handler para abrir modal de edição de marca
+  const handleOpenEditMarcaModal = (marca: { id: number; nome: string; descricao?: string }) => {
+    setForm(prev => ({ ...prev, marcaId: marca.id }));
+    setCatForm({ nome: marca.nome, descricao: marca.descricao || '' });
+    setModalMarcaEditOpen(true);
   };
 
   // Ediçao de categoria
@@ -405,6 +412,34 @@ const ProdutosPage: React.FC = () => {
       carregarItens();
     } catch (error: any) {
       showToast(error.message || 'Erro ao atualizar categoria.', 'error');
+    }
+  };
+
+  // Ediçao de marca
+  const handleAtualizarMarca = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catForm.nome.trim()) {
+      showToast('O nome da marca é obrigatório.', 'error');
+      return;
+    }
+    try {
+      const response = await atualizarMarca(form.marcaId, catForm.nome.trim(), catForm.descricao.trim());
+
+      // Atualiza na interface após confirmação da API
+      setOptions(prev =>
+      ({
+        ...prev, marcas: prev.marcas.map(mar =>
+          mar.id === form.marcaId ?
+            { ...mar, nome: catForm.nome.trim(), descricao: catForm.descricao.trim() } : mar
+        )
+      }));
+
+      showToast(response.message || 'Marca atualizada com sucesso.', 'success');
+      setModalMarcaEditOpen(false);
+      setCatForm({ nome: '', descricao: '' });
+      carregarItens();
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao atualizar marca.', 'error');
     }
   };
 
@@ -590,7 +625,7 @@ const ProdutosPage: React.FC = () => {
 
         {/* Modal: Cadastro de Marca */}
         {modalMarcaOpen && (
-          <ModalProdMarca
+          <ModalMarca
             setModalMarcaOpen={setModalMarcaOpen}
             novaMarcaNome={novaMarcaNome}
             setNovaMarcaNome={setNovaMarcaNome}
