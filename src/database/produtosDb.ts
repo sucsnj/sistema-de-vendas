@@ -120,6 +120,10 @@ export const deleteCategoria = (id: number) => {
 
 // Renomeia uma categoria e atualiza em todos os itens associados
 export const updateCategoria = (id: number, nome: string, descricao?: string) => {
+  if (id === 1) {
+    throw new Error('Não é possível atualizar a categoria Geral.');
+  }
+
   return db.prepare('UPDATE categorias SET nome = ?, descricao = ? WHERE id = ?').run(nome, descricao || null, id);
 };
 
@@ -162,17 +166,17 @@ export const checkDuplicateCodigoInterno = (codigoInterno: string, excludeId?: n
 export const checkDuplicateBarcode = (barcodes: string[], excludeItemId?: number) => {
   const cleaned = barcodes.map(b => b.trim()).filter(Boolean);
   if (cleaned.length === 0) return null;
-  
+
   let query = 'SELECT codigo_barras FROM item_codigos_barras WHERE codigo_barras IN (';
   query += cleaned.map(() => '?').join(',');
   query += ')';
-  
+
   const params: any[] = [...cleaned];
   if (excludeItemId) {
     query += ' AND item_id != ?';
     params.push(excludeItemId);
   }
-  
+
   const row = db.prepare(query).get(...params) as { codigo_barras: string } | undefined;
   return row ? row.codigo_barras : null;
 };
@@ -271,7 +275,7 @@ export const getItens = (options: {
     ORDER BY i.nome ASC
     LIMIT ? OFFSET ?
   `;
-  
+
   const items = db.prepare(itemsQuery).all(...params, pageSize, offset) as any[];
 
   // Fetch barcodes for each item

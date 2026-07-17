@@ -4,12 +4,14 @@ import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
 interface ModalCategoriaEditProps {
     catForm: CategoriaFormData;
     setCatForm: React.Dispatch<React.SetStateAction<CategoriaFormData>>;
+    onDelete: () => void;
     options: CategoriaOptions;
 }
 
 const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
     catForm,
     setCatForm,
+    onDelete,
     options,
 }) => {
     return (
@@ -27,7 +29,7 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
                             className={styles.inputField}
                             placeholder="Nome da categoria"
                             value={catForm.nome}
-                            onChange={(e) => setCatForm({...catForm, nome: e.target.value})}
+                            onChange={(e) => setCatForm({ ...catForm, nome: e.target.value })}
                             required
                             autoFocus
                         />
@@ -42,10 +44,20 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
                             className={styles.inputField}
                             placeholder="Descrição opcional"
                             value={catForm.descricao}
-                            onChange={(e) => setCatForm({...catForm, descricao: e.target.value})}
+                            onChange={(e) => setCatForm({ ...catForm, descricao: e.target.value })}
                         />
                     </div>
                     <div className={styles.modalActions}>
+                        <button
+                            type="button"
+                            className={styles.deleteButton}
+                            onClick={() => {
+                                onDelete();
+                            }}
+                            id="confirm-delete-action-btn"
+                        >
+                            Excluir
+                        </button>
                         <button type="submit" className={styles.primaryButton} id="update-cat-btn">
                             Atualizar
                         </button>

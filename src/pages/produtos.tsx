@@ -408,6 +408,37 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
+  // Handle para deletar categoria
+  const handleDeletarCategoria = async () => {
+    try {
+      await deletarCategoria(form.categoriaId);
+      showToast('Categoria deletada com sucesso.', 'success');
+      setDeleteConfirmOpen(false);
+      setItemParaExcluir(null);
+
+      // Atualiza a interface após confirmação da API
+      setOptions(prev => ({
+        ...prev,
+        categorias: prev.categorias.filter(cat => cat.id !== form.categoriaId)
+      }));
+
+      // Fecha o modal após a exclusão
+      setModalCategoriaEditOpen(false);
+      setCatForm({ nome: '', descricao: '' });
+
+      // Coloca o Id para 1
+      setForm(prev => ({ ...prev, categoriaId: 1 }));
+
+      if (items.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        carregarItens();
+      }
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao deletar categoria.', 'error');
+    }
+  };
+
   // Cadastro de Marca Inline
   const handleSalvarMarca = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -548,6 +579,7 @@ const ProdutosPage: React.FC = () => {
           <ModalCategoriaEdit
             catForm={catForm}
             setCatForm={setCatForm}
+            onDelete={handleDeletarCategoria}
             options={{
               abrirModalCategoria: () => setModalCategoriaEditOpen(false),
               salvarCategoria: handleAtualizarCategoria,
