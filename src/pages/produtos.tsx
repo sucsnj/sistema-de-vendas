@@ -9,17 +9,8 @@ import {
   excluirProduto,
   toggleStatusProduto,
   buscarCategorias,
-  criarCategoria,
-  deletarCategoria,
-  atualizarCategoria,
   buscarMarcas,
-  criarMarca,
-  deletarMarca,
-  atualizarMarca,
   buscarFornecedores,
-  criarFornecedor,
-  deletarFornecedor,
-  atualizarFornecedor,
   buscarUnidadesMedida,
   ItemData,
   BarcodeData,
@@ -36,10 +27,10 @@ import ModalMarcaEdit from '@/components/ModalMarcaEdit';
 import ModalFornecedor from '@/components/ModalFornecedor';
 import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
-import { CategoriaFormData } from '@/types/categoria';
-import { MarcaFormData } from '@/components/ModalMarcaEdit';
 import { FiltrosState } from '@/components/Filtros';
-import { FornecedorFormData } from '@/components/ModalFornecedorEdit';
+import { useCategoria } from '@/hooks/useCategoria';
+import { useMarca } from '@/hooks/useMarca';
+import { useFornecedor } from '@/hooks/useFornecedor';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -88,23 +79,6 @@ const ProdutosPage: React.FC = () => {
   });
   const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
   const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
-
-  // Modais de cadastro rápido
-  const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
-  const [catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
-  const [marcaForm, setMarcaForm] = useState<MarcaFormData>({ nome: '' });
-  const [fornecedorForm, setFornecedorForm] = useState<FornecedorFormData>({ nome: '' });
-
-  // Modais de Edição
-  const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
-  const [modalMarcaEditOpen, setModalMarcaEditOpen] = useState(false);
-  const [modalFornecedorEditOpen, setModalFornecedorEditOpen] = useState(false);
-
-  const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
-  const [novaMarcaNome, setNovaMarcaNome] = useState('');
-
-  const [modalFornecedorOpen, setModalFornecedorOpen] = useState(false);
-  const [novoFornecedorNome, setNovoFornecedorNome] = useState('');
 
   // Modal de confirmação de exclusão
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -400,280 +374,84 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
-  // Categorias
+  // Categorias (hook)
+  const {
+    modalCategoriaOpen,
+    setModalCategoriaOpen,
+    catForm,
+    setCatForm,
+    modalCategoriaEditOpen,
+    setModalCategoriaEditOpen,
+    handleSalvarCategoria,
+    handleOpenEditModal,
+    handleAtualizarCategoria,
+    handleDeletarCategoria,
+  } = useCategoria({
+    form,
+    setForm,
+    setOptions,
+    showToast,
+    carregarItens,
+    items,
+    page,
+    setPage,
+    setDeleteConfirmOpen,
+    setItemParaExcluir,
+  });
 
-  // Cadastro de Categoria Inline
-  const handleSalvarCategoria = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!catForm.nome.trim()) {
-      showToast('O nome da categoria é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await criarCategoria(catForm.nome.trim(), catForm.descricao.trim());
-      showToast(response.message || 'Categoria criada com sucesso.', 'success');
+  // Marcas (hook)
+  const {
+    modalMarcaOpen,
+    setModalMarcaOpen,
+    marcaForm,
+    setMarcaForm,
+    modalMarcaEditOpen,
+    setModalMarcaEditOpen,
+    handleSalvarMarca,
+    handleOpenEditMarcaModal,
+    handleAtualizarMarca,
+    handleDeletarMarca,
+    novaMarcaNome,
+    setNovaMarcaNome,
+  } = useMarca({
+    form,
+    setForm,
+    setOptions,
+    showToast,
+    carregarItens,
+    items,
+    page,
+    setPage,
+    setDeleteConfirmOpen,
+    setItemParaExcluir,
+  });
 
-      // Re-carrega lista de categorias e seleciona a criada
-      const cats = await buscarCategorias();
-      setOptions(prev => ({ ...prev, categorias: cats }));
-      setForm(prev => ({ ...prev, categoriaId: response.id }));
-
-      // Fecha modal
-      setModalCategoriaOpen(false);
-      setCatForm({ nome: '', descricao: '' });
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao criar categoria.', 'error');
-    }
-  };
-
-  // Handler para abrir modal de edição de categoria
-  const handleOpenEditModal = (categoria: { id: number; nome: string; descricao?: string }) => {
-    setForm(prev => ({ ...prev, categoriaId: categoria.id }));
-    setCatForm({ nome: categoria.nome, descricao: categoria.descricao || '' });
-    setModalCategoriaEditOpen(true);
-  };
-
-  // Ediçao de categoria
-  const handleAtualizarCategoria = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!catForm.nome.trim()) {
-      showToast('O nome da categoria é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await atualizarCategoria(form.categoriaId, catForm.nome.trim(), catForm.descricao.trim());
-
-      // Atualiza na interface após confirmação da API
-      setOptions(prev =>
-      ({
-        ...prev, categorias: prev.categorias.map(cat =>
-          cat.id === form.categoriaId ?
-            { ...cat, nome: catForm.nome.trim(), descricao: catForm.descricao.trim() } : cat
-        )
-      }));
-
-      showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
-      setModalCategoriaEditOpen(false);
-      setCatForm({ nome: '', descricao: '' });
-      carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar categoria.', 'error');
-    }
-  };
-
-  // Handle para deletar categoria
-  const handleDeletarCategoria = async () => {
-    try {
-      await deletarCategoria(form.categoriaId);
-      showToast('Marca deletada com sucesso.', 'success');
-      setDeleteConfirmOpen(false);
-      setItemParaExcluir(null);
-
-      // Atualiza a interface após confirmação da API
-      setOptions(prev => ({
-        ...prev,
-        categorias: prev.categorias.filter(cat => cat.id !== form.categoriaId)
-      }));
-
-      // Fecha o modal após a exclusão
-      setModalCategoriaOpen(false);
-      setCatForm({ nome: '', descricao: '' });
-
-      // Coloca o Id para 1
-      setForm(prev => ({ ...prev, categoriaId: 1 }));
-
-      if (items.length === 1 && page > 1) {
-        setPage(page - 1);
-      } else {
-        carregarItens();
-      }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao deletar categoria.', 'error');
-    }
-  };
-
-  // Marcas
-  // Handler para abrir modal de edição de marca
-  const handleOpenEditMarcaModal = (marca: { id: number; nome: string }) => {
-    setForm(prev => ({ ...prev, marcaId: marca.id }));
-    setMarcaForm({ nome: marca.nome || '' });
-    setModalMarcaEditOpen(true);
-  };
-
-  // Ediçao de marca
-  const handleAtualizarMarca = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!marcaForm.nome.trim()) {
-      showToast('O nome da marca é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await atualizarMarca(form.marcaId, marcaForm.nome.trim());
-
-      // Atualiza na interface após confirmação da API
-      setOptions(prev =>
-      ({
-        ...prev, marcas: prev.marcas.map(mar =>
-          mar.id === form.marcaId ?
-            { ...mar, nome: marcaForm.nome.trim() } : mar
-        )
-      }));
-
-      showToast(response.message || 'Marca atualizada com sucesso.', 'success');
-      setModalMarcaEditOpen(false);
-      setMarcaForm({ nome: '' });
-      carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar marca.', 'error');
-    }
-  };
-
-  // Handle para deletar marca
-  const handleDeletarMarca = async () => {
-    try {
-      await deletarMarca(form.marcaId);
-      showToast('Marca deletada com sucesso.', 'success');
-      setDeleteConfirmOpen(false);
-      setItemParaExcluir(null);
-
-      // Atualiza a interface após confirmação da API
-      setOptions(prev => ({
-        ...prev,
-        marcas: prev.marcas.filter(mar => mar.id !== form.marcaId)
-      }));
-
-      // Fecha o modal após a exclusão
-      setModalMarcaEditOpen(false);
-      setMarcaForm({ nome: '' });
-
-      // Coloca o Id para 1
-      setForm(prev => ({ ...prev, marcaId: 1 }));
-
-      if (items.length === 1 && page > 1) {
-        setPage(page - 1);
-      } else {
-        carregarItens();
-      }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao deletar marca.', 'error');
-    }
-  };
-
-  // Cadastro de Marca Inline
-  const handleSalvarMarca = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!novaMarcaNome.trim()) {
-      showToast('O nome da marca é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await criarMarca(novaMarcaNome.trim());
-      showToast(response.message || 'Marca criada com sucesso.', 'success');
-
-      // Re-carrega lista de marcas e seleciona a criada
-      const brands = await buscarMarcas();
-      setOptions(prev => ({ ...prev, marcas: brands }));
-      setForm(prev => ({ ...prev, marcaId: response.id }));
-
-      // Fecha modal
-      setModalMarcaOpen(false);
-      setNovaMarcaNome('');
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao criar marca.', 'error');
-    }
-  };
-
-  // Fornecedores
-
-  // Cadastro de Fornecedor Inline
-  const handleSalvarFornecedor = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!novoFornecedorNome.trim()) {
-      showToast('O nome do fornecedor é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await criarFornecedor(novoFornecedorNome.trim());
-      showToast(response.message || 'Fornecedor criado com sucesso.', 'success');
-
-      // Re-carrega lista de fornecedores e seleciona o criado
-      const forns = await buscarFornecedores();
-      setOptions(prev => ({ ...prev, fornecedores: forns }));
-      setForm(prev => ({ ...prev, fornecedorId: response.id }));
-
-      // Fecha modal
-      setModalFornecedorOpen(false);
-      setFornecedorForm({ nome: '' });
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao criar fornecedor.', 'error');
-    }
-  };
-
-  // Handler para abrir modal de edição de fornecedor
-  const handleOpenEditFornecedorModal = (fornecedor: { id: number; nome: string }) => {
-    setForm(prev => ({ ...prev, fornecedorId: fornecedor.id }));
-    setFornecedorForm({ nome: fornecedor.nome || '' });
-    setModalFornecedorEditOpen(true);
-  };
-
-  // Ediçao de fornecedor
-  const handleAtualizarFornecedor = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fornecedorForm.nome.trim()) {
-      showToast('O nome do fornecedor é obrigatório.', 'error');
-      return;
-    }
-    try {
-      const response = await atualizarFornecedor(form.fornecedorId, fornecedorForm.nome.trim());
-
-      // Atualiza na interface após confirmação da API
-      setOptions(prev =>
-      ({
-        ...prev, fornecedores: prev.fornecedores.map(forn =>
-          forn.id === form.fornecedorId ?
-            { ...forn, nome: fornecedorForm.nome.trim() } : forn
-        )
-      }));
-
-      showToast(response.message || 'Fornecedor atualizado com sucesso.', 'success');
-      setModalFornecedorEditOpen(false);
-      setFornecedorForm({ nome: '' });
-      carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar fornecedor.', 'error');
-    }
-  };
-
-  // Handle para deletar fornecedor
-  const handleDeletarFornecedor = async () => {
-    try {
-      await deletarFornecedor(form.fornecedorId);
-      showToast('Fornecedor deletado com sucesso.', 'success');
-      setDeleteConfirmOpen(false);
-      setItemParaExcluir(null);
-
-      // Atualiza a interface após confirmação da API
-      setOptions(prev => ({
-        ...prev,
-        fornecedores: prev.fornecedores.filter(forn => forn.id !== form.fornecedorId)
-      }));
-
-      // Fecha o modal após a exclusão
-      setModalFornecedorOpen(false);
-      setFornecedorForm({ nome: '' });
-
-      // Coloca o Id para 1
-      setForm(prev => ({ ...prev, fornecedorId: 1 }));
-
-      if (items.length === 1 && page > 1) {
-        setPage(page - 1);
-      } else {
-        carregarItens();
-      }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao deletar fornecedor.', 'error');
-    }
-  };
+  // Fornecedores (Hooks)
+  const {
+    modalFornecedorOpen,
+    setModalFornecedorOpen,
+    fornecedorForm,
+    setFornecedorForm,
+    modalFornecedorEditOpen,
+    setModalFornecedorEditOpen,
+    handleSalvarFornecedor,
+    handleOpenEditFornecedorModal,
+    handleAtualizarFornecedor,
+    handleDeletarFornecedor,
+    novoFornecedorNome,
+    setNovoFornecedorNome,
+  } = useFornecedor({
+    form,
+    setForm,
+    setOptions,
+    showToast,
+    carregarItens,
+    items,
+    page,
+    setPage,
+    setDeleteConfirmOpen,
+    setItemParaExcluir,
+  });
 
   return (
     <>
