@@ -472,7 +472,7 @@ const ProdutosPage: React.FC = () => {
 
         <div className={styles.produtosGrid}>
           {/* Coluna Esquerda: Listagem e Filtros */}
-          <div>
+          <div className={styles.produtosGridLeft}>
             {/* Filtros */}
             <Filtros
               state={state}
@@ -499,60 +499,76 @@ const ProdutosPage: React.FC = () => {
             />
           </div>
 
+          {/* Botão para adicionar produto/serviço */}
+          {/* <div>
+            <button
+              className={styles.buttonAdd}
+              onClick={() => {
+                setEditingId(null);
+                resetForm();
+                nomeInputRef.current?.focus();
+                setMostrarFormulario(true);
+              }}
+            >Novo
+            </button>
+          </div> */}
+
           {/* Coluna Direita: Formulário de Cadastro/Edição */}
-          <section className="glass-form" aria-labelledby="form-title">
-            <h2 id="form-title" style={{ marginBottom: '15px' }}>
-              {editingId ? 'Editar Item' : 'Cadastrar Item'}
-            </h2>
+          <div className={styles.produtosGridRight}>
+            <section className="glass-form" aria-labelledby="form-title">
+              <h2 id="form-title" style={{ marginBottom: '15px' }}>
+                {editingId ? 'Editar Item' : 'Cadastrar Item'}
+              </h2>
 
-            <form onSubmit={handleSubmitForm}>
-              <FormularioProduto
-                form={form}
-                setForm={setForm}
-                options={options}
-                setOptions={setOptions}
-                inputRef={nomeInputRef}
-                actions={{
-                  abrirModalCategoria: () => setModalCategoriaOpen(true),
-                  abrirModalMarca: () => setModalMarcaOpen(true),
-                  abrirModalFornecedor: () => setModalFornecedorOpen(true),
-                  editarCategoria: handleOpenEditModal,
-                  editarMarca: handleOpenEditMarcaModal,
-                  editarFornecedor: handleOpenEditFornecedorModal,
-                }}
-              />
+              <form onSubmit={handleSubmitForm}>
+                <FormularioProduto
+                  form={form}
+                  setForm={setForm}
+                  options={options}
+                  setOptions={setOptions}
+                  inputRef={nomeInputRef}
+                  actions={{
+                    abrirModalCategoria: () => setModalCategoriaOpen(true),
+                    abrirModalMarca: () => setModalMarcaOpen(true),
+                    abrirModalFornecedor: () => setModalFornecedorOpen(true),
+                    editarCategoria: handleOpenEditModal,
+                    editarMarca: handleOpenEditMarcaModal,
+                    editarFornecedor: handleOpenEditFornecedorModal,
+                  }}
+                />
 
-              {/* Códigos de Barras */}
-              <BarcodeManager
-                data={{
-                  codigosBarras: formCodigosBarras,
-                  novoCodigoBarras: novoCodigoBarras,
-                  inputRef: barcodeInputRef,
-                }}
-                actions={{
-                  adicionar: handleAddBarcode,
-                  definirPrincipal: handleSetPrincipalBarcode,
-                  alterar: setNovoCodigoBarras,
-                  remover: handleRemoveBarcode,
-                }}
-              />
+                {/* Códigos de Barras */}
+                <BarcodeManager
+                  data={{
+                    codigosBarras: formCodigosBarras,
+                    novoCodigoBarras: novoCodigoBarras,
+                    inputRef: barcodeInputRef,
+                  }}
+                  actions={{
+                    adicionar: handleAddBarcode,
+                    definirPrincipal: handleSetPrincipalBarcode,
+                    alterar: setNovoCodigoBarras,
+                    remover: handleRemoveBarcode,
+                  }}
+                />
 
-              {/* Botões de Ação */}
-              <div className={styles.actionButtons}>
-                <button type="submit" className={styles.primaryButton} id="submit-item-btn">
-                  {editingId ? 'Salvar Alterações' : 'Cadastrar'}
-                </button>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={resetForm}
-                  id="cancel-item-btn"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </section>
+                {/* Botões de Ação */}
+                <div className={styles.actionButtons}>
+                  <button type="submit" className={styles.primaryButton} id="submit-item-btn">
+                    {editingId ? 'Salvar Alterações' : 'Cadastrar'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={resetForm}
+                    id="cancel-item-btn"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </section>
+          </div>
         </div>
 
         {/* Modal: Cadastro de Categoria */}

@@ -40,8 +40,8 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                 ) : items.length === 0 ? (
                     <div className={styles.emptyState}>Nenhum registro encontrado.</div>
                 ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table className="table-container" style={{ minWidth: '600px' }}>
+                    <div className={styles.tableContainer}>
+                        <table className={styles.table}>
                             <thead>
                                 <tr>
                                     <th>Tipo</th>

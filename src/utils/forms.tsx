@@ -48,4 +48,28 @@ const showField = (ref: React.RefObject<HTMLElement | null>, show: boolean) => {
     }
 };
 
-export { highlightField, hideField, showField };
+// Adiciona classe hidden com base na classe css
+const hideFieldByClass = (className: string, hide: boolean) => {
+    const elements = document.getElementsByClassName(className);
+    for (let i = 0; i < elements.length; i++) {
+        if (hide) {
+            elements[i].classList.add('hidden');
+        } else {
+            elements[i].classList.remove('hidden');
+        }
+    }
+};
+
+// Remove a classe hidden com base na classe css
+const showFieldByClass = (className: string, show: boolean) => {
+    const elements = document.getElementsByClassName(className);
+    for (let i = 0; i < elements.length; i++) {
+        if (show) {
+            elements[i].classList.remove('hidden');
+        } else {
+            elements[i].classList.add('hidden');
+        }
+    }
+};
+
+export { highlightField, hideField, showField, hideFieldByClass, showFieldByClass };

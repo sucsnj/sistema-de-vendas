@@ -8,13 +8,47 @@
 
 .produtosGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  grid-template-columns: 3fr 1.5fr;
+  gap: 16px;
 }
 
-@media (min-width: 1024px) {
+.produtosGridLeft {
+  grid-column: 1;
+}
+
+.buttonAdd {
+  margin-top: 10px;
+  width: 100%;
+  height: 20%;
+}
+
+.produtosGridRight {
+  /* grid-column: 1 / -1; */
+}
+
+.tableContainer {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 10px 0px;
+  box-shadow: var(--shadow);
+
+  overflow-x: auto;
+  display: block;
+  max-width: 100%;
+}
+
+.table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media (max-width: 1024px) {
   .produtosGrid {
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr;
   }
 }
 
