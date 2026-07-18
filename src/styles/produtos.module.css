@@ -22,9 +22,9 @@
   height: 20%;
 }
 
-.produtosGridRight {
+/* .produtosGridRight { */
   /* grid-column: 1 / -1; */
-}
+/* } */
 
 .tableContainer {
   background: var(--surface);
