@@ -60,19 +60,36 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 }) => {
     return (
         <div className="CadastroEdicao">
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-tipo">
-                    Tipo:
-                </label>
-                <select
-                    id="form-tipo"
-                    className={styles.selectField}
-                    value={form.tipo}
-                    onChange={(e) => setForm(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' }))}
-                >
-                    <option value="PRODUTO">Produto</option>
-                    <option value="SERVICO">Serviço</option>
-                </select>
+            <div className={styles.formHeader}>
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-tipo">
+                        Tipo:
+                    </label>
+                    <select
+                        id="form-tipo"
+                        className={styles.selectField}
+                        value={form.tipo}
+                        onChange={(e) => setForm(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' }))}
+                    >
+                        <option value="PRODUTO">Produto</option>
+                        <option value="SERVICO">Serviço</option>
+                    </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-ativo">
+                        Ativo:
+                    </label>
+                    <select
+                        id="form-ativo"
+                        className={styles.selectField}
+                        value={form.ativo}
+                        onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
+                    >
+                        <option value={1}>Sim</option>
+                        <option value={0}>Não</option>
+                    </select>
+                </div>
             </div>
 
             <div className={styles.formGroup}>
@@ -367,21 +384,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     value={form.referencia}
                     onChange={(e) => setForm(prev => ({ ...prev, referencia: e.target.value }))}
                 />
-            </div>
-
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-ativo">
-                    Ativo:
-                </label>
-                <select
-                    id="form-ativo"
-                    className={styles.selectField}
-                    value={form.ativo}
-                    onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
-                >
-                    <option value={1}>Sim</option>
-                    <option value={0}>Não</option>
-                </select>
             </div>
         </div>
     )

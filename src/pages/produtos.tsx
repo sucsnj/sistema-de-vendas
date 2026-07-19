@@ -93,6 +93,18 @@ const ProdutosPage: React.FC = () => {
   const nomeInputRef = useRef<HTMLInputElement | null>(null);
   const barcodeInputRef = useRef<HTMLInputElement | null>(null);
 
+  // state para: se for serviço, unidade de medida e maraca devem sumir
+  const [isServico, setIsServico] = useState(false);
+
+  // isServico
+  useEffect(() => {
+    if (form.tipo === 'SERVICO') {
+      setIsServico(true);
+    } else {
+      setIsServico(false);
+    }
+  }, [form.tipo]);
+
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToastMessage(message);
     setToastType(type);
@@ -521,21 +533,23 @@ const ProdutosPage: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmitForm}>
-                <FormularioProduto
-                  form={form}
-                  setForm={setForm}
-                  options={options}
-                  setOptions={setOptions}
-                  inputRef={nomeInputRef}
-                  actions={{
-                    abrirModalCategoria: () => setModalCategoriaOpen(true),
-                    abrirModalMarca: () => setModalMarcaOpen(true),
-                    abrirModalFornecedor: () => setModalFornecedorOpen(true),
-                    editarCategoria: handleOpenEditModal,
-                    editarMarca: handleOpenEditMarcaModal,
-                    editarFornecedor: handleOpenEditFornecedorModal,
-                  }}
-                />
+                {isServico && (
+                  <FormularioProduto
+                    form={form}
+                    setForm={setForm}
+                    options={options}
+                    setOptions={setOptions}
+                    inputRef={nomeInputRef}
+                    actions={{
+                      abrirModalCategoria: () => setModalCategoriaOpen(true),
+                      abrirModalMarca: () => setModalMarcaOpen(true),
+                      abrirModalFornecedor: () => setModalFornecedorOpen(true),
+                      editarCategoria: handleOpenEditModal,
+                      editarMarca: handleOpenEditMarcaModal,
+                      editarFornecedor: handleOpenEditFornecedorModal,
+                    }}
+                  />
+                )}
 
                 {/* Códigos de Barras */}
                 <BarcodeManager
