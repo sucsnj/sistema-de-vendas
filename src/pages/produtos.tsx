@@ -264,7 +264,7 @@ const ProdutosPage: React.FC = () => {
       showToast('Selecione um fornecedor.', 'error');
       return;
     }
-    if (!form.unidadeMedidaId) {
+    if (!form.unidadeMedidaId && form.tipo === 'PRODUTO') {
       showToast('Selecione uma unidade de medida.', 'error');
       return;
     }

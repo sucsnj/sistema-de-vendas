@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { seedUoms, seedCategorias, seedMarcas, seedFornecedores } from './seeds';
 
 const dbPath = path.join(process.cwd(), 'db/produtos.db');
 
@@ -71,51 +72,37 @@ try {
   // Seeding inicial para Unidades de Medida
   const countUom = db.prepare('SELECT count(*) as count FROM unidades_medida').get() as { count: number };
   if (countUom.count === 0) {
-    const seedUoms = [
-      { sigla: 'UN', descricao: 'Unidade' },
-      { sigla: 'DZ', descricao: 'Dúzia' },
-      { sigla: 'PR', descricao: 'Par' },
-      { sigla: 'KG', descricao: 'Quilograma' },
-      { sigla: 'G', descricao: 'Grama' },
-      { sigla: 'MG', descricao: 'Miligrama' },
-      { sigla: 'MCG', descricao: 'Micrograma' },
-      { sigla: 'L', descricao: 'Litro' },
-      { sigla: 'ML', descricao: 'Mililitro' },
-      { sigla: 'MT', descricao: 'Metro' },
-      { sigla: 'CX', descricao: 'Caixa' },
-      { sigla: 'PC', descricao: 'Peça' },
-      { sigla: 'SM', descricao: 'Saco' },
-      { sigla: 'TU', descricao: 'Tubo' },
-      { sigla: 'RL', descricao: 'Rolo' },
-      { sigla: 'CD', descricao: 'Caixa Display' },
-      { sigla: 'CJ', descricao: 'Conjunto' },
-      { sigla: 'FG', descricao: 'Fardo' },
-      { sigla: 'LT', descricao: 'Lote' },
-      { sigla: 'PK', descricao: 'Pacote' },
-
-    ];
     const insertUom = db.prepare('INSERT INTO unidades_medida (sigla, descricao) VALUES (?, ?)');
     for (const uom of seedUoms) {
       insertUom.run(uom.sigla, uom.descricao);
     }
   }
 
-  // Seeding inicial para Categoria Geral
+  // Seeding inicial para Categoria
   const countCat = db.prepare('SELECT count(*) as count FROM categorias').get() as { count: number };
   if (countCat.count === 0) {
-    db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)').run('Geral', 'Categoria padrão');
+    const insertCategoria = db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)');
+    for (const categoria of seedCategorias) {
+      insertCategoria.run(categoria.nome, categoria.descricao);
+    }
   }
 
-  // Seeding inicial para Marca Padrão
+  // Seeding inicial para Marca
   const countBrand = db.prepare('SELECT count(*) as count FROM marcas').get() as { count: number };
   if (countBrand.count === 0) {
-    db.prepare('INSERT INTO marcas (nome) VALUES (?)').run('Outros');
+    const insertMarca = db.prepare('INSERT INTO marcas (nome) VALUES (?)');
+    for (const marca of seedMarcas) {
+      insertMarca.run(marca.nome);
+    }
   }
 
   // Seeding inicial para Fornecedores
   const countFornecedor = db.prepare('SELECT count(*) as count FROM fornecedores').get() as { count: number };
   if (countFornecedor.count === 0) {
-    db.prepare('INSERT INTO fornecedores (nome) VALUES (?)').run('Sem fornecedor');
+    const insertFornecedor = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
+    for (const fornecedor of seedFornecedores) {
+      insertFornecedor.run(fornecedor.nome);
+    }
   }
 
 } catch (error) {
@@ -236,6 +223,31 @@ export const getUnidadesMedida = () => {
 
 export const getUnidadeMedidaById = (id: number) => {
   return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as any;
+};
+
+export const insertUnidadeMedida = (sigla: string, descricao?: string) => {
+  const stmt = db.prepare('INSERT INTO unidades_medida (sigla, descricao) VALUES (?, ?)');
+  return stmt.run(sigla, descricao || null);
+};
+
+export const updateUnidadeMedida = (id: number, sigla: string, descricao?: string) => {
+  // Se a sigla estiver dentro de seedUoms, não pode ser atualizada
+  if (seedUoms.some((uom) => uom.sigla === sigla)) {
+    throw new Error('Não é possível atualizar a unidade de medida ' + sigla);
+  }
+  return db.prepare('UPDATE unidades_medida SET sigla = ?, descricao = ? WHERE id = ?').run(sigla || null, descricao || null, id);
+};
+
+export const deleteUnidadeMedida = (id: number) => {
+  if (id === 1) {
+    throw new Error('Não é possível apagar a unidade de medida UN.');
+  }
+  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE unidade_medida_id = ?').get(id) as { count: number };
+  if (countItens.count > 0) {
+    // Atualiza os itens para a unidade de medida UN
+    db.prepare('UPDATE itens SET unidade_medida_id = 1 WHERE unidade_medida_id = ?').run(id);
+  }
+  return db.prepare('DELETE FROM unidades_medida WHERE id = ?').run(id);
 };
 
 // Validações de Unicidade

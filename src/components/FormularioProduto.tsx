@@ -341,7 +341,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
             {form.tipo === 'PRODUTO' && (
                 <div className={styles.formGroup}>
                     <label className={styles.formLabel} htmlFor="form-unidade">
-                        Unidade de Medida:*
+                        Unidade de Medida:
                     </label>
                     <select
                         id="form-unidade"
@@ -350,7 +350,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         onChange={(e) =>
                             setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : '' }))
                         }
-                        required
                     >
                         <option value="">Selecione...</option>
                         {options.unidadesMedida.map((u) => (
