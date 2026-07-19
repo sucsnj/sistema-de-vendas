@@ -170,53 +170,55 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </div>
             </div>
 
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-marca">
-                    Marca:
-                </label>
-                <div className={styles.selectWrapper}>
-                    <select
-                        id="form-marca"
-                        className={styles.selectField}
-                        value={form.marcaId}
-                        onChange={(e) =>
-                            setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : 1 }))
-                        }
-                    >
-                        {options.marcas.map((m) => (
-                            <option key={m.id} value={m.id}>
-                                {m.nome}
-                            </option>
-                        ))}
-                    </select>
-                    <button
-                        type="button"
-                        className={styles.addButton}
-                        onClick={() => actions.abrirModalMarca()}
-                        title="Adicionar Marca"
-                        id="add-marca-btn"
-                    >
-                        <AddIcon fontSize="small" />
-                    </button>
-                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
-                    <button
-                        type="button"
-                        className={styles.manageButton}
-                        onClick={() => {
-                            const marcaSelecionada = options.marcas.find(
-                                (m) => m.id === form.marcaId
-                            );
-                            if (marcaSelecionada) {
-                                actions.editarMarca(marcaSelecionada);
+            {form.tipo === 'PRODUTO' && (
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-marca">
+                        Marca:
+                    </label>
+                    <div className={styles.selectWrapper}>
+                        <select
+                            id="form-marca"
+                            className={styles.selectField}
+                            value={form.marcaId}
+                            onChange={(e) =>
+                                setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : 1 }))
                             }
-                        }}
-                        title="Editar Marca Selecionada"
-                        id="edit-marca-btn"
-                    >
-                        <MoreVert fontSize="small" />
-                    </button>
+                        >
+                            {options.marcas.map((m) => (
+                                <option key={m.id} value={m.id}>
+                                    {m.nome}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className={styles.addButton}
+                            onClick={() => actions.abrirModalMarca()}
+                            title="Adicionar Marca"
+                            id="add-marca-btn"
+                        >
+                            <AddIcon fontSize="small" />
+                        </button>
+                        {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
+                        <button
+                            type="button"
+                            className={styles.manageButton}
+                            onClick={() => {
+                                const marcaSelecionada = options.marcas.find(
+                                    (m) => m.id === form.marcaId
+                                );
+                                if (marcaSelecionada) {
+                                    actions.editarMarca(marcaSelecionada);
+                                }
+                            }}
+                            title="Editar Marca Selecionada"
+                            id="edit-marca-btn"
+                        >
+                            <MoreVert fontSize="small" />
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-fornecedor">
@@ -336,27 +338,29 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </div>
             </div>
 
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-unidade">
-                    Unidade de Medida:*
-                </label>
-                <select
-                    id="form-unidade"
-                    className={styles.selectField}
-                    value={form.unidadeMedidaId}
-                    onChange={(e) =>
-                        setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : '' }))
-                    }
-                    required
-                >
-                    <option value="">Selecione...</option>
-                    {options.unidadesMedida.map((u) => (
-                        <option key={u.id} value={u.id}>
-                            {u.sigla} - {u.descricao}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {form.tipo === 'PRODUTO' && (
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-unidade">
+                        Unidade de Medida:*
+                    </label>
+                    <select
+                        id="form-unidade"
+                        className={styles.selectField}
+                        value={form.unidadeMedidaId}
+                        onChange={(e) =>
+                            setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : '' }))
+                        }
+                        required
+                    >
+                        <option value="">Selecione...</option>
+                        {options.unidadesMedida.map((u) => (
+                            <option key={u.id} value={u.id}>
+                                {u.sigla} - {u.descricao}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-cod-interno">

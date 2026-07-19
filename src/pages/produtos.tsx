@@ -93,18 +93,6 @@ const ProdutosPage: React.FC = () => {
   const nomeInputRef = useRef<HTMLInputElement | null>(null);
   const barcodeInputRef = useRef<HTMLInputElement | null>(null);
 
-  // state para: se for serviço, unidade de medida e maraca devem sumir
-  const [isServico, setIsServico] = useState(false);
-
-  // isServico
-  useEffect(() => {
-    if (form.tipo === 'SERVICO') {
-      setIsServico(true);
-    } else {
-      setIsServico(false);
-    }
-  }, [form.tipo]);
-
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToastMessage(message);
     setToastType(type);
@@ -533,7 +521,6 @@ const ProdutosPage: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmitForm}>
-                {isServico && (
                   <FormularioProduto
                     form={form}
                     setForm={setForm}
@@ -549,7 +536,6 @@ const ProdutosPage: React.FC = () => {
                       editarFornecedor: handleOpenEditFornecedorModal,
                     }}
                   />
-                )}
 
                 {/* Códigos de Barras */}
                 <BarcodeManager
