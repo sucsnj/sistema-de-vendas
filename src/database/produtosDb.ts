@@ -483,6 +483,16 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     updateCodigoInterno.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
   }
 
+  // Se for serviço, coloca o id 21 na unidade_medida
+  if (itemData.tipo === 'SERVICO') {
+    const updateUnidadeMedida = db.prepare(`
+      UPDATE itens
+      SET unidade_medida_id = ?
+      WHERE id = ?
+    `);
+    updateUnidadeMedida.run(21, result.lastInsertRowid as number);
+  }
+
   const itemId = result.lastInsertRowid as number;
 
   if (itemData.codigos_barras && itemData.codigos_barras.length > 0) {
@@ -522,6 +532,16 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id
   );
+
+  // Se for serviço, coloca o id 21 na unidade_medida
+  if (itemData.tipo === 'SERVICO') {
+    const updateUnidadeMedida = db.prepare(`
+      UPDATE itens
+      SET unidade_medida_id = ?
+      WHERE id = ?
+    `);
+    updateUnidadeMedida.run(21, id);
+  }
 
   // Delete existing barcodes
   db.prepare('DELETE FROM item_codigos_barras WHERE item_id = ?').run(id);

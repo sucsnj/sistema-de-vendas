@@ -67,7 +67,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
+      if (tipo === 'PRODUTO' && (!unidade_medida_id || isNaN(Number(unidade_medida_id)))) {
         return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
       }
       if (!marca_id || isNaN(Number(marca_id))) {
@@ -125,7 +125,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         nome: nome.trim(),
         descricao,
         categoria_id: Number(categoria_id),
-        unidade_medida_id: Number(unidade_medida_id),
+        unidade_medida_id: tipo === 'PRODUTO' ? Number(unidade_medida_id) : 21,
         marca_id: Number(marca_id),
         fornecedor_id: Number(fornecedor_id),
         preco_compra: Number(preco_compra),
@@ -168,7 +168,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
+      if (tipo === 'PRODUTO' && (!unidade_medida_id || isNaN(Number(unidade_medida_id)))) {
         return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
       }
       if (!marca_id || isNaN(Number(marca_id))) {

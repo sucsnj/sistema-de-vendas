@@ -19,6 +19,7 @@ export const seedUoms = [
     { sigla: 'FG', descricao: 'Fardo' },
     { sigla: 'LT', descricao: 'Lote' },
     { sigla: 'PK', descricao: 'Pacote' },
+    { sigla: 'SR', descricao: 'Serviço' }, // id 21
 ];
 
 export const seedCategorias = [
