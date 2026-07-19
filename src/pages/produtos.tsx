@@ -44,7 +44,7 @@ const ProdutosPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [state, setState] = useState<FiltrosState>({
     search: '',
-    tipo: 'PRODUTO',
+    tipo: 'TODOS',
     categoriaId: '',
     marcaId: '',
     fornecedorId: '',
