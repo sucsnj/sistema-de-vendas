@@ -375,7 +375,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             className={styles.manageButton}
                             onClick={() => {
                                 const unidadeMedidaSelecionada = options.unidadesMedida.find(
-                                    (c) => c.id === form.categoriaId
+                                    (u) => u.id === form.unidadeMedidaId
                                 );
                                 if (unidadeMedidaSelecionada) {
                                     actions.editarUnidadeMedida(unidadeMedidaSelecionada);
