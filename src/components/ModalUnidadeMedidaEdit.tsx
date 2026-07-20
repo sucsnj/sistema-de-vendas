@@ -3,7 +3,7 @@ import styles from '../styles/produtos.module.css';
 import { ModalUomExclusao } from '@/components/ModalProdExclusao';
 
 export interface UnidadeMedidaFormData {
-    nome: string;
+    sigla: string;
     descricao: string;
 }
 
@@ -32,16 +32,16 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
                 <h3 id="modal-uom-edit-title" className={styles.modalTitle}>Editar Unidade de Medida</h3>
                 <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="edit-uom-nome">
-                            Nome:*
+                        <label className={styles.formLabel} htmlFor="edit-uom-sigla">
+                            Sigla:*
                         </label>
                         <input
-                            id="edit-uom-nome"
+                            id="edit-uom-sigla"
                             type="text"
                             className={styles.inputField}
                             placeholder="Sigla da Unidade de Medida"
-                            value={uomForm.nome}
-                            onChange={(e) => setUomForm({ ...uomForm, nome: e.target.value })}
+                            value={uomForm.sigla}
+                            onChange={(e) => setUomForm({ ...uomForm, sigla: e.target.value })}
                             required
                             autoFocus
                         />
@@ -78,7 +78,7 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
                             className={styles.secondaryButton}
                             onClick={() => {
                                 options.abrirModalUnidadeMedida();
-                                setUomForm({ nome: '', descricao: '' });
+                                setUomForm({ sigla: '', descricao: '' });
                             }}
                             id="cancel-edit-uom-btn"
                         >
@@ -95,7 +95,7 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
                         onDelete();
                         setDeleteConfirmOpen(false);
                         options.abrirModalUnidadeMedida(); // fecha modal de edição
-                        setUomForm({ nome: '', descricao: '' }); // limpa formulário
+                        setUomForm({ sigla: '', descricao: '' }); // limpa formulário
                     }}
                     onClose={() => setDeleteConfirmOpen(false)}
                 />

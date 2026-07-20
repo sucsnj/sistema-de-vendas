@@ -14,17 +14,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
       try {
-        const { nome, descricao } = req.body;
-        if (!nome || !nome.trim()) {
-          return res.status(400).json({ error: 'Nome da unidade de medida é obrigatório.' });
+        const { sigla, descricao } = req.body;
+        if (!sigla || !sigla.trim()) {
+          return res.status(400).json({ error: 'Sigla da unidade de medida é obrigatória.' });
         }
   
         const um = getUnidadesMedida();
-        if (um.some(c => c.nome.toLowerCase() === nome.trim().toLowerCase())) {
+        if (um.some(c => c.sigla.toLowerCase() === sigla.trim().toLowerCase())) {
           return res.status(400).json({ error: 'Esta unidade de medida já existe.' });
         }
   
-        const result = insertUnidadeMedida(nome.trim(), descricao);
+        const result = insertUnidadeMedida(sigla.trim(), descricao);
         return res.status(201).json({ id: result.lastInsertRowid, message: 'Unidade de medida cadastrada com sucesso.' });
       } catch (error) {
         console.error('Erro ao salvar unidade de medida:', error);
@@ -51,14 +51,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'PUT') {
       try {
         const { id } = req.query;
-        const { nome, descricao } = req.body;
+        const { sigla, descricao } = req.body;
         if (!id || isNaN(Number(id))) {
           return res.status(400).json({ error: 'ID da unidade de medida é inválido.' });
         }
-        if (!nome || !nome.trim()) {
-          return res.status(400).json({ error: 'Nome da unidade de medida é obrigatório.' });
+        if (!sigla || !sigla.trim()) {
+          return res.status(400).json({ error: 'Sigla da unidade de medida é obrigatório.' });
         }
-        updateUnidadeMedida(Number(id), nome.trim(), descricao);
+        updateUnidadeMedida(Number(id), sigla.trim(), descricao);
         return res.status(200).json({ message: 'Unidade de medida atualizada com sucesso.' });
       } catch (error) {
         console.error('Erro ao atualizar unidade de medida:', error);

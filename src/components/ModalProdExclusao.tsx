@@ -33,7 +33,7 @@ interface ModalFornecedorExclusaoProps {
 
 interface ModalUomExclusaoProps {
     open: boolean;
-    unidadeMedida: { nome: string; descricao?: string };
+    unidadeMedida: { sigla: string; descricao?: string };
     onConfirm: () => void;
     onClose: () => void;
 }
@@ -151,7 +151,7 @@ export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidad
         <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-uom-delete-title">
             <div className={styles.modalContent}>
                 <h3 id="modal-uom-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-                <p>Tem certeza que deseja excluir a unidade de medida <strong>{unidadeMedida.nome}</strong>?</p>
+                <p>Tem certeza que deseja excluir a unidade de medida <strong>{unidadeMedida.sigla}</strong>?</p>
                 <div className={styles.modalActions}>
                     <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-uom-btn">
                         Excluir

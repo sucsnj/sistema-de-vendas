@@ -40,7 +40,7 @@ export interface ProdutoActions {
     editarCategoria: (categoria: CategoriaData) => void;
     editarMarca: (marca: MarcaData) => void;
     editarFornecedor: (fornecedor: FornecedorData) => void;
-    editarUnidadeMedida: (unidadeDeMedida: UnidadeMedidaData) => void;
+    editarUnidadeMedida: (unidadeMedida: UnidadeMedidaData) => void;
 }
 
 // Props do Componente

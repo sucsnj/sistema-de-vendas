@@ -279,11 +279,11 @@ export const buscarUnidadesMedida = async (): Promise<UnidadeMedidaData[]> => {
   return response.json();
 };
 
-export const criarUnidadeMedida = async (nome: string, descricao?: string): Promise<{ id: number; message: string }> => {
+export const criarUnidadeMedida = async (sigla: string, descricao?: string): Promise<{ id: number; message: string }> => {
   const response = await fetch('/api/produtos/unidades-medida', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, descricao }),
+    body: JSON.stringify({ sigla, descricao }),
   });
   if (!response.ok) {
     const errorData = await response.json();

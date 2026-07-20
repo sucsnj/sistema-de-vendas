@@ -26,11 +26,14 @@ import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
 import ModalMarcaEdit from '@/components/ModalMarcaEdit';
 import ModalFornecedor from '@/components/ModalFornecedor';
 import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
+import ModalUnidadeMedida from '@/components/ModalUnidadeMedida';
+import ModalUnidadeMedidaEdit from '@/components/ModalUnidadeMedidaEdit';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { FiltrosState } from '@/components/Filtros';
 import { useCategoria } from '@/hooks/useCategoria';
 import { useMarca } from '@/hooks/useMarca';
 import { useFornecedor } from '@/hooks/useFornecedor';
+import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
 
 const ProdutosPage: React.FC = () => {
   // Lista de itens e paginação
@@ -453,6 +456,31 @@ const ProdutosPage: React.FC = () => {
     setItemParaExcluir,
   });
 
+  // Unidades de Medida (hook)
+  const {
+    modalUnidadeMedidaOpen,
+    setModalUnidadeMedidaOpen,
+    uomForm,
+    setUomForm,
+    modalUnidadeMedidaEditOpen,
+    setModalUnidadeMedidaEditOpen,
+    handleSalvarUnidadeMedida,
+    handleOpenEditUnidadeMedidaModal,
+    handleAtualizarUnidadeMedida,
+    handleDeletarUnidadeMedida,
+  } = useUnidadeMedida({
+    form,
+    setForm,
+    setOptions,
+    showToast,
+    carregarItens,
+    items,
+    page,
+    setPage,
+    setDeleteConfirmOpen,
+    setItemParaExcluir,
+  });
+
   return (
     <>
       <Head>
@@ -521,21 +549,23 @@ const ProdutosPage: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmitForm}>
-                  <FormularioProduto
-                    form={form}
-                    setForm={setForm}
-                    options={options}
-                    setOptions={setOptions}
-                    inputRef={nomeInputRef}
-                    actions={{
-                      abrirModalCategoria: () => setModalCategoriaOpen(true),
-                      abrirModalMarca: () => setModalMarcaOpen(true),
-                      abrirModalFornecedor: () => setModalFornecedorOpen(true),
-                      editarCategoria: handleOpenEditModal,
-                      editarMarca: handleOpenEditMarcaModal,
-                      editarFornecedor: handleOpenEditFornecedorModal,
-                    }}
-                  />
+                <FormularioProduto
+                  form={form}
+                  setForm={setForm}
+                  options={options}
+                  setOptions={setOptions}
+                  inputRef={nomeInputRef}
+                  actions={{
+                    abrirModalCategoria: () => setModalCategoriaOpen(true),
+                    abrirModalMarca: () => setModalMarcaOpen(true),
+                    abrirModalFornecedor: () => setModalFornecedorOpen(true),
+                    abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(true),
+                    editarCategoria: handleOpenEditModal,
+                    editarMarca: handleOpenEditMarcaModal,
+                    editarFornecedor: handleOpenEditFornecedorModal,
+                    editarUnidadeMedida: handleOpenEditUnidadeMedidaModal,
+                  }}
+                />
 
                 {/* Códigos de Barras */}
                 <BarcodeManager
@@ -638,6 +668,31 @@ const ProdutosPage: React.FC = () => {
             options={{
               abrirModalFornecedor: () => setModalFornecedorEditOpen(false),
               salvarFornecedor: handleAtualizarFornecedor,
+            }}
+          />
+        )}
+
+        {/* Modal: Cadastro de Undiade de Medida */}
+        {modalUnidadeMedidaOpen && (
+          <ModalUnidadeMedida
+            uomForm={uomForm}
+            setUomForm={setUomForm}
+            options={{
+              abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(false),
+              salvarUnidadeMedida: handleSalvarUnidadeMedida,
+            }}
+          />
+        )}
+
+        {/* Modal: Edição de Categoria */}
+        {modalUnidadeMedidaEditOpen && (
+          <ModalUnidadeMedidaEdit
+            uomForm={uomForm}
+            setUomForm={setUomForm}
+            onDelete={handleDeletarUnidadeMedida}
+            options={{
+              abrirModalUnidadeMedida: () => setModalUnidadeMedidaEditOpen(false),
+              salvarUnidadeMedida: handleAtualizarUnidadeMedida,
             }}
           />
         )}

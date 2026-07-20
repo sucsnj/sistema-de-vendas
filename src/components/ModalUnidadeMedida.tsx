@@ -1,7 +1,7 @@
 import styles from '../styles/produtos.module.css';
 
 export interface UnidadeMedidaFormData {
-    nome: string;
+    sigla: string;
     descricao: string;
 }
 
@@ -27,16 +27,16 @@ const ModalAddUnidadeMedida: React.FC<ModalAddUnidadeMedidaProps> = ({
                 <h3 id="modal-uom-title" className={styles.modalTitle}>Adicionar Unidade medida</h3>
                 <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="new-uom-nome">
-                            Nome:*
+                        <label className={styles.formLabel} htmlFor="new-uom-sigla">
+                            sigla:*
                         </label>
                         <input
-                            id="new-uom-nome"
+                            id="new-uom-sigla"
                             type="text"
                             className={styles.inputField}
                             placeholder="Sigla da Unidade de Medida"
-                            value={uomForm.nome}
-                            onChange={(e) => setUomForm(prev => ({ ...prev, nome: e.target.value }))}
+                            value={uomForm.sigla}
+                            onChange={(e) => setUomForm(prev => ({ ...prev, sigla: e.target.value }))}
                             required
                             autoFocus
                         />
@@ -63,7 +63,7 @@ const ModalAddUnidadeMedida: React.FC<ModalAddUnidadeMedidaProps> = ({
                             className={styles.secondaryButton}
                             onClick={() => {
                                 options.abrirModalUnidadeMedida();
-                                setUomForm({ nome: '', descricao: '' });
+                                setUomForm({ sigla: '', descricao: '' });
                             }}
                             id="cancel-new-uom-btn"
                         >
