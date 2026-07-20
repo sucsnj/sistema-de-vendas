@@ -31,6 +31,13 @@ interface ModalFornecedorExclusaoProps {
     onClose: () => void;
 }
 
+interface ModalUomExclusaoProps {
+    open: boolean;
+    unidadeMedida: { nome: string; descricao?: string };
+    onConfirm: () => void;
+    onClose: () => void;
+}
+
 const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     open,
     item,
@@ -129,6 +136,27 @@ export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = (
                         Excluir
                     </button>
                     <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-fornecedor-btn">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
+    if (!open) return null;
+
+    return (
+        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-uom-delete-title">
+            <div className={styles.modalContent}>
+                <h3 id="modal-uom-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
+                <p>Tem certeza que deseja excluir a unidade de medida <strong>{unidadeMedida.nome}</strong>?</p>
+                <div className={styles.modalActions}>
+                    <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-uom-btn">
+                        Excluir
+                    </button>
+                    <button className={styles.secondaryButton} onClick={onClose} id="cancel-delete-uom-btn">
                         Cancelar
                     </button>
                 </div>
