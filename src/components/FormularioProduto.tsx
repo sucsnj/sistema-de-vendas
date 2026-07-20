@@ -19,7 +19,7 @@ export interface ProdutoFormData {
     margemLucro: number | 0;
     precoVenda: number | 0;
     estoque: number | 0;
-    unidadeMedidaId: number | '';
+    unidadeMedidaId: number;
     codigoInterno: string;
     referencia: string;
     ativo: number;
@@ -36,9 +36,11 @@ export interface ProdutoActions {
     abrirModalCategoria: () => void;
     abrirModalMarca: () => void;
     abrirModalFornecedor: () => void;
+    abrirModalUnidadeMedida: () => void;
     editarCategoria: (categoria: CategoriaData) => void;
     editarMarca: (marca: MarcaData) => void;
     editarFornecedor: (fornecedor: FornecedorData) => void;
+    editarUnidadeMedida: (unidadeDeMedida: UnidadeMedidaData) => void;
 }
 
 // Props do Componente
@@ -132,7 +134,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.selectField}
                         value={form.categoriaId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 28 }))
+                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                     >
                         {options.categorias.map((c) => (
@@ -343,21 +345,48 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <label className={styles.formLabel} htmlFor="form-unidade">
                         Unidade de Medida:
                     </label>
-                    <select
-                        id="form-unidade"
-                        className={styles.selectField}
-                        value={form.unidadeMedidaId}
-                        onChange={(e) =>
-                            setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : '' }))
-                        }
-                    >
-                        <option value="">Selecione...</option>
-                        {options.unidadesMedida.map((u) => (
-                            <option key={u.id} value={u.id}>
-                                {u.sigla} - {u.descricao}
-                            </option>
-                        ))}
-                    </select>
+                    <div className={styles.selectWrapper}>
+                        <select
+                            id="form-unidade"
+                            className={styles.selectField}
+                            value={form.unidadeMedidaId}
+                            onChange={(e) =>
+                                setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : 1 }))
+                            }
+                        >
+                            {options.unidadesMedida.map((u) => (
+                                <option key={u.id} value={u.id}>
+                                    {u.sigla} - {u.descricao}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className={styles.addButton}
+                            onClick={actions.abrirModalUnidadeMedida}
+                            title="Adicionar Unidade de Medida"
+                            id="add-unidadeMedida-btn"
+                        >
+                            <AddIcon fontSize="small" />
+                        </button>
+                        {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de unidades de medida */}
+                        <button
+                            type="button"
+                            className={styles.manageButton}
+                            onClick={() => {
+                                const unidadeMedidaSelecionada = options.unidadesMedida.find(
+                                    (c) => c.id === form.categoriaId
+                                );
+                                if (unidadeMedidaSelecionada) {
+                                    actions.editarUnidadeMedida(unidadeMedidaSelecionada);
+                                }
+                            }}
+                            title="Editar Unidade de medida Selecionada"
+                            id="edit-unidadeMedida-btn"
+                        >
+                            <MoreVert fontSize="small" />
+                        </button>
+                    </div>
                 </div>
             )}
 

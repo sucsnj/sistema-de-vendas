@@ -272,9 +272,46 @@ export const atualizarFornecedor = async (id: number, nome: string): Promise<{ m
   return response.json();
 };
 
-// Chamadas de API para Unidades de Medida
+// Chamadas de API para Unidade de Medida
 export const buscarUnidadesMedida = async (): Promise<UnidadeMedidaData[]> => {
   const response = await fetch('/api/produtos/unidades-medida');
   if (!response.ok) throw new Error('Erro ao buscar unidades de medida.');
+  return response.json();
+};
+
+export const criarUnidadeMedida = async (nome: string, descricao?: string): Promise<{ id: number; message: string }> => {
+  const response = await fetch('/api/produtos/unidades-medida', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, descricao }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao criar unidade de medida.');
+  }
+  return response.json();
+};
+
+export const deletarUnidadeMedida = async (id: number): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/unidades-medida?id=${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao deletar unidade de medida.');
+  }
+  return response.json();
+};
+
+export const atualizarUnidadeMedida = async (id: number, nome: string, descricao?: string): Promise<{ message: string }> => {
+  const response = await fetch(`/api/produtos/unidades-medida?id=${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, descricao }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao atualizar unidade de medida.');
+  }
   return response.json();
 };
