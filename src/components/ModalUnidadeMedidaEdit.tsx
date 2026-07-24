@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import { ModalUomExclusao } from '@/components/ModalProdExclusao';
 
@@ -26,9 +27,11 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
     options,
 }) => {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-uom-edit-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-edit-title" tabIndex={-1}>
                 <h3 id="modal-uom-edit-title" className={styles.modalTitle}>Editar Unidade de Medida</h3>
                 <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

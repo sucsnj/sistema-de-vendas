@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import { ModalMarcaExclusao } from '@/components/ModalProdExclusao';
 
@@ -25,9 +26,11 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
     options,
 }) => {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-mar-edit-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-mar-edit-title" tabIndex={-1}>
                 <h3 id="modal-mar-edit-title" className={styles.modalTitle}>Editar Marca</h3>
                 <form onSubmit={options.salvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

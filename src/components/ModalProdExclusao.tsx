@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import {
     ItemData,
@@ -45,10 +47,12 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     onClose,
 }) => {
     if (!open || !item) return null;
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
 
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-delete-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-delete-title" tabIndex={-1}>
                 <h3 id="modal-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--foreground)' }}>
                     Tem certeza de que deseja excluir o item{' '}
@@ -83,10 +87,12 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
 
 export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
     if (!open) return null;
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
 
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-delete-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-delete-title" tabIndex={-1}>
                 <h3 id="modal-cat-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
                 <p>Tem certeza que deseja excluir a categoria <strong>{categoria.nome}</strong>?</p>
                 <div className={styles.modalActions}>
@@ -104,10 +110,12 @@ export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, catego
 
 export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
     if (!open) return null;
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
 
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-mar-delete-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-mar-delete-title" tabIndex={-1}>
                 <h3 id="modal-mar-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
                 <p>Tem certeza que deseja excluir a marca <strong>{marca.nome}</strong>?</p>
                 <div className={styles.modalActions}>
@@ -125,10 +133,12 @@ export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, ma
 
 export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
     if (!open) return null;
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
 
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-fornecedor-delete-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-fornecedor-delete-title" tabIndex={-1}>
                 <h3 id="modal-fornecedor-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
                 <p>Tem certeza que deseja excluir o fornecedor <strong>{fornecedor.nome}</strong>?</p>
                 <div className={styles.modalActions}>
@@ -146,10 +156,12 @@ export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = (
 
 export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
     if (!open) return null;
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
 
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-uom-delete-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-delete-title" tabIndex={-1}>
                 <h3 id="modal-uom-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
                 <p>Tem certeza que deseja excluir a unidade de medida <strong>{unidadeMedida.sigla}</strong>?</p>
                 <div className={styles.modalActions}>

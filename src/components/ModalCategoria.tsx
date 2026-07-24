@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
 
@@ -12,9 +14,12 @@ const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
     setCatForm,
     options,
 }) => {
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
+
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-title" tabIndex={-1}>
                 <h3 id="modal-cat-title" className={styles.modalTitle}>Adicionar Categoria</h3>
                 <form onSubmit={options.salvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

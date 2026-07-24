@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from '../styles/produtos.module.css';
 import type { MovimentacaoEstoqueData } from '../services/produtosService';
+import { useFocusTrap } from '../utils/focus';
 
 interface ModalAjusteEstoqueProps {
   open: boolean;
@@ -28,11 +30,14 @@ const ModalAjusteEstoque: React.FC<ModalAjusteEstoqueProps> = ({
   onSave,
   onClose,
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, open);
+
   if (!open) return null;
 
   return (
-    <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-ajuste-title">
-      <div className={styles.modalContent}>
+    <div className={styles.modalOverlay} role="presentation">
+      <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-ajuste-title" tabIndex={-1}>
         <h3 id="modal-ajuste-title" className={styles.modalTitle}>Ajuste de Estoque</h3>
         <p style={{ margin: 0, color: 'var(--foreground)', fontSize: '0.95rem' }}>
           Produto: <strong>{itemName}</strong>

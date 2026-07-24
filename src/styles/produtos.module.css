@@ -244,6 +244,9 @@
 
 .historyTableWrapper {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 240px;
+  display: block;
 }
 
 .historyTable {

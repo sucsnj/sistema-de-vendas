@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 
 interface ModalMarcaProps {
@@ -13,9 +15,11 @@ const ModalMarca: React.FC<ModalMarcaProps> = ({
     setNovaMarcaNome,
     handleSalvarMarca,
 }) => {
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-marca-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-marca-title" tabIndex={-1}>
                 <h3 id="modal-marca-title" className={styles.modalTitle}>Adicionar Marca</h3>
                 <form onSubmit={handleSalvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

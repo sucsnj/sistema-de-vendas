@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 
 interface ModalFornecedorProps {
@@ -13,9 +15,11 @@ const ModalFornecedor: React.FC<ModalFornecedorProps> = ({
     setNovoFornecedorNome,
     handleSalvarFornecedor,
 }) => {
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-fornecedor-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-fornecedor-title" tabIndex={-1}>
                 <h3 id="modal-fornecedor-title" className={styles.modalTitle}>Adicionar Fornecedor</h3>
                 <form onSubmit={handleSalvarFornecedor} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

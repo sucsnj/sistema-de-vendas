@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 
 export interface UnidadeMedidaFormData {
@@ -21,9 +23,11 @@ const ModalAddUnidadeMedida: React.FC<ModalAddUnidadeMedidaProps> = ({
     setUomForm,
     options,
 }) => {
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-uom-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-title" tabIndex={-1}>
                 <h3 id="modal-uom-title" className={styles.modalTitle}>Adicionar Unidade medida</h3>
                 <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>

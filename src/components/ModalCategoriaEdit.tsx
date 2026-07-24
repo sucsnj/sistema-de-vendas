@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
 import { ModalCatExclusao } from '@/components/ModalProdExclusao';
@@ -17,9 +18,11 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
     options,
 }) => {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(dialogRef, true);
     return (
-        <div className={styles.modalOverlay} role="dialog" aria-labelledby="modal-cat-edit-title">
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} role="presentation">
+            <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-edit-title" tabIndex={-1}>
                 <h3 id="modal-cat-edit-title" className={styles.modalTitle}>Editar Categoria</h3>
                 <form onSubmit={options.salvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
