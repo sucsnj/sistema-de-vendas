@@ -67,6 +67,17 @@ try {
       codigo_barras TEXT NOT NULL UNIQUE,
       principal INTEGER NOT NULL DEFAULT 0 CHECK(principal IN (0, 1))
     );
+
+    CREATE TABLE IF NOT EXISTS movimentacoes_estoque (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id INTEGER NOT NULL REFERENCES itens(id) ON DELETE CASCADE,
+      item TEXT NOT NULL,
+      tipo TEXT NOT NULL CHECK(tipo IN ('ENTRADA', 'SAIDA', 'AJUSTE')),
+      quantidade INTEGER NOT NULL,
+      estoque_final INTEGER NOT NULL,
+      descricao TEXT,
+      data_movimentacao DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   // Seeding inicial para Unidades de Medida
@@ -248,6 +259,81 @@ export const deleteUnidadeMedida = (id: number) => {
     db.prepare('UPDATE itens SET unidade_medida_id = 1 WHERE unidade_medida_id = ?').run(id);
   }
   return db.prepare('DELETE FROM unidades_medida WHERE id = ?').run(id);
+};
+
+export interface MovimentacaoEstoqueData {
+  id: number;
+  item_id: number;
+  item: string;
+  tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
+  quantidade: number;
+  estoque_final: number;
+  descricao?: string;
+  data_movimentacao: string;
+}
+
+export interface MovimentacaoEstoqueInput {
+  item_id: number;
+  tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
+  quantidade: number;
+  descricao?: string;
+}
+
+const normalizeTipoMovimentacao = (tipo: string) => {
+  const upper = String(tipo).trim().toUpperCase();
+  if (upper !== 'ENTRADA' && upper !== 'SAIDA' && upper !== 'AJUSTE') {
+    throw new Error('Tipo de movimentação inválido.');
+  }
+  return upper as 'ENTRADA' | 'SAIDA' | 'AJUSTE';
+};
+
+const insertMovimentacaoEstoqueRaw = (movement: MovimentacaoEstoqueInput) => {
+  const itemRow = db.prepare('SELECT nome, estoque FROM itens WHERE id = ?').get(movement.item_id) as { nome: string; estoque: number } | undefined;
+  if (!itemRow) {
+    throw new Error('Item não encontrado para movimentação de estoque.');
+  }
+
+  const tipo = normalizeTipoMovimentacao(movement.tipo);
+  const quantidade = Number(movement.quantidade);
+  if (!Number.isFinite(quantidade)) {
+    throw new Error('Quantidade inválida para movimentação de estoque.');
+  }
+  if ((tipo === 'ENTRADA' || tipo === 'SAIDA') && quantidade <= 0) {
+    throw new Error('Quantidade deve ser maior que zero para entrada e saída.');
+  }
+  if (tipo === 'AJUSTE' && quantidade === 0) {
+    throw new Error('Quantidade não pode ser zero para ajuste.');
+  }
+
+  let estoqueFinal = itemRow.estoque ?? 0;
+  if (tipo === 'ENTRADA') {
+    estoqueFinal += quantidade;
+  } else if (tipo === 'SAIDA') {
+    estoqueFinal -= quantidade;
+  } else {
+    estoqueFinal += quantidade;
+  }
+
+  db.prepare('UPDATE itens SET estoque = ? WHERE id = ?').run(estoqueFinal, movement.item_id);
+  return db.prepare(`
+    INSERT INTO movimentacoes_estoque (item_id, item, tipo, quantidade, estoque_final, descricao, data_movimentacao)
+    VALUES (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
+  `).run(
+    movement.item_id,
+    itemRow.nome,
+    tipo,
+    quantidade,
+    estoqueFinal,
+    movement.descricao || null
+  );
+};
+
+export const insertMovimentacaoEstoque = db.transaction(insertMovimentacaoEstoqueRaw);
+
+export const getMovimentacoesEstoque = (itemId: number) => {
+  return db.prepare(
+    'SELECT id, item_id, item, tipo, quantidade, estoque_final, descricao, data_movimentacao FROM movimentacoes_estoque WHERE item_id = ? ORDER BY data_movimentacao DESC, id DESC'
+  ).all(itemId) as MovimentacaoEstoqueData[];
 };
 
 // Validações de Unicidade
@@ -467,7 +553,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    itemData.estoque,
+    0,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
     itemData.referencia,
     itemData.ativo !== undefined ? itemData.ativo : 1
@@ -505,13 +591,27 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     }
   }
 
+  const initialStock = Number(itemData.estoque) || 0;
+  if (itemData.tipo === 'PRODUTO' && initialStock > 0) {
+    insertMovimentacaoEstoqueRaw({
+      item_id: itemId,
+      tipo: 'ENTRADA',
+      quantidade: initialStock,
+      descricao: 'Estoque inicial via cadastro',
+    });
+  }
+
   return itemId;
 });
 
 export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
+  const currentStockRow = db.prepare('SELECT estoque FROM itens WHERE id = ?').get(id) as { estoque: number } | undefined;
+  const currentStock = currentStockRow?.estoque ?? 0;
+  const targetStock = itemData.tipo === 'PRODUTO' ? Number(itemData.estoque) : 0;
+
   const itemStmt = db.prepare(`
     UPDATE itens 
-    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, estoque = ?, codigo_interno = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
     WHERE id = ?
   `);
 
@@ -526,14 +626,12 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    itemData.estoque,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
     itemData.referencia,
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id
   );
 
-  // Se for serviço, coloca o id 21 na unidade_medida
   if (itemData.tipo === 'SERVICO') {
     const updateUnidadeMedida = db.prepare(`
       UPDATE itens
@@ -541,6 +639,16 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
       WHERE id = ?
     `);
     updateUnidadeMedida.run(21, id);
+  }
+
+  if (currentStock !== targetStock) {
+    const diff = targetStock - currentStock;
+    insertMovimentacaoEstoqueRaw({
+      item_id: id,
+      tipo: 'AJUSTE',
+      quantidade: diff,
+      descricao: 'Ajuste via cadastro',
+    });
   }
 
   // Delete existing barcodes

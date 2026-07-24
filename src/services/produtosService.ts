@@ -28,6 +28,24 @@ export interface ItemData {
   codigos_barras?: BarcodeData[];
 }
 
+export interface MovimentacaoEstoqueData {
+  id: number;
+  item_id: number;
+  item: string;
+  tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
+  quantidade: number;
+  estoque_final: number;
+  descricao?: string;
+  data_movimentacao: string;
+}
+
+export interface MovimentacaoEstoqueInput {
+  item_id: number;
+  tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
+  quantidade: number;
+  descricao?: string;
+}
+
 export interface PagedResult<T> {
   items: T[];
   total: number;
@@ -136,6 +154,28 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || 'Erro ao alterar status do produto.');
+  }
+  return response.json();
+};
+
+export const buscarMovimentacoesEstoque = async (item_id: number): Promise<MovimentacaoEstoqueData[]> => {
+  const response = await fetch(`/api/produtos/movimentacoes?item_id=${item_id}`);
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao buscar movimentações de estoque.');
+  }
+  return response.json();
+};
+
+export const registrarMovimentacaoEstoque = async (dados: MovimentacaoEstoqueInput) => {
+  const response = await fetch('/api/produtos/movimentacoes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao registrar movimentação de estoque.');
   }
   return response.json();
 };
