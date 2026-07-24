@@ -18,6 +18,7 @@ import {
   BarcodeData,
   MovimentacaoEstoqueData,
 } from '../services/produtosService';
+import { parseNumber } from '../utils/number';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
@@ -75,17 +76,17 @@ const ProdutosPage: React.FC = () => {
     categoriaId: 1,
     marcaId: 1,
     fornecedorId: 1,
-    precoCompra: 0,
-    margemLucro: 0,
-    precoVenda: 0,
-    estoque: 0,
+    precoCompra: '',
+    margemLucro: '',
+    precoVenda: '',
+    estoque: '',
     unidadeMedidaId: 1,
     codigoInterno: '',
     referencia: '',
     ativo: 1,
   });
   const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
-  const [ajusteQuantidade, setAjusteQuantidade] = useState(0);
+  const [ajusteQuantidade, setAjusteQuantidade] = useState('');
   const [ajusteDescricao, setAjusteDescricao] = useState('');
   const [movimentacoesEstoque, setMovimentacoesEstoque] = useState<MovimentacaoEstoqueData[]>([]);
   const [movimentacoesLoading, setMovimentacoesLoading] = useState(false);
@@ -197,10 +198,10 @@ const ProdutosPage: React.FC = () => {
       categoriaId: 1,
       marcaId: 1,
       fornecedorId: 1,
-      precoCompra: 0,
-      margemLucro: 0,
-      precoVenda: 0,
-      estoque: 0,
+      precoCompra: '',
+      margemLucro: '',
+      precoVenda: '',
+      estoque: '',
       unidadeMedidaId: 1,
       codigoInterno: '',
       referencia: '',
@@ -208,7 +209,7 @@ const ProdutosPage: React.FC = () => {
     });
     setFormCodigosBarras([]);
     setNovoCodigoBarras('');
-    setAjusteQuantidade(0);
+    setAjusteQuantidade('');
     setAjusteDescricao('');
     setMovimentacoesEstoque([]);
     setModalAjusteOpen(false);
@@ -299,6 +300,28 @@ const ProdutosPage: React.FC = () => {
       return;
     }
 
+    const precoCompraValor = parseNumber(form.precoCompra);
+    const margemLucroValor = parseNumber(form.margemLucro);
+    const precoVendaValor = parseNumber(form.precoVenda);
+    const estoqueValor = parseNumber(form.estoque);
+
+    if (isNaN(precoCompraValor) || precoCompraValor < 0) {
+      showToast('O preço de compra deve ser um número válido maior ou igual a zero.', 'error');
+      return;
+    }
+    if (isNaN(margemLucroValor) || margemLucroValor < 0) {
+      showToast('A margem de lucro deve ser um número válido maior ou igual a zero.', 'error');
+      return;
+    }
+    if (isNaN(precoVendaValor) || precoVendaValor < 0) {
+      showToast('O preço de venda deve ser um número válido maior ou igual a zero.', 'error');
+      return;
+    }
+    if (isNaN(estoqueValor) || estoqueValor < 0 || !Number.isInteger(estoqueValor)) {
+      showToast('O estoque deve ser um número inteiro válido maior ou igual a zero.', 'error');
+      return;
+    }
+
     // Validação de código principal nos códigos de barras
     if (formCodigosBarras.length > 0) {
       const temPrincipal = formCodigosBarras.some((c) => c.principal === 1);
@@ -315,17 +338,14 @@ const ProdutosPage: React.FC = () => {
       categoria_id: Number(form.categoriaId),
       marca_id: Number(form.marcaId),
       fornecedor_id: Number(form.fornecedorId),
-      preco_compra: form.precoCompra,
-      margem_lucro: form.margemLucro,
-      preco_venda: form.precoVenda,
-      estoque: form.estoque,
+      preco_compra: parseNumber(form.precoCompra),
+      margem_lucro: parseNumber(form.margemLucro),
+      preco_venda: parseNumber(form.precoVenda),
+      estoque: parseNumber(form.estoque),
       unidade_medida_id: Number(form.unidadeMedidaId),
-      codigo_interno: form.codigoInterno.trim() || undefined,
       referencia: form.referencia.trim(),
       ativo: form.ativo,
-      codigos_barras: formCodigosBarras,
     };
-
     try {
       if (editingId) {
         await atualizarProduto(editingId, payload);
@@ -351,10 +371,10 @@ const ProdutosPage: React.FC = () => {
       categoriaId: item.categoria_id,
       marcaId: item.marca_id,
       fornecedorId: item.fornecedor_id,
-      precoCompra: item.preco_compra,
-      margemLucro: item.margem_lucro,
-      precoVenda: item.preco_venda,
-      estoque: item.estoque,
+      precoCompra: String(item.preco_compra),
+      margemLucro: String(item.margem_lucro),
+      precoVenda: String(item.preco_venda),
+      estoque: String(item.estoque),
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
       referencia: item.referencia || '',
@@ -362,7 +382,7 @@ const ProdutosPage: React.FC = () => {
     });
     setFormCodigosBarras(item.codigos_barras || []);
     setNovoCodigoBarras('');
-    setAjusteQuantidade(0);
+    setAjusteQuantidade('');
     setAjusteDescricao('');
     setMovimentacoesEstoque([]);
     setModalAjusteOpen(false);
@@ -740,7 +760,7 @@ const ProdutosPage: React.FC = () => {
           <ModalAjusteEstoque
             open={modalAjusteOpen}
             itemName={form.nome}
-            itemEstoque={form.estoque}
+            itemEstoque={parseNumber(form.estoque)}
             quantidade={ajusteQuantidade}
             descricao={ajusteDescricao}
             setQuantidade={setAjusteQuantidade}
@@ -748,23 +768,29 @@ const ProdutosPage: React.FC = () => {
             movimentacoes={movimentacoesEstoque}
             movimentacoesLoading={movimentacoesLoading}
             onSave={async () => {
+              const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
+              if (isNaN(quantidadeAjusteNumero)) {
+                showToast('Ajuste de estoque deve ser um número válido.', 'error');
+                return;
+              }
+
               const movimento = {
                 item_id: editingId,
                 tipo: 'AJUSTE' as const,
-                quantidade: ajusteQuantidade,
+                quantidade: quantidadeAjusteNumero,
                 descricao: ajusteDescricao,
               };
               try {
                 await registrarMovimentacaoEstoque(movimento);
                 showToast('Ajuste de estoque registrado.', 'success');
                 setModalAjusteOpen(false);
-                setAjusteQuantidade(0);
+                setAjusteQuantidade('');
                 setAjusteDescricao('');
                 carregarItens();
                 if (editingId) {
                   const atual = items.find((item) => item.id === editingId);
                   if (atual) {
-                    setForm((prev) => ({ ...prev, estoque: atual.estoque }));
+                    setForm((prev) => ({ ...prev, estoque: String(atual.estoque) }));
                   }
                 }
               } catch (error: any) {

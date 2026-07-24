@@ -7,9 +7,9 @@ interface ModalAjusteEstoqueProps {
   open: boolean;
   itemName: string;
   itemEstoque: number;
-  quantidade: number;
+  quantidade: string;
   descricao: string;
-  setQuantidade: React.Dispatch<React.SetStateAction<number>>;
+  setQuantidade: React.Dispatch<React.SetStateAction<string>>;
   setDescricao: React.Dispatch<React.SetStateAction<string>>;
   movimentacoes: MovimentacaoEstoqueData[];
   movimentacoesLoading: boolean;
@@ -54,11 +54,12 @@ const ModalAjusteEstoque: React.FC<ModalAjusteEstoqueProps> = ({
           </label>
           <input
             id="ajuste-quantidade"
-            type="number"
+            type="text"
+            inputMode="decimal"
             className={styles.inputField}
             placeholder="Use valor positivo ou negativo"
             value={quantidade}
-            onChange={(e) => setQuantidade(Number(e.target.value))}
+            onChange={(e) => setQuantidade(e.target.value)}
             autoFocus
           />
         </div>

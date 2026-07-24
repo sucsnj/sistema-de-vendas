@@ -9,6 +9,7 @@ import {
   checkDuplicateCodigoInterno,
   checkDuplicateBarcode,
 } from '../../database/produtosDb';
+import { parseNumber } from '../../utils/number';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -120,6 +121,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         }
       }
 
+      const precoCompraNumber = parseNumber(preco_compra);
+      const margemLucroNumber = parseNumber(margem_lucro);
+      const precoVendaNumber = parseNumber(preco_venda);
+      const estoqueNumber = parseNumber(estoque);
+
+      if (isNaN(precoCompraNumber)) {
+        return res.status(400).json({ error: 'O preço de compra deve ser um número.' });
+      }
+      if (isNaN(margemLucroNumber)) {
+        return res.status(400).json({ error: 'A margem de lucro deve ser um número.' });
+      }
+      if (isNaN(precoVendaNumber)) {
+        return res.status(400).json({ error: 'O preço de venda deve ser um número.' });
+      }
+      if (isNaN(estoqueNumber)) {
+        return res.status(400).json({ error: 'O estoque deve ser um número.' });
+      }
+
       const itemId = insertItem({
         tipo,
         nome: nome.trim(),
@@ -128,10 +147,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         unidade_medida_id: tipo === 'PRODUTO' ? Number(unidade_medida_id) : 21,
         marca_id: Number(marca_id),
         fornecedor_id: Number(fornecedor_id),
-        preco_compra: Number(preco_compra),
-        margem_lucro: Number(margem_lucro),
-        preco_venda: Number(preco_venda),
-        estoque: Number(estoque),
+        preco_compra: precoCompraNumber,
+        margem_lucro: margemLucroNumber,
+        preco_venda: precoVendaNumber,
+        estoque: estoqueNumber,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
@@ -179,19 +198,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione um fornecedor válido.' });
       }
 
-      if (!preco_compra || isNaN(Number(preco_compra))) {
+      const precoCompraNumber = parseNumber(preco_compra);
+      const margemLucroNumber = parseNumber(margem_lucro);
+      const precoVendaNumber = parseNumber(preco_venda);
+      const estoqueNumber = parseNumber(estoque);
+
+      if (isNaN(precoCompraNumber)) {
         return res.status(400).json({ error: 'O preço de compra deve ser um número.' });
       }
 
-      if (!margem_lucro || isNaN(Number(margem_lucro))) {
+      if (isNaN(margemLucroNumber)) {
         return res.status(400).json({ error: 'A margem de lucro deve ser um número.' });
       }
 
-      if (!preco_venda || isNaN(Number(preco_venda))) {
+      if (isNaN(precoVendaNumber)) {
         return res.status(400).json({ error: 'O preço de venda deve ser um número.' });
       }
 
-      if (!estoque || isNaN(Number(estoque))) {
+      if (isNaN(estoqueNumber)) {
         return res.status(400).json({ error: 'O estoque deve ser um número.' });
       }
 
@@ -245,10 +269,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         unidade_medida_id: Number(unidade_medida_id),
         marca_id: Number(marca_id),
         fornecedor_id: Number(fornecedor_id),
-        preco_compra: Number(preco_compra),
-        margem_lucro: Number(margem_lucro),
-        preco_venda: Number(preco_venda),
-        estoque: Number(estoque),
+        preco_compra: precoCompraNumber,
+        margem_lucro: margemLucroNumber,
+        preco_venda: precoVendaNumber,
+        estoque: estoqueNumber,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,

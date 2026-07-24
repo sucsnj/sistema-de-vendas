@@ -15,10 +15,10 @@ export interface ProdutoFormData {
     categoriaId: number;
     marcaId: number;
     fornecedorId: number;
-    precoCompra: number | 0;
-    margemLucro: number | 0;
-    precoVenda: number | 0;
-    estoque: number | 0;
+    precoCompra: string;
+    margemLucro: string;
+    precoVenda: string;
+    estoque: string;
     unidadeMedidaId: number;
     codigoInterno: string;
     referencia: string;
@@ -283,13 +283,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     </label>
                     <input
                         id="form-preco-compra"
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0,00"
-                        step="0.01"
-                        min="0"
                         value={form.precoCompra}
-                        onChange={(e) => setForm(prev => ({ ...prev, precoCompra: Number(e.target.value) }))}
+                        onChange={(e) => setForm(prev => ({ ...prev, precoCompra: e.target.value }))}
                     />
                 </div>
 
@@ -299,13 +298,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     </label>
                     <input
                         id="form-margem-lucro"
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0"
-                        step="0.01"
-                        min="0"
                         value={form.margemLucro}
-                        onChange={(e) => setForm(prev => ({ ...prev, margemLucro: Number(e.target.value) }))}
+                        onChange={(e) => setForm(prev => ({ ...prev, margemLucro: e.target.value }))}
                     />
                 </div>
 
@@ -315,13 +313,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     </label>
                     <input
                         id="form-preco-venda"
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0,00"
-                        step="0.01"
-                        min="0"
                         value={form.precoVenda}
-                        onChange={(e) => setForm(prev => ({ ...prev, precoVenda: Number(e.target.value) }))}
+                        onChange={(e) => setForm(prev => ({ ...prev, precoVenda: e.target.value }))}
                         required
                     />
                 </div>
@@ -342,13 +339,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     ) : (
                         <input
                             id="form-estoque"
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
                             className={styles.inputField}
                             placeholder="0"
-                            step="1"
-                            min="0"
                             value={form.estoque}
-                            onChange={(e) => setForm(prev => ({ ...prev, estoque: Number(e.target.value) }))}
+                            onChange={(e) => setForm(prev => ({ ...prev, estoque: e.target.value }))}
                             required
                         />
                     )}
