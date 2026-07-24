@@ -12,9 +12,11 @@ import {
   buscarMarcas,
   buscarFornecedores,
   buscarUnidadesMedida,
+  buscarMovimentacoesEstoque,
   registrarMovimentacaoEstoque,
   ItemData,
   BarcodeData,
+  MovimentacaoEstoqueData,
 } from '../services/produtosService';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
@@ -85,6 +87,8 @@ const ProdutosPage: React.FC = () => {
   const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
   const [ajusteQuantidade, setAjusteQuantidade] = useState(0);
   const [ajusteDescricao, setAjusteDescricao] = useState('');
+  const [movimentacoesEstoque, setMovimentacoesEstoque] = useState<MovimentacaoEstoqueData[]>([]);
+  const [movimentacoesLoading, setMovimentacoesLoading] = useState(false);
   const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
   const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
 
@@ -206,7 +210,22 @@ const ProdutosPage: React.FC = () => {
     setNovoCodigoBarras('');
     setAjusteQuantidade(0);
     setAjusteDescricao('');
+    setMovimentacoesEstoque([]);
     setModalAjusteOpen(false);
+  };
+
+  const carregarMovimentacoes = async (itemId: number) => {
+    setMovimentacoesLoading(true);
+    try {
+      const data = await buscarMovimentacoesEstoque(itemId);
+      setMovimentacoesEstoque(data.slice(0, 10));
+    } catch (error: any) {
+      console.error(error);
+      showToast('Erro ao carregar histórico de movimentações.', 'error');
+      setMovimentacoesEstoque([]);
+    } finally {
+      setMovimentacoesLoading(false);
+    }
   };
 
   // Adiciona Código de Barras ao formulário
@@ -323,7 +342,7 @@ const ProdutosPage: React.FC = () => {
   };
 
   // Carrega item para edição
-  const handleEditarClick = (item: ItemData) => {
+  const handleEditarClick = async (item: ItemData) => {
     setEditingId(item.id);
     setForm({
       tipo: item.tipo,
@@ -345,6 +364,7 @@ const ProdutosPage: React.FC = () => {
     setNovoCodigoBarras('');
     setAjusteQuantidade(0);
     setAjusteDescricao('');
+    setMovimentacoesEstoque([]);
     setModalAjusteOpen(false);
     nomeInputRef.current?.focus();
   };
@@ -572,7 +592,12 @@ const ProdutosPage: React.FC = () => {
                     abrirModalMarca: () => setModalMarcaOpen(true),
                     abrirModalFornecedor: () => setModalFornecedorOpen(true),
                     abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(true),
-                    abrirModalAjusteEstoque: () => setModalAjusteOpen(true),
+                    abrirModalAjusteEstoque: async () => {
+                      if (editingId) {
+                        await carregarMovimentacoes(editingId);
+                      }
+                      setModalAjusteOpen(true);
+                    },
                     editarCategoria: handleOpenEditModal,
                     editarMarca: handleOpenEditMarcaModal,
                     editarFornecedor: handleOpenEditFornecedorModal,
@@ -720,6 +745,8 @@ const ProdutosPage: React.FC = () => {
             descricao={ajusteDescricao}
             setQuantidade={setAjusteQuantidade}
             setDescricao={setAjusteDescricao}
+            movimentacoes={movimentacoesEstoque}
+            movimentacoesLoading={movimentacoesLoading}
             onSave={async () => {
               const movimento = {
                 item_id: editingId,

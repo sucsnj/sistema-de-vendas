@@ -218,6 +218,61 @@
   gap: 10px;
 }
 
+.historySection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--surface-soft);
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.historyLoading {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.historyTableWrapper {
+  overflow-x: auto;
+}
+
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.historyTable th,
+.historyTable td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--foreground);
+  text-align: left;
+}
+
+.historyTable th {
+  background: var(--surface-strong);
+  font-weight: 700;
+}
+
+.historyTable tbody tr:nth-child(odd) {
+  background: var(--surface);
+}
+
+.historyTable tbody tr:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
 .barcodeRadio {
   cursor: pointer;
 }
