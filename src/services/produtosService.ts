@@ -343,11 +343,11 @@ export const deletarUnidadeMedida = async (id: number): Promise<{ message: strin
   return response.json();
 };
 
-export const atualizarUnidadeMedida = async (id: number, nome: string, descricao?: string): Promise<{ message: string }> => {
+export const atualizarUnidadeMedida = async (id: number, sigla: string, descricao?: string): Promise<{ message: string }> => {
   const response = await fetch(`/api/produtos/unidades-medida?id=${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, descricao }),
+    body: JSON.stringify({ sigla, descricao }),
   });
   if (!response.ok) {
     const errorData = await response.json();

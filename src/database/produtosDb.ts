@@ -339,7 +339,7 @@ export const getMovimentacoesEstoque = (itemId: number) => {
 // Validações de Unicidade
 export const checkDuplicateCodigoInterno = (codigoInterno: string, excludeId?: number) => {
   if (!codigoInterno || !codigoInterno.trim()) return false;
-  let query = 'SELECT id FROM itens WHERE codigo_interno = ?';
+  let query = 'SELECT id FROM itens WHERE LOWER(codigo_interno) = LOWER(?)';
   const params: any[] = [codigoInterno.trim()];
   if (excludeId) {
     query += ' AND id != ?';
@@ -612,7 +612,7 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
 
   const itemStmt = db.prepare(`
     UPDATE itens 
-    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
     WHERE id = ?
   `);
 
@@ -627,7 +627,6 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
     itemData.referencia,
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id

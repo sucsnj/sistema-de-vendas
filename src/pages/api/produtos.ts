@@ -200,9 +200,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const precoVendaNumber = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
       const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
 
-      // Validação de código interno duplicado
-      if (codigo_interno && checkDuplicateCodigoInterno(codigo_interno, id)) {
-        return res.status(400).json({ error: `O código interno "${codigo_interno}" já está cadastrado.` });
+      // Validação de código interno: não pode ser alterado
+      if (codigo_interno && existing.codigo_interno && codigo_interno.trim() !== existing.codigo_interno) {
+        return res.status(400).json({ error: 'O código interno não pode ser alterado.' });
       }
 
       // Validação de códigos de barras

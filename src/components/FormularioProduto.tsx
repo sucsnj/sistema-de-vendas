@@ -450,9 +450,10 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     id="form-cod-interno"
                     type="text"
                     className={styles.inputField}
-                    placeholder="Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"
+                    placeholder={editarProdutoId ? "Código Interno não pode ser alterado" : "Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"}
                     value={form.codigoInterno}
                     onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
+                    disabled={!!editarProdutoId}
                 />
             </div>
 

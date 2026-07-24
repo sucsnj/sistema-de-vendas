@@ -331,8 +331,10 @@ const ProdutosPage: React.FC = () => {
       preco_venda: precoVendaValor,
       estoque: estoqueValor,
       unidade_medida_id: Number(form.unidadeMedidaId),
+      codigo_interno: form.codigoInterno.trim() || undefined,
       referencia: form.referencia.trim(),
       ativo: form.ativo,
+      codigos_barras: formCodigosBarras,
     };
     try {
       if (editingId) {

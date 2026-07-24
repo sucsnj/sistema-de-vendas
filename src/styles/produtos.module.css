@@ -129,6 +129,13 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
+.inputField:disabled {
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .selectWrapper {
   display: flex;
   gap: 8px;
