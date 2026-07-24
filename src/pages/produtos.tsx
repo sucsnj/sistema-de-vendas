@@ -12,6 +12,7 @@ import {
   buscarMarcas,
   buscarFornecedores,
   buscarUnidadesMedida,
+  registrarMovimentacaoEstoque,
   ItemData,
   BarcodeData,
 } from '../services/produtosService';
@@ -28,6 +29,7 @@ import ModalFornecedor from '@/components/ModalFornecedor';
 import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
 import ModalUnidadeMedida from '@/components/ModalUnidadeMedida';
 import ModalUnidadeMedidaEdit from '@/components/ModalUnidadeMedidaEdit';
+import ModalAjusteEstoque from '@/components/ModalAjusteEstoque';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { FiltrosState } from '@/components/Filtros';
 import { useCategoria } from '@/hooks/useCategoria';
@@ -80,6 +82,9 @@ const ProdutosPage: React.FC = () => {
     referencia: '',
     ativo: 1,
   });
+  const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
+  const [ajusteQuantidade, setAjusteQuantidade] = useState(0);
+  const [ajusteDescricao, setAjusteDescricao] = useState('');
   const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
   const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
 
@@ -199,6 +204,9 @@ const ProdutosPage: React.FC = () => {
     });
     setFormCodigosBarras([]);
     setNovoCodigoBarras('');
+    setAjusteQuantidade(0);
+    setAjusteDescricao('');
+    setModalAjusteOpen(false);
   };
 
   // Adiciona Código de Barras ao formulário
@@ -335,6 +343,9 @@ const ProdutosPage: React.FC = () => {
     });
     setFormCodigosBarras(item.codigos_barras || []);
     setNovoCodigoBarras('');
+    setAjusteQuantidade(0);
+    setAjusteDescricao('');
+    setModalAjusteOpen(false);
     nomeInputRef.current?.focus();
   };
 
@@ -550,16 +561,18 @@ const ProdutosPage: React.FC = () => {
 
               <form onSubmit={handleSubmitForm}>
                 <FormularioProduto
+                  editarProdutoId={editingId}
                   form={form}
                   setForm={setForm}
                   options={options}
                   setOptions={setOptions}
                   inputRef={nomeInputRef}
-                  actions={{
+                  actions={ {
                     abrirModalCategoria: () => setModalCategoriaOpen(true),
                     abrirModalMarca: () => setModalMarcaOpen(true),
                     abrirModalFornecedor: () => setModalFornecedorOpen(true),
                     abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(true),
+                    abrirModalAjusteEstoque: () => setModalAjusteOpen(true),
                     editarCategoria: handleOpenEditModal,
                     editarMarca: handleOpenEditMarcaModal,
                     editarFornecedor: handleOpenEditFornecedorModal,
@@ -694,6 +707,44 @@ const ProdutosPage: React.FC = () => {
               abrirModalUnidadeMedida: () => setModalUnidadeMedidaEditOpen(false),
               salvarUnidadeMedida: handleAtualizarUnidadeMedida,
             }}
+          />
+        )}
+
+        {/* Modal: Ajuste de Estoque */}
+        {modalAjusteOpen && editingId && (
+          <ModalAjusteEstoque
+            open={modalAjusteOpen}
+            itemName={form.nome}
+            itemEstoque={form.estoque}
+            quantidade={ajusteQuantidade}
+            descricao={ajusteDescricao}
+            setQuantidade={setAjusteQuantidade}
+            setDescricao={setAjusteDescricao}
+            onSave={async () => {
+              const movimento = {
+                item_id: editingId,
+                tipo: 'AJUSTE' as const,
+                quantidade: ajusteQuantidade,
+                descricao: ajusteDescricao,
+              };
+              try {
+                await registrarMovimentacaoEstoque(movimento);
+                showToast('Ajuste de estoque registrado.', 'success');
+                setModalAjusteOpen(false);
+                setAjusteQuantidade(0);
+                setAjusteDescricao('');
+                carregarItens();
+                if (editingId) {
+                  const atual = items.find((item) => item.id === editingId);
+                  if (atual) {
+                    setForm((prev) => ({ ...prev, estoque: atual.estoque }));
+                  }
+                }
+              } catch (error: any) {
+                showToast(error.message || 'Erro ao registrar ajuste.', 'error');
+              }
+            }}
+            onClose={() => setModalAjusteOpen(false)}
           />
         )}
 

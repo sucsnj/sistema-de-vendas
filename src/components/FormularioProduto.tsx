@@ -37,6 +37,7 @@ export interface ProdutoActions {
     abrirModalMarca: () => void;
     abrirModalFornecedor: () => void;
     abrirModalUnidadeMedida: () => void;
+    abrirModalAjusteEstoque: () => void;
     editarCategoria: (categoria: CategoriaData) => void;
     editarMarca: (marca: MarcaData) => void;
     editarFornecedor: (fornecedor: FornecedorData) => void;
@@ -45,6 +46,7 @@ export interface ProdutoActions {
 
 // Props do Componente
 interface FormularioProdutoProps {
+    editarProdutoId: number | null;
     form: ProdutoFormData;
     setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
     options: ProdutoOptions;
@@ -54,9 +56,11 @@ interface FormularioProdutoProps {
 }
 
 const FormularioProduto: React.FC<FormularioProdutoProps> = ({
+    editarProdutoId,
     form,
     setForm,
     options,
+    setOptions,
     inputRef,
     actions,
 }) => {
@@ -326,17 +330,28 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     <label className={styles.formLabel} htmlFor="form-estoque">
                         Estoque:
                     </label>
-                    <input
-                        id="form-estoque"
-                        type="number"
-                        className={styles.inputField}
-                        placeholder="0"
-                        step="1"
-                        min="0"
-                        value={form.estoque}
-                        onChange={(e) => setForm(prev => ({ ...prev, estoque: Number(e.target.value) }))}
-                        required
-                    />
+                    {editarProdutoId ? (
+                        <button
+                            type="button"
+                            className={styles.secondaryButton}
+                            onClick={actions.abrirModalAjusteEstoque}
+                            id="open-ajuste-estoque-btn"
+                        >
+                            Ajustar
+                        </button>
+                    ) : (
+                        <input
+                            id="form-estoque"
+                            type="number"
+                            className={styles.inputField}
+                            placeholder="0"
+                            step="1"
+                            min="0"
+                            value={form.estoque}
+                            onChange={(e) => setForm(prev => ({ ...prev, estoque: Number(e.target.value) }))}
+                            required
+                        />
+                    )}
                 </div>
             </div>
 
