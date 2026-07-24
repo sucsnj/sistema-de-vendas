@@ -591,7 +591,8 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     }
   }
 
-  const initialStock = Number(itemData.estoque) || 0;
+  const initialStock = Number(itemData.estoque);
+  // Estoque inicial zero é válido; somente gera movimentação se houver entrada positiva.
   if (itemData.tipo === 'PRODUTO' && initialStock > 0) {
     insertMovimentacaoEstoqueRaw({
       item_id: itemId,

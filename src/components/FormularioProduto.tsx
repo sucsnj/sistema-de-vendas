@@ -1,6 +1,8 @@
 import styles from '../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
+import { parseNumber } from '../utils/number';
+import { formatCurrency, formatCurrencyNumber } from '../utils/formatter';
 import {
     CategoriaData,
     MarcaData,
@@ -110,7 +112,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     placeholder="Nome do item"
                     value={form.nome}
                     onChange={(e) => setForm(prev => ({ ...prev, nome: e.target.value }))}
-                    required
                 />
             </div>
 
@@ -238,7 +239,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         onChange={(e) =>
                             setForm(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : 1 }))
                         }
-                        required
                     >
                         {options.fornecedores.map((f) => (
                             <option key={f.id} value={f.id}>
@@ -288,7 +288,26 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.inputField}
                         placeholder="0,00"
                         value={form.precoCompra}
-                        onChange={(e) => setForm(prev => ({ ...prev, precoCompra: e.target.value }))}
+                        onChange={(e) => {
+                            const precoCompra = e.target.value;
+                            const compraValor = parseNumber(precoCompra);
+                            const vendaValor = parseNumber(form.precoVenda);
+                            const margemValor = parseNumber(form.margemLucro);
+
+                            if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
+                                const novoPrecoVenda = formatCurrencyNumber(compraValor * (1 + margemValor / 100), 2);
+                                setForm(prev => ({ ...prev, precoCompra, precoVenda: String(novoPrecoVenda) }));
+                                return;
+                            }
+
+                            if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
+                                const novaMargem = formatCurrencyNumber((vendaValor / compraValor - 1) * 100, 2);
+                                setForm(prev => ({ ...prev, precoCompra, margemLucro: String(novaMargem) }));
+                                return;
+                            }
+
+                            setForm(prev => ({ ...prev, precoCompra }));
+                        }}
                     />
                 </div>
 
@@ -303,7 +322,19 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.inputField}
                         placeholder="0"
                         value={form.margemLucro}
-                        onChange={(e) => setForm(prev => ({ ...prev, margemLucro: e.target.value }))}
+                        onChange={(e) => {
+                            const margemLucro = e.target.value;
+                            const compraValor = parseNumber(form.precoCompra);
+                            const margemValor = parseNumber(margemLucro);
+
+                            if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
+                                const novoPrecoVenda = formatCurrencyNumber(compraValor * (1 + margemValor / 100), 2);
+                                setForm(prev => ({ ...prev, margemLucro, precoVenda: String(novoPrecoVenda) }));
+                                return;
+                            }
+
+                            setForm(prev => ({ ...prev, margemLucro }));
+                        }}
                     />
                 </div>
 
@@ -318,8 +349,19 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         className={styles.inputField}
                         placeholder="0,00"
                         value={form.precoVenda}
-                        onChange={(e) => setForm(prev => ({ ...prev, precoVenda: e.target.value }))}
-                        required
+                        onChange={(e) => {
+                            const precoVenda = e.target.value;
+                            const compraValor = parseNumber(form.precoCompra);
+                            const vendaValor = parseNumber(precoVenda);
+
+                            if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
+                                const novaMargem = formatCurrencyNumber((vendaValor / compraValor - 1) * 100, 2);
+                                setForm(prev => ({ ...prev, precoVenda, margemLucro: String(novaMargem) }));
+                                return;
+                            }
+
+                            setForm(prev => ({ ...prev, precoVenda }));
+                        }}
                     />
                 </div>
 
@@ -345,7 +387,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             placeholder="0"
                             value={form.estoque}
                             onChange={(e) => setForm(prev => ({ ...prev, estoque: e.target.value }))}
-                            required
                         />
                     )}
                 </div>

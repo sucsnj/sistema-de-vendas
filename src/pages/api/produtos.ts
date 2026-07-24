@@ -121,23 +121,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         }
       }
 
-      const precoCompraNumber = parseNumber(preco_compra);
-      const margemLucroNumber = parseNumber(margem_lucro);
-      const precoVendaNumber = parseNumber(preco_venda);
-      const estoqueNumber = parseNumber(estoque);
+      const precoCompraRaw = parseNumber(preco_compra);
+      const margemLucroRaw = parseNumber(margem_lucro);
+      const precoVendaRaw = parseNumber(preco_venda);
+      const estoqueRaw = parseNumber(estoque);
 
-      if (isNaN(precoCompraNumber)) {
-        return res.status(400).json({ error: 'O preço de compra deve ser um número.' });
-      }
-      if (isNaN(margemLucroNumber)) {
-        return res.status(400).json({ error: 'A margem de lucro deve ser um número.' });
-      }
-      if (isNaN(precoVendaNumber)) {
-        return res.status(400).json({ error: 'O preço de venda deve ser um número.' });
-      }
-      if (isNaN(estoqueNumber)) {
-        return res.status(400).json({ error: 'O estoque deve ser um número.' });
-      }
+      const precoCompraNumber = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
+      const margemLucroNumber = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
+      const precoVendaNumber = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
+      const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
 
       const itemId = insertItem({
         tipo,
@@ -198,26 +190,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione um fornecedor válido.' });
       }
 
-      const precoCompraNumber = parseNumber(preco_compra);
-      const margemLucroNumber = parseNumber(margem_lucro);
-      const precoVendaNumber = parseNumber(preco_venda);
-      const estoqueNumber = parseNumber(estoque);
+      const precoCompraRaw = parseNumber(preco_compra);
+      const margemLucroRaw = parseNumber(margem_lucro);
+      const precoVendaRaw = parseNumber(preco_venda);
+      const estoqueRaw = parseNumber(estoque);
 
-      if (isNaN(precoCompraNumber)) {
-        return res.status(400).json({ error: 'O preço de compra deve ser um número.' });
-      }
-
-      if (isNaN(margemLucroNumber)) {
-        return res.status(400).json({ error: 'A margem de lucro deve ser um número.' });
-      }
-
-      if (isNaN(precoVendaNumber)) {
-        return res.status(400).json({ error: 'O preço de venda deve ser um número.' });
-      }
-
-      if (isNaN(estoqueNumber)) {
-        return res.status(400).json({ error: 'O estoque deve ser um número.' });
-      }
+      const precoCompraNumber = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
+      const margemLucroNumber = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
+      const precoVendaNumber = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
+      const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
 
       // Validação de código interno duplicado
       if (codigo_interno && checkDuplicateCodigoInterno(codigo_interno, id)) {

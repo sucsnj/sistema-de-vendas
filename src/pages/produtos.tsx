@@ -300,27 +300,15 @@ const ProdutosPage: React.FC = () => {
       return;
     }
 
-    const precoCompraValor = parseNumber(form.precoCompra);
-    const margemLucroValor = parseNumber(form.margemLucro);
-    const precoVendaValor = parseNumber(form.precoVenda);
-    const estoqueValor = parseNumber(form.estoque);
+    const precoCompraRaw = parseNumber(form.precoCompra);
+    const margemLucroRaw = parseNumber(form.margemLucro);
+    const precoVendaRaw = parseNumber(form.precoVenda);
+    const estoqueRaw = parseNumber(form.estoque);
 
-    if (isNaN(precoCompraValor) || precoCompraValor < 0) {
-      showToast('O preço de compra deve ser um número válido maior ou igual a zero.', 'error');
-      return;
-    }
-    if (isNaN(margemLucroValor) || margemLucroValor < 0) {
-      showToast('A margem de lucro deve ser um número válido maior ou igual a zero.', 'error');
-      return;
-    }
-    if (isNaN(precoVendaValor) || precoVendaValor < 0) {
-      showToast('O preço de venda deve ser um número válido maior ou igual a zero.', 'error');
-      return;
-    }
-    if (isNaN(estoqueValor) || estoqueValor < 0 || !Number.isInteger(estoqueValor)) {
-      showToast('O estoque deve ser um número inteiro válido maior ou igual a zero.', 'error');
-      return;
-    }
+    const precoCompraValor = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
+    const margemLucroValor = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
+    const precoVendaValor = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
+    const estoqueValor = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
 
     // Validação de código principal nos códigos de barras
     if (formCodigosBarras.length > 0) {
@@ -338,10 +326,10 @@ const ProdutosPage: React.FC = () => {
       categoria_id: Number(form.categoriaId),
       marca_id: Number(form.marcaId),
       fornecedor_id: Number(form.fornecedorId),
-      preco_compra: parseNumber(form.precoCompra),
-      margem_lucro: parseNumber(form.margemLucro),
-      preco_venda: parseNumber(form.precoVenda),
-      estoque: parseNumber(form.estoque),
+      preco_compra: precoCompraValor,
+      margem_lucro: margemLucroValor,
+      preco_venda: precoVendaValor,
+      estoque: estoqueValor,
       unidade_medida_id: Number(form.unidadeMedidaId),
       referencia: form.referencia.trim(),
       ativo: form.ativo,
