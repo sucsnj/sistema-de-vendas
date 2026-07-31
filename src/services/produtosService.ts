@@ -28,6 +28,17 @@ export interface ItemData {
   codigos_barras?: BarcodeData[];
 }
 
+export interface ServicoData {
+  id: number;
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia: string;
+  duracao_minutos: number;
+}
+
 export interface MovimentacaoEstoqueData {
   id: number;
   item_id: number;
