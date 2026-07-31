@@ -78,7 +78,41 @@ try {
       descricao TEXT,
       data_movimentacao DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS servicos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      descricao TEXT,
+      categoria_id INTEGER NOT NULL REFERENCES categorias(id),
+      preco_venda REAL DEFAULT 0,
+      codigo_interno TEXT UNIQUE,
+      referencia TEXT,
+      duracao_minutos INTEGER DEFAULT 0,
+      ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
+      data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+      data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
+
+  const servicosTableInfo = db.prepare("PRAGMA table_info(servicos)").all() as Array<{ name: string }>;
+  const servicosColumns = new Set(servicosTableInfo.map((column) => column.name));
+  const servicosColumnDefinitions: Array<{ name: string; definition: string }> = [
+    { name: 'descricao', definition: 'TEXT' },
+    { name: 'categoria_id', definition: 'INTEGER NOT NULL REFERENCES categorias(id)' },
+    { name: 'preco_venda', definition: 'REAL DEFAULT 0' },
+    { name: 'codigo_interno', definition: 'TEXT UNIQUE' },
+    { name: 'referencia', definition: 'TEXT' },
+    { name: 'duracao_minutos', definition: 'INTEGER DEFAULT 0' },
+    { name: 'ativo', definition: 'INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1))' },
+    { name: 'data_criacao', definition: 'DATETIME DEFAULT CURRENT_TIMESTAMP' },
+    { name: 'data_atualizacao', definition: 'DATETIME DEFAULT CURRENT_TIMESTAMP' },
+  ];
+
+  for (const column of servicosColumnDefinitions) {
+    if (!servicosColumns.has(column.name)) {
+      db.exec(`ALTER TABLE servicos ADD COLUMN ${column.name} ${column.definition}`);
+    }
+  }
 
   // Seeding inicial para Unidades de Medida
   const countUom = db.prepare('SELECT count(*) as count FROM unidades_medida').get() as { count: number };
@@ -365,6 +399,205 @@ export const checkDuplicateBarcode = (barcodes: string[], excludeItemId?: number
 
   const row = db.prepare(query).get(...params) as { codigo_barras: string } | undefined;
   return row ? row.codigo_barras : null;
+};
+
+// CRUD de Serviços
+export interface ServicoData {
+  id: number;
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos: number;
+  ativo: number;
+  data_criacao?: string;
+  data_atualizacao?: string;
+  categoria_nome?: string;
+}
+
+export interface ServicoInput {
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos?: number;
+  ativo?: number;
+}
+
+export const checkDuplicateServicoCodigoInterno = (codigoInterno: string, excludeId?: number) => {
+  if (!codigoInterno || !codigoInterno.trim()) return false;
+  let query = 'SELECT id FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)';
+  const params: any[] = [codigoInterno.trim()];
+  if (excludeId) {
+    query += ' AND id != ?';
+    params.push(excludeId);
+  }
+  const row = db.prepare(query).get(...params);
+  return !!row;
+};
+
+export const getServicos = (options: {
+  search?: string;
+  categoria_id?: number;
+  ativo?: number;
+  page?: number;
+  pageSize?: number;
+}) => {
+  const page = options.page || 1;
+  const pageSize = options.pageSize || 10;
+  const offset = (page - 1) * pageSize;
+
+  const queryConditions: string[] = [];
+  const params: any[] = [];
+
+  if (options.categoria_id) {
+    queryConditions.push('s.categoria_id = ?');
+    params.push(options.categoria_id);
+  }
+
+  if (options.ativo !== undefined) {
+    queryConditions.push('s.ativo = ?');
+    params.push(options.ativo);
+  }
+
+  if (options.search && options.search.trim()) {
+    const searchLike = `%${options.search.trim()}%`;
+    queryConditions.push('(s.nome LIKE ? OR s.codigo_interno LIKE ? OR s.referencia LIKE ?)');
+    params.push(searchLike, searchLike, searchLike);
+  }
+
+  const whereClause = queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';
+  const countQuery = `SELECT COUNT(*) as count FROM servicos s ${whereClause}`;
+  const totalCount = (db.prepare(countQuery).get(...params) as { count: number }).count;
+
+  const servicesQuery = `
+    SELECT
+      s.id,
+      s.nome,
+      s.descricao,
+      s.categoria_id,
+      s.preco_venda,
+      s.codigo_interno,
+      s.referencia,
+      s.duracao_minutos,
+      s.ativo,
+      s.data_criacao,
+      s.data_atualizacao,
+      c.nome as categoria_nome
+    FROM servicos s
+    JOIN categorias c ON s.categoria_id = c.id
+    ${whereClause}
+    ORDER BY s.nome ASC
+    LIMIT ? OFFSET ?
+  `;
+
+  const services = db.prepare(servicesQuery).all(...params, pageSize, offset) as ServicoData[];
+
+  return {
+    services,
+    total: totalCount,
+    page,
+    pageSize,
+    totalPages: Math.ceil(totalCount / pageSize),
+  };
+};
+
+export const getServicoById = (id: number) => {
+  return db.prepare(`
+    SELECT
+      s.id,
+      s.nome,
+      s.descricao,
+      s.categoria_id,
+      s.preco_venda,
+      s.codigo_interno,
+      s.referencia,
+      s.duracao_minutos,
+      s.ativo,
+      s.data_criacao,
+      s.data_atualizacao,
+      c.nome as categoria_nome
+    FROM servicos s
+    JOIN categorias c ON s.categoria_id = c.id
+    WHERE s.id = ?
+  `).get(id) as ServicoData | undefined;
+};
+
+export const insertServico = db.transaction((servicoData: ServicoInput) => {
+  const stmt = db.prepare(`
+    INSERT INTO servicos (
+      nome,
+      descricao,
+      categoria_id,
+      preco_venda,
+      codigo_interno,
+      referencia,
+      duracao_minutos,
+      ativo,
+      data_criacao,
+      data_atualizacao
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
+  `);
+
+  const result = stmt.run(
+    servicoData.nome,
+    servicoData.descricao || null,
+    servicoData.categoria_id,
+    servicoData.preco_venda ?? 0,
+    servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
+    servicoData.referencia || null,
+    servicoData.duracao_minutos ?? 0,
+    servicoData.ativo !== undefined ? servicoData.ativo : 1
+  );
+
+  if (!servicoData.codigo_interno) {
+    const updateCodigoInterno = db.prepare(`
+      UPDATE servicos
+      SET codigo_interno = ?
+      WHERE id = ?
+    `);
+    updateCodigoInterno.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
+  }
+
+  return result.lastInsertRowid as number;
+});
+
+export const updateServico = db.transaction((id: number, servicoData: ServicoInput) => {
+  const stmt = db.prepare(`
+    UPDATE servicos
+    SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    WHERE id = ?
+  `);
+
+  stmt.run(
+    servicoData.nome,
+    servicoData.descricao || null,
+    servicoData.categoria_id,
+    servicoData.preco_venda ?? 0,
+    servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
+    servicoData.referencia || null,
+    servicoData.duracao_minutos ?? 0,
+    servicoData.ativo !== undefined ? servicoData.ativo : 1,
+    id
+  );
+
+  return true;
+});
+
+export const deleteServico = (id: number) => {
+  return db.prepare('DELETE FROM servicos WHERE id = ?').run(id);
+};
+
+export const toggleServicoStatus = (id: number, ativo: number) => {
+  return db.prepare(`
+    UPDATE servicos
+    SET ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    WHERE id = ?
+  `).run(ativo, id);
 };
 
 // CRUD de Itens (Produtos e Serviços)

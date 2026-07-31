@@ -182,6 +182,7 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   return response.json();
 };
 
+// Chamadas de API para Serviços
 export const buscarServicos = async (options: {
   search?: string;
   categoria_id?: number;
@@ -248,7 +249,7 @@ export const excluirServico = async (id: number) => {
   return response.json();
 };
 
-// Movimentações de Estoque
+// Chamadas de API para Movimentações de Estoque
 export const buscarMovimentacoesEstoque = async (item_id: number): Promise<MovimentacaoEstoqueData[]> => {
   const response = await fetch(`/api/produtos/movimentacoes?item_id=${item_id}`);
   if (!response.ok) {
