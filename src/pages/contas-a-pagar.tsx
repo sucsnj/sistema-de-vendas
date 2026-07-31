@@ -69,12 +69,20 @@ const ContasAPagar: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // se vencimento de for maior que vencimento ate, igualar o valor de vencimento ate com o vencimento de
+      if (filtroVencimentoDe > filtroVencimentoAte) {
+        setFiltroVencimentoAte(filtroVencimentoDe);
+      }
       localStorage.setItem('filtroVencimentoDe', filtroVencimentoDe);
     }
   }, [filtroVencimentoDe]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // se vencimento ate for menor que vencimento de, igualar o valor de vencimento de com o vencimento ate
+      if (filtroVencimentoAte < filtroVencimentoDe) {
+        setFiltroVencimentoDe(filtroVencimentoAte);
+      }
       localStorage.setItem('filtroVencimentoAte', filtroVencimentoAte);
     }
   }, [filtroVencimentoAte]);
@@ -281,7 +289,7 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  // Função reservada para futura implementação de importação XML
+  // Função para importação de XML
   const handleImportXML = async () => {
     try {
       const fileInput = document.createElement('input');

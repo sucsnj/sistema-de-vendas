@@ -215,7 +215,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         const rect = input.getBoundingClientRect();
 
         const estaVisivel =
-          rect.top >= 0 &&
+          rect.top >= 70 && // distancia do topo
           rect.bottom <= window.innerHeight;
 
         if (!estaVisivel) {
@@ -228,6 +228,14 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       }
     }, 180000); // 3 minutos
 
+    return () => clearInterval(interval);
+  }, []);
+
+  // Trás o foco para o input de venda a cada 1 minuto
+  useEffect(() => {
+    const interval = setInterval(() => {
+      valorInputRef.current?.focus();
+    }, 60000); // 1 minuto
     return () => clearInterval(interval);
   }, []);
 
