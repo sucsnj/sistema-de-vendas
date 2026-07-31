@@ -89,28 +89,15 @@ const Nav: React.FC = () => {
           onClick={toggleThemeMode}
           className={styles.themeButton}
         >
-          {themeMode === 'system' ? (
-            <>
-              <span className="responsive-icon">
-                <TuneIcon />
-              </span>
-              <span className="text-responsive">Sistema</span>
-            </>
-          ) : themeMode === 'light' ? (
-            <>
-              <span className="responsive-icon">
-                <Brightness7Icon />
-              </span>
-              <span className="text-responsive">&nbsp;&nbsp;Claro&nbsp;&nbsp;</span>
-            </>
-          ) : (
-            <>
-              <span className="responsive-icon">
-                <Brightness4Icon />
-              </span>
-              <span className="text-responsive">Escuro&nbsp;&nbsp;</span>
-            </>
-          )}
+          <span key={themeMode} className={styles.themeIcon}>
+            {themeMode === 'system' ? (
+              <TuneIcon />
+            ) : themeMode === 'light' ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </span>
         </button>
       </div>
     </nav>

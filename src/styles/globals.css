@@ -1,15 +1,29 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-strong: #ffffff;
-  --surface-soft: rgba(255, 255, 255, 0.75);
-  --border: rgba(15, 23, 42, 0.12);
-  --muted: #475569;
+  --surface: rgba(248, 250, 252, 0.95);
+  --surface-strong: #f8fafc;
+  --surface-soft: rgba(226, 232, 240, 0.7);
+  --border: rgba(15, 23, 42, 0.16);
+  --muted: #64748b;
   --accent: #2563eb;
   --danger: #ef4444;
   --success: #16a34a;
+  --secondary-accent: #9333ea;
   --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --text-on-accent: #f8fafc;
+  --text-on-danger: #f8fafc;
+  --text-on-success: #f8fafc;
+  --accent-soft: rgba(37, 99, 235, 0.14);
+  --accent-strong: rgba(37, 99, 235, 0.24);
+  --secondary-accent-soft: rgba(147, 51, 234, 0.12);
+  --secondary-accent-strong: rgba(147, 51, 234, 0.24);
+  --success-soft: rgba(22, 163, 74, 0.14);
+  --success-strong: rgba(22, 163, 74, 0.24);
+  --danger-soft: rgba(239, 68, 68, 0.14);
+  --danger-strong: rgba(239, 68, 68, 0.24);
+  --focus-ring: rgba(37, 99, 235, 0.2);
+  --overlay: rgba(15, 23, 42, 0.65);
 }
 
 html {
@@ -43,49 +57,94 @@ body.modal-open {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: dark;
-    --background: #020617;
-    --foreground: #e2e8f0;
-    --surface: rgba(15, 23, 42, 0.86);
-    --surface-strong: #111827;
-    --surface-soft: rgba(15, 23, 42, 0.75);
-    --border: rgba(148, 163, 184, 0.28);
-    --muted: #94a3b8;
-    --accent: #60a5fa;
-    --danger: #f87171;
-    --success: #4ade80;
-    --shadow: 0 10px 30px rgba(15, 23, 42, 0.45);
+  color-scheme: dark;
+  --background: #020617;
+  --foreground: #e2e8f0;
+  --surface: rgba(15, 23, 42, 0.92);
+  --surface-strong: #0f172a;
+  --surface-soft: rgba(30, 41, 59, 0.78);
+  --glass-surface: rgba(15, 23, 42, 0.92);
+  --border: rgba(148, 163, 184, 0.24);
+  --muted: #94a3b8;
+  --accent: #60a5fa;
+  --danger: #f87171;
+  --success: #4ade80;
+  --secondary-accent: #c084fc;
+  --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+  --text-on-accent: #fbfdf8;
+  --text-on-danger: #0f172a;
+  --text-on-success: #052e16;
+  --accent-soft: rgba(96, 165, 250, 0.18);
+  --accent-strong: rgba(96, 165, 250, 0.28);
+  --secondary-accent-soft: rgba(192, 132, 252, 0.18);
+  --secondary-accent-strong: rgba(192, 132, 252, 0.28);
+  --success-soft: rgba(74, 222, 128, 0.18);
+  --success-strong: rgba(74, 222, 128, 0.28);
+  --danger-soft: rgba(248, 113, 113, 0.18);
+  --danger-strong: rgba(248, 113, 113, 0.28);
+  --focus-ring: rgba(96, 165, 250, 0.28);
+  --overlay: rgba(2, 6, 23, 0.72);
   }
 }
 
 html.light {
   color-scheme: light;
-  --background: #f8fafc;
+  --background: rgb(239, 238, 238);
   --foreground: #0f172a;
-  --surface: rgba(255, 255, 255, 0.9);
+  --surface: rgba(255, 255, 255, 0.96);
   --surface-strong: #ffffff;
-  --surface-soft: rgba(255, 255, 255, 0.75);
-  --border: rgba(15, 23, 42, 0.12);
-  --muted: #475569;
-  --accent: #2563eb;
+  --surface-soft: rgba(241, 245, 249, 0.85);
+  --glass-surface: rgba(255, 255, 255, 0.92);
+  --border: rgba(203, 213, 225, 0.6);
+  --muted: #64748b;
+  --accent: #3b82f6;
+  --secondary-accent: #a855f7;
+  --success: #22c55e;
   --danger: #ef4444;
-  --success: #16a34a;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --text-on-accent: #ffffff;
+  --text-on-danger: #ffffff;
+  --text-on-success: #ffffff;
+  --accent-soft: rgba(59, 130, 246, 0.12);
+  --accent-strong: rgba(59, 130, 246, 0.24);
+  --secondary-accent-soft: rgba(168, 85, 247, 0.12);
+  --secondary-accent-strong: rgba(168, 85, 247, 0.24);
+  --success-soft: rgba(34, 197, 94, 0.12);
+  --success-strong: rgba(34, 197, 94, 0.24);
+  --danger-soft: rgba(239, 68, 68, 0.12);
+  --danger-strong: rgba(239, 68, 68, 0.24);
+  --focus-ring: rgba(59, 130, 246, 0.28);
+  --overlay: rgba(255, 255, 255, 0.72);
 }
 
 html.dark {
   color-scheme: dark;
   --background: #020617;
   --foreground: #e2e8f0;
-  --surface: rgba(15, 23, 42, 0.86);
-  --surface-strong: #111827;
-  --surface-soft: rgba(15, 23, 42, 0.75);
-  --border: rgba(148, 163, 184, 0.28);
+  --surface: rgba(15, 23, 42, 0.92);
+  --surface-strong: #0f172a;
+  --surface-soft: rgba(30, 41, 59, 0.78);
+  --glass-surface: rgba(15, 23, 42, 0.92);
+  --border: rgba(148, 163, 184, 0.24);
   --muted: #94a3b8;
   --accent: #60a5fa;
   --danger: #f87171;
   --success: #4ade80;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.45);
+  --secondary-accent: #c084fc;
+  --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+  --text-on-accent: #fbfdf8;
+  --text-on-danger: #0f172a;
+  --text-on-success: #052e16;
+  --accent-soft: rgba(96, 165, 250, 0.18);
+  --accent-strong: rgba(96, 165, 250, 0.28);
+  --secondary-accent-soft: rgba(192, 132, 252, 0.18);
+  --secondary-accent-strong: rgba(192, 132, 252, 0.28);
+  --success-soft: rgba(74, 222, 128, 0.18);
+  --success-strong: rgba(74, 222, 128, 0.28);
+  --danger-soft: rgba(248, 113, 113, 0.18);
+  --danger-strong: rgba(248, 113, 113, 0.28);
+  --focus-ring: rgba(96, 165, 250, 0.28);
+  --overlay: rgba(2, 6, 23, 0.72);
 }
 
 * {
@@ -204,7 +263,7 @@ a {
 .headerBackupButton {
   border: none;
   background: var(--accent);
-  color: white;
+  color: var(--text-on-accent);
   margin-bottom: 0px;
 }
 
@@ -227,12 +286,12 @@ button:hover {
 
 button.button-edit {
   background: var(--accent);
-  color: var(--foreground);
+  color: var(--text-on-accent);
 }
 
 button.button-delete {
   background: var(--danger);
-  color: var(--foreground);
+  color: var(--text-on-danger);
 }
 
 input,
@@ -284,7 +343,7 @@ th,
 td {
   padding: 8px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid var(--border);
 }
 
 h2 {
@@ -306,13 +365,13 @@ h2 {
 }
 
 .color-muted {
-  color: #777;
+  color: var(--muted);
   cursor: default;
   pointer-events: none;
 }
 
 .color-muted-dark {
-  color: #000000;
+  color: var(--foreground);
   cursor: default;
   pointer-events: none;
   opacity: 0.8;

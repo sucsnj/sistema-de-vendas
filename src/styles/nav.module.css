@@ -11,10 +11,10 @@
   gap: 12px;
   padding: 12px 16px;
   justify-content: space-between;
-  background: var(--surface);   /* usa a variável */
-  color: var(--foreground);     /* texto adaptado ao tema */
+  background: var(--surface);
+  color: var(--foreground);
   backdrop-filter: blur(1000px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border);
 }
 
 /* Compensar a altura da nav */
@@ -52,23 +52,49 @@ body {
 .themeButton {
   margin-left: 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.12);
+  border: 0px solid var(--border);
+  background: var(--surface);
   color: inherit;
   padding: 8px 14px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: none;
   font-size: 0.78rem;
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
 
-  display: inline-flex;       /* ativa flexbox */
-  align-items: center;        /* centraliza verticalmente */
-  justify-content: center;    /* centraliza horizontalmente */
-  gap: 8px;                   /* espaço entre ícone e texto */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.themeButton:hover {
-  background: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
+.themeButton:hover,
+.themeButton:focus,
+.themeButton:focus-visible,
+.themeButton:active {
+  background: var(--surface);
+  transform: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.themeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: themeIconTransition 180ms ease-out;
+}
+
+@keyframes themeIconTransition {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) rotate(-8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .navLinks a {
