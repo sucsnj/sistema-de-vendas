@@ -436,9 +436,9 @@ export const getItens = (options: {
   if (options.search && options.search.trim()) {
     const searchLike = `%${options.search.trim()}%`;
     queryConditions.push(
-      '(i.nome LIKE ? OR i.codigo_interno LIKE ? OR i.id IN (SELECT item_id FROM item_codigos_barras WHERE codigo_barras LIKE ?))'
+      '(i.nome LIKE ? OR i.codigo_interno LIKE ? OR i.referencia LIKE ? OR i.id IN (SELECT item_id FROM item_codigos_barras WHERE codigo_barras LIKE ?))'
     );
-    params.push(searchLike, searchLike, searchLike);
+    params.push(searchLike, searchLike, searchLike, searchLike);
   }
 
   const whereClause = queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';

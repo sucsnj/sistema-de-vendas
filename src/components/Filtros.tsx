@@ -3,6 +3,7 @@ import {
     MarcaData,
     FornecedorData
 } from '../services/produtosService';
+import styles from '../styles/produtos.module.css';
 
 export interface FiltrosState {
     search: string;
@@ -42,14 +43,14 @@ const Filtros: React.FC<FiltrosProps> = ({
     return (
         <section className="glass-form" aria-labelledby="filtros-title">
             <h2 id="filtros-title" className="">Filtros de Pesquisa</h2>
-            <form onSubmit={actions.buscar} className="page-actions">
-                <label htmlFor="search-input">
+            <form onSubmit={actions.buscar} className={`${styles.filterForm} page-actions`}>
+                <label htmlFor="search-input" className={styles.filterLabelSearch}>
                     Buscar:
                     <input
                         id="search-input"
-                        className="headerInput"
+                        className={`${styles.filterInput} headerInput`}
                         type="text"
-                        placeholder="Nome, código ou EAN..."
+                        placeholder="Nome, código, EAN ou referência..."
                         value={state.search}
                         onChange={(e) => setFiltros(prev => ({ ...prev, search: e.target.value }))}
                     />
@@ -59,7 +60,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                     Tipo:
                     <select
                         id="filtro-tipo"
-                        className="headerSelect"
+                        className={`${styles.filterSelect} headerSelect`}
                         value={state.tipo}
                         onChange={(e) => {
                             setFiltros(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' | 'TODOS' }));
@@ -76,7 +77,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                     Categoria:
                     <select
                         id="filtro-categoria"
-                        className="headerSelect"
+                        className={`${styles.filterSelect} headerSelect`}
                         value={state.categoriaId}
                         onChange={(e) => {
                             setFiltros(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : '' }));
@@ -95,7 +96,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                     Marca:
                     <select
                         id="filtro-marca"
-                        className="headerSelect"
+                        className={`${styles.filterSelect} headerSelect`}
                         value={state.marcaId}
                         onChange={(e) => {
                             setFiltros(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : '' }));
@@ -114,7 +115,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                     Fornecedor:
                     <select
                         id="filtro-fornecedor"
-                        className="headerSelect"
+                        className={`${styles.filterSelect} headerSelect`}
                         value={state.fornecedorId}
                         onChange={(e) => {
                             setFiltros(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : '' }));
@@ -133,7 +134,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                     Status:
                     <select
                         id="filtro-status"
-                        className="headerSelect"
+                        className={`${styles.filterSelect} headerSelect`}
                         value={state.status}
                         onChange={(e) => {
                             setFiltros(prev => ({ ...prev, status: e.target.value as any }));
@@ -146,16 +147,18 @@ const Filtros: React.FC<FiltrosProps> = ({
                     </select>
                 </label>
 
-                <button type="submit" className="headerBackupButton">
-                    Filtrar
-                </button>
-                <button
-                    type="button"
-                    className="headerButton"
-                    onClick={actions.limpar}
-                >
-                    Limpar
-                </button>
+                <div className={styles.filterActions}>
+                    <button type="submit" className="headerBackupButton">
+                        Filtrar
+                    </button>
+                    <button
+                        type="button"
+                        className="headerButton"
+                        onClick={actions.limpar}
+                    >
+                        Limpar
+                    </button>
+                </div>
             </form>
         </section>
     )

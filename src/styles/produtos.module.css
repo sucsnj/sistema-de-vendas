@@ -95,6 +95,34 @@
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
+.filterForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filterLabel,
+.filterLabelSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 0 100%;
+}
+
+.filterInput,
+.filterSelect {
+  width: 100%;
+}
+
+.filterActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 .formGroup {
   margin-bottom: 12px;
   display: flex;
