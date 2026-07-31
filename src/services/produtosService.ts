@@ -28,6 +28,30 @@ export interface ItemData {
   codigos_barras?: BarcodeData[];
 }
 
+export interface ServicoData {
+  id: number;
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos: number;
+  data_criacao?: string;
+  data_atualizacao?: string;
+  categoria_nome?: string;
+}
+
+export interface ServicoInput {
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos?: number;
+}
+
 export interface MovimentacaoEstoqueData {
   id: number;
   item_id: number;
@@ -158,6 +182,73 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   return response.json();
 };
 
+export const buscarServicos = async (options: {
+  search?: string;
+  categoria_id?: number;
+  page?: number;
+  pageSize?: number;
+}): Promise<PagedResult<ServicoData>> => {
+  const params = new URLSearchParams();
+  if (options.search) params.append('search', options.search);
+  if (options.categoria_id) params.append('categoria_id', String(options.categoria_id));
+  if (options.page) params.append('page', String(options.page));
+  if (options.pageSize) params.append('pageSize', String(options.pageSize));
+
+  const response = await fetch(`/api/produtos/servicos?${params.toString()}`);
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao buscar serviços.');
+  }
+  return response.json();
+};
+
+export const buscarServicoPorId = async (id: number): Promise<ServicoData | null> => {
+  const response = await fetch(`/api/produtos/servicos?id=${id}`);
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao buscar serviço.');
+  }
+  return response.json();
+};
+
+export const registrarServico = async (dados: ServicoInput) => {
+  const response = await fetch('/api/produtos/servicos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao registrar serviço.');
+  }
+  return response.json();
+};
+
+export const atualizarServico = async (id: number, dados: ServicoInput) => {
+  const response = await fetch(`/api/produtos/servicos?id=${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao atualizar serviço.');
+  }
+  return response.json();
+};
+
+export const excluirServico = async (id: number) => {
+  const response = await fetch(`/api/produtos/servicos?id=${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao excluir serviço.');
+  }
+  return response.json();
+};
+
+// Movimentações de Estoque
 export const buscarMovimentacoesEstoque = async (item_id: number): Promise<MovimentacaoEstoqueData[]> => {
   const response = await fetch(`/api/produtos/movimentacoes?item_id=${item_id}`);
   if (!response.ok) {
