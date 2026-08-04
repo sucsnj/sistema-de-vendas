@@ -205,6 +205,12 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           margin-bottom: 8px;
         }
 
+        .history-card:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
         .recent-sales-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -262,6 +268,13 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
         .history-item strong {
           display: block;
           margin-bottom: 6px;
+        }
+
+        .history-item:hover {
+          transform: translateY(-5px);
+          transform: scale(1.2);
+          background: var(--glass-surface);
+          border: 1px solid var(--border);
         }
 
         .summary-card:hover {

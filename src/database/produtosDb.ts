@@ -68,6 +68,19 @@ try {
       principal INTEGER NOT NULL DEFAULT 0 CHECK(principal IN (0, 1))
     );
 
+    CREATE TABLE IF NOT EXISTS servicos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      descricao TEXT,
+      categoria_id INTEGER NOT NULL REFERENCES categorias(id),
+      preco_venda REAL DEFAULT 0,
+      codigo_interno TEXT UNIQUE,
+      referencia TEXT UNIQUE,
+      duracao_minutos INTEGER DEFAULT 0,
+      data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+      data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS movimentacoes_estoque (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       item_id INTEGER NOT NULL REFERENCES itens(id) ON DELETE CASCADE,
@@ -294,6 +307,30 @@ export const deleteUnidadeMedida = (id: number) => {
   }
   return db.prepare('DELETE FROM unidades_medida WHERE id = ?').run(id);
 };
+
+export interface ServicoData {
+  id: number;
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos: number;
+  data_criacao: string;
+  data_atualizacao: string;
+  categoria_nome?: string;
+}
+
+export interface ServicoInput {
+  nome: string;
+  descricao?: string;
+  categoria_id: number;
+  preco_venda: number;
+  codigo_interno?: string;
+  referencia?: string;
+  duracao_minutos?: number;
+}
 
 export interface MovimentacaoEstoqueData {
   id: number;

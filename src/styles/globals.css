@@ -93,8 +93,8 @@ html.light {
   --foreground: #0f172a;
   --surface: rgba(255, 255, 255, 0.96);
   --surface-strong: #ffffff;
-  --surface-soft: rgba(241, 245, 249, 0.85);
-  --glass-surface: rgba(255, 255, 255, 0.92);
+  --surface-soft: rgba(255, 255, 255, 0.92);
+  --glass-surface: rgba(73, 110, 243, 0.85);
   --border: rgba(203, 213, 225, 0.6);
   --muted: #64748b;
   --accent: #3b82f6;
