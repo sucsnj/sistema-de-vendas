@@ -449,8 +449,8 @@ export interface ServicoData {
   referencia?: string;
   duracao_minutos: number;
   ativo: number;
-  data_criacao?: string;
-  data_atualizacao?: string;
+  data_criacao: string;
+  data_atualizacao: string;
   categoria_nome?: string;
 }
 
