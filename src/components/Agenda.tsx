@@ -142,7 +142,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
                     justify-content: space-between;
                     align-items: center;
                     padding: 14px 16px;
-                    border-radius: 18px;
+                    border-radius: 10px;
                     background: var(--surface-soft);
                 }
 

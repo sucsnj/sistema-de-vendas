@@ -243,7 +243,7 @@
 .contasPanel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 22px;
   margin-bottom: 15px;
   box-shadow: var(--shadow);
@@ -326,7 +326,7 @@
 
 .formActions button:first-of-type {
   background: var(--success);
-  color: var(--text-on-success);
+  color: var(--text-on-accent);
 }
 
 .formActions .secondary {
