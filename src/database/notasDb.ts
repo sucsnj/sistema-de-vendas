@@ -53,7 +53,7 @@ export const getSumNotasByYear = (ano: number) => {
   const stmt = db.prepare(`
     SELECT SUM(valor_nota) AS total
     FROM notas_detalhes
-    WHERE date(data_emissao) >= ? AND date(data_emissao) <= ?
+    WHERE substr(data_emissao, 1, 10) >= ? AND substr(data_emissao, 1, 10) <= ?
   `);
   const row = stmt.get(`${ano}-01-01`, `${ano}-12-31`) as { total: number | null };
   return row?.total ?? 0;
@@ -73,12 +73,11 @@ export const getNotasByValor = (valor: number) => {
 export const getNotasByPeriod = (ano: number, mes?: number) => {
   const startDate = `${ano}-${String(mes ?? 1).padStart(2, '0')}-01`;
   const endDate = mes ? parseDate(`${ano}-${mes}-01`).endOf('month').format('YYYY-MM-DD') : `${ano}-12-31`;
-  // const endDate = mes
-  //   ? `${ano}-${String(mes).padStart(2, '0')}-${new Date(ano, mes, 0).getDate()}`
-  //   : `${ano}-12-31`;
 
+  // Usa substr(data_emissao, 1, 10) para extrair YYYY-MM-DD diretamente da string
+  // sem passar pelo date() do SQLite, que interpreta offsets como UTC e troca o dia.
   const stmt = db.prepare(
-    'SELECT * FROM notas_detalhes WHERE date(data_emissao) >= ? AND date(data_emissao) <= ? ORDER BY data_emissao DESC, id DESC'
+    'SELECT * FROM notas_detalhes WHERE substr(data_emissao, 1, 10) >= ? AND substr(data_emissao, 1, 10) <= ? ORDER BY data_emissao DESC, id DESC'
   );
 
   return stmt.all(startDate, endDate) as any[];

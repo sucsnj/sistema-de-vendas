@@ -25,8 +25,15 @@ export function getLastDayOfMonth(year: number, month: number): number {
   return dayjs(`${year}-${month}-01`).endOf('month').date();
 }
 
-// Função genérica para criar um objeto dayjs já com timezone
+// Função genérica para criar um objeto dayjs já com timezone.
+// Se o valor já contém offset (ex: 2026-07-31T22:08:01-03:00), dayjs.tz(value, TZ)
+// ignoraria o offset e reinterpretaria como horário local — causando troca de dia.
+// Por isso usamos dayjs(value) primeiro (respeita o offset) e depois convertemos para TZ.
 export function parseDate(value: string) {
+  // Detecta se o valor tem offset explícito (Z ou ±HH:MM)
+  if (/[Zz]|[+-]\d{2}:\d{2}$/.test(value)) {
+    return dayjs(value).tz(TZ);
+  }
   return dayjs.tz(value, TZ);
 }
 
@@ -54,7 +61,13 @@ export function toDate(value: string | Date): Date | null {
       return d.isValid() ? d.toDate() : null;
     }
 
-    // ISO com horário
+    // ISO com offset explícito (ex: 2026-07-31T22:08:01-03:00)
+    if (/[Zz]|[+-]\d{2}:\d{2}$/.test(value)) {
+      const d = dayjs(value).tz(TZ);
+      if (d.isValid()) return d.toDate();
+    }
+
+    // ISO sem offset
     const iso = dayjs.tz(value, TZ);
     if (iso.isValid()) return iso.toDate();
 
@@ -98,7 +111,7 @@ export function formatDateString(
   value: string,
   format: string = 'DD/MM/YYYY'
 ): string {
-  const d = dayjs.tz(value, TZ);
+  const d = parseDate(value);
   return d.isValid() ? d.format(format) : '';
 }
 
@@ -106,7 +119,7 @@ export function formatDateISO(
   value: string,
   format: string = 'DD/MM/YYYY'
 ): string {
-  const d = dayjs.tz(value, TZ);
+  const d = parseDate(value);
   return d.isValid() ? d.format(format) : '';
 }
 
