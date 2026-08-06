@@ -19,7 +19,7 @@ npm run dev
 3. Acesse no navegador:
 
 ```bash
-http://localhost:${PORT:-3000}
+http://localhost:3000
 ```
 
 4. Para gerar o build de produção:
