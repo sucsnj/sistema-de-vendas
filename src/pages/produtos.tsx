@@ -14,6 +14,8 @@ import {
   buscarUnidadesMedida,
   buscarMovimentacoesEstoque,
   registrarMovimentacaoEstoque,
+  registrarServico,
+  atualizarServico,
   ItemData,
   BarcodeData,
   MovimentacaoEstoqueData,
@@ -22,7 +24,7 @@ import { parseNumber } from '../utils/number';
 import ProdutosList from '@/components/ProdutosList';
 import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
-import FormularioProduto from '@/components/FormularioProduto';
+import FormularioItem from '@/components/FormularioItem';
 import ModalCategoria from '@/components/ModalCategoria';
 import ModalMarca from '@/components/ModalMarca';
 import ModalProdExclusao from '@/components/ModalProdExclusao';
@@ -83,6 +85,7 @@ const ProdutosPage: React.FC = () => {
     unidadeMedidaId: 1,
     codigoInterno: '',
     referencia: '',
+    duracaoMinutos: '',
     ativo: 1,
   });
   const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
@@ -205,6 +208,7 @@ const ProdutosPage: React.FC = () => {
       unidadeMedidaId: 1,
       codigoInterno: '',
       referencia: '',
+      duracaoMinutos: '',
       ativo: 1,
     });
     setFormCodigosBarras([]);
@@ -333,16 +337,38 @@ const ProdutosPage: React.FC = () => {
       unidade_medida_id: Number(form.unidadeMedidaId),
       codigo_interno: form.codigoInterno.trim() || undefined,
       referencia: form.referencia.trim(),
+      duracao_minutos: Number(form.duracaoMinutos) || 0,
       ativo: form.ativo,
       codigos_barras: formCodigosBarras,
     };
+
+    const servicePayload = {
+      nome: form.nome.trim(),
+      descricao: form.descricao.trim() || undefined,
+      categoria_id: Number(form.categoriaId),
+      preco_venda: precoVendaValor,
+      codigo_interno: form.codigoInterno.trim() || undefined,
+      referencia: form.referencia.trim(),
+      duracao_minutos: Number(form.duracaoMinutos) || 0,
+    };
+
     try {
-      if (editingId) {
-        await atualizarProduto(editingId, payload);
-        showToast('Item atualizado com sucesso.', 'success');
+      if (form.tipo === 'SERVICO') {
+        if (editingId) {
+          await atualizarServico(editingId, servicePayload);
+          showToast('Serviço atualizado com sucesso.', 'success');
+        } else {
+          await registrarServico(servicePayload);
+          showToast('Serviço cadastrado com sucesso.', 'success');
+        }
       } else {
-        await registrarProduto(payload);
-        showToast('Item cadastrado com sucesso.', 'success');
+        if (editingId) {
+          await atualizarProduto(editingId, payload);
+          showToast('Item atualizado com sucesso.', 'success');
+        } else {
+          await registrarProduto(payload);
+          showToast('Item cadastrado com sucesso.', 'success');
+        }
       }
       resetForm();
       carregarItens();
@@ -368,6 +394,7 @@ const ProdutosPage: React.FC = () => {
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
       referencia: item.referencia || '',
+      duracaoMinutos: 'duracao_minutos' in item ? String((item as any).duracao_minutos) : '',
       ativo: item.ativo,
     });
     setFormCodigosBarras(item.codigos_barras || []);
@@ -590,12 +617,11 @@ const ProdutosPage: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmitForm}>
-                <FormularioProduto
+                <FormularioItem
                   editarProdutoId={editingId}
                   form={form}
                   setForm={setForm}
                   options={options}
-                  setOptions={setOptions}
                   inputRef={nomeInputRef}
                   actions={ {
                     abrirModalCategoria: () => setModalCategoriaOpen(true),

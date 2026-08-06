@@ -2,7 +2,7 @@ import styles from '../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { parseNumber } from '../utils/number';
-import { formatCurrency, formatCurrencyNumber } from '../utils/formatter';
+import { formatCurrencyNumber } from '../utils/formatter';
 import {
     CategoriaData,
     MarcaData,
@@ -24,6 +24,7 @@ export interface ProdutoFormData {
     unidadeMedidaId: number;
     codigoInterno: string;
     referencia: string;
+    duracaoMinutos: string;
     ativo: number;
 }
 
@@ -52,7 +53,6 @@ interface FormularioProdutoProps {
     form: ProdutoFormData;
     setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
     options: ProdutoOptions;
-    setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
     actions: ProdutoActions;
     inputRef: React.RefObject<HTMLInputElement | null>;
 }
@@ -62,28 +62,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
     form,
     setForm,
     options,
-    setOptions,
     inputRef,
     actions,
 }) => {
     return (
         <div className="CadastroEdicao">
             <div className={styles.formHeader}>
-                <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="form-tipo">
-                        Tipo:
-                    </label>
-                    <select
-                        id="form-tipo"
-                        className={styles.selectField}
-                        value={form.tipo}
-                        onChange={(e) => setForm(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' }))}
-                    >
-                        <option value="PRODUTO">Produto</option>
-                        <option value="SERVICO">Serviço</option>
-                    </select>
-                </div>
-
                 <div className={styles.formGroup}>
                     <label className={styles.formLabel} htmlFor="form-ativo">
                         Ativo:
