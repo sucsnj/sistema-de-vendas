@@ -167,6 +167,35 @@ try {
   console.error('Erro ao inicializar tabelas e seeds de produtos:', error);
 }
 
+const syncSharedAutoincrementSequence = () => {
+  const rows = db.prepare("SELECT name, seq FROM sqlite_sequence WHERE name IN ('itens', 'servicos')").all() as Array<{ name: string; seq: number | null }>;
+  const seqMap = new Map(rows.map(({ name, seq }) => [name, Number(seq) || 0]));
+
+  if (!seqMap.has('itens')) {
+    db.prepare("INSERT INTO sqlite_sequence (name, seq) VALUES ('itens', 0)").run();
+    seqMap.set('itens', 0);
+  }
+
+  if (!seqMap.has('servicos')) {
+    db.prepare("INSERT INTO sqlite_sequence (name, seq) VALUES ('servicos', 0)").run();
+    seqMap.set('servicos', 0);
+  }
+
+  const maxExistingId = Math.max(
+    (db.prepare('SELECT MAX(id) as max_id FROM itens').get() as { max_id: number | null }).max_id ?? 0,
+    (db.prepare('SELECT MAX(id) as max_id FROM servicos').get() as { max_id: number | null }).max_id ?? 0
+  );
+
+  const sharedSeq = Math.max(maxExistingId, seqMap.get('itens') ?? 0, seqMap.get('servicos') ?? 0);
+
+  db.prepare("UPDATE sqlite_sequence SET seq = ? WHERE name = 'itens'").run(sharedSeq);
+  db.prepare("UPDATE sqlite_sequence SET seq = ? WHERE name = 'servicos'").run(sharedSeq);
+
+  return sharedSeq;
+};
+
+syncSharedAutoincrementSequence();
+
 // Helpers para Categorias
 export const getCategorias = () => {
   return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as any[];
@@ -565,6 +594,8 @@ export const getServicoById = (id: number) => {
 };
 
 export const insertServico = db.transaction((servicoData: ServicoInput) => {
+  syncSharedAutoincrementSequence();
+
   const stmt = db.prepare(`
     INSERT INTO servicos (
       nome,
@@ -848,6 +879,8 @@ export const getItemById = (id: number) => {
 };
 
 export const insertItem = db.transaction((itemData: ItemInput) => {
+  syncSharedAutoincrementSequence();
+
   const itemStmt = db.prepare(`
     INSERT INTO itens (tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, ativo, data_criacao, data_atualizacao)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
