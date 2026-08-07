@@ -675,51 +675,51 @@ export const getItens = (options: {
   const pageSize = options.pageSize || 10;
   const offset = (page - 1) * pageSize;
 
-  const queryConditions: string[] = [];
-  const params: any[] = [];
+  const includeProducts = options.tipo !== 'SERVICO';
+  const includeServices = options.tipo !== 'PRODUTO';
 
-  if (options.tipo && options.tipo !== 'TODOS') {
-    queryConditions.push('i.tipo = ?');
-    params.push(options.tipo);
-  }
+  const productConditions: string[] = [];
+  const productParams: any[] = [];
+  const serviceConditions: string[] = [];
+  const serviceParams: any[] = [];
 
   if (options.categoria_id) {
-    queryConditions.push('i.categoria_id = ?');
-    params.push(options.categoria_id);
+    productConditions.push('i.categoria_id = ?');
+    productParams.push(options.categoria_id);
+    serviceConditions.push('s.categoria_id = ?');
+    serviceParams.push(options.categoria_id);
   }
 
   if (options.marca_id) {
-    queryConditions.push('i.marca_id = ?');
-    params.push(options.marca_id);
+    productConditions.push('i.marca_id = ?');
+    productParams.push(options.marca_id);
   }
 
   if (options.fornecedor_id) {
-    queryConditions.push('i.fornecedor_id = ?');
-    params.push(options.fornecedor_id);
+    productConditions.push('i.fornecedor_id = ?');
+    productParams.push(options.fornecedor_id);
   }
 
   if (options.ativo !== undefined) {
-    queryConditions.push('i.ativo = ?');
-    params.push(options.ativo);
+    productConditions.push('i.ativo = ?');
+    productParams.push(options.ativo);
+    serviceConditions.push('s.ativo = ?');
+    serviceParams.push(options.ativo);
   }
 
   if (options.search && options.search.trim()) {
     const searchLike = `%${options.search.trim()}%`;
-    queryConditions.push(
-      '(i.nome LIKE ? OR i.codigo_interno LIKE ? OR i.referencia LIKE ? OR i.id IN (SELECT item_id FROM item_codigos_barras WHERE codigo_barras LIKE ?))'
-    );
-    params.push(searchLike, searchLike, searchLike, searchLike);
+    productConditions.push('(i.nome LIKE ? OR i.codigo_interno LIKE ? OR i.referencia LIKE ? OR i.id IN (SELECT item_id FROM item_codigos_barras WHERE codigo_barras LIKE ?))');
+    productParams.push(searchLike, searchLike, searchLike, searchLike);
+    serviceConditions.push('(s.nome LIKE ? OR s.codigo_interno LIKE ? OR s.referencia LIKE ?)');
+    serviceParams.push(searchLike, searchLike, searchLike);
   }
 
-  const whereClause = queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';
+  const productWhereClause = productConditions.length > 0 ? `WHERE ${productConditions.join(' AND ')}` : '';
+  const serviceWhereClause = serviceConditions.length > 0 ? `WHERE ${serviceConditions.join(' AND ')}` : '';
 
-  // Get total count
-  const countQuery = `SELECT COUNT(*) as count FROM itens i ${whereClause}`;
-  const totalCount = (db.prepare(countQuery).get(...params) as { count: number }).count;
-
-  // Get items list with joins
-  const itemsQuery = `
-    SELECT 
+  const productQuery = `
+    SELECT
       i.id,
       i.tipo,
       i.nome,
@@ -740,23 +740,64 @@ export const getItens = (options: {
       c.nome as categoria_nome,
       m.nome as marca_nome,
       u.sigla as unidade_medida_sigla,
-      u.descricao as unidade_medida_descricao
+      u.descricao as unidade_medida_descricao,
+      NULL as duracao_minutos
     FROM itens i
     JOIN categorias c ON i.categoria_id = c.id
     JOIN marcas m ON i.marca_id = m.id
     JOIN fornecedores f ON i.fornecedor_id = f.id
     JOIN unidades_medida u ON i.unidade_medida_id = u.id
-    ${whereClause}
-    ORDER BY i.nome ASC
+    ${productWhereClause}
+  `;
+
+  const serviceQuery = `
+    SELECT
+      s.id,
+      'SERVICO' as tipo,
+      s.nome,
+      s.descricao,
+      s.categoria_id,
+      21 as unidade_medida_id,
+      1 as marca_id,
+      1 as fornecedor_id,
+      0 as preco_compra,
+      0 as margem_lucro,
+      s.preco_venda,
+      0 as estoque,
+      s.codigo_interno,
+      s.referencia,
+      s.ativo,
+      s.data_criacao,
+      s.data_atualizacao,
+      c.nome as categoria_nome,
+      NULL as marca_nome,
+      NULL as unidade_medida_sigla,
+      NULL as unidade_medida_descricao,
+      s.duracao_minutos
+    FROM servicos s
+    JOIN categorias c ON s.categoria_id = c.id
+    ${serviceWhereClause}
+  `;
+
+  const combinedQuery = [
+    includeProducts ? productQuery : null,
+    includeServices ? serviceQuery : null,
+  ].filter(Boolean).join(' UNION ALL ');
+
+  const countQuery = `SELECT COUNT(*) as count FROM (${combinedQuery}) as combined_items`;
+  const totalCount = (db.prepare(countQuery).get(...productParams, ...serviceParams) as { count: number }).count;
+
+  const itemsQuery = `
+    SELECT * FROM (${combinedQuery}) as combined_items
+    ORDER BY nome ASC
     LIMIT ? OFFSET ?
   `;
 
-  const items = db.prepare(itemsQuery).all(...params, pageSize, offset) as any[];
+  const items = db.prepare(itemsQuery).all(...productParams, ...serviceParams, pageSize, offset) as any[];
 
-  // Fetch barcodes for each item
   const barcodesStmt = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC');
   for (const item of items) {
-    item.codigos_barras = barcodesStmt.all(item.id);
+    item.codigos_barras = item.tipo === 'PRODUTO' ? barcodesStmt.all(item.id) : [];
   }
 
   return {

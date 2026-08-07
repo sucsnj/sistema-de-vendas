@@ -73,21 +73,25 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                             </td>
                                             <td>{item.codigo_interno || '—'}</td>
                                             <td>
-                                                <span>{principalBarcode}</span>
-                                                {extraBarcodesCount > 0 && (
-                                                    <span
-                                                        style={{
-                                                            marginLeft: '5px',
-                                                            fontSize: '0.7rem',
-                                                            padding: '2px 5px',
-                                                            backgroundColor: 'var(--border)',
-                                                            borderRadius: '4px',
-                                                            color: 'var(--muted)',
-                                                            fontWeight: 'bold',
-                                                        }}
-                                                    >
-                                                        +{extraBarcodesCount}
-                                                    </span>
+                                                {item.tipo === 'SERVICO' ? '—' : (
+                                                    <>
+                                                        <span>{principalBarcode}</span>
+                                                        {extraBarcodesCount > 0 && (
+                                                            <span
+                                                                style={{
+                                                                    marginLeft: '5px',
+                                                                    fontSize: '0.7rem',
+                                                                    padding: '2px 5px',
+                                                                    backgroundColor: 'var(--border)',
+                                                                    borderRadius: '4px',
+                                                                    color: 'var(--muted)',
+                                                                    fontWeight: 'bold',
+                                                                }}
+                                                            >
+                                                                +{extraBarcodesCount}
+                                                            </span>
+                                                        )}
+                                                    </>
                                                 )}
                                             </td>
                                             <td>
@@ -107,7 +111,9 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                                 )}
                                             </td>
                                             <td>R$ {formatCurrency(item.preco_venda || 0, 2)}</td>
-                                            <td>{item.estoque} {item.unidade_medida_sigla}</td>
+                                            <td>
+                                                {item.tipo === 'SERVICO' ? '—' : `${item.estoque} ${item.unidade_medida_sigla || ''}`.trim()}
+                                            </td>
 
                                             <td>
                                                 <span

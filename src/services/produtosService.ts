@@ -19,6 +19,7 @@ export interface ItemData {
   codigo_interno?: string;
   referencia: string;
   ativo: number;
+  duracao_minutos?: number;
   data_criacao?: string;
   data_atualizacao?: string;
   categoria_nome?: string;
@@ -173,11 +174,24 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   const response = await fetch('/api/produtos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'toggle-status', id, ativo }),
+    body: JSON.stringify({ action: 'toggle-status', id, ativo, tipo: 'PRODUTO' }),
   });
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || 'Erro ao alterar status do produto.');
+  }
+  return response.json();
+};
+
+export const toggleStatusServico = async (id: number, ativo: number) => {
+  const response = await fetch('/api/produtos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'toggle-status', id, ativo, tipo: 'SERVICO' }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao alterar status do serviço.');
   }
   return response.json();
 };

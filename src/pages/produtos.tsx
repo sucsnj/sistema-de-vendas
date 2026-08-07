@@ -8,6 +8,7 @@ import {
   atualizarProduto,
   excluirProduto,
   toggleStatusProduto,
+  toggleStatusServico,
   buscarCategorias,
   buscarMarcas,
   buscarFornecedores,
@@ -16,6 +17,7 @@ import {
   registrarMovimentacaoEstoque,
   registrarServico,
   atualizarServico,
+  excluirServico,
   ItemData,
   BarcodeData,
   MovimentacaoEstoqueData,
@@ -291,17 +293,19 @@ const ProdutosPage: React.FC = () => {
       showToast('Selecione uma categoria.', 'error');
       return;
     }
-    if (!form.marcaId) {
-      showToast('Selecione uma marca.', 'error');
-      return;
-    }
-    if (!form.fornecedorId) {
-      showToast('Selecione um fornecedor.', 'error');
-      return;
-    }
-    if (!form.unidadeMedidaId && form.tipo === 'PRODUTO') {
-      showToast('Selecione uma unidade de medida.', 'error');
-      return;
+    if (form.tipo === 'PRODUTO') {
+      if (!form.marcaId) {
+        showToast('Selecione uma marca.', 'error');
+        return;
+      }
+      if (!form.fornecedorId) {
+        showToast('Selecione um fornecedor.', 'error');
+        return;
+      }
+      if (!form.unidadeMedidaId) {
+        showToast('Selecione uma unidade de medida.', 'error');
+        return;
+      }
     }
 
     const precoCompraRaw = parseNumber(form.precoCompra);
@@ -328,13 +332,13 @@ const ProdutosPage: React.FC = () => {
       nome: form.nome.trim(),
       descricao: form.descricao.trim() || undefined,
       categoria_id: Number(form.categoriaId),
-      marca_id: Number(form.marcaId),
-      fornecedor_id: Number(form.fornecedorId),
+      marca_id: Number(form.marcaId || 1),
+      fornecedor_id: Number(form.fornecedorId || 1),
       preco_compra: precoCompraValor,
       margem_lucro: margemLucroValor,
       preco_venda: precoVendaValor,
       estoque: estoqueValor,
-      unidade_medida_id: Number(form.unidadeMedidaId),
+      unidade_medida_id: Number(form.unidadeMedidaId || 1),
       codigo_interno: form.codigoInterno.trim() || undefined,
       referencia: form.referencia.trim(),
       duracao_minutos: Number(form.duracaoMinutos) || 0,
@@ -410,7 +414,11 @@ const ProdutosPage: React.FC = () => {
   const handleToggleStatus = async (item: ItemData) => {
     const novoStatus = item.ativo === 1 ? 0 : 1;
     try {
-      await toggleStatusProduto(item.id, novoStatus);
+      if (item.tipo === 'SERVICO') {
+        await toggleStatusServico(item.id, novoStatus);
+      } else {
+        await toggleStatusProduto(item.id, novoStatus);
+      }
       showToast(
         `Item ${novoStatus === 1 ? 'ativado' : 'desativado'} com sucesso.`,
         'success'
@@ -431,7 +439,11 @@ const ProdutosPage: React.FC = () => {
   const handleConfirmExcluir = async () => {
     if (!itemParaExcluir) return;
     try {
-      await excluirProduto(itemParaExcluir.id);
+      if (itemParaExcluir.tipo === 'SERVICO') {
+        await excluirServico(itemParaExcluir.id);
+      } else {
+        await excluirProduto(itemParaExcluir.id);
+      }
       showToast('Item excluído com sucesso.', 'success');
       setDeleteConfirmOpen(false);
       setItemParaExcluir(null);

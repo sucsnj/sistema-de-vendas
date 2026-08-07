@@ -2,10 +2,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   getItens,
   getItemById,
+  getServicoById,
   insertItem,
   updateItem,
   deleteItem,
   toggleItemStatus,
+  toggleServicoStatus,
+  deleteServico,
   checkDuplicateCodigoInterno,
   checkDuplicateBarcode,
 } from '../../database/produtosDb';
@@ -49,6 +52,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           return res.status(400).json({ error: 'Valor de status ativo (0 ou 1) é inválido.' });
         }
         
+        if (tipo === 'SERVICO') {
+          const existing = getServicoById(id);
+          if (!existing) {
+            return res.status(404).json({ error: 'Serviço não encontrado.' });
+          }
+          toggleServicoStatus(id, ativo);
+          return res.status(200).json({ message: `Serviço ${ativo === 1 ? 'ativado' : 'desativado'} com sucesso.` });
+        }
+
         const existing = getItemById(id);
         if (!existing) {
           return res.status(404).json({ error: 'Item não encontrado.' });
@@ -269,9 +281,18 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'DELETE') {
     try {
-      const { id } = req.body;
+      const { id, tipo } = req.body;
       if (!id) {
         return res.status(400).json({ error: 'ID é obrigatório para exclusão.' });
+      }
+
+      if (tipo === 'SERVICO') {
+        const existing = getServicoById(id);
+        if (!existing) {
+          return res.status(404).json({ error: 'Serviço não encontrado.' });
+        }
+        deleteServico(id);
+        return res.status(200).json({ message: 'Serviço excluído com sucesso.' });
       }
 
       const existing = getItemById(id);

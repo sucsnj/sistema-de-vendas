@@ -115,42 +115,44 @@ const FormularioServico: React.FC<FormularioServicoProps> = ({
         </div>
       </div>
 
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel} htmlFor="form-preco-venda">
-          Preço Venda:
-        </label>
-        <input
-          id="form-preco-venda"
-          type="text"
-          inputMode="decimal"
-          className={styles.inputField}
-          placeholder="0,00"
-          value={form.precoVenda}
-          onChange={(e) => {
-            const precoVenda = e.target.value;
-            const precoValor = parseNumber(precoVenda);
-            if (!Number.isNaN(precoValor) && precoValor >= 0) {
-              setForm(prev => ({ ...prev, precoVenda: String(formatCurrencyNumber(precoValor, 2)) }));
-              return;
-            }
-            setForm(prev => ({ ...prev, precoVenda }));
-          }}
-        />
-      </div>
+      <div className={styles.valoresGroupServico}>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="form-preco-venda">
+            Preço Venda:
+          </label>
+          <input
+            id="form-preco-venda"
+            type="text"
+            inputMode="decimal"
+            className={styles.inputField}
+            placeholder="0,00"
+            value={form.precoVenda}
+            onChange={(e) => {
+              const precoVenda = e.target.value;
+              const precoValor = parseNumber(precoVenda);
+              if (!Number.isNaN(precoValor) && precoValor >= 0) {
+                setForm(prev => ({ ...prev, precoVenda: String(formatCurrencyNumber(precoValor, 2)) }));
+                return;
+              }
+              setForm(prev => ({ ...prev, precoVenda }));
+            }}
+          />
+        </div>
 
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel} htmlFor="form-duracao">
-          Duração (minutos):
-        </label>
-        <input
-          id="form-duracao"
-          type="text"
-          inputMode="numeric"
-          className={styles.inputField}
-          placeholder="Ex: 60"
-          value={form.duracaoMinutos}
-          onChange={(e) => setForm(prev => ({ ...prev, duracaoMinutos: e.target.value }))}
-        />
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="form-duracao">
+            Duração (minutos):
+          </label>
+          <input
+            id="form-duracao"
+            type="text"
+            inputMode="numeric"
+            className={styles.inputField}
+            placeholder="Ex: 60"
+            value={form.duracaoMinutos}
+            onChange={(e) => setForm(prev => ({ ...prev, duracaoMinutos: e.target.value }))}
+          />
+        </div>
       </div>
 
       <div className={styles.formGroup}>
