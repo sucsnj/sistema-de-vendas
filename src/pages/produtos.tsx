@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
+import { useQueryClient } from '@tanstack/react-query';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
 import {
@@ -37,6 +38,7 @@ import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
 import ModalUnidadeMedida from '@/components/ModalUnidadeMedida';
 import ModalUnidadeMedidaEdit from '@/components/ModalUnidadeMedidaEdit';
 import ModalAjusteEstoque from '@/components/ModalAjusteEstoque';
+import ModalImportItens from '@/components/ModalImportItens';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
 import { FiltrosState } from '@/components/Filtros';
 import { useCategoria } from '@/hooks/useCategoria';
@@ -45,6 +47,9 @@ import { useFornecedor } from '@/hooks/useFornecedor';
 import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
 
 const ProdutosPage: React.FC = () => {
+
+  const queryClient = useQueryClient();
+
   // Lista de itens e paginação
   const [items, setItems] = useState<ItemData[]>([]);
   const [total, setTotal] = useState(0);
@@ -101,6 +106,9 @@ const ProdutosPage: React.FC = () => {
   // Modal de confirmação de exclusão
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemParaExcluir, setItemParaExcluir] = useState<ItemData | null>(null);
+
+  // Modal de Importação XML
+  const [modalImportOpen, setModalImportOpen] = useState(false);
 
   // Toast notifications
   const [toastOpen, setToastOpen] = useState(false);
@@ -561,6 +569,11 @@ const ProdutosPage: React.FC = () => {
     setItemParaExcluir,
   });
 
+  // Função para importação de XML
+  const handleImportXML = () => {
+    setModalImportOpen(true);
+  };
+
   return (
     <>
       <Head>
@@ -607,20 +620,6 @@ const ProdutosPage: React.FC = () => {
             />
           </div>
 
-          {/* Botão para adicionar produto/serviço */}
-          {/* <div>
-            <button
-              className={styles.buttonAdd}
-              onClick={() => {
-                setEditingId(null);
-                resetForm();
-                nomeInputRef.current?.focus();
-                setMostrarFormulario(true);
-              }}
-            >Novo
-            </button>
-          </div> */}
-
           {/* Coluna Direita: Formulário de Cadastro/Edição */}
           <div className={styles.produtosGridRight}>
             <section className="glass-form" aria-labelledby="form-title">
@@ -630,12 +629,13 @@ const ProdutosPage: React.FC = () => {
 
               <form onSubmit={handleSubmitForm}>
                 <FormularioItem
+                  onImportXML={handleImportXML}
                   editarProdutoId={editingId}
                   form={form}
                   setForm={setForm}
                   options={options}
                   inputRef={nomeInputRef}
-                  actions={ {
+                  actions={{
                     abrirModalCategoria: () => setModalCategoriaOpen(true),
                     abrirModalMarca: () => setModalMarcaOpen(true),
                     abrirModalFornecedor: () => setModalFornecedorOpen(true),
@@ -838,6 +838,16 @@ const ProdutosPage: React.FC = () => {
             onClose={() => {
               setDeleteConfirmOpen(false);
               setItemParaExcluir(null);
+            }}
+          />
+        )}
+
+        {/* Modal: Importação XML */}
+        {modalImportOpen && (
+          <ModalImportItens
+            onClose={() => setModalImportOpen(false)}
+            onImportSuccess={() => {
+              carregarItens();
             }}
           />
         )}

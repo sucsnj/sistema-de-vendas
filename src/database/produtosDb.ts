@@ -687,7 +687,7 @@ export interface ItemInput {
   preco_venda: number;
   estoque: number;
   codigo_interno?: string;
-  referencia: string;
+  referencia?: string | null;
   ativo?: number;
   codigos_barras?: BarcodeData[];
 }
@@ -878,6 +878,16 @@ export const getItemById = (id: number) => {
   return item;
 };
 
+export const getItemByBarcode = (barcode: string) => {
+  const codigo = String(barcode || '').trim();
+  if (!codigo) return undefined;
+
+  const row = db.prepare('SELECT item_id FROM item_codigos_barras WHERE codigo_barras = ?').get(codigo) as { item_id: number } | undefined;
+  if (!row) return undefined;
+
+  return getItemById(row.item_id);
+};
+
 export const insertItem = db.transaction((itemData: ItemInput) => {
   syncSharedAutoincrementSequence();
 
@@ -897,9 +907,9 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    0,
+    itemData.estoque,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
-    itemData.referencia,
+    itemData.referencia ? itemData.referencia.trim() : null,
     itemData.ativo !== undefined ? itemData.ativo : 1
   );
 
@@ -971,7 +981,7 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    itemData.referencia,
+    itemData.referencia ? itemData.referencia.trim() : null,
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id
   );

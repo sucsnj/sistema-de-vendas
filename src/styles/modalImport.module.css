@@ -1,0 +1,266 @@
+/* ModalImport.module.css */
+
+.modalLarge {
+  max-width: 820px !important;
+  width: 95% !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover {
+  background: var(--surface-strong);
+  color: var(--foreground);
+}
+
+/* Drop zone */
+.dropZone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: center;
+  background: var(--surface-soft);
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  outline: none;
+}
+
+.dropZone:hover,
+.dropZone:focus {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: scale(1.01);
+}
+
+.dropZoneActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: scale(1.01);
+}
+
+.dropIcon {
+  font-size: 3rem !important;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+.dropText {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Loading */
+.loadingArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid var(--danger-strong);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+
+/* File info bar */
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  flex-wrap: wrap;
+}
+
+.fileName {
+  font-weight: 600;
+  color: var(--foreground);
+  font-family: monospace;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prodCount {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.trocarBtn {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Success resume banner */
+.resumoBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid var(--success-strong);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+
+/* Table */
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.importTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.importTable th {
+  background: var(--surface-strong);
+  color: var(--foreground);
+  font-weight: 700;
+  padding: 10px 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.importTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  vertical-align: middle;
+}
+
+.importTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.importTable tbody tr:hover {
+  background: var(--surface-soft);
+}
+
+/* Row status tints */
+.row_ok {
+  background: var(--success-soft) !important;
+}
+
+.row_duplicado {
+  background: var(--warning-soft, rgba(234, 179, 8, 0.08)) !important;
+}
+
+.row_erro {
+  background: var(--danger-soft) !important;
+}
+
+.mono {
+  font-family: monospace;
+  font-size: 0.78rem;
+}
+
+/* Status badges */
+.badgeIdle,
+.badgeOk,
+.badgeDup,
+.badgeErro {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgeIdle {
+  background: var(--surface-strong);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.badgeOk {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid var(--success-strong);
+}
+
+.badgeDup {
+  background: rgba(234, 179, 8, 0.12);
+  color: #a16207;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.badgeErro {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid var(--danger-strong);
+}
