@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertItem, getItemByBarcode, checkDuplicateBarcode } from '../../../database/produtosDb';
+import { insertItem, getItemByBarcode, checkDuplicateBarcode, insertMovimentacaoEstoque } from '../../../database/produtosDb';
 import { parseNumber } from '../../../utils/number';
 import { parseStringPromise } from 'xml2js';
 
@@ -27,6 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const itens = infNFe.det || [];
             const produtos: any[] = [];
 
+            const ide = infNFe.ide?.[0] || {};
+            const tpNF = ide.tpNF?.[0]; // 0=entrada, 1=saída do fornecedor
+            // Na importação de nota (mesmo sendo saída do fornecedor), para a loja local é um AJUSTE ou ENTRADA para somar no estoque.
+            const tipoMovimentacao = 'ENTRADA';
+
             for (let i = 0; i < itens.length; i++) {
                 const prod = itens[i].prod[0];
 
@@ -44,7 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                          descricao,
                          unidadeMedida,
                          quantidade,
-                         valorUnitario
+                         valorUnitario,
+                         tipoMovimentacao
                      });
                 } else if (existe && ean) {
                      existe.quantidade += quantidade;
@@ -56,13 +62,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // MODO 2: Importar um produto específico
         if (importar && produto) {
-            const { ean, descricao, unidadeMedida, quantidade, valorUnitario } = produto;
+            const { ean, descricao, unidadeMedida, quantidade, valorUnitario, tipoMovimentacao } = produto;
 
             // 1. Verifica se já existe produto com esse EAN (código de barras)
             if (ean) {
                 const itemExistente = getItemByBarcode(ean);
                 if (itemExistente) {
-                    return res.status(400).json({ error: `Produto já existe (EAN: ${ean})`, duplicado: true });
+                    insertMovimentacaoEstoque({
+                        item_id: itemExistente.id,
+                        tipo: tipoMovimentacao || 'ENTRADA',
+                        quantidade,
+                        descricao: 'Importação de XML de NF-e',
+                    });
+                    return res.status(200).json({ sucesso: true, id: itemExistente.id, estoqueAtualizado: true });
                 }
                 const duplicateInBarcodesTable = checkDuplicateBarcode([ean]);
                 if (duplicateInBarcodesTable) {

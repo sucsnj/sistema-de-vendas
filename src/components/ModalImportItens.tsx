@@ -23,7 +23,7 @@ interface ModalImportItensProps {
     onImportSuccess: () => void;
 }
 
-type StatusItem = 'idle' | 'ok' | 'duplicado' | 'erro';
+type StatusItem = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
 
 interface ItemComStatus extends ProdutoImportado {
     status: StatusItem;
@@ -122,7 +122,11 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                 if (!response.ok || result.error) {
                     resultados[i] = { ...produto, status: result.duplicado ? 'duplicado' : 'erro', mensagem: result.error };
                 } else {
-                    resultados[i] = { ...produto, status: 'ok' };
+                    if (result.estoqueAtualizado) {
+                         resultados[i] = { ...produto, status: 'estoque_atualizado', mensagem: 'Estoque atualizado com sucesso' };
+                    } else {
+                         resultados[i] = { ...produto, status: 'ok' };
+                    }
                 }
             } catch {
                 resultados[i] = { ...produto, status: 'erro', mensagem: 'Falha na requisição' };
@@ -136,6 +140,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
     };
 
     const totalOk = produtos.filter((p) => p.status === 'ok').length;
+    const totalEstAtualizado = produtos.filter((p) => p.status === 'estoque_atualizado').length;
     const totalDup = produtos.filter((p) => p.status === 'duplicado').length;
     const totalErro = produtos.filter((p) => p.status === 'erro').length;
 
@@ -231,6 +236,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                 <FileDownloadDoneIcon />
                                 <span>
                                     Importação concluída: <strong>{totalOk}</strong> inserido(s)
+                                    {totalEstAtualizado > 0 && <>, <strong>{totalEstAtualizado}</strong> estoque atualizado</>}
                                     {totalDup > 0 && <>, <strong>{totalDup}</strong> duplicado(s)</>}
                                     {totalErro > 0 && <>, <strong>{totalErro}</strong> erro(s)</>}
                                 </span>
@@ -269,6 +275,11 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                                 {p.status === 'ok' && (
                                                     <span className={importStyles.badgeOk}>
                                                         <CheckCircleOutlineIcon fontSize="inherit" /> Importado
+                                                    </span>
+                                                )}
+                                                {p.status === 'estoque_atualizado' && (
+                                                    <span className={importStyles.badgeEstoqueAtualizado} title={p.mensagem}>
+                                                        <CheckCircleOutlineIcon fontSize="inherit" /> Est. Atualizado
                                                     </span>
                                                 )}
                                                 {p.status === 'duplicado' && (

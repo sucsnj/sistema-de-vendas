@@ -907,7 +907,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
-    itemData.estoque,
+    0, // Inicializa com 0 para que a movimentação some a quantidade correta depois
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
     itemData.referencia ? itemData.referencia.trim() : null,
     itemData.ativo !== undefined ? itemData.ativo : 1

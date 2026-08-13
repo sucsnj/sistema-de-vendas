@@ -217,6 +217,10 @@
   background: var(--warning-soft, rgba(234, 179, 8, 0.08)) !important;
 }
 
+.row_estoque_atualizado {
+  background: rgba(56, 189, 248, 0.08) !important;
+}
+
 .row_erro {
   background: var(--danger-soft) !important;
 }
@@ -230,7 +234,8 @@
 .badgeIdle,
 .badgeOk,
 .badgeDup,
-.badgeErro {
+.badgeErro,
+.badgeEstoqueAtualizado {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -263,4 +268,10 @@
   background: var(--danger-soft);
   color: var(--danger);
   border: 1px solid var(--danger-strong);
+}
+
+.badgeEstoqueAtualizado {
+  background: rgba(56, 189, 248, 0.12);
+  color: #0284c7;
+  border: 1px solid rgba(56, 189, 248, 0.4);
 }
