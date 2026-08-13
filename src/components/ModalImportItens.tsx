@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useFocusTrap } from '../utils/focus';
 import styles from '../styles/produtos.module.css';
 import importStyles from '../styles/modalImport.module.css';
@@ -21,6 +21,7 @@ export interface ProdutoImportado {
 interface ModalImportItensProps {
     onClose: () => void;
     onImportSuccess: () => void;
+    initialFile?: File | null;
 }
 
 type StatusItem = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
@@ -30,7 +31,7 @@ interface ItemComStatus extends ProdutoImportado {
     mensagem?: string;
 }
 
-const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess }) => {
+const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess, initialFile }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -82,6 +83,12 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        if (initialFile) {
+            processarArquivo(initialFile);
+        }
+    }, [initialFile, processarArquivo]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

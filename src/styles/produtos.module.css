@@ -491,7 +491,6 @@
 
 .formHeader {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* faz ocupar o espaço disponível*/
   gap: 16px;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -499,7 +498,7 @@
 
 .formGroupHeader {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 4fr 5fr;
   gap: 16px;
   margin-top: 15px;
   margin-bottom: 15px;

@@ -109,6 +109,7 @@ const ProdutosPage: React.FC = () => {
 
   // Modal de Importação XML
   const [modalImportOpen, setModalImportOpen] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
 
   // Toast notifications
   const [toastOpen, setToastOpen] = useState(false);
@@ -570,7 +571,8 @@ const ProdutosPage: React.FC = () => {
   });
 
   // Função para importação de XML
-  const handleImportXML = () => {
+  const handleImportXML = (file?: File) => {
+    setImportFile(file || null);
     setModalImportOpen(true);
   };
 
@@ -845,7 +847,11 @@ const ProdutosPage: React.FC = () => {
         {/* Modal: Importação XML */}
         {modalImportOpen && (
           <ModalImportItens
-            onClose={() => setModalImportOpen(false)}
+            initialFile={importFile}
+            onClose={() => {
+              setModalImportOpen(false);
+              setImportFile(null);
+            }}
             onImportSuccess={() => {
               carregarItens();
             }}
