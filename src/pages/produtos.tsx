@@ -396,9 +396,9 @@ const ProdutosPage: React.FC = () => {
       ativo: form.ativo,
       codigos_barras: formCodigosBarras,
       unidades_medida: form.unidadesMedida.map(u => ({
-        unidade_medida_id: u.unidadeMedidaId,
-        multiplicador_unidade: u.multiplicadorUnidade,
-        principal: u.principal
+        unidade_medida_id: Number(u.unidadeMedidaId),
+        multiplicador_unidade: parseNumber(u.multiplicadorUnidade) || 1,
+        principal: u.principal ? 1 : 0
       })),
     };
 
