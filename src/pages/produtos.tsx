@@ -850,35 +850,22 @@ const ProdutosPage: React.FC = () => {
             setDescricao={setAjusteDescricao}
             movimentacoes={movimentacoesEstoque}
             movimentacoesLoading={movimentacoesLoading}
-            onSave={async () => {
+            onSave={() => {
               const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
               if (isNaN(quantidadeAjusteNumero)) {
                 showToast('Ajuste de estoque deve ser um número válido.', 'error');
                 return;
               }
 
-              const movimento = {
-                item_id: editingId,
-                tipo: 'AJUSTE' as const,
-                quantidade: quantidadeAjusteNumero,
-                descricao: ajusteDescricao,
-              };
-              try {
-                await registrarMovimentacaoEstoque(movimento);
-                showToast('Ajuste de estoque registrado.', 'success');
-                setModalAjusteOpen(false);
-                setAjusteQuantidade('');
-                setAjusteDescricao('');
-                carregarItens();
-                if (editingId) {
-                  const atual = items.find((item) => item.id === editingId);
-                  if (atual) {
-                    setForm((prev) => ({ ...prev, estoque: String(atual.estoque) }));
-                  }
-                }
-              } catch (error: any) {
-                showToast(error.message || 'Erro ao registrar ajuste.', 'error');
-              }
+              setForm((prev) => {
+                const estoqueAtual = parseNumber(prev.estoque) || 0;
+                return { ...prev, estoque: String(estoqueAtual + quantidadeAjusteNumero) };
+              });
+              
+              showToast('Ajuste aplicado no formulário. Lembre-se de "Salvar Alterações"!', 'info');
+              setModalAjusteOpen(false);
+              setAjusteQuantidade('');
+              setAjusteDescricao('');
             }}
             onClose={() => setModalAjusteOpen(false)}
           />

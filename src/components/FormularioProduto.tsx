@@ -1,6 +1,7 @@
 import styles from '../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
+import CloseIcon from '@mui/icons-material/Close';
 import { parseNumber } from '../utils/number';
 import { formatCurrencyNumber } from '../utils/formatter';
 import {
@@ -397,7 +398,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 title="Definir como Principal"
                                 style={{ margin: '0 0.5rem' }}
                             />
-                            
+
                             <select
                                 className={styles.selectField}
                                 style={{ flex: 1 }}
@@ -439,8 +440,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
                             <button
                                 type="button"
-                                className={styles.manageButton}
-                                style={{ color: '#ff4d4f', border: '1px solid #ff4d4f' }}
+                                className={styles.removeBtn}
                                 onClick={() => {
                                     const newUm = form.unidadesMedida.filter((_, i) => i !== index);
                                     if (un.principal && newUm.length > 0) {
@@ -452,7 +452,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 }}
                                 title="Remover"
                             >
-                                X
+                                <CloseIcon fontSize="small" />
                             </button>
                         </div>
                     ))}
