@@ -196,7 +196,8 @@ export const buscarServicos = async (options: {
   if (options.page) params.append('page', String(options.page));
   if (options.pageSize) params.append('pageSize', String(options.pageSize));
 
-  const response = await fetch(`/api/produtos/servicos?${params.toString()}`);
+  params.set('tipo', 'SERVICO');
+  const response = await fetch(`/api/produtos?${params.toString()}`);
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || 'Erro ao buscar serviços.');
@@ -205,7 +206,7 @@ export const buscarServicos = async (options: {
 };
 
 export const buscarServicoPorId = async (id: number): Promise<ServicoData | null> => {
-  const response = await fetch(`/api/produtos/servicos?id=${id}`);
+  const response = await fetch(`/api/produtos?id=${id}&tipo=SERVICO`);
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || 'Erro ao buscar serviço.');
@@ -214,10 +215,10 @@ export const buscarServicoPorId = async (id: number): Promise<ServicoData | null
 };
 
 export const registrarServico = async (dados: ServicoInput) => {
-  const response = await fetch('/api/produtos/servicos', {
+  const response = await fetch('/api/produtos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados),
+    body: JSON.stringify({ ...dados, tipo: 'SERVICO' }),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -227,10 +228,10 @@ export const registrarServico = async (dados: ServicoInput) => {
 };
 
 export const atualizarServico = async (id: number, dados: ServicoInput) => {
-  const response = await fetch(`/api/produtos/servicos?id=${id}`, {
+  const response = await fetch('/api/produtos', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados),
+    body: JSON.stringify({ ...dados, id, tipo: 'SERVICO' }),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -240,8 +241,10 @@ export const atualizarServico = async (id: number, dados: ServicoInput) => {
 };
 
 export const excluirServico = async (id: number) => {
-  const response = await fetch(`/api/produtos/servicos?id=${id}`, {
+  const response = await fetch('/api/produtos', {
     method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, tipo: 'SERVICO' }),
   });
   if (!response.ok) {
     const errorData = await response.json();
