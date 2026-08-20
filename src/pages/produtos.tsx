@@ -9,7 +9,6 @@ import {
   atualizarProduto,
   excluirProduto,
   toggleStatusProduto,
-  toggleStatusServico,
   buscarCategorias,
   buscarMarcas,
   buscarFornecedores,
@@ -423,9 +422,7 @@ const ProdutosPage: React.FC = () => {
   const handleToggleStatus = async (item: ItemData) => {
     const novoStatus = item.ativo === 1 ? 0 : 1;
     try {
-      if (item.tipo === 'SERVICO') {
-        await toggleStatusServico(item.id, novoStatus);
-      } else {
+      if (item.tipo === 'PRODUTO') {
         await toggleStatusProduto(item.id, novoStatus);
       }
       showToast(
@@ -656,19 +653,21 @@ const ProdutosPage: React.FC = () => {
                 />
 
                 {/* Códigos de Barras */}
-                <BarcodeManager
-                  data={{
-                    codigosBarras: formCodigosBarras,
-                    novoCodigoBarras: novoCodigoBarras,
-                    inputRef: barcodeInputRef,
-                  }}
-                  actions={{
-                    adicionar: handleAddBarcode,
-                    definirPrincipal: handleSetPrincipalBarcode,
-                    alterar: setNovoCodigoBarras,
-                    remover: handleRemoveBarcode,
-                  }}
-                />
+                {form.tipo === 'PRODUTO' && (
+                  <BarcodeManager
+                    data={{
+                      codigosBarras: formCodigosBarras,
+                      novoCodigoBarras: novoCodigoBarras,
+                      inputRef: barcodeInputRef,
+                    }}
+                    actions={{
+                      adicionar: handleAddBarcode,
+                      definirPrincipal: handleSetPrincipalBarcode,
+                      alterar: setNovoCodigoBarras,
+                      remover: handleRemoveBarcode,
+                    }}
+                  />
+                )}
 
                 {/* Botões de Ação */}
                 <div className={styles.actionButtons}>

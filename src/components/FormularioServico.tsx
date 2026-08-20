@@ -26,23 +26,6 @@ const FormularioServico: React.FC<FormularioServicoProps> = ({
 }) => {
   return (
     <div className="CadastroEdicao">
-      <div className={styles.formHeader}>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="form-ativo">
-            Ativo:
-          </label>
-          <select
-            id="form-ativo"
-            className={styles.selectField}
-            value={form.ativo}
-            onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
-          >
-            <option value={1}>Sim</option>
-            <option value={0}>Não</option>
-          </select>
-        </div>
-      </div>
-
       <div className={styles.formGroup}>
         <label className={styles.formLabel} htmlFor="form-nome">
           Nome:*

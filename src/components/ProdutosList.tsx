@@ -116,26 +116,30 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                             </td>
 
                                             <td>
-                                                <span
-                                                    className={`${styles.badge} ${item.ativo === 1
-                                                        ? styles.badgeAtivo
-                                                        : styles.badgeInativo
-                                                        }`}
-                                                >
-                                                    {item.ativo === 1 ? 'Ativo' : 'Inativo'}
-                                                </span>
+                                                {item.tipo === 'PRODUTO' && (
+                                                    <span
+                                                        className={`${styles.badge} ${item.ativo === 1
+                                                            ? styles.badgeAtivo
+                                                            : styles.badgeInativo
+                                                            }`}
+                                                    >
+                                                        {item.ativo === 1 ? 'Ativo' : 'Inativo'}
+                                                    </span>
+                                                )}
                                             </td>
                                             <td>
                                                 <div className={styles.actionsCell}>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => onToggleStatus(item)}
-                                                        className={`${styles.iconButton} ${styles.statusIcon}`}
-                                                        title={item.ativo === 1 ? 'Desativar' : 'Ativar'}
-                                                        id={`toggle-status-${item.id}`}
-                                                    >
-                                                        {item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
-                                                    </button>
+                                                    {item.tipo === 'PRODUTO' && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onToggleStatus(item)}
+                                                            className={`${styles.iconButton} ${styles.statusIcon}`}
+                                                            title={item.ativo === 1 ? 'Desativar' : 'Ativar'}
+                                                            id={`toggle-status-${item.id}`}
+                                                        >
+                                                            {item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
+                                                        </button>
+                                                    )}
                                                     <button
                                                         type="button"
                                                         onClick={() => onEdit(item)}

@@ -101,7 +101,6 @@ try {
       codigo_interno TEXT UNIQUE,
       referencia TEXT,
       duracao_minutos INTEGER DEFAULT 0,
-      ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
       data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
       data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -116,7 +115,6 @@ try {
     { name: 'codigo_interno', definition: 'TEXT UNIQUE' },
     { name: 'referencia', definition: 'TEXT' },
     { name: 'duracao_minutos', definition: 'INTEGER DEFAULT 0' },
-    { name: 'ativo', definition: 'INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1))' },
     { name: 'data_criacao', definition: 'DATETIME DEFAULT CURRENT_TIMESTAMP' },
     { name: 'data_atualizacao', definition: 'DATETIME DEFAULT CURRENT_TIMESTAMP' },
   ];
@@ -125,6 +123,10 @@ try {
     if (!servicosColumns.has(column.name)) {
       db.exec(`ALTER TABLE servicos ADD COLUMN ${column.name} ${column.definition}`);
     }
+  }
+
+  if (servicosColumns.has('ativo')) {
+    db.exec('ALTER TABLE servicos DROP COLUMN ativo');
   }
 
   // Seeding inicial para Unidades de Medida
@@ -477,7 +479,6 @@ export interface ServicoData {
   codigo_interno?: string;
   referencia?: string;
   duracao_minutos: number;
-  ativo: number;
   data_criacao: string;
   data_atualizacao: string;
   categoria_nome?: string;
@@ -491,7 +492,6 @@ export interface ServicoInput {
   codigo_interno?: string;
   referencia?: string;
   duracao_minutos?: number;
-  ativo?: number;
 }
 
 export const checkDuplicateServicoCodigoInterno = (codigoInterno: string, excludeId?: number) => {
@@ -525,11 +525,6 @@ export const getServicos = (options: {
     params.push(options.categoria_id);
   }
 
-  if (options.ativo !== undefined) {
-    queryConditions.push('s.ativo = ?');
-    params.push(options.ativo);
-  }
-
   if (options.search && options.search.trim()) {
     const searchLike = `%${options.search.trim()}%`;
     queryConditions.push('(s.nome LIKE ? OR s.codigo_interno LIKE ? OR s.referencia LIKE ?)');
@@ -550,7 +545,6 @@ export const getServicos = (options: {
       s.codigo_interno,
       s.referencia,
       s.duracao_minutos,
-      s.ativo,
       s.data_criacao,
       s.data_atualizacao,
       c.nome as categoria_nome
@@ -583,7 +577,6 @@ export const getServicoById = (id: number) => {
       s.codigo_interno,
       s.referencia,
       s.duracao_minutos,
-      s.ativo,
       s.data_criacao,
       s.data_atualizacao,
       c.nome as categoria_nome
@@ -605,10 +598,9 @@ export const insertServico = db.transaction((servicoData: ServicoInput) => {
       codigo_interno,
       referencia,
       duracao_minutos,
-      ativo,
       data_criacao,
       data_atualizacao
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
   `);
 
   const result = stmt.run(
@@ -619,7 +611,6 @@ export const insertServico = db.transaction((servicoData: ServicoInput) => {
     servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
     servicoData.referencia || null,
     servicoData.duracao_minutos ?? 0,
-    servicoData.ativo !== undefined ? servicoData.ativo : 1
   );
 
   if (!servicoData.codigo_interno) {
@@ -637,7 +628,7 @@ export const insertServico = db.transaction((servicoData: ServicoInput) => {
 export const updateServico = db.transaction((id: number, servicoData: ServicoInput) => {
   const stmt = db.prepare(`
     UPDATE servicos
-    SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, data_atualizacao = datetime('now', 'localtime')
     WHERE id = ?
   `);
 
@@ -649,7 +640,6 @@ export const updateServico = db.transaction((id: number, servicoData: ServicoInp
     servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
     servicoData.referencia || null,
     servicoData.duracao_minutos ?? 0,
-    servicoData.ativo !== undefined ? servicoData.ativo : 1,
     id
   );
 
@@ -658,14 +648,6 @@ export const updateServico = db.transaction((id: number, servicoData: ServicoInp
 
 export const deleteServico = (id: number) => {
   return db.prepare('DELETE FROM servicos WHERE id = ?').run(id);
-};
-
-export const toggleServicoStatus = (id: number, ativo: number) => {
-  return db.prepare(`
-    UPDATE servicos
-    SET ativo = ?, data_atualizacao = datetime('now', 'localtime')
-    WHERE id = ?
-  `).run(ativo, id);
 };
 
 // CRUD de Itens (Produtos e Serviços)
@@ -734,8 +716,6 @@ export const getItens = (options: {
   if (options.ativo !== undefined) {
     productConditions.push('i.ativo = ?');
     productParams.push(options.ativo);
-    serviceConditions.push('s.ativo = ?');
-    serviceParams.push(options.ativo);
   }
 
   if (options.search && options.search.trim()) {
@@ -797,7 +777,7 @@ export const getItens = (options: {
       0 as estoque,
       s.codigo_interno,
       s.referencia,
-      s.ativo,
+      NULL as ativo,
       s.data_criacao,
       s.data_atualizacao,
       c.nome as categoria_nome,

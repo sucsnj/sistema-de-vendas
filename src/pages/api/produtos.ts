@@ -2,13 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   getItens,
   getItemById,
-  getServicoById,
   insertItem,
   updateItem,
   deleteItem,
   toggleItemStatus,
-  toggleServicoStatus,
-  deleteServico,
   checkDuplicateCodigoInterno,
   checkDuplicateBarcode,
 } from '../../database/produtosDb';
@@ -52,15 +49,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           return res.status(400).json({ error: 'Valor de status ativo (0 ou 1) é inválido.' });
         }
         
-        if (tipo === 'SERVICO') {
-          const existing = getServicoById(id);
-          if (!existing) {
-            return res.status(404).json({ error: 'Serviço não encontrado.' });
-          }
-          toggleServicoStatus(id, ativo);
-          return res.status(200).json({ message: `Serviço ${ativo === 1 ? 'ativado' : 'desativado'} com sucesso.` });
-        }
-
         const existing = getItemById(id);
         if (!existing) {
           return res.status(404).json({ error: 'Item não encontrado.' });
@@ -71,8 +59,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       // Validação do cadastro básico
-      if (!tipo || (tipo !== 'PRODUTO' && tipo !== 'SERVICO')) {
-        return res.status(400).json({ error: 'O tipo deve ser PRODUTO ou SERVICO.' });
+      if (tipo !== 'PRODUTO') {
+        return res.status(400).json({ error: 'Esta rota aceita apenas produtos.' });
       }
       if (!nome || !nome.trim()) {
         return res.status(400).json({ error: 'O nome é obrigatório.' });
@@ -80,7 +68,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (tipo === 'PRODUTO' && (!unidade_medida_id || isNaN(Number(unidade_medida_id)))) {
+      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
         return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
       }
       if (!marca_id || isNaN(Number(marca_id))) {
@@ -182,8 +170,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       // Validação do cadastro básico
-      if (!tipo || (tipo !== 'PRODUTO' && tipo !== 'SERVICO')) {
-        return res.status(400).json({ error: 'O tipo deve ser PRODUTO ou SERVICO.' });
+      if (tipo !== 'PRODUTO') {
+        return res.status(400).json({ error: 'Esta rota aceita apenas produtos.' });
       }
       if (!nome || !nome.trim()) {
         return res.status(400).json({ error: 'O nome é obrigatório.' });
@@ -191,7 +179,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (tipo === 'PRODUTO' && (!unidade_medida_id || isNaN(Number(unidade_medida_id)))) {
+      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
         return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
       }
       if (!marca_id || isNaN(Number(marca_id))) {
@@ -284,15 +272,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const { id, tipo } = req.body;
       if (!id) {
         return res.status(400).json({ error: 'ID é obrigatório para exclusão.' });
-      }
-
-      if (tipo === 'SERVICO') {
-        const existing = getServicoById(id);
-        if (!existing) {
-          return res.status(404).json({ error: 'Serviço não encontrado.' });
-        }
-        deleteServico(id);
-        return res.status(200).json({ message: 'Serviço excluído com sucesso.' });
       }
 
       const existing = getItemById(id);

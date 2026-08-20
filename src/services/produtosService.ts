@@ -183,19 +183,6 @@ export const toggleStatusProduto = async (id: number, ativo: number) => {
   return response.json();
 };
 
-export const toggleStatusServico = async (id: number, ativo: number) => {
-  const response = await fetch('/api/produtos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'toggle-status', id, ativo, tipo: 'SERVICO' }),
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || 'Erro ao alterar status do serviço.');
-  }
-  return response.json();
-};
-
 // Chamadas de API para Serviços
 export const buscarServicos = async (options: {
   search?: string;
