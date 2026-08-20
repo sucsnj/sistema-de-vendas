@@ -96,6 +96,7 @@ const ProdutosPage: React.FC = () => {
     referencia: '',
     duracaoMinutos: '',
     ativo: 1,
+    unidadesMedida: [{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: true }],
   });
   const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
   const [ajusteQuantidade, setAjusteQuantidade] = useState('');
@@ -258,6 +259,7 @@ const ProdutosPage: React.FC = () => {
       referencia: '',
       duracaoMinutos: '',
       ativo: 1,
+      unidadesMedida: [{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: true }],
     });
     setFormCodigosBarras([]);
     setNovoCodigoBarras('');
@@ -393,6 +395,11 @@ const ProdutosPage: React.FC = () => {
       duracao_minutos: Number(form.duracaoMinutos) || 0,
       ativo: form.ativo,
       codigos_barras: formCodigosBarras,
+      unidades_medida: form.unidadesMedida.map(u => ({
+        unidade_medida_id: u.unidadeMedidaId,
+        multiplicador_unidade: u.multiplicadorUnidade,
+        principal: u.principal
+      })),
     };
 
     const servicePayload = {
@@ -448,8 +455,13 @@ const ProdutosPage: React.FC = () => {
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
       referencia: item.referencia || '',
-      duracaoMinutos: 'duracao_minutos' in item ? String((item as any).duracao_minutos) : '',
+      duracaoMinutos: String(item.duracao_minutos ?? ''),
       ativo: item.ativo ?? 1,
+      unidadesMedida: item.unidades_medida ? item.unidades_medida.map(u => ({
+        unidadeMedidaId: u.unidade_medida_id,
+        multiplicadorUnidade: String(u.multiplicador_unidade),
+        principal: u.principal === 1
+      })) : [{ unidadeMedidaId: item.unidade_medida_id, multiplicadorUnidade: String(item.multiplicador_unidade ?? 1), principal: true }],
     });
     setFormCodigosBarras(item.codigos_barras || []);
     setNovoCodigoBarras('');

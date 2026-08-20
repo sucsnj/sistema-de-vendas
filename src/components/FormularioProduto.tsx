@@ -27,6 +27,7 @@ export interface ProdutoFormData {
     referencia: string;
     duracaoMinutos: string;
     ativo: number;
+    unidadesMedida: { unidadeMedidaId: number; multiplicadorUnidade: string; principal: boolean }[];
 }
 
 export interface ProdutoOptions {
@@ -374,72 +375,109 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     )}
                 </div>
 
-                <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="form-multiplicador-unidade">
-                        Multiplicador:
-                    </label>
-                    <input
-                        id="form-multiplicador-unidade"
-                        type="text"
-                        inputMode="decimal"
-                        className={styles.inputField}
-                        placeholder="1"
-                        value={form.multiplicadorUnidade}
-                        onChange={(e) => setForm(prev => ({ ...prev, multiplicadorUnidade: e.target.value }))}
-                        onBlur={() => {
-                            const valor = parseNumber(form.multiplicadorUnidade);
-                            if (!Number.isFinite(valor) || valor < 1) {
-                                setForm(prev => ({ ...prev, multiplicadorUnidade: '1' }));
-                            }
-                        }}
-                    />
-                </div>
             </div>
 
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="form-unidade">
-                    Unidade de Medida:
+            <div className={styles.formGroup} style={{ width: '100%', marginBottom: '1.5rem' }}>
+                <label className={styles.formLabel}>
+                    Unidades de Medida:
                 </label>
-                <div className={styles.selectWrapper}>
-                    <select
-                        id="form-unidade"
-                        className={styles.selectField}
-                        value={form.unidadeMedidaId}
-                        onChange={(e) =>
-                            setForm(prev => ({ ...prev, unidadeMedidaId: e.target.value ? Number(e.target.value) : 1 }))
-                        }
-                    >
-                        {options.unidadesMedida.map((u) => (
-                            <option key={u.id} value={u.id}>
-                                {u.sigla} - {u.descricao}
-                            </option>
-                        ))}
-                    </select>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    {form.unidadesMedida?.map((un, index) => (
+                        <div key={index} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', background: 'rgba(255, 255, 255, 0.05)', padding: '0.5rem', borderRadius: '4px' }}>
+                            <input
+                                type="radio"
+                                name="unidadePrincipal"
+                                checked={un.principal}
+                                onChange={() => {
+                                    const newUm = [...form.unidadesMedida];
+                                    newUm.forEach(u => u.principal = false);
+                                    newUm[index].principal = true;
+                                    setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: newUm[index].unidadeMedidaId, multiplicadorUnidade: newUm[index].multiplicadorUnidade }));
+                                }}
+                                title="Definir como Principal"
+                                style={{ margin: '0 0.5rem' }}
+                            />
+                            
+                            <select
+                                className={styles.selectField}
+                                style={{ flex: 1 }}
+                                value={un.unidadeMedidaId}
+                                onChange={(e) => {
+                                    const newUm = [...form.unidadesMedida];
+                                    newUm[index].unidadeMedidaId = Number(e.target.value);
+                                    if (un.principal) {
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: Number(e.target.value) }));
+                                    } else {
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
+                                    }
+                                }}
+                            >
+                                {options.unidadesMedida.map((u) => (
+                                    <option key={u.id} value={u.id}>
+                                        {u.sigla} - {u.descricao}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                className={styles.inputField}
+                                style={{ width: '100px' }}
+                                placeholder="Fator"
+                                value={un.multiplicadorUnidade}
+                                onChange={(e) => {
+                                    const newUm = [...form.unidadesMedida];
+                                    newUm[index].multiplicadorUnidade = e.target.value;
+                                    if (un.principal) {
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, multiplicadorUnidade: e.target.value }));
+                                    } else {
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
+                                    }
+                                }}
+                            />
+
+                            <button
+                                type="button"
+                                className={styles.manageButton}
+                                style={{ color: '#ff4d4f', border: '1px solid #ff4d4f' }}
+                                onClick={() => {
+                                    const newUm = form.unidadesMedida.filter((_, i) => i !== index);
+                                    if (un.principal && newUm.length > 0) {
+                                        newUm[0].principal = true;
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: newUm[0].unidadeMedidaId, multiplicadorUnidade: newUm[0].multiplicadorUnidade }));
+                                    } else {
+                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
+                                    }
+                                }}
+                                title="Remover"
+                            >
+                                X
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                     <button
                         type="button"
-                        className={styles.addButton}
-                        onClick={actions.abrirModalUnidadeMedida}
-                        title="Adicionar Unidade de Medida"
-                        id="add-unidadeMedida-btn"
-                    >
-                        <AddIcon fontSize="small" />
-                    </button>
-                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de unidades de medida */}
-                    <button
-                        type="button"
-                        className={styles.manageButton}
+                        className={styles.secondaryButton}
                         onClick={() => {
-                            const unidadeMedidaSelecionada = options.unidadesMedida.find(
-                                (u) => u.id === form.unidadeMedidaId
-                            );
-                            if (unidadeMedidaSelecionada) {
-                                actions.editarUnidadeMedida(unidadeMedidaSelecionada);
-                            }
+                            const prev = form.unidadesMedida || [];
+                            setForm(p => ({
+                                ...p,
+                                unidadesMedida: [...prev, { unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: prev.length === 0 }]
+                            }));
                         }}
-                        title="Editar Unidade de medida Selecionada"
-                        id="edit-unidadeMedida-btn"
                     >
-                        <MoreVert fontSize="small" />
+                        + Nova Unidade
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.secondaryButton}
+                        onClick={actions.abrirModalUnidadeMedida}
+                        title="Cadastrar Unidade no Sistema"
+                    >
+                        Cadastro de Unidades
                     </button>
                 </div>
             </div>

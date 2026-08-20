@@ -69,6 +69,15 @@ try {
       principal INTEGER NOT NULL DEFAULT 0 CHECK(principal IN (0, 1))
     );
 
+    CREATE TABLE IF NOT EXISTS item_unidades_medida (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id INTEGER NOT NULL REFERENCES itens(id) ON DELETE CASCADE,
+      unidade_medida_id INTEGER NOT NULL REFERENCES unidades_medida(id),
+      multiplicador_unidade REAL NOT NULL DEFAULT 1,
+      principal INTEGER NOT NULL DEFAULT 0 CHECK(principal IN (0, 1)),
+      UNIQUE(item_id, unidade_medida_id)
+    );
+
     CREATE TABLE IF NOT EXISTS servicos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
@@ -215,6 +224,18 @@ try {
     const insertFornecedor = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
     for (const fornecedor of seedFornecedores) {
       insertFornecedor.run(fornecedor.nome);
+    }
+  }
+
+  // Migration de unidades de medida da tabela itens para a nova tabela
+  const countItemUnidades = db.prepare('SELECT count(*) as count FROM item_unidades_medida').get() as { count: number };
+  if (countItemUnidades.count === 0) {
+    const countItens = db.prepare("SELECT count(*) as count FROM itens WHERE tipo = 'PRODUTO'").get() as { count: number };
+    if (countItens.count > 0) {
+      db.exec(`
+        INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
+        SELECT id, unidade_medida_id, multiplicador_unidade, 1 FROM itens WHERE tipo = 'PRODUTO';
+      `);
     }
   }
 
@@ -709,6 +730,12 @@ export interface BarcodeData {
   principal: number;
 }
 
+export interface ItemUnidadeData {
+  unidade_medida_id: number;
+  multiplicador_unidade: number;
+  principal: number;
+}
+
 export interface ItemInput {
   tipo: 'PRODUTO';
   nome: string;
@@ -726,6 +753,7 @@ export interface ItemInput {
   referencia?: string | null;
   ativo?: number;
   codigos_barras?: BarcodeData[];
+  unidades_medida?: ItemUnidadeData[];
 }
 
 export const getItens = (options: {
@@ -818,8 +846,26 @@ export const getItens = (options: {
   const items = db.prepare(itemsQuery).all(...productParams, pageSize, offset) as any[];
 
   const barcodesStmt = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC');
+  const unidadesStmt = db.prepare(`
+    SELECT um.unidade_medida_id, um.multiplicador_unidade, um.principal, u.sigla, u.descricao
+    FROM item_unidades_medida um
+    JOIN unidades_medida u ON um.unidade_medida_id = u.id
+    WHERE um.item_id = ?
+    ORDER BY um.principal DESC, u.sigla ASC
+  `);
+
   for (const item of items) {
     item.codigos_barras = barcodesStmt.all(item.id);
+    item.unidades_medida = unidadesStmt.all(item.id);
+    if (!item.unidades_medida || item.unidades_medida.length === 0) {
+      item.unidades_medida = [{
+        unidade_medida_id: item.unidade_medida_id,
+        multiplicador_unidade: item.multiplicador_unidade,
+        principal: 1,
+        sigla: item.unidade_medida_sigla,
+        descricao: item.unidade_medida_descricao
+      }];
+    }
   }
 
   return {
@@ -867,6 +913,25 @@ export const getItemById = (id: number) => {
 
   if (item) {
     item.codigos_barras = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC').all(id);
+    const unidades = db.prepare(`
+      SELECT um.unidade_medida_id, um.multiplicador_unidade, um.principal, u.sigla, u.descricao
+      FROM item_unidades_medida um
+      JOIN unidades_medida u ON um.unidade_medida_id = u.id
+      WHERE um.item_id = ?
+      ORDER BY um.principal DESC, u.sigla ASC
+    `).all(id);
+
+    if (unidades && unidades.length > 0) {
+      item.unidades_medida = unidades;
+    } else {
+      item.unidades_medida = [{
+        unidade_medida_id: item.unidade_medida_id,
+        multiplicador_unidade: item.multiplicador_unidade,
+        principal: 1,
+        sigla: item.unidade_medida_sigla,
+        descricao: item.unidade_medida_descricao
+      }];
+    }
   }
   return item;
 };
@@ -928,6 +993,21 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     for (const cb of itemData.codigos_barras) {
       barcodeStmt.run(itemId, cb.codigo_barras.trim(), cb.principal ? 1 : 0);
     }
+  }
+
+  if (itemData.unidades_medida && itemData.unidades_medida.length > 0) {
+    const umStmt = db.prepare(`
+      INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
+      VALUES (?, ?, ?, ?)
+    `);
+    for (const u of itemData.unidades_medida) {
+      umStmt.run(itemId, u.unidade_medida_id, u.multiplicador_unidade, u.principal ? 1 : 0);
+    }
+  } else if (itemData.tipo === 'PRODUTO') {
+    db.prepare(`
+      INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
+      VALUES (?, ?, ?, 1)
+    `).run(itemId, itemData.unidade_medida_id, itemData.multiplicador_unidade);
   }
 
   const initialStock = Number(itemData.estoque);
@@ -994,6 +1074,22 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     for (const cb of itemData.codigos_barras) {
       barcodeStmt.run(id, cb.codigo_barras.trim(), cb.principal ? 1 : 0);
     }
+  }
+
+  db.prepare('DELETE FROM item_unidades_medida WHERE item_id = ?').run(id);
+  if (itemData.unidades_medida && itemData.unidades_medida.length > 0) {
+    const umStmt = db.prepare(`
+      INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
+      VALUES (?, ?, ?, ?)
+    `);
+    for (const u of itemData.unidades_medida) {
+      umStmt.run(id, u.unidade_medida_id, u.multiplicador_unidade, u.principal ? 1 : 0);
+    }
+  } else if (itemData.tipo === 'PRODUTO') {
+    db.prepare(`
+      INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
+      VALUES (?, ?, ?, 1)
+    `).run(id, itemData.unidade_medida_id, itemData.multiplicador_unidade);
   }
 
   return true;

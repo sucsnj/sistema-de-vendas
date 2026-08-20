@@ -37,7 +37,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
-      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, codigos_barras } = req.body;
+      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, codigos_barras, unidades_medida } = req.body;
 
       // Altera status de ativo/inativo
       if (action === 'toggle-status') {
@@ -67,8 +67,43 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
-        return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
+      // Validação de unidades de medida
+      let listUnidades: any[] = [];
+      if (tipo === 'PRODUTO') {
+        if (unidades_medida && Array.isArray(unidades_medida)) {
+          listUnidades = unidades_medida.map((u: any) => ({
+            unidade_medida_id: Number(u.unidade_medida_id),
+            multiplicador_unidade: parseNumber(u.multiplicador_unidade),
+            principal: u.principal ? 1 : 0
+          })).filter(u => !isNaN(u.unidade_medida_id) && u.unidade_medida_id > 0);
+
+          if (listUnidades.length === 0) {
+            return res.status(400).json({ error: 'Nenhuma unidade de medida válida foi informada.' });
+          }
+
+          const uIds = listUnidades.map(u => u.unidade_medida_id);
+          const duplicateUnits = uIds.filter((item, index) => uIds.indexOf(item) !== index);
+          if (duplicateUnits.length > 0) {
+            return res.status(400).json({ error: 'Há unidades de medida duplicadas no formulário.' });
+          }
+
+          const countPrincipalUnidade = listUnidades.filter(u => u.principal === 1).length;
+          if (countPrincipalUnidade === 0) {
+            listUnidades[0].principal = 1;
+          } else if (countPrincipalUnidade > 1) {
+            let found = false;
+            for (const u of listUnidades) {
+              if (u.principal === 1) {
+                if (!found) found = true;
+                else u.principal = 0;
+              }
+            }
+          }
+        } else {
+          if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
+            return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
+          }
+        }
       }
       if (!marca_id || isNaN(Number(marca_id))) {
         return res.status(400).json({ error: 'Selecione uma marca válida.' });
@@ -132,23 +167,28 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
       const multiplicadorNumber = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
+      const mainUnit = listUnidades.length > 0 ? listUnidades.find(u => u.principal === 1) : null;
+      const finalUnidadeId = mainUnit ? mainUnit.unidade_medida_id : Number(unidade_medida_id);
+      const finalMultiplicador = mainUnit ? mainUnit.multiplicador_unidade : multiplicadorNumber;
+
       const itemId = insertItem({
         tipo,
         nome: nome.trim(),
         descricao,
         categoria_id: Number(categoria_id),
-        unidade_medida_id: tipo === 'PRODUTO' ? Number(unidade_medida_id) : 21,
+        unidade_medida_id: tipo === 'PRODUTO' ? finalUnidadeId : 21,
         marca_id: Number(marca_id),
         fornecedor_id: Number(fornecedor_id),
         preco_compra: precoCompraNumber,
         margem_lucro: margemLucroNumber,
         preco_venda: precoVendaNumber,
         estoque: estoqueNumber,
-        multiplicador_unidade: multiplicadorNumber,
+        multiplicador_unidade: finalMultiplicador,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
         codigos_barras: listBarcodes,
+        unidades_medida: listUnidades,
       });
 
       return res.status(201).json({ id: itemId, message: 'Item cadastrado com sucesso.' });
@@ -160,7 +200,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'PUT') {
     try {
-      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, ativo, codigos_barras } = req.body;
+      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, ativo, codigos_barras, unidades_medida } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: 'O ID do item é obrigatório para atualização.' });
@@ -181,8 +221,43 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!categoria_id || isNaN(Number(categoria_id))) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
-      if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
-        return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
+      // Validação de unidades de medida
+      let listUnidades: any[] = [];
+      if (tipo === 'PRODUTO') {
+        if (unidades_medida && Array.isArray(unidades_medida)) {
+          listUnidades = unidades_medida.map((u: any) => ({
+            unidade_medida_id: Number(u.unidade_medida_id),
+            multiplicador_unidade: parseNumber(u.multiplicador_unidade),
+            principal: u.principal ? 1 : 0
+          })).filter(u => !isNaN(u.unidade_medida_id) && u.unidade_medida_id > 0);
+
+          if (listUnidades.length === 0) {
+            return res.status(400).json({ error: 'Nenhuma unidade de medida válida foi informada.' });
+          }
+
+          const uIds = listUnidades.map(u => u.unidade_medida_id);
+          const duplicateUnits = uIds.filter((item, index) => uIds.indexOf(item) !== index);
+          if (duplicateUnits.length > 0) {
+            return res.status(400).json({ error: 'Há unidades de medida duplicadas no formulário.' });
+          }
+
+          const countPrincipalUnidade = listUnidades.filter(u => u.principal === 1).length;
+          if (countPrincipalUnidade === 0) {
+            listUnidades[0].principal = 1;
+          } else if (countPrincipalUnidade > 1) {
+            let found = false;
+            for (const u of listUnidades) {
+              if (u.principal === 1) {
+                if (!found) found = true;
+                else u.principal = 0;
+              }
+            }
+          }
+        } else {
+          if (!unidade_medida_id || isNaN(Number(unidade_medida_id))) {
+            return res.status(400).json({ error: 'Selecione uma unidade de medida válida.' });
+          }
+        }
       }
       if (!marca_id || isNaN(Number(marca_id))) {
         return res.status(400).json({ error: 'Selecione uma marca válida.' });
@@ -246,23 +321,28 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         }
       }
 
+      const mainUnit = listUnidades.length > 0 ? listUnidades.find(u => u.principal === 1) : null;
+      const finalUnidadeId = mainUnit ? mainUnit.unidade_medida_id : Number(unidade_medida_id);
+      const finalMultiplicador = mainUnit ? mainUnit.multiplicador_unidade : multiplicadorNumber;
+
       updateItem(id, {
         tipo,
         nome: nome.trim(),
         descricao,
         categoria_id: Number(categoria_id),
-        unidade_medida_id: Number(unidade_medida_id),
+        unidade_medida_id: finalUnidadeId,
         marca_id: Number(marca_id),
         fornecedor_id: Number(fornecedor_id),
         preco_compra: precoCompraNumber,
         margem_lucro: margemLucroNumber,
         preco_venda: precoVendaNumber,
         estoque: estoqueNumber,
-        multiplicador_unidade: multiplicadorNumber,
+        multiplicador_unidade: finalMultiplicador,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
         codigos_barras: listBarcodes,
+        unidades_medida: listUnidades,
       });
 
       return res.status(200).json({ message: 'Item atualizado com sucesso.' });

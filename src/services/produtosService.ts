@@ -29,6 +29,7 @@ export interface ItemData {
   unidade_medida_sigla?: string;
   unidade_medida_descricao?: string;
   codigos_barras?: BarcodeData[];
+  unidades_medida?: { unidade_medida_id: number; multiplicador_unidade: number; principal: number }[];
 }
 
 export interface ServicoData {
