@@ -2,13 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   getItens,
   getItemById,
-  getServicoById,
   insertItem,
-  insertServico,
   updateItem,
-  updateServico,
   deleteItem,
-  deleteServico,
   toggleItemStatus,
   checkDuplicateCodigoInterno,
   checkDuplicateBarcode,
@@ -18,15 +14,10 @@ import { parseNumber } from '../../utils/number';
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const { id, search, tipo, categoria_id, marca_id, fornecedor_id, preco_venda, ativo, page, pageSize } = req.query;
-
-      if (id && tipo === 'SERVICO') {
-        return res.status(200).json(getServicoById(Number(id)) ?? null);
-      }
+      const { search, categoria_id, marca_id, fornecedor_id, preco_venda, ativo, page, pageSize } = req.query;
 
       const parsedOptions: any = {
         search: search ? String(search) : undefined,
-        tipo: tipo ? String(tipo) : undefined,
         categoria_id: categoria_id ? Number(categoria_id) : undefined,
         marca_id: marca_id ? Number(marca_id) : undefined,
         fornecedor_id: fornecedor_id ? Number(fornecedor_id) : undefined,
@@ -64,28 +55,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
         toggleItemStatus(id, ativo);
         return res.status(200).json({ message: `Item ${ativo === 1 ? 'ativado' : 'desativado'} com sucesso.` });
-      }
-
-      if (tipo === 'SERVICO') {
-        if (!nome || !nome.trim()) {
-          return res.status(400).json({ error: 'O nome do serviço é obrigatório.' });
-        }
-        if (!categoria_id || isNaN(Number(categoria_id))) {
-          return res.status(400).json({ error: 'A categoria do serviço é obrigatória.' });
-        }
-
-        const servicePayload = {
-          nome: nome.trim(),
-          descricao,
-          categoria_id: Number(categoria_id),
-          preco_venda: Number(preco_venda) || 0,
-          codigo_interno: codigo_interno || undefined,
-          referencia: referencia || undefined,
-          duracao_minutos: Number(req.body.duracao_minutos) || 0,
-        };
-
-        const serviceId = insertServico(servicePayload);
-        return res.status(201).json(getServicoById(Number(serviceId)) ?? { id: serviceId });
       }
 
       // Validação do cadastro básico
@@ -192,29 +161,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       if (!id) {
         return res.status(400).json({ error: 'O ID do item é obrigatório para atualização.' });
-      }
-
-      if (tipo === 'SERVICO') {
-        if (!nome || !nome.trim()) {
-          return res.status(400).json({ error: 'O nome do serviço é obrigatório.' });
-        }
-        if (!categoria_id || isNaN(Number(categoria_id))) {
-          return res.status(400).json({ error: 'A categoria do serviço é obrigatória.' });
-        }
-        const existingService = getServicoById(Number(id));
-        if (!existingService) {
-          return res.status(404).json({ error: 'Serviço não encontrado.' });
-        }
-        updateServico(Number(id), {
-          nome: nome?.trim() || '',
-          descricao,
-          categoria_id: Number(categoria_id),
-          preco_venda: Number(preco_venda) || 0,
-          codigo_interno: codigo_interno || undefined,
-          referencia: referencia || undefined,
-          duracao_minutos: Number(req.body.duracao_minutos) || 0,
-        });
-        return res.status(200).json(getServicoById(Number(id)));
       }
 
       const existing = getItemById(id);
@@ -325,15 +271,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const { id, tipo } = req.body;
       if (!id) {
         return res.status(400).json({ error: 'ID é obrigatório para exclusão.' });
-      }
-
-      if (tipo === 'SERVICO') {
-        const existingService = getServicoById(Number(id));
-        if (!existingService) {
-          return res.status(404).json({ error: 'Serviço não encontrado.' });
-        }
-        deleteServico(Number(id));
-        return res.status(200).json({ message: 'Serviço excluído com sucesso.' });
       }
 
       const existing = getItemById(id);

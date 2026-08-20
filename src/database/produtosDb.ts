@@ -43,7 +43,7 @@ try {
 
     CREATE TABLE IF NOT EXISTS itens (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      tipo TEXT NOT NULL CHECK(tipo IN ('PRODUTO', 'SERVICO')),
+      tipo TEXT NOT NULL CHECK(tipo = 'PRODUTO'),
       nome TEXT NOT NULL,
       descricao TEXT,
       categoria_id INTEGER NOT NULL REFERENCES categorias(id),
@@ -127,6 +127,40 @@ try {
 
   if (servicosColumns.has('ativo')) {
     db.exec('ALTER TABLE servicos DROP COLUMN ativo');
+  }
+
+  const itensTableSql = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'itens'").get() as { sql?: string } | undefined;
+  if (itensTableSql?.sql?.includes("'SERVICO'")) {
+    db.pragma('foreign_keys = OFF');
+    db.exec(`
+      ALTER TABLE itens RENAME TO itens_legacy;
+
+      CREATE TABLE itens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tipo TEXT NOT NULL CHECK(tipo = 'PRODUTO'),
+        nome TEXT NOT NULL,
+        descricao TEXT,
+        categoria_id INTEGER NOT NULL REFERENCES categorias(id),
+        unidade_medida_id INTEGER NOT NULL REFERENCES unidades_medida(id),
+        marca_id INTEGER NOT NULL REFERENCES marcas(id),
+        fornecedor_id INTEGER NOT NULL REFERENCES fornecedores(id),
+        preco_compra REAL DEFAULT 0,
+        margem_lucro REAL DEFAULT 0,
+        preco_venda REAL DEFAULT 0,
+        estoque INTEGER DEFAULT 0,
+        codigo_interno TEXT UNIQUE,
+        referencia TEXT UNIQUE,
+        ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
+        data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+        data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      INSERT INTO itens SELECT * FROM itens_legacy WHERE tipo = 'PRODUTO';
+      DELETE FROM item_codigos_barras WHERE item_id NOT IN (SELECT id FROM itens);
+      DELETE FROM movimentacoes_estoque WHERE item_id NOT IN (SELECT id FROM itens);
+      DROP TABLE itens_legacy;
+    `);
+    db.pragma('foreign_keys = ON');
   }
 
   // Seeding inicial para Unidades de Medida
@@ -650,14 +684,14 @@ export const deleteServico = (id: number) => {
   return db.prepare('DELETE FROM servicos WHERE id = ?').run(id);
 };
 
-// CRUD de Itens (Produtos e Serviços)
+// CRUD de Produtos
 export interface BarcodeData {
   codigo_barras: string;
   principal: number;
 }
 
 export interface ItemInput {
-  tipo: 'PRODUTO' | 'SERVICO';
+  tipo: 'PRODUTO';
   nome: string;
   descricao?: string;
   categoria_id: number;
@@ -676,7 +710,6 @@ export interface ItemInput {
 
 export const getItens = (options: {
   search?: string;
-  tipo?: 'PRODUTO' | 'SERVICO' | 'TODOS';
   categoria_id?: number;
   marca_id?: number;
   fornecedor_id?: number;
@@ -688,19 +721,12 @@ export const getItens = (options: {
   const pageSize = options.pageSize || 10;
   const offset = (page - 1) * pageSize;
 
-  const includeProducts = options.tipo !== 'SERVICO';
-  const includeServices = options.tipo !== 'PRODUTO';
-
   const productConditions: string[] = [];
   const productParams: any[] = [];
-  const serviceConditions: string[] = [];
-  const serviceParams: any[] = [];
 
   if (options.categoria_id) {
     productConditions.push('i.categoria_id = ?');
     productParams.push(options.categoria_id);
-    serviceConditions.push('s.categoria_id = ?');
-    serviceParams.push(options.categoria_id);
   }
 
   if (options.marca_id) {
@@ -722,12 +748,9 @@ export const getItens = (options: {
     const searchLike = `%${options.search.trim()}%`;
     productConditions.push('(i.nome LIKE ? OR i.codigo_interno LIKE ? OR i.referencia LIKE ? OR i.id IN (SELECT item_id FROM item_codigos_barras WHERE codigo_barras LIKE ?))');
     productParams.push(searchLike, searchLike, searchLike, searchLike);
-    serviceConditions.push('(s.nome LIKE ? OR s.codigo_interno LIKE ? OR s.referencia LIKE ?)');
-    serviceParams.push(searchLike, searchLike, searchLike);
   }
 
   const productWhereClause = productConditions.length > 0 ? `WHERE ${productConditions.join(' AND ')}` : '';
-  const serviceWhereClause = serviceConditions.length > 0 ? `WHERE ${serviceConditions.join(' AND ')}` : '';
 
   const productQuery = `
     SELECT
@@ -761,54 +784,20 @@ export const getItens = (options: {
     ${productWhereClause}
   `;
 
-  const serviceQuery = `
-    SELECT
-      s.id,
-      'SERVICO' as tipo,
-      s.nome,
-      s.descricao,
-      s.categoria_id,
-      21 as unidade_medida_id,
-      1 as marca_id,
-      1 as fornecedor_id,
-      0 as preco_compra,
-      0 as margem_lucro,
-      s.preco_venda,
-      0 as estoque,
-      s.codigo_interno,
-      s.referencia,
-      NULL as ativo,
-      s.data_criacao,
-      s.data_atualizacao,
-      c.nome as categoria_nome,
-      NULL as marca_nome,
-      NULL as unidade_medida_sigla,
-      NULL as unidade_medida_descricao,
-      s.duracao_minutos
-    FROM servicos s
-    JOIN categorias c ON s.categoria_id = c.id
-    ${serviceWhereClause}
-  `;
-
-  const combinedQuery = [
-    includeProducts ? productQuery : null,
-    includeServices ? serviceQuery : null,
-  ].filter(Boolean).join(' UNION ALL ');
-
-  const countQuery = `SELECT COUNT(*) as count FROM (${combinedQuery}) as combined_items`;
-  const totalCount = (db.prepare(countQuery).get(...productParams, ...serviceParams) as { count: number }).count;
+  const countQuery = `SELECT COUNT(*) as count FROM (${productQuery}) as product_items`;
+  const totalCount = (db.prepare(countQuery).get(...productParams) as { count: number }).count;
 
   const itemsQuery = `
-    SELECT * FROM (${combinedQuery}) as combined_items
+    SELECT * FROM (${productQuery}) as product_items
     ORDER BY nome ASC
     LIMIT ? OFFSET ?
   `;
 
-  const items = db.prepare(itemsQuery).all(...productParams, ...serviceParams, pageSize, offset) as any[];
+  const items = db.prepare(itemsQuery).all(...productParams, pageSize, offset) as any[];
 
   const barcodesStmt = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC');
   for (const item of items) {
-    item.codigos_barras = item.tipo === 'PRODUTO' ? barcodesStmt.all(item.id) : [];
+    item.codigos_barras = barcodesStmt.all(item.id);
   }
 
   return {
@@ -904,15 +893,6 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
   }
 
   // Se for serviço, coloca o id 21 na unidade_medida
-  if (itemData.tipo === 'SERVICO') {
-    const updateUnidadeMedida = db.prepare(`
-      UPDATE itens
-      SET unidade_medida_id = ?
-      WHERE id = ?
-    `);
-    updateUnidadeMedida.run(21, result.lastInsertRowid as number);
-  }
-
   const itemId = result.lastInsertRowid as number;
 
   if (itemData.codigos_barras && itemData.codigos_barras.length > 0) {
@@ -942,7 +922,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
 export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
   const currentStockRow = db.prepare('SELECT estoque FROM itens WHERE id = ?').get(id) as { estoque: number } | undefined;
   const currentStock = currentStockRow?.estoque ?? 0;
-  const targetStock = itemData.tipo === 'PRODUTO' ? Number(itemData.estoque) : 0;
+  const targetStock = Number(itemData.estoque);
 
   const itemStmt = db.prepare(`
     UPDATE itens 
@@ -965,15 +945,6 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id
   );
-
-  if (itemData.tipo === 'SERVICO') {
-    const updateUnidadeMedida = db.prepare(`
-      UPDATE itens
-      SET unidade_medida_id = ?
-      WHERE id = ?
-    `);
-    updateUnidadeMedida.run(21, id);
-  }
 
   if (currentStock !== targetStock) {
     const diff = targetStock - currentStock;

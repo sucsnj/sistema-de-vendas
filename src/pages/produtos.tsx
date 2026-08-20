@@ -5,6 +5,7 @@ import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
 import {
   buscarProdutos,
+  buscarServicos,
   registrarProduto,
   atualizarProduto,
   excluirProduto,
@@ -19,6 +20,7 @@ import {
   atualizarServico,
   excluirServico,
   ItemData,
+  ServicoData,
   BarcodeData,
   MovimentacaoEstoqueData,
 } from '../services/produtosService';
@@ -148,23 +150,55 @@ const ProdutosPage: React.FC = () => {
     }
   };
 
-  // Carrega lista de produtos
+  // Carrega o catalogo a partir das tabelas especificas de cada tipo.
   const carregarItens = async () => {
     setLoading(true);
     try {
-      const data = await buscarProdutos({
-        search: searchQuery || undefined,
-        tipo: state.tipo,
-        categoria_id: state.categoriaId || undefined,
-        marca_id: state.marcaId || undefined,
-        fornecedor_id: state.fornecedorId || undefined,
-        ativo: state.status,
-        page,
-        pageSize: 10,
-      });
-      setItems(data.items);
-      setTotal(data.total);
-      setTotalPages(data.totalPages);
+      const [produtosData, servicosData] = await Promise.all([
+        state.tipo === 'SERVICO' ? Promise.resolve(null) : buscarProdutos({
+          search: searchQuery || undefined,
+          categoria_id: state.categoriaId || undefined,
+          marca_id: state.marcaId || undefined,
+          fornecedor_id: state.fornecedorId || undefined,
+          ativo: state.status,
+          page: 1,
+          pageSize: 10000,
+        }),
+        state.tipo === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : buscarServicos({
+          search: searchQuery || undefined,
+          categoria_id: state.categoriaId || undefined,
+          page: 1,
+          pageSize: 10000,
+        }),
+      ]);
+
+      const produtos = produtosData?.items || [];
+      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
+        id: servico.id,
+        tipo: 'SERVICO',
+        nome: servico.nome,
+        descricao: servico.descricao,
+        categoria_id: servico.categoria_id,
+        unidade_medida_id: 21,
+        marca_id: 1,
+        fornecedor_id: 1,
+        preco_compra: 0,
+        margem_lucro: 0,
+        preco_venda: servico.preco_venda,
+        estoque: 0,
+        codigo_interno: servico.codigo_interno,
+        referencia: servico.referencia || '',
+        duracao_minutos: servico.duracao_minutos,
+        data_criacao: servico.data_criacao,
+        data_atualizacao: servico.data_atualizacao,
+        categoria_nome: servico.categoria_nome,
+      }));
+
+      const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
+      const offset = (page - 1) * 10;
+      setItems(catalogo.slice(offset, offset + 10));
+      setTotal(catalogo.length);
+      setTotalPages(Math.max(1, Math.ceil(catalogo.length / 10)));
     } catch (error) {
       console.error(error);
       showToast('Erro ao carregar produtos e serviços.', 'error');
@@ -407,7 +441,7 @@ const ProdutosPage: React.FC = () => {
       codigoInterno: item.codigo_interno || '',
       referencia: item.referencia || '',
       duracaoMinutos: 'duracao_minutos' in item ? String((item as any).duracao_minutos) : '',
-      ativo: item.ativo,
+      ativo: item.ativo ?? 1,
     });
     setFormCodigosBarras(item.codigos_barras || []);
     setNovoCodigoBarras('');
