@@ -112,7 +112,7 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                             </td>
                                             <td>R$ {formatCurrency(item.preco_venda || 0, 2)}</td>
                                             <td>
-                                                {item.tipo === 'SERVICO' ? '—' : `${item.estoque} ${item.unidade_medida_sigla || ''}`.trim()}
+                                                {item.tipo === 'SERVICO' ? '—' : `${item.estoque_total ?? (item.estoque * (item.multiplicador_unidade ?? 1))} ${item.unidade_medida_sigla || ''}`.trim()}
                                             </td>
 
                                             <td>

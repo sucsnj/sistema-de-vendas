@@ -90,6 +90,7 @@ const ProdutosPage: React.FC = () => {
     margemLucro: '',
     precoVenda: '',
     estoque: '',
+    multiplicadorUnidade: '1',
     unidadeMedidaId: 1,
     codigoInterno: '',
     referencia: '',
@@ -186,6 +187,8 @@ const ProdutosPage: React.FC = () => {
         margem_lucro: 0,
         preco_venda: servico.preco_venda,
         estoque: 0,
+        multiplicador_unidade: 1,
+        estoque_total: 0,
         codigo_interno: servico.codigo_interno,
         referencia: servico.referencia || '',
         duracao_minutos: servico.duracao_minutos,
@@ -249,6 +252,7 @@ const ProdutosPage: React.FC = () => {
       margemLucro: '',
       precoVenda: '',
       estoque: '',
+      multiplicadorUnidade: '1',
       unidadeMedidaId: 1,
       codigoInterno: '',
       referencia: '',
@@ -354,11 +358,13 @@ const ProdutosPage: React.FC = () => {
     const margemLucroRaw = parseNumber(form.margemLucro);
     const precoVendaRaw = parseNumber(form.precoVenda);
     const estoqueRaw = parseNumber(form.estoque);
+    const multiplicadorRaw = parseNumber(form.multiplicadorUnidade);
 
     const precoCompraValor = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
     const margemLucroValor = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
     const precoVendaValor = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
     const estoqueValor = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
+    const multiplicadorValor = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
     // Validação de código principal nos códigos de barras
     if (formCodigosBarras.length > 0) {
@@ -380,6 +386,7 @@ const ProdutosPage: React.FC = () => {
       margem_lucro: margemLucroValor,
       preco_venda: precoVendaValor,
       estoque: estoqueValor,
+      multiplicador_unidade: multiplicadorValor,
       unidade_medida_id: Number(form.unidadeMedidaId || 1),
       codigo_interno: form.codigoInterno.trim() || undefined,
       referencia: form.referencia.trim(),
@@ -437,6 +444,7 @@ const ProdutosPage: React.FC = () => {
       margemLucro: String(item.margem_lucro),
       precoVenda: String(item.preco_venda),
       estoque: String(item.estoque),
+      multiplicadorUnidade: String(item.multiplicador_unidade ?? 1),
       unidadeMedidaId: item.unidade_medida_id,
       codigoInterno: item.codigo_interno || '',
       referencia: item.referencia || '',
@@ -823,7 +831,7 @@ const ProdutosPage: React.FC = () => {
           <ModalAjusteEstoque
             open={modalAjusteOpen}
             itemName={form.nome}
-            itemEstoque={parseNumber(form.estoque)}
+            itemEstoque={parseNumber(form.estoque) * (parseNumber(form.multiplicadorUnidade) || 1)}
             quantidade={ajusteQuantidade}
             descricao={ajusteDescricao}
             setQuantidade={setAjusteQuantidade}

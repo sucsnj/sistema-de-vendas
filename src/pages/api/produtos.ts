@@ -37,7 +37,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
-      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, codigos_barras } = req.body;
+      const { action, id, ativo, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, codigos_barras } = req.body;
 
       // Altera status de ativo/inativo
       if (action === 'toggle-status') {
@@ -124,11 +124,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const margemLucroRaw = parseNumber(margem_lucro);
       const precoVendaRaw = parseNumber(preco_venda);
       const estoqueRaw = parseNumber(estoque);
+      const multiplicadorRaw = parseNumber(multiplicador_unidade);
 
       const precoCompraNumber = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
       const margemLucroNumber = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
       const precoVendaNumber = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
       const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
+      const multiplicadorNumber = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
       const itemId = insertItem({
         tipo,
@@ -142,6 +144,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         margem_lucro: margemLucroNumber,
         preco_venda: precoVendaNumber,
         estoque: estoqueNumber,
+        multiplicador_unidade: multiplicadorNumber,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,
@@ -157,7 +160,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'PUT') {
     try {
-      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, ativo, codigos_barras } = req.body;
+      const { id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, ativo, codigos_barras } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: 'O ID do item é obrigatório para atualização.' });
@@ -193,11 +196,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const margemLucroRaw = parseNumber(margem_lucro);
       const precoVendaRaw = parseNumber(preco_venda);
       const estoqueRaw = parseNumber(estoque);
+      const multiplicadorRaw = parseNumber(multiplicador_unidade);
 
       const precoCompraNumber = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
       const margemLucroNumber = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
       const precoVendaNumber = Number.isFinite(precoVendaRaw) ? precoVendaRaw : 0;
       const estoqueNumber = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
+      const multiplicadorNumber = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
       // Validação de código interno: não pode ser alterado
       if (codigo_interno && existing.codigo_interno && codigo_interno.trim() !== existing.codigo_interno) {
@@ -253,6 +258,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         margem_lucro: margemLucroNumber,
         preco_venda: precoVendaNumber,
         estoque: estoqueNumber,
+        multiplicador_unidade: multiplicadorNumber,
         codigo_interno: codigo_interno || undefined,
         referencia: referencia || undefined,
         ativo: ativo !== undefined ? Number(ativo) : 1,

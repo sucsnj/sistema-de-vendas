@@ -16,6 +16,8 @@ export interface ItemData {
   margem_lucro: number;
   preco_venda: number;
   estoque: number;
+  multiplicador_unidade: number;
+  estoque_total?: number;
   codigo_interno?: string;
   referencia: string;
   ativo?: number;

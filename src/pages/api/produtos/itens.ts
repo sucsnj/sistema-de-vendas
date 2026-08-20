@@ -105,6 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 margem_lucro: margemLucro,
                 preco_venda: precoVenda,
                 estoque: quantidade,
+                multiplicador_unidade: 1,
                 referencia: null,
                 ativo: 1,
                 codigos_barras: listBarcodes,

@@ -54,6 +54,7 @@ try {
       margem_lucro REAL DEFAULT 0,
       preco_venda REAL DEFAULT 0,
       estoque INTEGER DEFAULT 0,
+      multiplicador_unidade REAL NOT NULL DEFAULT 1,
       codigo_interno TEXT UNIQUE,
       referencia TEXT UNIQUE,
       ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
@@ -148,6 +149,7 @@ try {
         margem_lucro REAL DEFAULT 0,
         preco_venda REAL DEFAULT 0,
         estoque INTEGER DEFAULT 0,
+        multiplicador_unidade REAL NOT NULL DEFAULT 1,
         codigo_interno TEXT UNIQUE,
         referencia TEXT UNIQUE,
         ativo INTEGER NOT NULL DEFAULT 1 CHECK(ativo IN (0, 1)),
@@ -155,12 +157,29 @@ try {
         data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
-      INSERT INTO itens SELECT * FROM itens_legacy WHERE tipo = 'PRODUTO';
+      INSERT INTO itens (
+        id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id,
+        fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque,
+        multiplicador_unidade, codigo_interno, referencia, ativo,
+        data_criacao, data_atualizacao
+      )
+      SELECT
+        id, tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id,
+        fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque,
+        1, codigo_interno, referencia, ativo, data_criacao, data_atualizacao
+      FROM itens_legacy WHERE tipo = 'PRODUTO';
       DELETE FROM item_codigos_barras WHERE item_id NOT IN (SELECT id FROM itens);
       DELETE FROM movimentacoes_estoque WHERE item_id NOT IN (SELECT id FROM itens);
       DROP TABLE itens_legacy;
     `);
     db.pragma('foreign_keys = ON');
+  }
+
+  const itensColumns = new Set(
+    (db.prepare('PRAGMA table_info(itens)').all() as Array<{ name: string }>).map((column) => column.name)
+  );
+  if (!itensColumns.has('multiplicador_unidade')) {
+    db.exec('ALTER TABLE itens ADD COLUMN multiplicador_unidade REAL NOT NULL DEFAULT 1');
   }
 
   // Seeding inicial para Unidades de Medida
@@ -702,6 +721,7 @@ export interface ItemInput {
   margem_lucro: number;
   preco_venda: number;
   estoque: number;
+  multiplicador_unidade: number;
   codigo_interno?: string;
   referencia?: string | null;
   ativo?: number;
@@ -766,6 +786,8 @@ export const getItens = (options: {
       i.margem_lucro,
       i.preco_venda,
       i.estoque,
+      i.multiplicador_unidade,
+      i.estoque * i.multiplicador_unidade as estoque_total,
       i.codigo_interno,
       i.referencia,
       i.ativo,
@@ -824,6 +846,8 @@ export const getItemById = (id: number) => {
       i.margem_lucro,
       i.preco_venda,
       i.estoque,
+      i.multiplicador_unidade,
+      i.estoque * i.multiplicador_unidade as estoque_total,
       i.codigo_interno,
       i.referencia,
       i.ativo,
@@ -861,8 +885,8 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
   syncSharedAutoincrementSequence();
 
   const itemStmt = db.prepare(`
-    INSERT INTO itens (tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, codigo_interno, referencia, ativo, data_criacao, data_atualizacao)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
+    INSERT INTO itens (tipo, nome, descricao, categoria_id, unidade_medida_id, marca_id, fornecedor_id, preco_compra, margem_lucro, preco_venda, estoque, multiplicador_unidade, codigo_interno, referencia, ativo, data_criacao, data_atualizacao)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))
   `);
 
   const result = itemStmt.run(
@@ -877,6 +901,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
     itemData.margem_lucro,
     itemData.preco_venda,
     0, // Inicializa com 0 para que a movimentação some a quantidade correta depois
+    itemData.multiplicador_unidade,
     itemData.codigo_interno ? itemData.codigo_interno.trim() : null,
     itemData.referencia ? itemData.referencia.trim() : null,
     itemData.ativo !== undefined ? itemData.ativo : 1
@@ -926,7 +951,7 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
 
   const itemStmt = db.prepare(`
     UPDATE itens 
-    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
+    SET tipo = ?, nome = ?, descricao = ?, categoria_id = ?, unidade_medida_id = ?, marca_id = ?, fornecedor_id = ?, preco_compra = ?, margem_lucro = ?, preco_venda = ?, multiplicador_unidade = ?, referencia = ?, ativo = ?, data_atualizacao = datetime('now', 'localtime')
     WHERE id = ?
   `);
 
@@ -941,6 +966,7 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
     itemData.preco_compra,
     itemData.margem_lucro,
     itemData.preco_venda,
+    itemData.multiplicador_unidade,
     itemData.referencia ? itemData.referencia.trim() : null,
     itemData.ativo !== undefined ? itemData.ativo : 1,
     id

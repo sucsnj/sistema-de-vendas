@@ -21,6 +21,7 @@ export interface ProdutoFormData {
     margemLucro: string;
     precoVenda: string;
     estoque: string;
+    multiplicadorUnidade: string;
     unidadeMedidaId: number;
     codigoInterno: string;
     referencia: string;
@@ -371,6 +372,27 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             onChange={(e) => setForm(prev => ({ ...prev, estoque: e.target.value }))}
                         />
                     )}
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="form-multiplicador-unidade">
+                        Multiplicador:
+                    </label>
+                    <input
+                        id="form-multiplicador-unidade"
+                        type="text"
+                        inputMode="decimal"
+                        className={styles.inputField}
+                        placeholder="1"
+                        value={form.multiplicadorUnidade}
+                        onChange={(e) => setForm(prev => ({ ...prev, multiplicadorUnidade: e.target.value }))}
+                        onBlur={() => {
+                            const valor = parseNumber(form.multiplicadorUnidade);
+                            if (!Number.isFinite(valor) || valor < 1) {
+                                setForm(prev => ({ ...prev, multiplicadorUnidade: '1' }));
+                            }
+                        }}
+                    />
                 </div>
             </div>
 
