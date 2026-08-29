@@ -275,3 +275,78 @@
   color: #0284c7;
   border: 1px solid rgba(56, 189, 248, 0.4);
 }
+
+.badgeExistente {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid var(--success-strong);
+}
+
+.badgeNaoCadastrado {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface-strong);
+  color: var(--muted);
+  border: 1px dashed var(--border);
+}
+
+.subCode {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.prodDescricao {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.cadastroRapidoContainer {
+  margin-top: 6px;
+}
+
+.btnCadastroRapido {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.btnCadastroRapido:hover {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+  transform: translateY(-1px);
+}
+
+.btnCadastroRapido:active {
+  transform: translateY(0);
+}
+
+.iconExternal {
+  font-size: 0.75rem !important;
+  opacity: 0.8;
+}

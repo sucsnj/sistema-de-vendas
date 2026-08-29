@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertItem, getItemByBarcode, checkDuplicateBarcode, insertMovimentacaoEstoque } from '../../../database/produtosDb';
+import db, { insertItem, getItemByBarcode, checkDuplicateBarcode, insertMovimentacaoEstoque } from '../../../database/produtosDb';
 import { parseNumber } from '../../../utils/number';
 import { parseStringPromise } from 'xml2js';
 
@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const { xml, preview, importar, produto } = req.body;
 
-        // MODO 1: Pre-visualizar / parsear o XML e retornar a lista de produtos
+        // MODO 1: Pre-visualizar / parsear o XML e retornar a lista de produtos com mapeamento
         if (preview) {
             if (!xml) {
                 return res.status(400).json({ error: 'Arquivo XML não fornecido' });
@@ -35,25 +35,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             for (let i = 0; i < itens.length; i++) {
                 const prod = itens[i].prod[0];
 
-                const ean = prod.cEAN && prod.cEAN[0] !== 'SEM GTIN' ? prod.cEAN[0] : '';
-                const descricao = prod.xProd[0];
-                const unidadeMedida = prod.uCom[0];
+                const cProd = prod.cProd?.[0] ? String(prod.cProd[0]).trim() : '';
+                const ean = prod.cEAN && prod.cEAN[0] !== 'SEM GTIN' ? String(prod.cEAN[0]).trim() : '';
+                const descricao = prod.xProd?.[0] ? String(prod.xProd[0]).trim() : '';
+                const unidadeMedida = prod.uCom?.[0] ? String(prod.uCom[0]).trim() : '';
                 const quantidade = parseNumber(prod.qCom[0]);
                 const valorUnitario = parseNumber(prod.vUnCom[0]);
                 
-                // Ignorar os itens duplicados no mesmo XML pelo EAN
-                const existe = produtos.find(p => p.ean && p.ean === ean);
-                if (!existe || !ean) {
+                // Verifica se já existe no banco de dados
+                let itemExistente: any = null;
+                if (ean) {
+                    itemExistente = getItemByBarcode(ean);
+                }
+                if (!itemExistente && cProd) {
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd);
+                }
+                if (!itemExistente && descricao) {
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao);
+                }
+
+                const existe = !!itemExistente;
+
+                // Ignorar os itens duplicados no mesmo XML pelo EAN ou cProd
+                const existenteNoLote = produtos.find(p => (p.ean && p.ean === ean) || (cProd && p.cProd === cProd));
+                if (!existenteNoLote) {
                      produtos.push({
+                         cProd,
                          ean,
                          descricao,
                          unidadeMedida,
                          quantidade,
                          valorUnitario,
-                         tipoMovimentacao
+                         tipoMovimentacao,
+                         existe,
+                         itemIdExistente: itemExistente?.id
                      });
-                } else if (existe && ean) {
-                     existe.quantidade += quantidade;
+                } else {
+                     existenteNoLote.quantidade += quantidade;
                 }
             }
 

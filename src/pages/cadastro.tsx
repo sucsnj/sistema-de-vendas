@@ -223,17 +223,70 @@ const CadastroPage: React.FC = () => {
         carregarAuxiliares();
     }, []);
 
-    // Lê o ?id da query e pré-carrega o item para edição
+    const queryProcessada = useRef(false);
+
+    // Lê a query: pré-carrega para edição (?id=X) ou preenche para cadastro rápido (?novoImport=1...)
     useEffect(() => {
-        if (!router.isReady) return;
-        const idParam = router.query.id;
-        if (idParam) {
-            const id = Number(idParam);
-            if (!isNaN(id) && id > 0) {
-                carregarItemParaEdicao(id);
+        if (!router.isReady || queryProcessada.current) return;
+        const { id, novoImport, nome, precoCompra, estoque, unidade, ean, codigoInterno } = router.query;
+
+        if (id) {
+            const numId = Number(id);
+            if (!isNaN(numId) && numId > 0) {
+                queryProcessada.current = true;
+                carregarItemParaEdicao(numId);
             }
+        } else if (novoImport || nome) {
+            queryProcessada.current = true;
+            const nomeStr = typeof nome === 'string' ? nome : '';
+            const precoCompraStr = typeof precoCompra === 'string' ? precoCompra : '';
+            const estoqueStr = typeof estoque === 'string' ? estoque : '';
+            const unidadeStr = typeof unidade === 'string' ? unidade.trim().toUpperCase() : '';
+            const eanStr = typeof ean === 'string' ? ean.trim() : '';
+            const codigoInternoStr = typeof codigoInterno === 'string' ? codigoInterno.trim() : '';
+
+            let uomId = 1;
+            if (unidadeStr && options.unidadesMedida.length > 0) {
+                const encontrada = options.unidadesMedida.find(
+                    u => u.sigla.toUpperCase() === unidadeStr || u.sigla.toUpperCase().includes(unidadeStr)
+                );
+                if (encontrada) uomId = encontrada.id;
+            }
+
+            const precoCompraNum = parseNumber(precoCompraStr) || 0;
+            const margemPadrao = 50;
+            const precoVendaCalculado = precoCompraNum > 0 ? (precoCompraNum * (1 + margemPadrao / 100)).toFixed(2) : '';
+
+            setEditingId(null);
+            setForm({
+                tipo: 'PRODUTO',
+                nome: nomeStr,
+                descricao: 'Importado via XML da NF-e',
+                categoriaId: 1,
+                marcaId: 1,
+                fornecedorId: 1,
+                precoCompra: precoCompraStr,
+                margemLucro: precoCompraNum > 0 ? String(margemPadrao) : '',
+                precoVenda: precoVendaCalculado,
+                estoque: estoqueStr,
+                multiplicadorUnidade: '1',
+                unidadeMedidaId: uomId,
+                codigoInterno: codigoInternoStr,
+                referencia: '',
+                duracaoMinutos: '',
+                ativo: 1,
+                unidadesMedida: [{ unidadeMedidaId: uomId, multiplicadorUnidade: '1', principal: true }],
+            });
+
+            if (eanStr) {
+                setFormCodigosBarras([{ codigo_barras: eanStr, principal: 1 }]);
+            } else {
+                setFormCodigosBarras([]);
+            }
+
+            showToast('Dados do item preenchidos para cadastro. Complete as informações e salve.', 'info');
         }
-    }, [router.isReady, router.query.id]);
+    }, [router.isReady, router.query, options.unidadesMedida]);
 
     // Marca formulário como dirty quando o nome é preenchido (proxy de "usuário começou a editar")
     useEffect(() => {
@@ -271,6 +324,7 @@ const CadastroPage: React.FC = () => {
 
     // Reseta Formulário
     const resetForm = () => {
+        queryProcessada.current = false;
         setIsDirty(false);
         setEditingId(null);
         setForm({

@@ -7,8 +7,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircle';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
+import AddIcon from '@mui/icons-material/Add';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 export interface ProdutoImportado {
+    cProd?: string;
     ean: string;
     descricao: string;
     unidadeMedida: string;
@@ -16,6 +19,8 @@ export interface ProdutoImportado {
     valorUnitario: number;
     ncm?: string;
     cfop?: string;
+    existe?: boolean;
+    itemIdExistente?: number;
 }
 
 interface ModalImportItensProps {
@@ -146,6 +151,19 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
         onImportSuccess();
     };
 
+    const handleCadastroRapido = (item: ProdutoImportado) => {
+        const params = new URLSearchParams();
+        params.append('novoImport', '1');
+        if (item.descricao) params.append('nome', item.descricao);
+        if (item.valorUnitario) params.append('precoCompra', String(item.valorUnitario));
+        if (item.quantidade) params.append('estoque', String(item.quantidade));
+        if (item.unidadeMedida) params.append('unidade', item.unidadeMedida);
+        if (item.ean) params.append('ean', item.ean);
+        if (item.cProd) params.append('codigoInterno', item.cProd);
+
+        window.open(`/cadastro?${params.toString()}`, '_blank');
+    };
+
     const totalOk = produtos.filter((p) => p.status === 'ok').length;
     const totalEstAtualizado = produtos.filter((p) => p.status === 'estoque_atualizado').length;
     const totalDup = produtos.filter((p) => p.status === 'duplicado').length;
@@ -267,8 +285,29 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                     {produtos.map((p, i) => (
                                         <tr key={i} className={importStyles[`row_${p.status}`]}>
                                             <td>{i + 1}</td>
-                                            <td className={importStyles.mono}>{p.ean || '—'}</td>
-                                            <td>{p.descricao}</td>
+                                            <td className={importStyles.mono}>
+                                                <div>{p.ean || '—'}</div>
+                                                {p.cProd && p.cProd !== p.ean && (
+                                                    <div className={importStyles.subCode}>Cód: {p.cProd}</div>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <div className={importStyles.prodDescricao}>{p.descricao}</div>
+                                                {!p.existe && !concluido && (
+                                                    <div className={importStyles.cadastroRapidoContainer}>
+                                                        <button
+                                                            type="button"
+                                                            className={importStyles.btnCadastroRapido}
+                                                            onClick={() => handleCadastroRapido(p)}
+                                                            title="Abrir formulário de cadastro em nova aba"
+                                                        >
+                                                            <AddIcon fontSize="inherit" />
+                                                            <span>Cadastro rápido</span>
+                                                            <OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </td>
                                             <td>{p.unidadeMedida}</td>
                                             <td>{p.quantidade}</td>
                                             <td>
@@ -278,7 +317,17 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                                 })}
                                             </td>
                                             <td>
-                                                {p.status === 'idle' && <span className={importStyles.badgeIdle}>Pendente</span>}
+                                                {p.status === 'idle' && (
+                                                    p.existe ? (
+                                                        <span className={importStyles.badgeExistente} title="Produto já cadastrado no sistema">
+                                                            <CheckCircleOutlineIcon fontSize="inherit" /> No Sistema
+                                                        </span>
+                                                    ) : (
+                                                        <span className={importStyles.badgeNaoCadastrado} title="Produto novo">
+                                                            Não Cadastrado
+                                                        </span>
+                                                    )
+                                                )}
                                                 {p.status === 'ok' && (
                                                     <span className={importStyles.badgeOk}>
                                                         <CheckCircleOutlineIcon fontSize="inherit" /> Importado
