@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
 import {
@@ -298,6 +299,11 @@ const ProdutosPage: React.FC = () => {
           onClose={closeToast}
           position="top-right"
         />
+
+        {/* Botão flutuante: Novo Cadastro */}
+        <Link href="/cadastro" className={styles.fab} id="fab-novo-cadastro" title="Novo cadastro">
+          <span className={styles.fabIcon}>+</span>
+        </Link>
       </div >
     </>
   );

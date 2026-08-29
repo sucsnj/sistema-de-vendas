@@ -46,8 +46,7 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Cód. Interno</th>
-                                    <th>Cód. Barras</th>
-                                    <th>Nome</th>
+                                    <th className={styles.colNome}>Nome</th>
                                     <th>Preço Venda</th>
                                     <th>Estoque</th>
                                     <th>Status</th>
@@ -72,28 +71,6 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                                                 </span>
                                             </td>
                                             <td>{item.codigo_interno || '—'}</td>
-                                            <td>
-                                                {item.tipo === 'SERVICO' ? '—' : (
-                                                    <>
-                                                        <span>{principalBarcode}</span>
-                                                        {extraBarcodesCount > 0 && (
-                                                            <span
-                                                                style={{
-                                                                    marginLeft: '5px',
-                                                                    fontSize: '0.7rem',
-                                                                    padding: '2px 5px',
-                                                                    backgroundColor: 'var(--border)',
-                                                                    borderRadius: '4px',
-                                                                    color: 'var(--muted)',
-                                                                    fontWeight: 'bold',
-                                                                }}
-                                                            >
-                                                                +{extraBarcodesCount}
-                                                            </span>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </td>
                                             <td>
                                                 <strong>{item.nome}</strong>
                                                 {item.descricao && (
