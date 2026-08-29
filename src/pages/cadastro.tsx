@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
@@ -41,6 +41,7 @@ import { useCategoria } from '@/hooks/useCategoria';
 import { useMarca } from '@/hooks/useMarca';
 import { useFornecedor } from '@/hooks/useFornecedor';
 import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 const CadastroPage: React.FC = () => {
 
@@ -95,6 +96,13 @@ const CadastroPage: React.FC = () => {
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
+
+    // Controle de alterações não salvas
+    const [isDirty, setIsDirty] = useState(false);
+    const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
+    const pendingNavUrl = useRef<string | null>(null);
+    // Flag para ignorar o guard durante redirecionamento pós-salvo
+    const skipDirtyGuard = useRef(false);
 
     // Refs para focar campos
     const nomeInputRef = useRef<HTMLInputElement | null>(null);
@@ -207,6 +215,7 @@ const CadastroPage: React.FC = () => {
         setAjusteDescricao('');
         setMovimentacoesEstoque([]);
         setModalAjusteOpen(false);
+        setIsDirty(false);
         nomeInputRef.current?.focus();
     };
 
@@ -226,8 +235,43 @@ const CadastroPage: React.FC = () => {
         }
     }, [router.isReady, router.query.id]);
 
+    // Marca formulário como dirty quando o nome é preenchido (proxy de "usuário começou a editar")
+    useEffect(() => {
+        if (form.nome.trim() !== '') {
+            setIsDirty(true);
+        }
+    }, [form, formCodigosBarras]);
+
+    // Guard: aviso nativo do browser ao fechar aba ou recarregar página
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (!isDirty) return;
+            e.preventDefault();
+            e.returnValue = '';
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [isDirty]);
+
+    // Guard: intercepta navegações do Next.js router (Links, router.push, etc.)
+    const handleRouteChangeStart = useCallback((url: string) => {
+        if (skipDirtyGuard.current || !isDirty) return;
+        // Aborta a navegação
+        router.events.emit('routeChangeError');
+        pendingNavUrl.current = url;
+        setDiscardDialogOpen(true);
+        // Lança erro para cancelar o routeChange (padrão Next.js Pages Router)
+        throw 'routeChange aborted by unsaved changes guard';
+    }, [isDirty, router.events]);
+
+    useEffect(() => {
+        router.events.on('routeChangeStart', handleRouteChangeStart);
+        return () => router.events.off('routeChangeStart', handleRouteChangeStart);
+    }, [handleRouteChangeStart, router.events]);
+
     // Reseta Formulário
     const resetForm = () => {
+        setIsDirty(false);
         setEditingId(null);
         setForm({
             tipo: 'PRODUTO',
@@ -254,7 +298,7 @@ const CadastroPage: React.FC = () => {
         setAjusteDescricao('');
         setMovimentacoesEstoque([]);
         setModalAjusteOpen(false);
-        // Remove o ?id da URL ao cancelar sem reload de página
+        // Remove o ?id da URL sem recarregar a página
         router.replace('/cadastro', undefined, { shallow: true });
     };
 
@@ -405,21 +449,24 @@ const CadastroPage: React.FC = () => {
             if (form.tipo === 'SERVICO') {
                 if (editingId) {
                     await atualizarServico(editingId, servicePayload);
-                    showToast('Serviço atualizado com sucesso.', 'success');
+                    showToast('Serviço atualizado com sucesso. Redirecionando...', 'success');
                 } else {
                     await registrarServico(servicePayload);
-                    showToast('Serviço cadastrado com sucesso.', 'success');
+                    showToast('Serviço cadastrado com sucesso. Redirecionando...', 'success');
                 }
             } else {
                 if (editingId) {
                     await atualizarProduto(editingId, payload);
-                    showToast('Item atualizado com sucesso.', 'success');
+                    showToast('Item atualizado com sucesso. Redirecionando...', 'success');
                 } else {
                     await registrarProduto(payload);
-                    showToast('Item cadastrado com sucesso.', 'success');
+                    showToast('Item cadastrado com sucesso. Redirecionando...', 'success');
                 }
             }
-            resetForm();
+            // Limpa dirty antes de navegar para não disparar o guard
+            setIsDirty(false);
+            skipDirtyGuard.current = true;
+            setTimeout(() => router.push('/produtos'), 2000);
         } catch (error: any) {
             showToast(error.message || 'Erro ao salvar o item.', 'error');
         }
@@ -460,10 +507,10 @@ const CadastroPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => {},
+        carregarItens: () => { },
         items: [],
         page: 1,
-        setPage: () => {},
+        setPage: () => { },
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -487,10 +534,10 @@ const CadastroPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => {},
+        carregarItens: () => { },
         items: [],
         page: 1,
-        setPage: () => {},
+        setPage: () => { },
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -514,10 +561,10 @@ const CadastroPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => {},
+        carregarItens: () => { },
         items: [],
         page: 1,
-        setPage: () => {},
+        setPage: () => { },
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -539,10 +586,10 @@ const CadastroPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => {},
+        carregarItens: () => { },
         items: [],
         page: 1,
-        setPage: () => {},
+        setPage: () => { },
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -623,7 +670,10 @@ const CadastroPage: React.FC = () => {
 
                                 {/* Botões de Ação */}
                                 <div className={styles.actionButtons}>
-                                    <button type="submit" className={styles.primaryButton} id="submit-item-btn">
+                                    <button type="submit"
+                                        className={styles.primaryButton}
+                                        id="submit-item-btn"
+                                    >
                                         {editingId ? 'Salvar Alterações' : 'Cadastrar'}
                                     </button>
                                     <button
@@ -803,6 +853,28 @@ const CadastroPage: React.FC = () => {
                     type={toastType}
                     onClose={closeToast}
                     position="top-right"
+                />
+
+                {/* Diálogo de confirmação: descartar alterações não salvas */}
+                <ConfirmDialog
+                    open={discardDialogOpen}
+                    title="Descartar alterações?"
+                    message="Você tem alterações não salvas. Se continuar, elas serão perdidas."
+                    confirmText="Descartar e sair"
+                    cancelText="Continuar editando"
+                    onConfirm={() => {
+                        setDiscardDialogOpen(false);
+                        setIsDirty(false);
+                        skipDirtyGuard.current = true;
+                        if (pendingNavUrl.current) {
+                            router.push(pendingNavUrl.current);
+                            pendingNavUrl.current = null;
+                        }
+                    }}
+                    onCancel={() => {
+                        setDiscardDialogOpen(false);
+                        pendingNavUrl.current = null;
+                    }}
                 />
             </div >
         </>
