@@ -350,3 +350,171 @@
   font-size: 0.75rem !important;
   opacity: 0.8;
 }
+
+/* Dropdown de Busca de Itens */
+.dropdownContainer {
+  position: relative;
+  width: 100%;
+}
+
+.inputWithIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.nomeInput {
+  width: 100%;
+  padding: 6px 26px 6px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.nomeInput:focus {
+  border-color: var(--accent);
+  background: var(--surface-strong);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.nomeInput:disabled {
+  background: transparent;
+  border-color: transparent;
+  color: var(--foreground);
+  cursor: default;
+}
+
+.searchFieldIcon {
+  position: absolute;
+  right: 6px;
+  color: var(--muted);
+  font-size: 0.95rem !important;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  min-width: 280px;
+  max-width: 380px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.dropdownHeader {
+  padding: 4px 10px 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dropdownList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdownItem {
+  padding: 8px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.12s;
+}
+
+.dropdownItem:last-child {
+  border-bottom: none;
+}
+
+.dropdownItem:hover {
+  background: var(--accent-soft, rgba(99, 102, 241, 0.12));
+}
+
+.dropdownItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dropdownItemNome {
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeBadgeProd {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.2);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.typeBadgeServ {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+  flex-shrink: 0;
+}
+
+.dropdownItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+
+.dropdownLoading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  justify-content: center;
+}
+
+.spinnerMini {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.dropdownEmpty {
+  padding: 12px 10px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  text-align: center;
+}

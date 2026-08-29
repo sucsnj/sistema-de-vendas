@@ -80,9 +80,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // MODO 2: Importar um produto específico
         if (importar && produto) {
-            const { ean, descricao, unidadeMedida, quantidade, valorUnitario, tipoMovimentacao } = produto;
+            const { ean, descricao, unidadeMedida, quantidade, valorUnitario, tipoMovimentacao, itemIdExistente } = produto;
 
-            // 1. Verifica se já existe produto com esse EAN (código de barras)
+            // 1. Se já possui item vinculado pelo usuário ou preview, atualiza o estoque
+            if (itemIdExistente) {
+                insertMovimentacaoEstoque({
+                    item_id: itemIdExistente,
+                    tipo: tipoMovimentacao || 'ENTRADA',
+                    quantidade,
+                    descricao: 'Importação de XML de NF-e',
+                });
+                return res.status(200).json({ sucesso: true, id: itemIdExistente, estoqueAtualizado: true });
+            }
+
+            // 2. Verifica se já existe produto com esse EAN (código de barras)
             if (ean) {
                 const itemExistente = getItemByBarcode(ean);
                 if (itemExistente) {

@@ -9,6 +9,8 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import AddIcon from '@mui/icons-material/Add';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import SearchIcon from '@mui/icons-material/Search';
+import { buscarProdutos, buscarServicos } from '../services/produtosService';
 
 export interface ProdutoImportado {
     cProd?: string;
@@ -35,6 +37,193 @@ interface ItemComStatus extends ProdutoImportado {
     status: StatusItem;
     mensagem?: string;
 }
+
+interface SugestaoItem {
+    id: number;
+    tipo: 'PRODUTO' | 'SERVICO';
+    nome: string;
+    precoVenda: number;
+    estoque?: number;
+    codigoInterno?: string;
+    ean?: string;
+    categoriaNome?: string;
+}
+
+interface ItemNomeDropdownProps {
+    item: ItemComStatus;
+    onSelectSugestao: (sugestao: SugestaoItem) => void;
+    onChangeTexto: (novoTexto: string) => void;
+    disabled?: boolean;
+}
+
+const ItemNomeDropdown: React.FC<ItemNomeDropdownProps> = ({
+    item,
+    onSelectSugestao,
+    onChangeTexto,
+    disabled = false,
+}) => {
+    const [termo, setTermo] = useState(item.descricao || '');
+    const [sugestoes, setSugestoes] = useState<SugestaoItem[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [aberto, setAberto] = useState(false);
+    const [buscou, setBuscou] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        setTermo(item.descricao || '');
+    }, [item.descricao]);
+
+    useEffect(() => {
+        const handleClickFora = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setAberto(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickFora);
+        return () => document.removeEventListener('mousedown', handleClickFora);
+    }, []);
+
+    const executarBusca = async (texto: string) => {
+        const query = texto.trim();
+        if (!query) {
+            setSugestoes([]);
+            setLoading(false);
+            setBuscou(false);
+            setAberto(false);
+            return;
+        }
+
+        setLoading(true);
+        setBuscou(true);
+        try {
+            const [prodRes, servRes] = await Promise.all([
+                buscarProdutos({ search: query, page: 1, pageSize: 8 }),
+                buscarServicos({ search: query, page: 1, pageSize: 8 }),
+            ]);
+
+            const produtos: SugestaoItem[] = (prodRes.items || []).map((p) => ({
+                id: p.id,
+                tipo: 'PRODUTO',
+                nome: p.nome,
+                precoVenda: p.preco_venda,
+                estoque: p.estoque,
+                codigoInterno: p.codigo_interno,
+                ean: p.codigos_barras?.find((b) => b.principal === 1)?.codigo_barras || p.codigos_barras?.[0]?.codigo_barras || '',
+                categoriaNome: p.categoria_nome,
+            }));
+
+            const servicos: SugestaoItem[] = (servRes.items || []).map((s) => ({
+                id: s.id,
+                tipo: 'SERVICO',
+                nome: s.nome,
+                precoVenda: s.preco_venda,
+                codigoInterno: s.codigo_interno,
+                categoriaNome: s.categoria_nome,
+            }));
+
+            setSugestoes([...produtos, ...servicos]);
+            setAberto(true);
+        } catch (err) {
+            console.error('Erro na busca de sugestões:', err);
+            setSugestoes([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setTermo(val);
+        onChangeTexto(val);
+
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        if (val.trim().length > 0) {
+            setLoading(true);
+            setAberto(true);
+            timeoutRef.current = setTimeout(() => {
+                executarBusca(val);
+            }, 250);
+        } else {
+            setAberto(false);
+            setSugestoes([]);
+            setBuscou(false);
+            setLoading(false);
+        }
+    };
+
+    const handleSelect = (s: SugestaoItem) => {
+        setTermo(s.nome);
+        onSelectSugestao(s);
+        setAberto(false);
+    };
+
+    return (
+        <div className={importStyles.dropdownContainer} ref={containerRef}>
+            <div className={importStyles.inputWithIcon}>
+                <input
+                    type="text"
+                    className={importStyles.nomeInput}
+                    value={termo}
+                    onChange={handleInputChange}
+                    onFocus={() => {
+                        if (buscou && sugestoes.length > 0) {
+                            setAberto(true);
+                        }
+                    }}
+                    disabled={disabled}
+                    placeholder="Digite para buscar itens..."
+                    title="Digite para buscar produtos/serviços cadastrados"
+                />
+                <SearchIcon className={importStyles.searchFieldIcon} fontSize="inherit" />
+            </div>
+
+            {aberto && (
+                <div className={importStyles.dropdownMenu}>
+                    {loading ? (
+                        <div className={importStyles.dropdownLoading}>
+                            <div className={importStyles.spinnerMini} />
+                            <span>Buscando itens...</span>
+                        </div>
+                    ) : sugestoes.length > 0 ? (
+                        <>
+                            <div className={importStyles.dropdownHeader}>
+                                Itens encontrados no sistema:
+                            </div>
+                            <ul className={importStyles.dropdownList}>
+                                {sugestoes.map((s) => (
+                                    <li
+                                        key={`${s.tipo}-${s.id}`}
+                                        className={importStyles.dropdownItem}
+                                        onClick={() => handleSelect(s)}
+                                    >
+                                        <div className={importStyles.dropdownItemHeader}>
+                                            <span className={importStyles.dropdownItemNome}>{s.nome}</span>
+                                            <span className={s.tipo === 'PRODUTO' ? importStyles.typeBadgeProd : importStyles.typeBadgeServ}>
+                                                {s.tipo === 'PRODUTO' ? 'PRODUTO' : 'SERVIÇO'}
+                                            </span>
+                                        </div>
+                                        <div className={importStyles.dropdownItemMeta}>
+                                            <span>R$ {s.precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                            {s.tipo === 'PRODUTO' && <span>Estoque: {s.estoque ?? 0}</span>}
+                                            {s.ean && <span>EAN: {s.ean}</span>}
+                                            {s.codigoInterno && <span>Cód: {s.codigoInterno}</span>}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    ) : buscou ? (
+                        <div className={importStyles.dropdownEmpty}>
+                            Nenhum produto ou serviço encontrado para &quot;{termo}&quot;
+                        </div>
+                    ) : null}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess, initialFile }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
@@ -149,6 +338,36 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
         setImportando(false);
         setConcluido(true);
         onImportSuccess();
+    };
+
+    const handleUpdateItemDescricao = (index: number, novoNome: string) => {
+        setProdutos((prev) => {
+            const copy = [...prev];
+            const item = copy[index];
+            copy[index] = {
+                ...item,
+                descricao: novoNome,
+                // Se alterou manualmente o texto e não é o nome cadastrado anteriormente, desvincula
+                existe: false,
+                itemIdExistente: undefined,
+            };
+            return copy;
+        });
+    };
+
+    const handleSelectSugestaoItem = (index: number, sugestao: SugestaoItem) => {
+        setProdutos((prev) => {
+            const copy = [...prev];
+            const item = copy[index];
+            copy[index] = {
+                ...item,
+                descricao: sugestao.nome,
+                existe: true,
+                itemIdExistente: sugestao.id,
+                ean: item.ean || sugestao.ean || '',
+            };
+            return copy;
+        });
     };
 
     const handleCadastroRapido = (item: ProdutoImportado) => {
@@ -274,7 +493,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                     <tr>
                                         <th>#</th>
                                         <th>EAN / Cód.</th>
-                                        <th>Descrição</th>
+                                        <th style={{ minWidth: '260px' }}>Descrição / Vínculo</th>
                                         <th>Un.</th>
                                         <th>Qtd.</th>
                                         <th>Vlr. Unit. (R$)</th>
@@ -292,7 +511,12 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                                 )}
                                             </td>
                                             <td>
-                                                <div className={importStyles.prodDescricao}>{p.descricao}</div>
+                                                <ItemNomeDropdown
+                                                    item={p}
+                                                    onSelectSugestao={(sugestao) => handleSelectSugestaoItem(i, sugestao)}
+                                                    onChangeTexto={(novoTexto) => handleUpdateItemDescricao(i, novoTexto)}
+                                                    disabled={concluido || importando}
+                                                />
                                                 {!p.existe && !concluido && (
                                                     <div className={importStyles.cadastroRapidoContainer}>
                                                         <button
