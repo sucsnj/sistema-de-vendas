@@ -49,9 +49,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 if (!itemExistente && cProd) {
                     itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd);
+                    if (!itemExistente) {
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd);
+                    }
                 }
                 if (!itemExistente && descricao) {
                     itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao);
+                    if (!itemExistente) {
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao);
+                    }
                 }
 
                 const existe = !!itemExistente;
@@ -62,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                      produtos.push({
                          cProd,
                          ean,
-                         descricao,
+                         descricao: itemExistente ? itemExistente.nome : descricao,
                          descricaoOriginal: descricao,
                          unidadeMedida,
                          quantidade,
