@@ -8,6 +8,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircle';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SearchIcon from '@mui/icons-material/Search';
 import { buscarProdutos, buscarServicos } from '../services/produtosService';
@@ -16,6 +17,7 @@ export interface ProdutoImportado {
     cProd?: string;
     ean: string;
     descricao: string;
+    descricaoOriginal?: string;
     unidadeMedida: string;
     quantidade: number;
     valorUnitario: number;
@@ -267,6 +269,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
 
             const itensComStatus: ItemComStatus[] = (result.produtos as ProdutoImportado[]).map((p) => ({
                 ...p,
+                descricaoOriginal: p.descricaoOriginal || p.descricao,
                 status: 'idle',
             }));
             setProdutos(itensComStatus);
@@ -347,7 +350,6 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
             copy[index] = {
                 ...item,
                 descricao: novoNome,
-                // Se alterou manualmente o texto e não é o nome cadastrado anteriormente, desvincula
                 existe: false,
                 itemIdExistente: undefined,
             };
@@ -368,6 +370,11 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
             };
             return copy;
         });
+    };
+
+    const handleEditarItem = (item: ProdutoImportado) => {
+        if (!item.itemIdExistente) return;
+        window.open(`/cadastro?id=${item.itemIdExistente}`, '_blank');
     };
 
     const handleCadastroRapido = (item: ProdutoImportado) => {
@@ -492,8 +499,8 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>EAN / Cód.</th>
-                                        <th style={{ minWidth: '260px' }}>Descrição / Vínculo</th>
+                                        <th style={{ minWidth: '220px' }}>Produto na NF-e</th>
+                                        <th style={{ minWidth: '250px' }}>Item no Sistema (Vínculo)</th>
                                         <th>Un.</th>
                                         <th>Qtd.</th>
                                         <th>Vlr. Unit. (R$)</th>
@@ -504,10 +511,16 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                     {produtos.map((p, i) => (
                                         <tr key={i} className={importStyles[`row_${p.status}`]}>
                                             <td>{i + 1}</td>
-                                            <td className={importStyles.mono}>
-                                                <div>{p.ean || '—'}</div>
-                                                {p.cProd && p.cProd !== p.ean && (
-                                                    <div className={importStyles.subCode}>Cód: {p.cProd}</div>
+                                            <td className={importStyles.colNfProduto}>
+                                                <div className={importStyles.nomeNfTexto} title={p.descricaoOriginal || p.descricao}>
+                                                    {p.descricaoOriginal || p.descricao}
+                                                </div>
+                                                {(p.ean || p.cProd) && (
+                                                    <div className={importStyles.subCode}>
+                                                        {p.ean && <span>EAN: {p.ean}</span>}
+                                                        {p.ean && p.cProd && p.cProd !== p.ean && <span> · </span>}
+                                                        {p.cProd && p.cProd !== p.ean && <span>Cód: {p.cProd}</span>}
+                                                    </div>
                                                 )}
                                             </td>
                                             <td>
@@ -517,18 +530,31 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                                     onChangeTexto={(novoTexto) => handleUpdateItemDescricao(i, novoTexto)}
                                                     disabled={concluido || importando}
                                                 />
-                                                {!p.existe && !concluido && (
+                                                {!concluido && (
                                                     <div className={importStyles.cadastroRapidoContainer}>
-                                                        <button
-                                                            type="button"
-                                                            className={importStyles.btnCadastroRapido}
-                                                            onClick={() => handleCadastroRapido(p)}
-                                                            title="Abrir formulário de cadastro em nova aba"
-                                                        >
-                                                            <AddIcon fontSize="inherit" />
-                                                            <span>Cadastro rápido</span>
-                                                            <OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />
-                                                        </button>
+                                                        {p.existe && p.itemIdExistente ? (
+                                                            <button
+                                                                type="button"
+                                                                className={importStyles.btnEditarItem}
+                                                                onClick={() => handleEditarItem(p)}
+                                                                title="Abrir edição deste item em nova aba"
+                                                            >
+                                                                <EditIcon fontSize="inherit" />
+                                                                <span>Editar item</span>
+                                                                <OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                className={importStyles.btnCadastroRapido}
+                                                                onClick={() => handleCadastroRapido(p)}
+                                                                title="Abrir formulário de cadastro em nova aba"
+                                                            >
+                                                                <AddIcon fontSize="inherit" />
+                                                                <span>Cadastro rápido</span>
+                                                                <OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 )}
                                             </td>
