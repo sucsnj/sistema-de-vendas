@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
-import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
 import Toast from '../components/Toast';
 import {
@@ -9,7 +9,6 @@ import {
     registrarProduto,
     atualizarProduto,
     excluirProduto,
-    toggleStatusProduto,
     buscarCategorias,
     buscarMarcas,
     buscarFornecedores,
@@ -24,8 +23,6 @@ import {
     MovimentacaoEstoqueData,
 } from '../services/produtosService';
 import { parseNumber } from '../utils/number';
-import ProdutosList from '@/components/ProdutosList';
-import Filtros from '@/components/Filtros';
 import BarcodeManager from '@/components/BarcodeManager';
 import FormularioItem from '@/components/FormularioItem';
 import ModalCategoria from '@/components/ModalCategoria';
@@ -40,33 +37,14 @@ import ModalUnidadeMedidaEdit from '@/components/ModalUnidadeMedidaEdit';
 import ModalAjusteEstoque from '@/components/ModalAjusteEstoque';
 import ModalImportItens from '@/components/ModalImportItens';
 import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
-import { FiltrosState } from '@/components/Filtros';
 import { useCategoria } from '@/hooks/useCategoria';
 import { useMarca } from '@/hooks/useMarca';
 import { useFornecedor } from '@/hooks/useFornecedor';
 import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
 
-const ProdutosPage: React.FC = () => {
+const CadastroPage: React.FC = () => {
 
-    const queryClient = useQueryClient();
-
-    // Lista de itens e paginação
-    const [items, setItems] = useState<ItemData[]>([]);
-    const [total, setTotal] = useState(0);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(false);
-
-    // Filtros de busca
-    const [searchQuery, setSearchQuery] = useState('');
-    const [state, setState] = useState<FiltrosState>({
-        search: '',
-        tipo: 'TODOS',
-        categoriaId: '',
-        marcaId: '',
-        fornecedorId: '',
-        status: 'TODOS',
-    });
+    const router = useRouter();
 
     // Listas auxiliares para dropdowns
     const [options, setOptions] = useState<ProdutoOptions>({
@@ -151,30 +129,17 @@ const ProdutosPage: React.FC = () => {
         }
     };
 
-    // Carrega o catalogo a partir das tabelas especificas de cada tipo.
-    const carregarItens = async () => {
-        setLoading(true);
+    // Carrega item pelo ID (vindo da query ?id=X) para pré-preencher o formulário de edição
+    const carregarItemParaEdicao = async (id: number) => {
         try {
+            // Tenta buscar como produto primeiro, depois como serviço
             const [produtosData, servicosData] = await Promise.all([
-                state.tipo === 'SERVICO' ? Promise.resolve(null) : buscarProdutos({
-                    search: searchQuery || undefined,
-                    categoria_id: state.categoriaId || undefined,
-                    marca_id: state.marcaId || undefined,
-                    fornecedor_id: state.fornecedorId || undefined,
-                    ativo: state.status,
-                    page: 1,
-                    pageSize: 10000,
-                }),
-                state.tipo === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : buscarServicos({
-                    search: searchQuery || undefined,
-                    categoria_id: state.categoriaId || undefined,
-                    page: 1,
-                    pageSize: 10000,
-                }),
+                buscarProdutos({ page: 1, pageSize: 10000 }),
+                buscarServicos({ page: 1, pageSize: 10000 }),
             ]);
 
-            const produtos = produtosData?.items || [];
-            const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
+            const todosProdutos: ItemData[] = produtosData?.items || [];
+            const todosServicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
                 id: servico.id,
                 tipo: 'SERVICO',
                 nome: servico.nome,
@@ -197,26 +162,69 @@ const ProdutosPage: React.FC = () => {
                 categoria_nome: servico.categoria_nome,
             }));
 
-            const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
-            const offset = (page - 1) * 10;
-            setItems(catalogo.slice(offset, offset + 10));
-            setTotal(catalogo.length);
-            setTotalPages(Math.max(1, Math.ceil(catalogo.length / 10)));
+            const item = [...todosProdutos, ...todosServicos].find((i) => i.id === id);
+            if (!item) {
+                showToast('Item não encontrado para edição.', 'error');
+                return;
+            }
+
+            preencherFormComItem(item);
         } catch (error) {
             console.error(error);
-            showToast('Erro ao carregar produtos e serviços.', 'error');
-        } finally {
-            setLoading(false);
+            showToast('Erro ao carregar item para edição.', 'error');
         }
+    };
+
+    // Preenche o formulário com os dados de um item existente
+    const preencherFormComItem = (item: ItemData) => {
+        setEditingId(item.id);
+        setForm({
+            tipo: item.tipo,
+            nome: item.nome,
+            descricao: item.descricao || '',
+            categoriaId: item.categoria_id,
+            marcaId: item.marca_id,
+            fornecedorId: item.fornecedor_id,
+            precoCompra: String(item.preco_compra),
+            margemLucro: String(item.margem_lucro),
+            precoVenda: String(item.preco_venda),
+            estoque: String(item.estoque),
+            multiplicadorUnidade: String(item.multiplicador_unidade ?? 1),
+            unidadeMedidaId: item.unidade_medida_id,
+            codigoInterno: item.codigo_interno || '',
+            referencia: item.referencia || '',
+            duracaoMinutos: String(item.duracao_minutos ?? ''),
+            ativo: item.ativo ?? 1,
+            unidadesMedida: item.unidades_medida ? item.unidades_medida.map(u => ({
+                unidadeMedidaId: u.unidade_medida_id,
+                multiplicadorUnidade: String(u.multiplicador_unidade),
+                principal: u.principal === 1,
+            })) : [{ unidadeMedidaId: item.unidade_medida_id, multiplicadorUnidade: String(item.multiplicador_unidade ?? 1), principal: true }],
+        });
+        setFormCodigosBarras(item.codigos_barras || []);
+        setNovoCodigoBarras('');
+        setAjusteQuantidade('');
+        setAjusteDescricao('');
+        setMovimentacoesEstoque([]);
+        setModalAjusteOpen(false);
+        nomeInputRef.current?.focus();
     };
 
     useEffect(() => {
         carregarAuxiliares();
     }, []);
 
+    // Lê o ?id da query e pré-carrega o item para edição
     useEffect(() => {
-        carregarItens();
-    }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.fornecedorId, state.status]);
+        if (!router.isReady) return;
+        const idParam = router.query.id;
+        if (idParam) {
+            const id = Number(idParam);
+            if (!isNaN(id) && id > 0) {
+                carregarItemParaEdicao(id);
+            }
+        }
+    }, [router.isReady, router.query.id]);
 
     // Reseta Formulário
     const resetForm = () => {
@@ -246,6 +254,8 @@ const ProdutosPage: React.FC = () => {
         setAjusteDescricao('');
         setMovimentacoesEstoque([]);
         setModalAjusteOpen(false);
+        // Remove o ?id da URL ao cancelar sem reload de página
+        router.replace('/cadastro', undefined, { shallow: true });
     };
 
     const carregarMovimentacoes = async (itemId: number) => {
@@ -410,7 +420,6 @@ const ProdutosPage: React.FC = () => {
                 }
             }
             resetForm();
-            carregarItens();
         } catch (error: any) {
             showToast(error.message || 'Erro ao salvar o item.', 'error');
         }
@@ -428,11 +437,7 @@ const ProdutosPage: React.FC = () => {
             showToast('Item excluído com sucesso.', 'success');
             setDeleteConfirmOpen(false);
             setItemParaExcluir(null);
-            if (items.length === 1 && page > 1) {
-                setPage(page - 1);
-            } else {
-                carregarItens();
-            }
+            resetForm();
         } catch (error: any) {
             showToast(error.message || 'Erro ao excluir item.', 'error');
         }
@@ -455,10 +460,10 @@ const ProdutosPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens,
-        items,
-        page,
-        setPage,
+        carregarItens: () => {},
+        items: [],
+        page: 1,
+        setPage: () => {},
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -482,10 +487,10 @@ const ProdutosPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens,
-        items,
-        page,
-        setPage,
+        carregarItens: () => {},
+        items: [],
+        page: 1,
+        setPage: () => {},
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -509,10 +514,10 @@ const ProdutosPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens,
-        items,
-        page,
-        setPage,
+        carregarItens: () => {},
+        items: [],
+        page: 1,
+        setPage: () => {},
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -534,10 +539,10 @@ const ProdutosPage: React.FC = () => {
         setForm,
         setOptions,
         showToast,
-        carregarItens,
-        items,
-        page,
-        setPage,
+        carregarItens: () => {},
+        items: [],
+        page: 1,
+        setPage: () => {},
         setDeleteConfirmOpen,
         setItemParaExcluir,
     });
@@ -706,7 +711,7 @@ const ProdutosPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: Cadastro de Undiade de Medida */}
+                {/* Modal: Cadastro de Unidade de Medida */}
                 {modalUnidadeMedidaOpen && (
                     <ModalUnidadeMedida
                         uomForm={uomForm}
@@ -718,7 +723,7 @@ const ProdutosPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: Edição de Categoria */}
+                {/* Modal: Edição de Unidade de Medida */}
                 {modalUnidadeMedidaEditOpen && (
                     <ModalUnidadeMedidaEdit
                         uomForm={uomForm}
@@ -786,7 +791,7 @@ const ProdutosPage: React.FC = () => {
                             setImportFile(null);
                         }}
                         onImportSuccess={() => {
-                            carregarItens();
+                            showToast('Itens importados com sucesso!', 'success');
                         }}
                     />
                 )}
@@ -804,4 +809,4 @@ const ProdutosPage: React.FC = () => {
     );
 };
 
-export default ProdutosPage;
+export default CadastroPage;
