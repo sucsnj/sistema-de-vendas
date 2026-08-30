@@ -39,17 +39,6 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Trava a rolagem do body quando o modal estiver aberto
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   const totalItems = cartItems.reduce((acc, curr) => acc + curr.quantidade, 0);
@@ -238,6 +227,8 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
           justify-content: center;
           z-index: 99999;
           padding: 16px;
+          overflow-y: auto;
+          overscroll-behavior: contain;
         }
 
         .cart-modal-container {
@@ -246,8 +237,8 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
           border-radius: 16px;
           width: 100%;
           max-width: 720px;
-          height: 85vh;
-          max-height: 600px;
+          height: min(85vh, 600px);
+          max-height: calc(100vh - 32px);
           display: flex;
           flex-direction: column;
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
@@ -600,8 +591,8 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
           }
 
           .cart-modal-container {
-            height: 90vh;
-            max-height: none;
+            height: min(90vh, 600px);
+            max-height: calc(100vh - 20px);
           }
 
           .cart-modal-header {
