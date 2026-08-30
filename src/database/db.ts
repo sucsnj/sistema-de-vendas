@@ -11,12 +11,13 @@ try {
   db = new Database(dbPath);
   db.pragma('journal_mode = WAL');
   db.pragma('synchronous = FULL');
+  db.pragma('foreign_keys = ON');
 } catch (error) {
   console.error('Erro ao conectar ao banco:', error);
   throw error;
 }
 
-// Cria as tabelas necessárias para o histórico de vendas e o resumo mensal caso ainda não existam.
+// Cria as tabelas necessárias para o histórico de vendas, itens de venda e o resumo mensal caso ainda não existam.
 try {
   db.exec(`
     CREATE TABLE IF NOT EXISTS vendas_diarias (
@@ -24,7 +25,23 @@ try {
       data TEXT NOT NULL,
       valor REAL NOT NULL,
       observacoes TEXT,
+      carrinho_id INTEGER DEFAULT NULL,
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS venda_itens (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      venda_id INTEGER NOT NULL,
+      item_id INTEGER,
+      tipo TEXT NOT NULL,
+      nome TEXT NOT NULL,
+      quantidade REAL NOT NULL DEFAULT 1,
+      preco_unitario REAL NOT NULL DEFAULT 0,
+      subtotal REAL NOT NULL DEFAULT 0,
+      codigo_interno TEXT,
+      referencia TEXT,
+      criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (venda_id) REFERENCES vendas_diarias(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS vendas_mensais (
@@ -44,8 +61,34 @@ try {
       UNIQUE(mes, ano)
     );
   `);
+
+  // Migração segura para adicionar coluna carrinho_id caso vendas_diarias já exista
+  const columns = db.pragma('table_info(vendas_diarias)') as { name: string }[];
+  const hasCarrinhoId = columns.some((col) => col.name === 'carrinho_id');
+  if (!hasCarrinhoId) {
+    db.exec(`ALTER TABLE vendas_diarias ADD COLUMN carrinho_id INTEGER DEFAULT NULL;`);
+  }
 } catch (error) {
   console.error('Erro ao criar tabelas:', error);
+}
+
+// Interfaces para itens da venda
+export interface VendaItemInput {
+  item_id?: number;
+  tipo: 'PRODUTO' | 'SERVICO';
+  nome: string;
+  quantidade: number;
+  preco_unitario: number;
+  subtotal?: number;
+  codigo_interno?: string;
+  referencia?: string;
+}
+
+export interface VendaItemData extends VendaItemInput {
+  id: number;
+  venda_id: number;
+  subtotal: number;
+  criado_em: string;
 }
 
 // Função local ou componente.
@@ -54,21 +97,90 @@ const getLocalTimestamp = () => {
 };
 
 // Funções de acesso ao banco de dados e operações de persistência.
-export const insertDailySale = (data: string, valor: number, observacoes?: string, criado_em?: string) => {
+export const insertDailySale = (
+  data: string,
+  valor: number,
+  observacoes?: string,
+  criado_em?: string,
+  carrinho_id?: number | null
+) => {
   try {
-    if (!criado_em) {
-
-      const criadoEm = getLocalTimestamp();
-      const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
-      const result = stmt.run(data, valor, observacoes || null, criadoEm);
-      return result;
-    } else {
-      const stmt = db.prepare('INSERT INTO vendas_diarias (data, valor, observacoes, criado_em) VALUES (?, ?, ?, ?)');
-      const result = stmt.run(data, valor, observacoes || null, criado_em);
-      return result;
-    }
+    const criadoEm = criado_em || getLocalTimestamp();
+    const stmt = db.prepare(
+      'INSERT INTO vendas_diarias (data, valor, observacoes, carrinho_id, criado_em) VALUES (?, ?, ?, ?, ?)'
+    );
+    const result = stmt.run(data, valor, observacoes || null, carrinho_id ?? null, criadoEm);
+    return result;
   } catch (error) {
     console.error('Erro ao inserir venda:', error);
+    throw error;
+  }
+};
+
+// Inserção em lote dos itens associados a uma venda
+export const insertVendaItens = (vendaId: number, itens: VendaItemInput[]) => {
+  try {
+    if (!itens || itens.length === 0) return;
+
+    const stmt = db.prepare(`
+      INSERT INTO venda_itens (
+        venda_id,
+        item_id,
+        tipo,
+        nome,
+        quantidade,
+        preco_unitario,
+        subtotal,
+        codigo_interno,
+        referencia,
+        criado_em
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const criadoEm = getLocalTimestamp();
+    const insertMany = db.transaction((listaItens: VendaItemInput[]) => {
+      for (const item of listaItens) {
+        const subtotal = item.subtotal ?? Number((item.preco_unitario * item.quantidade).toFixed(2));
+        stmt.run(
+          vendaId,
+          item.item_id ?? null,
+          item.tipo,
+          item.nome,
+          item.quantidade,
+          item.preco_unitario,
+          subtotal,
+          item.codigo_interno ?? null,
+          item.referencia ?? null,
+          criadoEm
+        );
+      }
+    });
+
+    insertMany(itens);
+  } catch (error) {
+    console.error('Erro ao inserir itens da venda:', error);
+    throw error;
+  }
+};
+
+// Busca todos os itens associados a uma venda específica
+export const getVendaItens = (vendaId: number): VendaItemData[] => {
+  try {
+    const stmt = db.prepare('SELECT * FROM venda_itens WHERE venda_id = ? ORDER BY id ASC');
+    return stmt.all(vendaId) as VendaItemData[];
+  } catch (error) {
+    console.error('Erro ao buscar itens da venda:', error);
+    throw error;
+  }
+};
+
+// Exclui os itens associados a uma venda
+export const deleteVendaItens = (vendaId: number) => {
+  try {
+    const stmt = db.prepare('DELETE FROM venda_itens WHERE venda_id = ?');
+    return stmt.run(vendaId);
+  } catch (error) {
+    console.error('Erro ao excluir itens da venda:', error);
     throw error;
   }
 };
@@ -125,6 +237,7 @@ export const updateDailySale = (id: number, data: string, valor: number, observa
 // Constante exportada com função.
 export const deleteDailySale = (id: number) => {
   try {
+    db.prepare('DELETE FROM venda_itens WHERE venda_id = ?').run(id);
     const stmt = db.prepare('DELETE FROM vendas_diarias WHERE id = ?');
     const result = stmt.run(id);
     console.log('Venda excluída:', { id, result });

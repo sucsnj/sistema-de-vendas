@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale } from '../../database/db';
+import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens } from '../../database/db';
 import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { data, valor, observacoes, criado_em } = req.body;
+    const { data, valor, observacoes, criado_em, itens } = req.body;
     try {
       // Validar data e valor
       const validDate = validateDate(data);
@@ -13,12 +13,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Dados inválidos: data ou valor inválidos' });
       }
 
+      let result;
       if (!criado_em) {
-        insertDailySale(data, validValue, observacoes);
+        result = insertDailySale(data, validValue, observacoes);
       } else {
-        insertDailySale(data, validValue, observacoes, criado_em);
+        result = insertDailySale(data, validValue, observacoes, criado_em);
       }
-      res.status(200).json({ message: 'Venda registrada com sucesso' });
+
+      if (itens && Array.isArray(itens) && itens.length > 0 && result.lastInsertRowid) {
+        insertVendaItens(
+          Number(result.lastInsertRowid),
+          itens.map((item: any) => ({
+            item_id: item.id,
+            tipo: item.tipo,
+            nome: item.nome,
+            quantidade: item.quantidade,
+            preco_unitario: item.preco_venda ?? item.preco_unitario ?? 0,
+            subtotal: (item.preco_venda ?? item.preco_unitario ?? 0) * item.quantidade,
+            codigo_interno: item.codigo_interno,
+            referencia: item.referencia,
+          }))
+        );
+      }
+
+      res.status(200).json({ message: 'Venda registrada com sucesso', id: result.lastInsertRowid });
     } catch (error) {
       console.error('Erro na API POST /api/vendas:', error);
       res.status(500).json({ error: 'Erro ao registrar venda', details: String(error) });

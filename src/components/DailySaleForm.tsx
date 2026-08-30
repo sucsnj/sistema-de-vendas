@@ -325,14 +325,64 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setCalculatedValue(null);
   };
 
+  const formatCartValue = (val: number): string => {
+    return val.toFixed(2).replace('.', ',');
+  };
+
+  const prevCartValueRef = useRef<number>(0);
+
+  // Sempre que o valor total do carrinho mudar, atualiza o campo input adicionando +valor_do_carrinho
+  useEffect(() => {
+    const prevCartVal = prevCartValueRef.current;
+    if (prevCartVal === totalCartValue) return;
+
+    const oldCartStr = prevCartVal > 0 ? formatCartValue(prevCartVal) : '';
+    const newCartStr = totalCartValue > 0 ? formatCartValue(totalCartValue) : '';
+
+    setValor((currentValor) => {
+      let base = currentValor;
+
+      if (oldCartStr) {
+        if (currentValor.endsWith('+' + oldCartStr)) {
+          base = currentValor.slice(0, -(oldCartStr.length + 1));
+        } else if (currentValor.endsWith(oldCartStr)) {
+          base = currentValor.slice(0, -oldCartStr.length);
+        } else if (currentValor === oldCartStr) {
+          base = '';
+        }
+      }
+
+      let updatedValor = base;
+      if (newCartStr) {
+        const trimmedBase = base.trim();
+        if (!trimmedBase) {
+          updatedValor = newCartStr;
+        } else if (/[+\-*/]$/.test(trimmedBase)) {
+          updatedValor = trimmedBase + newCartStr;
+        } else {
+          updatedValor = trimmedBase + '+' + newCartStr;
+        }
+      }
+
+      calculateValue(updatedValor);
+      return updatedValor;
+    });
+
+    prevCartValueRef.current = totalCartValue;
+  }, [totalCartValue]);
+
   // apagar se pressionar esc no teclado
   useShortcuts(['Escape'], () => {
     setCalculatedValue(0); // limpa o somatório
     setValor('');
+    setCartItems([]);
+    prevCartValueRef.current = 0;
   });
 
   // botão para limpar valor e observações
   const handleClear = () => {
+    setCartItems([]);
+    prevCartValueRef.current = 0;
     setValor('');
     setObservacoes('');
     setCalculatedValue(0);
@@ -384,7 +434,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       await registrarVenda(
         selectedDate,
         valueFromInput,
-        observacoes
+        observacoes,
+        cartItems
       );
 
       if (formRef.current) {
@@ -403,6 +454,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       setValor('');
       setObservacoes('');
       setCalculatedValue(0);
+      setCartItems([]);
+      prevCartValueRef.current = 0;
       valorInputRef.current?.focus();
       valorInputRef.current?.select();
       if (onSaleAdded) {

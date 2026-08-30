@@ -30,11 +30,16 @@ export interface VendaMensal {
 let consolidado = false;
 
 // Função assíncrona exportada.
-export const registrarVenda = async (data: string, valor: number, observacoes?: string) => {
+export const registrarVenda = async (
+  data: string,
+  valor: number,
+  observacoes?: string,
+  itens?: any[]
+) => {
   const response = await fetch('/api/vendas', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data, valor, observacoes }),
+    body: JSON.stringify({ data, valor, observacoes, itens }),
   });
   return response.json();
 };
