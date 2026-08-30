@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,6 +27,12 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
   onClearCart,
 }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useFocusTrap(dialogRef, isOpen);
 
   // Fecha com a tecla ESC
@@ -39,7 +46,7 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const totalItems = cartItems.reduce((acc, curr) => acc + curr.quantidade, 0);
   const totalValue = cartItems.reduce(
@@ -47,7 +54,7 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
     0
   );
 
-  return (
+  const modalContent = (
     <div
       className="cart-modal-overlay"
       role="presentation"
@@ -645,6 +652,8 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
       `}</style>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default ModalCarrinho;
