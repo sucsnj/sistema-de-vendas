@@ -11,6 +11,20 @@ export interface VendaDiaria {
   criado_em: string;
 }
 
+export interface VendaItemData {
+  id: number;
+  venda_id: number;
+  item_id?: number | null;
+  tipo: 'PRODUTO' | 'SERVICO';
+  nome: string;
+  quantidade: number;
+  preco_unitario: number;
+  subtotal: number;
+  codigo_interno?: string | null;
+  referencia?: string | null;
+  criado_em: string;
+}
+
 export interface VendaMensal {
   id: number;
   mes: number;
@@ -70,12 +84,19 @@ export const buscarVendasDiarias = async (
 };
 
 // Função assíncrona exportada.
-export const atualizarVenda = async (id: number, data: string, valor: number, observacoes?: string) => {
+export const atualizarVenda = async (id: number, data: string, valor: number, observacoes?: string, itens?: any[]) => {
   const response = await fetch('/api/vendas', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, data, valor, observacoes }),
+    body: JSON.stringify({ id, data, valor, observacoes, itens }),
   });
+  return response.json();
+};
+
+// Busca os itens associados a uma venda específica.
+export const buscarVendaItens = async (vendaId: number): Promise<VendaItemData[]> => {
+  const response = await fetch(`/api/venda-itens?vendaId=${vendaId}`);
+  if (!response.ok) return [];
   return response.json();
 };
 

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens } from '../../database/db';
+import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens, deleteVendaItens } from '../../database/db';
 import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Erro ao registrar venda', details: String(error) });
     }
   } else if (req.method === 'PUT') {
-    const { id, data, valor, observacoes } = req.body;
+    const { id, data, valor, observacoes, itens } = req.body;
     const validDate = validateDate(data);
     const validValue = typeof valor === 'number' ? valor : validateCurrency(String(valor));
     if (!id || !validDate || validValue == null) {
@@ -59,11 +59,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       updateDailySale(id, data, validValue, observacoes);
+
+      // Substitui os itens: remove os existentes e insere os novos
+      deleteVendaItens(id);
+      if (itens && Array.isArray(itens) && itens.length > 0) {
+        insertVendaItens(
+          Number(id),
+          itens.map((item: any) => ({
+            item_id: item.item_id ?? item.id ?? null,
+            tipo: item.tipo,
+            nome: item.nome,
+            quantidade: item.quantidade,
+            preco_unitario: item.preco_unitario ?? item.preco_venda ?? 0,
+            subtotal: (item.preco_unitario ?? item.preco_venda ?? 0) * item.quantidade,
+            codigo_interno: item.codigo_interno ?? null,
+            referencia: item.referencia ?? null,
+          }))
+        );
+      }
+
       res.status(200).json({ message: 'Venda atualizada com sucesso' });
     } catch (error) {
       console.error('Erro na API PUT /api/vendas:', error);
       res.status(500).json({ error: 'Erro ao atualizar venda', details: String(error) });
     }
+
   } else if (req.method === 'DELETE') {
     const { id } = req.body;
     if (!id) {
