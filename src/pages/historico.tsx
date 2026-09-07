@@ -1,95 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SalesTable from '../components/SalesTable';
 import Toast from '../components/Toast';
 import ExportButtons from '../components/ExportButtons';
 import EditSaleForm from '../components/EditSaleForm';
-import { buscarVendasDiarias, excluirVenda, VendaDiaria } from '../services/vendasService';
 import { capitalize } from '../utils/captalize';
-import { canEdit } from '../utils/edit';
 import { getDateArray, formatMonthName } from '../utils/date';
+import { useToast } from '../hooks/useToast';
+import { useVendas } from '../hooks/useVendas';
+import { useFiltro } from '../hooks/useFiltro';
 
-// Componente React.
+// Componente React: tela de Histórico de Vendas.
+// Lista as vendas do período com filtro (todas/positivas/negativas), permitindo
+// editar e excluir. Usa os hooks useToast, useVendas e useFiltro.
 const Historico: React.FC = () => {
-  const [sales, setSales] = useState<VendaDiaria[]>([]);
+  // Período selecionado (mês e ano), usado para carregar as vendas
   const [mes, setMes] = useState(getDateArray()[1]);
   const [ano, setAno] = useState(getDateArray()[2]);
-  const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
-  const [filtro, setFiltro] = useState<'todas' | 'positivas' | 'negativas'>('todas');
 
+  // Notificações (toast) exibidas na tela
+  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  // Filtro de vendas (persistido no localStorage)
+  const { filtro, changeFiltro } = useFiltro();
+  // Estado e ações de vendas (carregar, editar, excluir). Aqui o autoConsolidar
+  // fica desligado e o filtro é dinâmico, diferente do dashboard.
+  const {
+    sales,
+    editingSale,
+    loadSales,
+    handleEditSale,
+    handleCancelEdit,
+    handleSaved,
+    handleDeleteSale,
+  } = useVendas(mes, ano, showToast, { filtro, autoConsolidar: false });
+
+  // Recarrega as vendas sempre que o período ou o filtro mudar
   useEffect(() => {
     loadSales();
-  }, [mes, ano, filtro]);
-
-  const loadSales = async () => {
-    const data = await buscarVendasDiarias(mes, ano, filtro);
-    setSales(data);
-  };
-
-  // Filtra as vendas por valor
-  const handleFiltro = async (value: 'todas' | 'positivas' | 'negativas') => {
-    setFiltro(value);
-    const data = await buscarVendasDiarias(mes, ano, value); // usa o novo valor diretamente
-    setSales(data);
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  };
-
-  const closeToast = () => {
-    setToastOpen(false);
-  };
-
-  const handleEditSale = (sale: VendaDiaria) => {
-    setEditingSale(sale);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingSale(null);
-  };
-
-  const handleSaved = () => {
-    setEditingSale(null);
-    loadSales();
-  };
-
-  const handleDeleteSale = async (id: number) => {
-    const edit = canEdit(sales.find((sale) => sale.id === id)?.data || '');
-    try {
-      // mostra outro toast quando a venda tiver mais de 2 dias
-      if (edit) {
-        await excluirVenda(id);
-        showToast('Venda excluída com sucesso.', 'success');
-        loadSales();
-      } else {
-        showToast('Não é possível editar ou excluir.', 'info');
-      }
-    } catch (error) {
-      showToast('Erro ao excluir venda.', 'error');
-    }
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem("historicoFiltro");
-    if (saved) {
-      setFiltro(saved as 'todas' | 'positivas' | 'negativas');
-    }
-  }, []);
-
-  const changeFiltro = (value: 'todas' | 'positivas' | 'negativas') => {
-    setFiltro(value);
-    localStorage.setItem("historicoFiltro", value);
-  }
+  }, [loadSales]);
 
   return (
     <>
       <div className="container-padding">
         <h1>Histórico de Vendas</h1>
+        {/* Filtro de período e botões de valor */}
         <div className="glass-form">
           <div className="page-actions">
             <label>
@@ -111,6 +64,7 @@ const Historico: React.FC = () => {
                 onChange={(e) => setAno(parseInt(e.target.value))}
               />
             </label>
+            {/* Botões de filtro por valor da venda */}
             <div className="buttons-filter">
               <button className={filtro === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFiltro('todas')}>
                 Todas
@@ -126,6 +80,7 @@ const Historico: React.FC = () => {
           </div>
         </div>
 
+        {/* Formulário de edição (visível apenas quando há uma venda em edição) */}
         {editingSale && (
           <EditSaleForm
             sale={editingSale}
@@ -135,9 +90,12 @@ const Historico: React.FC = () => {
           />
         )}
 
+        {/* Tabela com as vendas do período */}
         <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
+        {/* Exportação e importação de vendas */}
         <ExportButtons sales={sales} mes={mes} ano={ano} onMessage={showToast} />
-        <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
+        {/* Notificação (toast) da página */}
+        <Toast open={toastOpen} message={toastMessage} type={toastType} duration={toastDuration} onClose={closeToast} position="top-right" />
       </div>
     </>
   );

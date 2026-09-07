@@ -1,95 +1,61 @@
-import { useState, useEffect, useRef } from 'react';
-import {
-  buscarTodosMensais,
-  VendaMensal,
-  excluirMensal,
-} from '../services/vendasService';
+import { useEffect, useState } from 'react';
 import Toast from '../components/Toast';
 import { formatCurrency } from '../utils/formatter';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { capitalize } from '../utils/captalize';
-import ConfirmDialog from '@/components/ConfirmDialog';
-import { hideField, showField } from '../utils/forms';
+import ConfirmDialog from '../components/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useToast } from '../hooks/useToast';
+import { useMensais } from '../hooks/useMensais';
+import { useConfirmDialog } from '../hooks/useConfirmDialog';
 dayjs.locale('pt-br');
 
-// Componente React.
+// Componente React: tela de Resumo Mensal.
+// Mostra as consolidações mensais (normal e especial) com opção de exclusão,
+// usando os hooks useToast, useMensais e useConfirmDialog.
 const Resumo: React.FC = () => {
-  const [mensais, setMensais] = useState<VendaMensal[]>([]);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
-  const [duration, setToastDuration] = useState<number | null>(3000);
+  // Notificações (toast) exibidas na tela
+  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  // Consolidações mensais (carregar e excluir)
+  const { mensais, loadMensais, handleDelete } = useMensais(showToast);
+  // Diálogo de confirmação antes de excluir
+  const { confirmOpen, openConfirm, handleConfirm, cancelConfirm } = useConfirmDialog(handleDelete);
 
-  // estado para o diálogo
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  // Alterna entre a tabela "comum" e a "especial" de forma reativa
+  const [view, setView] = useState<'comum' | 'especial'>('comum');
 
-  // esconder tabela
-  const comumRef = useRef<HTMLTableElement>(null);
-  const especialRef = useRef<HTMLTableElement>(null);
-  const buttonComumRef = useRef<HTMLButtonElement>(null);
-  const buttonEspecialRef = useRef<HTMLButtonElement>(null);
-
-  // Função utilitária para abrir toast
-  function showToast(message: string, type: "success" | "error" | "info", duration: number | null = 3000) {
-    setToastMessage(message);
-    setToastType(type);
-    setToastDuration(duration);
-    setToastOpen(true);
-  }
-
+  // Carrega as consolidações ao montar o componente
   useEffect(() => {
     loadMensais();
-  }, []);
-
-  const loadMensais = async () => {
-    const data = await buscarTodosMensais();
-    setMensais(data);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await excluirMensal(id);
-      loadMensais();
-      showToast('Mês excluído com sucesso.', 'success', 3000);
-    } catch (error) {
-      showToast('Erro ao excluir mês.', 'error', 3000);
-    }
-  };
-
-  const openConfirm = (id: number) => {
-    setSelectedId(id);
-    setConfirmOpen(true);
-  };
-
-  // alterna
-  const toggleTables = (view: 'comum' | 'especial') => {
-    showField(comumRef, view === 'comum');
-    hideField(comumRef, view !== 'comum');
-    showField(buttonComumRef, view === 'comum');
-    hideField(buttonComumRef, view !== 'comum');
-
-    showField(especialRef, view === 'especial');
-    hideField(especialRef, view !== 'especial');
-    showField(buttonEspecialRef, view === 'especial');
-    hideField(buttonEspecialRef, view !== 'especial');
-  };
+  }, [loadMensais]);
 
   return (
-    <div className="container-padding">
-      <h1>Resumo Mensal</h1>
+    <>
+      <div className="container-padding">
+        <h1>Resumo Mensal</h1>
 
-      {/* Botões de alternância */}
+      {/* Botões de alternância entre as tabelas */}
       <div className="toggle-buttons">
-        <button className="especial-button hidden" ref={buttonEspecialRef} onClick={() => toggleTables('comum')}>Mostrar Consolidado Normal</button>
-        <button className="comum-button" ref={buttonComumRef} onClick={() => toggleTables('especial')}>Mostrar Consolidado Especial</button>
+        <button
+          className={`especial-button ${view === 'especial' ? '' : 'hidden'}`}
+          onClick={() => setView('comum')}
+        >
+          Mostrar Consolidado Normal
+        </button>
+        <button
+          className={`comum-button ${view === 'comum' ? '' : 'hidden'}`}
+          onClick={() => setView('especial')}
+        >
+          Mostrar Consolidado Especial
+        </button>
       </div>
 
+      {/* Tabelas de consolidação do mês */}
       <div className="glass-form">
         <div className="table-container">
-          <table ref={comumRef} className="comum-table">
+          {/* Tabela consolidado normal (visível quando view = 'comum') */}
+          <table className={`comum-table ${view === 'comum' ? '' : 'hidden'}`}>
             <thead>
               <tr>
                 <th>Data</th>
@@ -128,8 +94,8 @@ const Resumo: React.FC = () => {
             </tbody>
           </table>
 
-          {/* especiais */}
-          <table ref={especialRef} className="epecial-table hidden">
+          {/* Tabela consolidado especial (visível quando view = 'especial') */}
+          <table className={`epecial-table ${view === 'especial' ? '' : 'hidden'}`}>
             <thead>
               <tr>
                 <th>Data</th>
@@ -162,29 +128,27 @@ const Resumo: React.FC = () => {
         </div>
       </div>
 
+      {/* Diálogo de confirmação de exclusão */}
       <ConfirmDialog
         open={confirmOpen}
         title="Confirmar exclusão"
         message="Tem certeza que deseja excluir este mês?"
         confirmText="Excluir"
         cancelText="Cancelar"
-        onConfirm={() => {
-          if (selectedId !== null) {
-            handleDelete(selectedId);
-          }
-          setConfirmOpen(false);
-        }}
-        onCancel={() => setConfirmOpen(false)}
+        onConfirm={handleConfirm}
+        onCancel={cancelConfirm}
       />
 
+      {/* Notificação (toast) da página */}
       <Toast
         open={toastOpen}
         message={toastMessage}
         type={toastType}
-        duration={duration}
-        onClose={() => setToastOpen(false)}
+        duration={toastDuration}
+        onClose={closeToast}
         position="top-right"
       />
+      {/* Estilos específicos do botão de excluir */}
       <style jsx>{`
         .delete-btn {
           background: var(--danger);
@@ -204,7 +168,8 @@ const Resumo: React.FC = () => {
           transform: translateY(-3px);
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 };
 

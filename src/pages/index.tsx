@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import DailySaleForm from '../components/DailySaleForm';
 import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
@@ -6,101 +6,47 @@ import Toast from '../components/Toast';
 import dayjs from 'dayjs';
 import ExportButtons from '../components/ExportButtons';
 import EditSaleForm from '../components/EditSaleForm';
-import {
-  buscarVendasDiarias,
-  consolidarMensal,
-  fazerBackup,
-  excluirVenda,
-  VendaDiaria,
-  autoConsolidar
-} from '../services/vendasService';
+import { useToast } from '../hooks/useToast';
+import { useVendas } from '../hooks/useVendas';
 import { capitalize } from '../utils/captalize';
-import { canEdit } from '../utils/edit';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getDateArray, toTimestamp, formatMonthName } from '../utils/date';
 
+// Data de hoje usada como seleção inicial do formulário
 const hoje = dayjs().format('YYYY-MM-DD');
 
-// Componente React.
+// Componente React da página inicial: Dashboard de Vendas.
+// Orquestra os subcomponentes da tela usando os hooks useToast e useVendas,
+// mantendo apenas o estado de filtro (mês/ano) e da data selecionada.
 const Home: React.FC = () => {
-  const [sales, setSales] = useState<VendaDiaria[]>([]);
+  // Período selecionado (mês e ano), usado para carregar as vendas
   const [mes, setMes] = useState(getDateArray()[1]);
   const [ano, setAno] = useState(getDateArray()[2]);
+  // Data selecionada no formulário de venda diária
   const [selectedDate, setSelectedDate] = useState(hoje);
-  const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
 
+  // Notificações (toast) exibidas na página
+  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  // Estado e ações de vendas (carregar, editar, excluir, consolidar, backup)
+  const {
+    sales,
+    editingSale,
+    loadSales,
+    handleConsolidate,
+    handleBackup,
+    handleEditSale,
+    handleCancelEdit,
+    handleSaved,
+    handleDeleteSale,
+  } = useVendas(mes, ano, showToast);
+
+  // Recarrega as vendas sempre que o período (mes/ano) mudar
   useEffect(() => {
     loadSales();
-  }, [mes, ano]);
+  }, [loadSales]);
 
-  const loadSales = async () => {
-    const data = await buscarVendasDiarias(mes, ano, 'positivas');
-    setSales(data);
-
-    await autoConsolidar();
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  };
-
-  const closeToast = () => {
-    setToastOpen(false);
-  };
-
-  const handleConsolidate = async () => {
-    try {
-      await consolidarMensal(mes, ano);
-      showToast('O mês foi consolidado com sucesso.', 'success');
-    } catch (error) {
-      showToast('Não foi possível consolidar o mês.', 'error');
-    }
-  };
-
-  const handleBackup = async () => {
-    try {
-      const result = await fazerBackup();
-      showToast(result.message, 'success');
-    } catch (error) {
-      showToast('Não foi possível fazer o backup.', 'error');
-    }
-  };
-
-  const handleEditSale = (sale: VendaDiaria) => {
-    setEditingSale(sale);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingSale(null);
-  };
-
-  const handleSaved = () => {
-    setEditingSale(null);
-    loadSales();
-  };
-
-  const handleDeleteSale = async (id: number) => {
-    const edit = canEdit(sales.find((sale) => sale.id === id)?.data || '');
-    try {
-      // mostra outro toast quando a venda tiver mais de 2 dias
-      if (edit) {
-        await excluirVenda(id);
-        showToast('Venda excluída com sucesso.', 'success');
-        loadSales();
-      } else {
-        showToast('Não é possível editar ou excluir.', 'info');
-      }
-    } catch (error) {
-      showToast('Erro ao excluir venda.', 'error');
-    }
-  };
-
+  // Últimas 4 vendas (por data e id, da mais recente para a mais antiga)
   const recentSales = [...sales]
     .sort((a, b) => {
       const dateA = toTimestamp(`${a.data}T00:00:00`);
@@ -114,6 +60,7 @@ const Home: React.FC = () => {
     <>
       <div className="container-padding">
         <h1>Dashboard de Vendas</h1>
+        {/* Resumo do período + formulário de registro de venda */}
         <DailySalesTotal
           sales={sales}
           selectedDay={selectedDate}
@@ -132,6 +79,7 @@ const Home: React.FC = () => {
           />
         </DailySalesTotal>
 
+        {/* Formulário de edição (visível apenas quando há uma venda em edição) */}
         {editingSale && (
           <EditSaleForm
             sale={editingSale}
@@ -150,6 +98,7 @@ const Home: React.FC = () => {
           onMessage={showToast}
           onImportCompleted={loadSales}
         />
+        {/* Rodapé com filtro de período e ações de consolidação/backup */}
         <div className="footer-header glass-form">
           <div className="page-actions">
             <label>
@@ -181,7 +130,14 @@ const Home: React.FC = () => {
             </button>
           </div>
         </div>
-        <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
+        <Toast
+          open={toastOpen}
+          message={toastMessage}
+          type={toastType}
+          duration={toastDuration}
+          onClose={closeToast}
+          position="top-right"
+        />
       </div>
     </>
   );
