@@ -481,6 +481,11 @@ h2 {
   padding: 20px;
 }
 
+.loading-text {
+  color: var(--muted);
+  margin: 8px 0;
+}
+
 .button-spacing {
   margin-left: 10px;
 }

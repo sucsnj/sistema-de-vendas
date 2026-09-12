@@ -3,7 +3,6 @@ import DailySaleForm from '../components/DailySaleForm';
 import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
 import Toast from '../components/Toast';
-import dayjs from 'dayjs';
 import ExportButtons from '../components/ExportButtons';
 import EditSaleForm from '../components/EditSaleForm';
 import { useToast } from '../hooks/useToast';
@@ -11,18 +10,22 @@ import { useVendas } from '../hooks/useVendas';
 import { capitalize } from '../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
-import { getDateArray, toTimestamp, formatMonthName } from '../utils/date';
+import { getDateArray, now, toTimestamp, formatMonthName } from '../utils/date';
 
-// Data de hoje usada como seleção inicial do formulário
-const hoje = dayjs().format('YYYY-MM-DD');
+// Data de hoje (fuso do app) usada como seleção inicial do formulário
+const hoje = now().format('YYYY-MM-DD');
 
 // Componente React da página inicial: Dashboard de Vendas.
 // Orquestra os subcomponentes da tela usando os hooks useToast e useVendas,
 // mantendo apenas o estado de filtro (mês/ano) e da data selecionada.
 const Home: React.FC = () => {
+  // Período de hoje (mês/ano no fuso do app), calculado uma única vez
+  const [, mesAtual, anoAtual] = getDateArray();
   // Período selecionado (mês e ano), usado para carregar as vendas
-  const [mes, setMes] = useState(getDateArray()[1]);
-  const [ano, setAno] = useState(getDateArray()[2]);
+  const [mes, setMes] = useState(mesAtual);
+  const [ano, setAno] = useState(anoAtual);
+  // Ano exibido no campo; aceita digitação livre e só comita valores válidos
+  const [anoInput, setAnoInput] = useState(String(anoAtual));
   // Data selecionada no formulário de venda diária
   const [selectedDate, setSelectedDate] = useState(hoje);
 
@@ -31,6 +34,7 @@ const Home: React.FC = () => {
   // Estado e ações de vendas (carregar, editar, excluir, consolidar, backup)
   const {
     sales,
+    loading,
     editingSale,
     loadSales,
     handleConsolidate,
@@ -60,6 +64,7 @@ const Home: React.FC = () => {
     <>
       <div className="container-padding">
         <h1>Dashboard de Vendas</h1>
+        {loading && <p className="loading-text">Carregando vendas...</p>}
         {/* Resumo do período + formulário de registro de venda */}
         <DailySalesTotal
           sales={sales}
@@ -116,8 +121,17 @@ const Home: React.FC = () => {
               <input
                 className="headerInput"
                 type="number"
-                value={ano}
-                onChange={(e) => setAno(parseInt(e.target.value))}
+                value={anoInput}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setAnoInput(v);
+                  const parsed = parseInt(v, 10);
+                  if (!Number.isNaN(parsed)) setAno(parsed);
+                }}
+                onBlur={() => {
+                  const parsed = parseInt(anoInput, 10);
+                  if (Number.isNaN(parsed)) setAnoInput(String(ano));
+                }}
               />
             </label>
             <button className="headerButton" onClick={handleConsolidate}>

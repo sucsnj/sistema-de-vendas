@@ -27,6 +27,8 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
   const [sales, setSales] = useState<VendaDiaria[]>([]);
   // Venda atualmente em edição (null = nenhuma)
   const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
+  // Indica se há uma carga de dados em andamento
+  const [loading, setLoading] = useState(true);
 
   // Aplica os padrões quando a opção não é informada
   const { filtro = 'positivas', autoConsolidar: autoConsolidarAtivo = true } = options;
@@ -34,11 +36,16 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
   // Busca as vendas do mês/ano conforme o filtro e, opcionalmente, dispara a consolidação automática.
   // useCallback mantém a referência estável enquanto mes/ano/filtro não mudarem.
   const loadSales = useCallback(async () => {
-    const data = await buscarVendasDiarias(mes, ano, filtro);
-    setSales(data);
+    try {
+      setLoading(true);
+      const data = await buscarVendasDiarias(mes, ano, filtro);
+      setSales(data);
 
-    if (autoConsolidarAtivo) {
-      await autoConsolidar();
+      if (autoConsolidarAtivo) {
+        await autoConsolidar();
+      }
+    } finally {
+      setLoading(false);
     }
   }, [mes, ano, filtro, autoConsolidarAtivo]);
 
@@ -105,6 +112,7 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
   return {
     sales,
     editingSale,
+    loading,
     loadSales,
     handleConsolidate,
     handleBackup,

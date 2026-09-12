@@ -323,13 +323,28 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
             grid-template-columns: 1fr;
           }
 
-          /* Empilha o formulário de registro de venda no topo do bloco pai */
+          /* Em modo responsivo, o bloco 'Últimas 4 vendas' fica logo abaixo do formulário de registro */
+          .summary-left {
+            display: contents;
+          }
+
           .form-card {
+            order: -2;
+          }
+
+          .history-card {
             order: -1;
           }
 
           .summary-row {
+            order: 0;
             grid-template-columns: 1fr;
+          }
+
+          /* Em modo responsivo, inverte a ordem das 'Últimas 4 vendas' (mais recente primeiro) */
+          .recent-sales-grid {
+            display: flex;
+            flex-direction: column-reverse;
           }
 
           .summary-value {
