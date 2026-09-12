@@ -52,38 +52,39 @@ body {
 html.modal-open,
 body.modal-open {
   overflow: hidden;
-  height: 100%; /* garante que não haja scroll residual */
+  height: 100%;
+  /* garante que não haja scroll residual */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-  color-scheme: dark;
-  --background: #020617;
-  --foreground: #e2e8f0;
-  --surface: rgba(15, 23, 42, 0.92);
-  --surface-strong: #0f172a;
-  --surface-soft: rgba(30, 41, 59, 0.78);
-  --glass-surface: rgba(15, 23, 42, 0.92);
-  --border: rgba(148, 163, 184, 0.24);
-  --muted: #94a3b8;
-  --accent: #60a5fa;
-  --danger: #f87171;
-  --success: #4ade80;
-  --secondary-accent: #c084fc;
-  --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
-  --text-on-accent: #fbfdf8;
-  --text-on-danger: #0f172a;
-  --text-on-success: #052e16;
-  --accent-soft: rgba(96, 165, 250, 0.18);
-  --accent-strong: rgba(96, 165, 250, 0.28);
-  --secondary-accent-soft: rgba(192, 132, 252, 0.18);
-  --secondary-accent-strong: rgba(192, 132, 252, 0.28);
-  --success-soft: rgba(74, 222, 128, 0.18);
-  --success-strong: rgba(74, 222, 128, 0.28);
-  --danger-soft: rgba(248, 113, 113, 0.18);
-  --danger-strong: rgba(248, 113, 113, 0.28);
-  --focus-ring: rgba(96, 165, 250, 0.28);
-  --overlay: rgba(2, 6, 23, 0.72);
+    color-scheme: dark;
+    --background: #020617;
+    --foreground: #e2e8f0;
+    --surface: rgba(15, 23, 42, 0.92);
+    --surface-strong: #0f172a;
+    --surface-soft: rgba(30, 41, 59, 0.78);
+    --glass-surface: rgba(15, 23, 42, 0.92);
+    --border: rgba(148, 163, 184, 0.24);
+    --muted: #94a3b8;
+    --accent: #60a5fa;
+    --danger: #f87171;
+    --success: #4ade80;
+    --secondary-accent: #c084fc;
+    --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+    --text-on-accent: #fbfdf8;
+    --text-on-danger: #0f172a;
+    --text-on-success: #052e16;
+    --accent-soft: rgba(96, 165, 250, 0.18);
+    --accent-strong: rgba(96, 165, 250, 0.28);
+    --secondary-accent-soft: rgba(192, 132, 252, 0.18);
+    --secondary-accent-strong: rgba(192, 132, 252, 0.28);
+    --success-soft: rgba(74, 222, 128, 0.18);
+    --success-strong: rgba(74, 222, 128, 0.28);
+    --danger-soft: rgba(248, 113, 113, 0.18);
+    --danger-strong: rgba(248, 113, 113, 0.28);
+    --focus-ring: rgba(96, 165, 250, 0.28);
+    --overlay: rgba(2, 6, 23, 0.72);
   }
 }
 
@@ -267,6 +268,107 @@ a {
   margin-bottom: 0px;
 }
 
+/* Botões de filtro por valor (histórico) */
+.buttons-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.button-todas,
+.button-positivas,
+.button-negativas {
+  min-width: 90px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.button-todas {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.button-positivas {
+  background: var(--success);
+  color: var(--text-on-accent);
+}
+
+.button-negativas {
+  background: var(--danger);
+  color: var(--text-on-accent);
+}
+
+.button-todas:hover {
+  background: var(--accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.button-positivas:hover {
+  background: var(--success);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.button-negativas:hover {
+  background: var(--danger);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Alternância entre as consolidações (resumo) */
+.toggle-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.comum-button,
+.especial-button {
+  height: 42px;
+  min-width: 130px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.comum-button {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.especial-button {
+  background: var(--secondary-accent);
+  color: var(--text-on-accent);
+}
+
+.comum-button:hover {
+  background: var(--accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.especial-button:hover {
+  background: var(--secondary-accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 button {
   background: var(--surface-soft);
   backdrop-filter: blur(10px);
@@ -292,6 +394,25 @@ button.button-edit {
 button.button-delete {
   background: var(--danger);
   color: var(--text-on-danger);
+}
+
+/* Botão de excluir (resumo e listas) */
+.delete-btn {
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.delete-btn:hover {
+  color: white;
+  opacity: 0.95;
+  box-shadow: 0 0 0 4px var(--danger-dark);
+  transition: all 0.2s ease;
+  transform: translateY(-3px);
 }
 
 input,
@@ -383,18 +504,23 @@ h2 {
 
 .separator {
   /* borda de acordo com o tema */
-  border-top: 8px solid var(--border); /* linha grossa branca */
+  border-top: 8px solid var(--border);
+  /* linha grossa branca */
 }
 
 .math-buttons {
   display: flex;
-  gap: 8px; /* espaço entre os botões */
+  gap: 8px;
+  /* espaço entre os botões */
 }
 
 .math-button {
-  width: 48px;       /* largura fixa */
-  height: 48px;      /* altura fixa */
-  font-size: 1.2rem; /* tamanho do símbolo */
+  width: 48px;
+  /* largura fixa */
+  height: 48px;
+  /* altura fixa */
+  font-size: 1.2rem;
+  /* tamanho do símbolo */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -419,6 +545,12 @@ h2 {
 /* Define a visibilidade dos ícones */
 .icon-responsive {
   display: none;
+}
+
+/* Base dos textos responsivos (escondidos no mobile via media query) */
+.text-responsive {
+  display: inline-flex;
+  align-items: center;
 }
 
 .material-icon {
@@ -455,9 +587,12 @@ h2 {
 }
 
 .register-button {
-  width: 48px;       /* largura fixa */
-  height: 48px;      /* altura fixa */
-  font-size: 1.1rem; /* tamanho do símbolo */
+  width: 48px;
+  /* largura fixa */
+  height: 48px;
+  /* altura fixa */
+  font-size: 1.1rem;
+  /* tamanho do símbolo */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -469,9 +604,12 @@ h2 {
 }
 
 .clear-button {
-  width: 48px;       /* largura fixa */
-  height: 48px;      /* altura fixa */
-  font-size: 1.1rem; /* tamanho do símbolo */
+  width: 48px;
+  /* largura fixa */
+  height: 48px;
+  /* altura fixa */
+  font-size: 1.1rem;
+  /* tamanho do símbolo */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -489,11 +627,27 @@ h2 {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 /* Foco no modal de dialog */

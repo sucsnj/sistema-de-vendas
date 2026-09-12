@@ -148,26 +148,6 @@ const Resumo: React.FC = () => {
         onClose={closeToast}
         position="top-right"
       />
-      {/* Estilos específicos do botão de excluir */}
-      <style jsx>{`
-        .delete-btn {
-          background: var(--danger);
-          color: white;
-          border: none;
-          border-radius: 10px;
-          padding: 8px 12px;
-          cursor: pointer;
-          font-size: 0.85rem;
-        }
-
-        .delete-btn:hover {
-          color: white;
-          opacity: 0.95;
-          box-shadow: 0 0 0 4px var(--danger-dark);
-          transition: all 0.2s ease;
-          transform: translateY(-3px);
-        }
-      `}</style>
       </div>
     </>
   );
