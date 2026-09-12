@@ -585,6 +585,73 @@ h2 {
   height: 100px;
 }
 
+/* inputs responsivos: quanto menor a tela, maior a fonte e o campo */
+@media (max-width: 1180px) {
+  .flex-grow-data { font-size: 1.5rem !important; }
+  .flex-grow-valor { font-size: 2.0rem !important; }
+  .flex-grow-observacoes { font-size: 1.7rem !important; }
+}
+
+@media (max-width: 900px) {
+  .flex-grow-data,
+  .flex-grow-valor,
+  .flex-grow-observacoes {
+    padding: 12px 14px !important;
+    min-height: 44px;
+  }
+  .flex-grow-data { font-size: 1.7rem !important; }
+  .flex-grow-valor { font-size: 2.3rem !important; }
+  .flex-grow-observacoes { font-size: 1.9rem !important; }
+}
+
+@media (max-width: 840px) {
+  .flex-grow-data,
+  .flex-grow-valor,
+  .flex-grow-observacoes {
+    padding: 13px 15px !important;
+    min-height: 48px;
+  }
+  .flex-grow-data { font-size: 1.9rem !important; }
+  .flex-grow-valor { font-size: 2.6rem !important; }
+  .flex-grow-observacoes { font-size: 2.1rem !important; }
+}
+
+@media (max-width: 630px) {
+  .flex-grow-data,
+  .flex-grow-valor,
+  .flex-grow-observacoes {
+    padding: 14px 16px !important;
+    min-height: 52px;
+  }
+  .flex-grow-data { font-size: 2.1rem !important; }
+  .flex-grow-valor { font-size: 2.9rem !important; }
+  .flex-grow-observacoes { font-size: 2.3rem !important; }
+}
+
+@media (max-width: 480px) {
+  .flex-grow-data,
+  .flex-grow-valor,
+  .flex-grow-observacoes {
+    padding: 16px 18px !important;
+    min-height: 56px;
+  }
+  .flex-grow-data { font-size: 2.4rem !important; }
+  .flex-grow-valor { font-size: 3.3rem !important; }
+  .flex-grow-observacoes { font-size: 2.6rem !important; }
+}
+
+@media (max-width: 436px) {
+  .flex-grow-data,
+  .flex-grow-valor,
+  .flex-grow-observacoes {
+    padding: 18px 20px !important;
+    min-height: 60px;
+  }
+  .flex-grow-data { font-size: 2.6rem !important; }
+  .flex-grow-valor { font-size: 3.6rem !important; }
+  .flex-grow-observacoes { font-size: 2.8rem !important; }
+}
+
 .recent-sale-observacoes {
   max-height: 100px;
   overflow-y: auto;

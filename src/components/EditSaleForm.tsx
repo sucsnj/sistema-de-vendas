@@ -1,10 +1,11 @@
 ﻿import { FormEvent, useState, useEffect, useRef } from "react";
 import { buscarVendaItens, atualizarVenda, VendaDiaria, VendaItemData } from "../services/vendasService";
-import { buscarProdutos, buscarServicos, ItemData, ServicoData } from "../services/produtosService";
 import ModalCarrinho from "./ModalCarrinho";
-import { CartItem } from "./DailySaleForm";
+import ModalSelecionarItens from "./ModalSelecionarItens";
+import { useCart } from "../hooks/useCart";
 import parseNumber from "../utils/number";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 interface EditSaleFormProps {
   sale: VendaDiaria;
@@ -17,15 +18,32 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
   const [editData, setEditData] = useState(sale.data);
   const [editValor, setEditValor] = useState(sale.valor.toFixed(2));
   const [editObservacoes, setEditObservacoes] = useState(sale.observacoes ?? "");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [cartModalOpen, setCartModalOpen] = useState(false);
   const [loadingItens, setLoadingItens] = useState(true);
-  const [catalogItems, setCatalogItems] = useState<ItemData[]>([]);
-  const [cartSearch, setCartSearch] = useState("");
-  const [loadingCatalog, setLoadingCatalog] = useState(false);
-  const cartDropdownRef = useRef<HTMLDivElement | null>(null);
-  const cartSearchInputRef = useRef<HTMLInputElement | null>(null);
   const editValorInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Estado e ações do carrinho (catálogo, seleção e gerenciamento), compartilhado
+  // com o formulário de registrar venda através do hook useCart
+  const {
+    cartItems,
+    setCartItems,
+    cartSearch,
+    setCartSearch,
+    catalogItems,
+    loadingCatalog,
+    selecionarOpen,
+    cartModalOpen,
+    handleCartClick,
+    closeSelecao,
+    openCarrinho,
+    closeCarrinho,
+    handleManageCart,
+    handleAddToCart,
+    handleRemoveFromCart,
+    handleUpdateQuantity,
+    handleRemoveItem,
+    handleClearCart,
+    totalCartCount,
+  } = useCart(onToast);
 
   // Carrega os itens existentes da venda ao abrir o form
   useEffect(() => {
@@ -46,108 +64,25 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
       setLoadingItens(false);
     };
     load();
-  }, [sale.id]);
+  }, [sale.id, setCartItems]);
 
   // Recalcula o valor total quando os itens do carrinho mudam
-  useEffect(() => {
-    if (cartItems.length === 0) return;
-    const total = cartItems.reduce((acc, item) => acc + (item.preco_venda ?? 0) * item.quantidade, 0);
-    setEditValor(total.toFixed(2));
-  }, [cartItems]);
+  // (padrão React de ajustar estado durante a renderização, preservando
+  // o campo quando o carrinho fica vazio)
+  const [prevCartItems, setPrevCartItems] = useState(cartItems);
+  if (cartItems !== prevCartItems) {
+    setPrevCartItems(cartItems);
+    if (cartItems.length > 0) {
+      const total = cartItems.reduce((acc, item) => acc + (item.preco_venda ?? 0) * item.quantidade, 0);
+      setEditValor(total.toFixed(2));
+    }
+  }
 
   // Foca no input de valor ao abrir
   useEffect(() => {
     editValorInputRef.current?.focus();
     editValorInputRef.current?.select();
   }, []);
-
-  // Busca catálogo para adicionar itens
-  const buscarItensCatalogo = async (query: string) => {
-    setLoadingCatalog(true);
-    try {
-      const [produtosData, servicosData] = await Promise.all([
-        buscarProdutos({ search: query || undefined, ativo: "ATIVO", page: 1, pageSize: 50 }),
-        buscarServicos({ search: query || undefined, page: 1, pageSize: 50 }),
-      ]);
-
-      const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
-        id: servico.id,
-        tipo: "SERVICO",
-        nome: servico.nome,
-        descricao: servico.descricao,
-        categoria_id: servico.categoria_id,
-        unidade_medida_id: 21,
-        marca_id: 1,
-        fornecedor_id: 1,
-        preco_compra: 0,
-        margem_lucro: 0,
-        preco_venda: servico.preco_venda,
-        estoque: 0,
-        multiplicador_unidade: 1,
-        estoque_total: 0,
-        codigo_interno: servico.codigo_interno,
-        referencia: servico.referencia || "",
-        duracao_minutos: servico.duracao_minutos,
-        data_criacao: servico.data_criacao,
-        data_atualizacao: servico.data_atualizacao,
-        categoria_nome: servico.categoria_nome,
-      }));
-
-      const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
-      setCatalogItems(catalogo);
-    } catch (error) {
-      console.error("Erro ao buscar catálogo:", error);
-    } finally {
-      setLoadingCatalog(false);
-    }
-  };
-
-  useEffect(() => {
-    if (cartModalOpen) {
-      const timer = setTimeout(() => buscarItensCatalogo(cartSearch), 250);
-      return () => clearTimeout(timer);
-    }
-  }, [cartModalOpen, cartSearch]);
-
-  const handleAddToCart = (item: ItemData) => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex((ci) => ci.id === item.id && ci.tipo === item.tipo);
-      if (existingIndex > -1) {
-        const updated = [...prev];
-        updated[existingIndex] = { ...updated[existingIndex], quantidade: updated[existingIndex].quantidade + 1 };
-        return updated;
-      }
-      return [
-        ...prev,
-        {
-          id: item.id,
-          tipo: item.tipo,
-          nome: item.nome,
-          preco_venda: item.preco_venda,
-          quantidade: 1,
-          codigo_interno: item.codigo_interno,
-          referencia: item.referencia,
-          estoque: item.estoque,
-        },
-      ];
-    });
-  };
-
-  const handleUpdateQuantity = (id: number, tipo: "PRODUTO" | "SERVICO", newQty: number) => {
-    setCartItems((prev) => {
-      if (newQty <= 0) return prev.filter((ci) => !(ci.id === id && ci.tipo === tipo));
-      return prev.map((ci) => (ci.id === id && ci.tipo === tipo ? { ...ci, quantidade: newQty } : ci));
-    });
-  };
-
-  const handleRemoveItem = (id: number, tipo: "PRODUTO" | "SERVICO") => {
-    setCartItems((prev) => prev.filter((ci) => !(ci.id === id && ci.tipo === tipo)));
-  };
-
-  const handleClearCart = () => setCartItems([]);
-
-  const totalCartCount = cartItems.reduce((acc, curr) => acc + curr.quantidade, 0);
 
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
@@ -194,7 +129,9 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
 
         <label>
           Valor:
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}
+          className="input-with-icon-wrapper"
+          >
             <input
               ref={editValorInputRef}
               type="number"
@@ -207,7 +144,19 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
             <button
               type="button"
               className="cart-icon-button"
-              onClick={() => setCartModalOpen(true)}
+              onClick={handleCartClick}
+              aria-label="Abrir carrinho"
+              title="Abrir carrinho"
+            >
+              <AddShoppingCartIcon className="cart-icon" />
+              {totalCartCount > 0 && (
+                <span className="cart-badge">{totalCartCount}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              className="cart-icon-button"
+              onClick={openCarrinho}
               aria-label="Editar itens da venda"
               title="Editar itens da venda"
             >
@@ -244,10 +193,24 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
         </button>
       </form>
 
-      {/* Modal de carrinho para adicionar/editar itens */}
+      {/* Modal de seleção de itens (adicionar ao carrinho) */}
+      <ModalSelecionarItens
+        isOpen={selecionarOpen}
+        onClose={closeSelecao}
+        onManageCart={handleManageCart}
+        cartItems={cartItems}
+        catalogItems={catalogItems}
+        loadingCatalog={loadingCatalog}
+        cartSearch={cartSearch}
+        onCartSearchChange={setCartSearch}
+        onAddToCart={handleAddToCart}
+        onRemoveFromCart={handleRemoveFromCart}
+      />
+
+      {/* Modal de carrinho para editar itens */}
       <ModalCarrinho
         isOpen={cartModalOpen}
-        onClose={() => setCartModalOpen(false)}
+        onClose={closeCarrinho}
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}

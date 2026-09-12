@@ -7,9 +7,9 @@ import { validateCurrency, validateDate } from '../utils/validation';
 import { useShortcuts } from '../utils/shortcuts';
 import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { buscarProdutos, buscarServicos, ItemData, ServicoData } from '../services/produtosService';
 import ModalCarrinho from './ModalCarrinho';
 import ModalSelecionarItens from './ModalSelecionarItens';
+import { useCart } from '../hooks/useCart';
 
 export interface CartItem {
   id: number;
@@ -63,168 +63,29 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setToastOpen(false);
   };
 
-  const [cartOpen, setCartOpen] = useState(false);
-  const [cartSearch, setCartSearch] = useState('');
-  const [catalogItems, setCatalogItems] = useState<ItemData[]>([]);
-  const [loadingCatalog, setLoadingCatalog] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  // Função para buscar produtos e serviços para o carrinho
-  const buscarItensCatalogo = async (query: string) => {
-    setLoadingCatalog(true);
-    try {
-      const [produtosData, servicosData] = await Promise.all([
-        buscarProdutos({
-          search: query || undefined,
-          ativo: 'ATIVO',
-          page: 1,
-          pageSize: 50,
-        }),
-        buscarServicos({
-          search: query || undefined,
-          page: 1,
-          pageSize: 50,
-        }),
-      ]);
-
-      const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
-        id: servico.id,
-        tipo: 'SERVICO',
-        nome: servico.nome,
-        descricao: servico.descricao,
-        categoria_id: servico.categoria_id,
-        unidade_medida_id: 21,
-        marca_id: 1,
-        fornecedor_id: 1,
-        preco_compra: 0,
-        margem_lucro: 0,
-        preco_venda: servico.preco_venda,
-        estoque: 0,
-        multiplicador_unidade: 1,
-        estoque_total: 0,
-        codigo_interno: servico.codigo_interno,
-        referencia: servico.referencia || '',
-        duracao_minutos: servico.duracao_minutos,
-        data_criacao: servico.data_criacao,
-        data_atualizacao: servico.data_atualizacao,
-        categoria_nome: servico.categoria_nome,
-      }));
-
-      const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
-      setCatalogItems(catalogo);
-    } catch (error) {
-      console.error('Erro ao buscar catálogo para o carrinho:', error);
-    } finally {
-      setLoadingCatalog(false);
-    }
-  };
-
-  // Carrega catálogo ao abrir a janela de seleção ou mudar a busca
-  useEffect(() => {
-    if (cartOpen) {
-      const timer = setTimeout(() => {
-        buscarItensCatalogo(cartSearch);
-      }, 250);
-      return () => clearTimeout(timer);
-    }
-  }, [cartOpen, cartSearch]);
-
-  // Abre a janela de seleção de itens ao clicar no botão do carrinho
-  const handleCartClick = () => {
-    setCartOpen(true);
-  };
-
-  // Adiciona +1 do produto/serviço ao carrinho
-  const handleAddToCart = (item: ItemData) => {
-    setCartItems((prevItems) => {
-      const existingIndex = prevItems.findIndex(
-        (ci) => ci.id === item.id && ci.tipo === item.tipo
-      );
-      if (existingIndex > -1) {
-        const updated = [...prevItems];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          quantidade: updated[existingIndex].quantidade + 1,
-        };
-        return updated;
-      } else {
-        return [
-          ...prevItems,
-          {
-            id: item.id,
-            tipo: item.tipo,
-            nome: item.nome,
-            preco_venda: item.preco_venda,
-            quantidade: 1,
-            codigo_interno: item.codigo_interno,
-            referencia: item.referencia,
-            estoque: item.estoque,
-          },
-        ];
-      }
-    });
-    showToast(`+1 "${item.nome}" adicionado ao carrinho!`, 'success');
-  };
-
-  // Subtrai 1 unidade do item no carrinho
-  const handleRemoveFromCart = (item: ItemData) => {
-    setCartItems((prevItems) => {
-      const existingIndex = prevItems.findIndex(
-        (ci) => ci.id === item.id && ci.tipo === item.tipo
-      );
-      if (existingIndex === -1) return prevItems;
-
-      if (prevItems[existingIndex].quantidade <= 1) {
-        return prevItems.filter((_, idx) => idx !== existingIndex);
-      } else {
-        const updated = [...prevItems];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          quantidade: updated[existingIndex].quantidade - 1,
-        };
-        return updated;
-      }
-    });
-    showToast(`-1 "${item.nome}" removido do carrinho.`, 'info');
-  };
-
-  // Atualiza quantidade no modal
-  const handleUpdateQuantity = (id: number, tipo: 'PRODUTO' | 'SERVICO', newQty: number) => {
-    setCartItems((prevItems) => {
-      if (newQty <= 0) {
-        return prevItems.filter((ci) => !(ci.id === id && ci.tipo === tipo));
-      }
-      return prevItems.map((ci) => {
-        if (ci.id === id && ci.tipo === tipo) {
-          return { ...ci, quantidade: newQty };
-        }
-        return ci;
-      });
-    });
-  };
-
-  // Remove item completo do carrinho
-  const handleRemoveItem = (id: number, tipo: 'PRODUTO' | 'SERVICO') => {
-    setCartItems((prevItems) =>
-      prevItems.filter((ci) => !(ci.id === id && ci.tipo === tipo))
-    );
-    showToast('Item removido do carrinho.', 'info');
-  };
-
-  // Limpa todos os itens do carrinho
-  const handleClearCart = () => {
-    setCartItems([]);
-    showToast('Carrinho limpo.', 'info');
-  };
-
-  const [cartModalOpen, setCartModalOpen] = useState(false);
-
-  const totalCartCount = cartItems.reduce((acc, curr) => acc + curr.quantidade, 0);
-  const totalCartValue = cartItems.reduce(
-    (acc, curr) => acc + (curr.preco_venda ?? 0) * curr.quantidade,
-    0
-  );
+  // Estado e ações do carrinho (catálogo, seleção e gerenciamento), compartilhado
+  // com o formulário de edição através do hook useCart
+  const {
+    cartItems,
+    setCartItems,
+    cartSearch,
+    setCartSearch,
+    catalogItems,
+    loadingCatalog,
+    selecionarOpen,
+    cartModalOpen,
+    handleCartClick,
+    closeSelecao,
+    closeCarrinho,
+    handleManageCart,
+    handleAddToCart,
+    handleRemoveFromCart,
+    handleUpdateQuantity,
+    handleRemoveItem,
+    handleClearCart,
+    totalCartCount,
+    totalCartValue,
+  } = useCart(showToast);
 
   // Constante com as teclas permitidas para o input de valor
   const allowedKeys = [
@@ -604,12 +465,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       </form>
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="local-top-right" />
       <ModalSelecionarItens
-        isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
-        onManageCart={() => {
-          setCartOpen(false);
-          setCartModalOpen(true);
-        }}
+        isOpen={selecionarOpen}
+        onClose={closeSelecao}
+        onManageCart={handleManageCart}
         cartItems={cartItems}
         catalogItems={catalogItems}
         loadingCatalog={loadingCatalog}
@@ -620,7 +478,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       />
       <ModalCarrinho
         isOpen={cartModalOpen}
-        onClose={() => setCartModalOpen(false)}
+        onClose={closeCarrinho}
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
