@@ -4,10 +4,12 @@
   --surface: rgba(248, 250, 252, 0.95);
   --surface-strong: #f8fafc;
   --surface-soft: rgba(226, 232, 240, 0.7);
+  --glass-surface: rgba(255, 255, 255, 0.85);
   --border: rgba(15, 23, 42, 0.16);
   --muted: #64748b;
   --accent: #2563eb;
   --danger: #ef4444;
+  --danger-dark: #b91c1c;
   --success: #16a34a;
   --secondary-accent: #9333ea;
   --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
@@ -69,6 +71,7 @@ body.modal-open {
     --muted: #94a3b8;
     --accent: #60a5fa;
     --danger: #f87171;
+    --danger-dark: #ef4444;
     --success: #4ade80;
     --secondary-accent: #c084fc;
     --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
@@ -102,6 +105,7 @@ html.light {
   --secondary-accent: #a855f7;
   --success: #22c55e;
   --danger: #ef4444;
+  --danger-dark: #b91c1c;
   --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
   --text-on-accent: #ffffff;
   --text-on-danger: #ffffff;
@@ -215,7 +219,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 10.95rem;
+  font-size: 0.95rem;
 }
 
 .page-actions select,
@@ -651,9 +655,6 @@ h2 {
 }
 
 /* Foco no modal de dialog */
-body.modal-open {
-  overflow: hidden;
-}
 
 /* Responsividade para 1180px */
 @media (max-width: 1180px) {
@@ -758,19 +759,15 @@ body.modal-open {
 
 /* Responsividade para 630px */
 @media (max-width: 630px) {
-
-  html,
   body {
-    font-size: 1.2rem;
+    font-size: 0.85rem;
   }
 }
 
 /* Responsividade para 480px */
 @media (max-width: 480px) {
-
-  html,
   body {
-    font-size: 1.4rem;
+    font-size: 0.9rem;
   }
 
   .container-padding {
@@ -790,9 +787,241 @@ body.modal-open {
 
 /* Responsividade para 436px */
 @media (max-width: 436px) {
-
-  html,
   body {
-    font-size: 1.2rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ============================================
+   Janela do carrinho de compras (modal)
+   Shell compartilhado por ModalCarrinho e ModalSelecionarItens
+   ============================================ */
+
+.cart-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cart-modal-container {
+  background: var(--surface, #1e1e1e);
+  border: 1px solid var(--border, #333);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  height: min(85vh, 600px);
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  animation: cartModalFadeIn 0.2s ease-out;
+  outline: none;
+  overflow: hidden;
+}
+
+@keyframes cartModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.cart-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border, #333);
+  background: var(--surface, #1e1e1e);
+  flex-shrink: 0;
+}
+
+.cart-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cart-modal-title-group .cart-modal-icon {
+  color: #3ed955;
+  font-size: 1.6rem;
+}
+
+.cart-modal-title-group h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.cart-modal-count-badge {
+  background: var(--surface-soft, rgba(255, 255, 255, 0.08));
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border, #444);
+}
+
+.cart-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cart-modal-close-btn:hover {
+  background: var(--surface-soft, rgba(255, 255, 255, 0.1));
+  color: var(--foreground);
+}
+
+.cart-modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cart-modal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  gap: 8px;
+  height: 100%;
+}
+
+.cart-modal-empty p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--foreground);
+}
+
+.cart-modal-empty span {
+  font-size: 0.85rem;
+}
+
+.cart-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border, #333);
+  background: var(--surface, #1e1e1e);
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.cart-modal-footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.cart-modal-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.cart-modal-total-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.total-label {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.total-amount {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #3ed955;
+}
+
+.cart-modal-close-action-btn {
+  background: #3ed955;
+  color: #000;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 9px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.cart-modal-close-action-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Ajustes em telas pequenas (<= 640px) */
+@media (max-width: 640px) {
+  .cart-modal-overlay {
+    padding: 10px;
+  }
+
+  .cart-modal-container {
+    height: min(90vh, 600px);
+    max-height: calc(100vh - 20px);
+  }
+
+  .cart-modal-header {
+    padding: 12px 14px;
+  }
+
+  .cart-modal-body {
+    padding: 12px 10px;
+  }
+
+  .cart-modal-footer {
+    padding: 12px 14px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cart-modal-footer-left {
+    width: 100%;
+  }
+
+  .cart-modal-footer-right {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .total-amount {
+    font-size: 1.15rem;
   }
 }

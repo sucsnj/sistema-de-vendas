@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { VendaDiaria } from '../services/vendasService';
 import { formatCurrency } from '../utils/formatter';
 import { formatDateString } from '../utils/date';
@@ -321,6 +321,11 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
         @media (max-width: 768px) {
           .summary-grid {
             grid-template-columns: 1fr;
+          }
+
+          /* Empilha o formulário de registro de venda no topo do bloco pai */
+          .form-card {
+            order: -1;
           }
 
           .summary-row {

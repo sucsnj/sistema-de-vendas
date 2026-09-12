@@ -7,9 +7,9 @@ import { validateCurrency, validateDate } from '../utils/validation';
 import { useShortcuts } from '../utils/shortcuts';
 import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { buscarProdutos, buscarServicos, ItemData, ServicoData } from '../services/produtosService';
 import ModalCarrinho from './ModalCarrinho';
+import ModalSelecionarItens from './ModalSelecionarItens';
 
 export interface CartItem {
   id: number;
@@ -68,8 +68,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [catalogItems, setCatalogItems] = useState<ItemData[]>([]);
   const [loadingCatalog, setLoadingCatalog] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const cartDropdownRef = useRef<HTMLDivElement | null>(null);
-  const cartSearchInputRef = useRef<HTMLInputElement | null>(null);
 
   // Função para buscar produtos e serviços para o carrinho
   const buscarItensCatalogo = async (query: string) => {
@@ -122,7 +120,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     }
   };
 
-  // Carrega catálogo ao abrir o carrinho ou mudar busca
+  // Carrega catálogo ao abrir a janela de seleção ou mudar a busca
   useEffect(() => {
     if (cartOpen) {
       const timer = setTimeout(() => {
@@ -132,36 +130,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     }
   }, [cartOpen, cartSearch]);
 
-  // Foco no input de busca ao abrir o dropdown
-  useEffect(() => {
-    if (cartOpen) {
-      setTimeout(() => {
-        cartSearchInputRef.current?.focus();
-      }, 50);
-    }
-  }, [cartOpen]);
-
-  // Fecha o dropdown ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        cartDropdownRef.current &&
-        !cartDropdownRef.current.contains(event.target as Node)
-      ) {
-        setCartOpen(false);
-      }
-    };
-    if (cartOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [cartOpen]);
-
-  // Função para lidar com o clique no botão do carrinho
+  // Abre a janela de seleção de itens ao clicar no botão do carrinho
   const handleCartClick = () => {
-    setCartOpen((prev) => !prev);
+    setCartOpen(true);
   };
 
   // Adiciona +1 do produto/serviço ao carrinho
@@ -566,7 +537,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             </div>
             <label>
               {/* Valor: */}
-              <div className="input-with-icon-wrapper" ref={cartDropdownRef}>
+              <div className="input-with-icon-wrapper">
                 <input
                   ref={valorInputRef}
                   type="text"
@@ -597,120 +568,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                     <span className="cart-badge">{totalCartCount}</span>
                   )}
                 </button>
-
-                {cartOpen && (
-                  <div className="cart-dropdown">
-                    <div className="cart-dropdown-search">
-                      <input
-                        ref={cartSearchInputRef}
-                        type="text"
-                        placeholder="Buscar produto ou serviço..."
-                        value={cartSearch}
-                        onChange={(e) => setCartSearch(e.target.value)}
-                        onKeyDown={(e) => e.stopPropagation()}
-                        className="cart-search-input"
-                      />
-                      {cartSearch && (
-                        <button
-                          type="button"
-                          className="cart-search-clear"
-                          onClick={() => setCartSearch('')}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="cart-dropdown-list">
-                      {loadingCatalog ? (
-                        <div className="cart-dropdown-empty">Buscando itens...</div>
-                      ) : catalogItems.length === 0 ? (
-                        <div className="cart-dropdown-empty">Nenhum produto ou serviço encontrado</div>
-                      ) : (
-                        catalogItems.map((item) => {
-                          const inCart = cartItems.find(
-                            (ci) => ci.id === item.id && ci.tipo === item.tipo
-                          );
-                          const hasInCart = Boolean(inCart && inCart.quantidade > 0);
-                          return (
-                            <div
-                              key={`${item.tipo}-${item.id}`}
-                              className="cart-dropdown-item-row"
-                            >
-                              <button
-                                type="button"
-                                className={`cart-btn-sub ${!hasInCart ? 'disabled' : ''}`}
-                                disabled={!hasInCart}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemoveFromCart(item);
-                                }}
-                                title={hasInCart ? "Subtrair 1 unidade" : "Item não está no carrinho"}
-                                aria-label="Subtrair 1 unidade"
-                              >
-                                -
-                              </button>
-
-                              <div
-                                className="cart-dropdown-item"
-                                onClick={() => handleAddToCart(item)}
-                              >
-                                <div className="cart-item-info">
-                                  <span className="cart-item-name">{item.nome}</span>
-                                  <div className="cart-item-meta">
-                                    <span className={`cart-type-badge ${item.tipo.toLowerCase()}`}>
-                                      {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
-                                    </span>
-                                    {item.tipo === 'PRODUTO' && item.estoque !== undefined && (
-                                      <span className="cart-item-stock">
-                                        Est: {item.estoque}
-                                      </span>
-                                    )}
-                                    {item.codigo_interno && (
-                                      <span className="cart-item-code">
-                                        #{item.codigo_interno}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="cart-item-price-section">
-                                  <span className="cart-item-price">
-                                    {formatCurrency(item.preco_venda ?? 0, 2)}
-                                  </span>
-                                  {hasInCart && (
-                                    <span className="cart-item-qty-badge">
-                                      +{inCart?.quantidade}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-
-                    {cartItems.length > 0 && (
-                      <div className="cart-dropdown-footer">
-                        <div className="cart-footer-info">
-                          <span>{totalCartCount} item(ns) no carrinho</span>
-                          <span className="cart-footer-total">{formatCurrency(totalCartValue, 2)}</span>
-                        </div>
-                        <button
-                          type="button"
-                          className="cart-manage-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCartModalOpen(true);
-                          }}
-                        >
-                          <ShoppingCartIcon style={{ fontSize: '1rem' }} />
-                          Gerenciar
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
               <span className="display-value">
                 {formatCurrency(calculatedValue ?? 0, 2)}
@@ -746,6 +603,21 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         </div>
       </form>
       <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="local-top-right" />
+      <ModalSelecionarItens
+        isOpen={cartOpen}
+        onClose={() => setCartOpen(false)}
+        onManageCart={() => {
+          setCartOpen(false);
+          setCartModalOpen(true);
+        }}
+        cartItems={cartItems}
+        catalogItems={catalogItems}
+        loadingCatalog={loadingCatalog}
+        cartSearch={cartSearch}
+        onCartSearchChange={setCartSearch}
+        onAddToCart={handleAddToCart}
+        onRemoveFromCart={handleRemoveFromCart}
+      />
       <ModalCarrinho
         isOpen={cartModalOpen}
         onClose={() => setCartModalOpen(false)}
@@ -867,269 +739,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           justify-content: center;
           padding: 0 3px;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .cart-dropdown {
-          position: absolute;
-          top: calc(100% + 6px);
-          left: 0;
-          right: 0;
-          background: var(--surface, #1e1e1e);
-          border: 1px solid var(--border, #333);
-          border-radius: 12px;
-          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-          z-index: 1000;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-          max-height: 380px;
-        }
-
-        .cart-dropdown-search {
-          position: relative;
-          display: flex;
-          align-items: center;
-          padding: 8px 10px;
-          border-bottom: 1px solid var(--border, #333);
-          background: var(--surface-soft, rgba(255, 255, 255, 0.03));
-        }
-
-        .sale-form-fields .cart-dropdown-search input.cart-search-input {
-          width: 100%;
-          padding: 8px 32px 8px 10px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
-          background: var(--background);
-          color: var(--foreground);
-          font-size: 0.85rem;
-        }
-
-        .sale-form-fields .cart-dropdown-search input.cart-search-input:focus {
-          border-color: var(--accent);
-          outline: none;
-        }
-
-        .sale-form-fields button.cart-search-clear {
-          position: absolute;
-          right: 18px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: transparent;
-          border: none;
-          padding: 4px;
-          width: auto;
-          color: var(--muted);
-          font-size: 0.8rem;
-          cursor: pointer;
-          border-radius: 4px;
-        }
-
-        .sale-form-fields button.cart-search-clear:hover {
-          color: var(--foreground);
-          background: transparent;
-        }
-
-        .cart-dropdown-list {
-          flex: 1;
-          overflow-y: auto;
-          max-height: 240px;
-          min-height: 0;
-          padding: 6px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .cart-dropdown-item-row {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          width: 100%;
-        }
-
-        .sale-form-fields button.cart-btn-sub {
-          width: 28px;
-          height: 28px;
-          min-width: 28px;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 6px;
-          border: 1px solid var(--border, #444);
-          background: rgba(239, 68, 68, 0.15);
-          color: #ef4444;
-          font-size: 1.2rem;
-          font-weight: 800;
-          line-height: 1;
-          cursor: pointer;
-          transition: background 0.2s, transform 0.1s, opacity 0.2s;
-          flex-shrink: 0;
-        }
-
-        .sale-form-fields button.cart-btn-sub:hover:not(:disabled) {
-          background: rgba(239, 68, 68, 0.3);
-          transform: scale(1.05);
-        }
-
-        .sale-form-fields button.cart-btn-sub:disabled,
-        .sale-form-fields button.cart-btn-sub.disabled {
-          opacity: 0.15;
-          background: transparent;
-          color: var(--muted);
-          border-color: transparent;
-          cursor: not-allowed;
-          transform: none;
-        }
-
-        .cart-dropdown-item-row .cart-dropdown-item {
-          flex: 1;
-        }
-
-        .cart-dropdown-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 8px 12px;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background 0.15s ease;
-          background: transparent;
-          gap: 8px;
-        }
-
-        .cart-dropdown-item:hover {
-          background: var(--surface-soft, rgba(255, 255, 255, 0.08));
-        }
-
-        .cart-item-info {
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-          text-align: left;
-          min-width: 0;
-          flex: 1;
-        }
-
-        .cart-item-name {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: var(--foreground);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .cart-item-meta {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.75rem;
-          color: var(--muted);
-        }
-
-        .cart-type-badge {
-          font-size: 0.65rem;
-          padding: 1px 6px;
-          border-radius: 4px;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-
-        .cart-type-badge.produto {
-          background: rgba(59, 130, 246, 0.15);
-          color: #60a5fa;
-          border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .cart-type-badge.servico {
-          background: rgba(168, 85, 247, 0.15);
-          color: #c084fc;
-          border: 1px solid rgba(168, 85, 247, 0.3);
-        }
-
-        .cart-item-stock,
-        .cart-item-code {
-          font-size: 0.75rem;
-          color: var(--muted);
-        }
-
-        .cart-item-price-section {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-
-        .cart-item-price {
-          font-weight: 700;
-          font-size: 0.9rem;
-          color: var(--foreground);
-        }
-
-        .cart-item-qty-badge {
-          background: #3ed955;
-          color: #000;
-          font-weight: 800;
-          font-size: 0.75rem;
-          padding: 2px 7px;
-          border-radius: 10px;
-        }
-
-        .cart-dropdown-empty {
-          padding: 20px;
-          text-align: center;
-          color: var(--muted);
-          font-size: 0.85rem;
-        }
-
-        .cart-dropdown-footer {
-          padding: 8px 12px;
-          border-top: 1px solid var(--border);
-          background: var(--surface-soft, rgba(255, 255, 255, 0.02));
-          font-size: 0.8rem;
-          font-weight: 600;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .cart-footer-info {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          text-align: left;
-        }
-
-        .cart-footer-total {
-          font-size: 0.9rem;
-          font-weight: 700;
-          color: #3ed955;
-        }
-
-        .sale-form-fields button.cart-manage-btn {
-          width: auto;
-          min-width: unset;
-          padding: 6px 12px;
-          margin: 0;
-          border-radius: 8px;
-          background: #3ed955;
-          color: #000;
-          font-size: 0.8rem;
-          font-weight: 700;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .sale-form-fields button.cart-manage-btn:hover {
-          opacity: 0.9;
-          transform: translateY(-1px);
         }
 
         .flex-grow-1 {
