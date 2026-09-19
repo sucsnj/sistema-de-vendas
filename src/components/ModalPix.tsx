@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
 import { initIcons } from '../utils/iconsPix';
@@ -13,7 +14,7 @@ interface ModalPixProps {
   pixKey: string;
 }
 
-export default function ModalPix({
+function ModalPixContent({
   isOpen,
   onClose,
   payload,
@@ -46,8 +47,22 @@ export default function ModalPix({
   useEffect(() => {
     if (isOpen) {
       initIcons(document);
+      document.body.style.overflow = 'hidden';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleCopy = async () => {
     await copyToClipboard(payload, () => showToast('PIX Copia e Cola copiado!'), (e) => showToast('Erro ao copiar: ' + String(e), 'error'));
@@ -73,11 +88,15 @@ export default function ModalPix({
     await printPixSheet(data);
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-pix" onClick={(e) => e.stopPropagation()} ref={containerRef}>
+    <div className="modal-overlay" onClick={handleBackdropClick}>
+      <div className="modal-pix" ref={containerRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>QR Code PIX</h2>
           <button className="modal-close" onClick={onClose} aria-label="Fechar">
@@ -107,4 +126,9 @@ export default function ModalPix({
       </div>
     </div>
   );
+}
+
+export default function ModalPix(props: ModalPixProps) {
+  if (!props.isOpen) return null;
+  return createPortal(<ModalPixContent {...props} />, document.body);
 }

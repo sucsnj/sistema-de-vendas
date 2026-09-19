@@ -7,6 +7,7 @@ import { validateCurrency, validateDate } from '../utils/validation';
 import { useShortcuts } from '../utils/shortcuts';
 import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 import ModalCarrinho from './ModalCarrinho';
 import ModalSelecionarItens from './ModalSelecionarItens';
 import ModalPix from './ModalPix';
@@ -474,12 +475,11 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   )}
                 </button>
               </div>
-              {/* botão para gerar qrcode pix */}
-              <button type="button" className="pix-button" onClick={handlePixClick}>
-                {/* ícone temporário */}
-                <AddShoppingCartIcon className="pix-icon" />
-              </button>
               <span className="display-value">
+                {/* botão para gerar qrcode pix */}
+                <span className="pix-button" onClick={handlePixClick}>
+                  <QrCode2Icon className="pix-icon" />
+                </span>
                 {formatCurrency(calculatedValue ?? 0, 2)}
               </span>
             </label>
@@ -738,6 +738,22 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           border: none;
           cursor: pointer;
           font-size: 1.5rem;
+        }
+
+        .display-value {
+          display: flex;
+          align-items: center; /* Alinha o ícone e o texto na vertical */
+          justify-content: space-between; /* Empurra um para cada ponta */
+          width: 100%; /* Garante que o container ocupe todo o espaço disponível */
+        }
+
+        /* estilo para deixar o botão clicável visualmente amigável */
+        .pix-button {
+          cursor: pointer;
+          width: fit-content;
+          height: fit-content;
+          display: inline-flex;
+          align-items: center;
         }
 
         @media (max-width: 900px) {
