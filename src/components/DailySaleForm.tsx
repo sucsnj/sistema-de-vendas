@@ -487,7 +487,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 <span className="pix-button" onClick={handlePixClick}>
                   <QrCode2Icon className="pix-icon" />
                 </span>
-                {formatCurrency(calculatedValue ?? 0, 2)}
+                <span className="pix-button" onClick={handlePixClick}>
+                  {formatCurrency(calculatedValue ?? 0, 2)}
+                </span>
               </span>
             </label>
             <label>
@@ -674,6 +676,20 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           min-width: 110px;
           text-align: right;
           margin-right: 10px;
+          
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        /* estilo para deixar o botão clicável visualmente amigável */
+        .pix-button {
+          cursor: pointer;
+          width: fit-content;
+          height: fit-content;
+          display: inline-flex;
+          align-items: center;
         }
 
         .recent-history {
@@ -747,25 +763,13 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           font-size: 1.5rem;
         }
 
-        .display-value {
-          display: flex;
-          align-items: center; /* Alinha o ícone e o texto na vertical */
-          justify-content: space-between; /* Empurra um para cada ponta */
-          width: 100%; /* Garante que o container ocupe todo o espaço disponível */
-        }
-
-        /* estilo para deixar o botão clicável visualmente amigável */
-        .pix-button {
-          cursor: pointer;
-          width: fit-content;
-          height: fit-content;
-          display: inline-flex;
-          align-items: center;
-        }
-
         @media (max-width: 900px) {
           .sale-form-grid {
             grid-template-columns: 1fr;
+          }
+
+          .display-value {
+            font-size: 3.0rem;
           }
 
           .math-buttons {

@@ -74,11 +74,12 @@ const Nav: React.FC = () => {
       </div>
 
       <div className={styles.rightSide}>
-        <div className={styles.logo}>
+        {/* Trecho comentado para futura melhoria de UI */}
+        {/* <div className={styles.logo}>
           <Link href="/">
             <img src="/favicon.png" alt="logo" width={40} height={36} />
           </Link>
-        </div>
+        </div> */}
         <button
           type="button"
           onClick={toggleThemeMode}

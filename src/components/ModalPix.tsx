@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
 import { useFocusTrap } from '../utils/focus';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ModalPixProps {
   isOpen: boolean;
@@ -111,7 +112,7 @@ const ModalPixContent: React.FC<ModalPixProps> = ({
             onClick={onClose}
             aria-label="Fechar"
           >
-            <i data-lucide="x" className="h-5 w-5"></i>
+            <CloseIcon fontSize="small" />
           </button>
         </div>
 
