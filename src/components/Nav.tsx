@@ -51,27 +51,22 @@ const Nav: React.FC = () => {
           <span className="icon"><Link href="/"><DashboardIcon /></Link></span>
           <span className="text-responsive"><Link href="/">Dashboard</Link></span>
         </div>
-        <span>·</span>
         <div className={styles.navItem}>
           <span className="icon"><Link href="/resumo"><BarChartIcon /></Link></span>
           <span className="text-responsive"><Link href="/resumo">Resumo Mensal</Link></span>
         </div>
-        <span>·</span>
         <div className={styles.navItem}>
           <span className="icon"><Link href="/historico"><HistoryIcon /></Link></span>
           <span className="text-responsive"><Link href="/historico">Histórico</Link></span>
         </div>
-        <span>·</span>
         <div className={styles.navItem}>
           <span className="icon"><Link href="/contas-a-pagar"><AccountBalanceIcon /></Link></span>
           <span className="text-responsive"><Link href="/contas-a-pagar">Contas</Link></span>
         </div>
-        <span>·</span>
         <div className={styles.navItem}>
           <span className="icon"><Link href="/tabela"><TableChartIcon /></Link></span>
           <span className="text-responsive"><Link href="/tabela">Tabela</Link></span>
         </div>
-        <span>·</span>
         <div className={styles.navItem}>
           <span className="icon"><Link href="/produtos"><InventoryIcon /></Link></span>
           <span className="text-responsive"><Link href="/produtos">Produtos e Serviços</Link></span>
