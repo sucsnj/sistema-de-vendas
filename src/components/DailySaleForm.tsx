@@ -242,6 +242,13 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       return;
     }
 
+    if (valueFromInput < 0) {
+      showToast('Não pode haver pix negativo.', 'info');
+      highlightField(observacoesTextareaRef);
+      setLoading(false);
+      return;
+    }
+
     const amount = valueFromInput > 0 ? valueFromInput.toFixed(2) : null;
 
     const pixKey = process.env.NEXT_PUBLIC_PIX_KEY ?? '';

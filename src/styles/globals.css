@@ -1113,6 +1113,7 @@ h2 {
   justify-content: center;
   padding: 20px;
   animation: fade-in 0.2s ease-out;
+  overflow-y: auto;
 }
 
 @keyframes fade-in {
@@ -1127,8 +1128,11 @@ h2 {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
   width: 100%;
   max-width: 380px;
-  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   animation: slide-up 0.25s ease-out;
+  overflow: hidden;
 }
 
 @keyframes slide-up {
@@ -1149,6 +1153,7 @@ h2 {
   padding: 16px 20px;
   background: var(--surface-soft);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -1177,11 +1182,37 @@ h2 {
 }
 
 .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar sempre visível */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-body::-webkit-scrollbar-track {
+  background: var(--surface-soft);
+  border-radius: 4px;
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+  border: 2px solid var(--surface-soft);
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+.modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) var(--surface-soft);
 }
 
 .qr-canvas {
@@ -1227,6 +1258,7 @@ h2 {
   background: var(--surface-soft);
   border-top: 1px solid var(--border);
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .action-button {

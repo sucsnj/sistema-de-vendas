@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
 import { initIcons } from '../utils/iconsPix';
+import { useFocusTrap } from '../utils/focus';
 
 interface ModalPixProps {
   isOpen: boolean;
@@ -14,7 +15,7 @@ interface ModalPixProps {
   pixKey: string;
 }
 
-function ModalPixContent({
+const ModalPixContent: React.FC<ModalPixProps> = ({
   isOpen,
   onClose,
   payload,
@@ -22,11 +23,26 @@ function ModalPixContent({
   merchantBank,
   amount,
   pixKey,
-}: ModalPixProps) {
+}) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [qrLoaded, setQrLoaded] = useState(false);
+  const [qrLoaded, setQrLoaded] = React.useState(false);
 
+  useFocusTrap(dialogRef, isOpen);
+
+  // Fecha com a tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  // Renderiza QR Code quando abre
   useEffect(() => {
     if (!isOpen || !canvasRef.current) return;
     let mounted = true;
@@ -44,25 +60,12 @@ function ModalPixContent({
     return () => { mounted = false; };
   }, [isOpen, payload]);
 
+  // Inicializa ícones Lucide
   useEffect(() => {
     if (isOpen) {
       initIcons(document);
-      document.body.style.overflow = 'hidden';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   const handleCopy = async () => {
     await copyToClipboard(payload, () => showToast('PIX Copia e Cola copiado!'), (e) => showToast('Erro ao copiar: ' + String(e), 'error'));
@@ -88,22 +91,40 @@ function ModalPixContent({
     await printPixSheet(data);
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  if (!isOpen || typeof document === 'undefined') return null;
 
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-overlay" onClick={handleBackdropClick}>
-      <div className="modal-pix" ref={containerRef} onClick={(e) => e.stopPropagation()}>
+  const modalContent = (
+    <div
+      className="modal-overlay"
+      role="presentation"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="modal-pix"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pix-modal-title"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Cabeçalho Fixo */}
         <div className="modal-header">
-          <h2>QR Code PIX</h2>
-          <button className="modal-close" onClick={onClose} aria-label="Fechar">
+          <h2 id="pix-modal-title">QR Code PIX</h2>
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            aria-label="Fechar"
+          >
             <i data-lucide="x" className="h-5 w-5"></i>
           </button>
         </div>
-        <div className="modal-body">
+
+        {/* Corpo do Modal com Rolagem */}
+        <div className="modal-body" ref={containerRef}>
           <canvas ref={canvasRef} width={QR_SIZE} height={QR_SIZE} className={`qr-canvas ${qrLoaded ? 'loaded' : ''}`} />
           <div className="pix-info">
             <div className="info-row"><span>Nome:</span> <strong>{merchantName}</strong></div>
@@ -112,6 +133,8 @@ function ModalPixContent({
             <div className="info-row"><span>Chave:</span> <strong>{pixKey}</strong></div>
           </div>
         </div>
+
+        {/* Rodapé Fixo */}
         <div className="modal-actions">
           <button className="action-button" onClick={handleCopy}>
             <i data-lucide="copy" className="h-4 w-4"></i> Copiar
@@ -126,9 +149,11 @@ function ModalPixContent({
       </div>
     </div>
   );
-}
+
+  return createPortal(modalContent, document.body);
+};
 
 export default function ModalPix(props: ModalPixProps) {
   if (!props.isOpen) return null;
-  return createPortal(<ModalPixContent {...props} />, document.body);
+  return <ModalPixContent {...props} />;
 }
