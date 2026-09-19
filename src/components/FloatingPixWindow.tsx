@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
-import { initIcons } from '../utils/iconsPix';
 
 interface FloatingPixWindowProps {
   isOpen: boolean;
@@ -47,12 +46,6 @@ function FloatingPixWindowContent({
     })();
     return () => { mounted = false; };
   }, [isOpen, payload]);
-
-  useEffect(() => {
-    if (isOpen) {
-      initIcons(document);
-    }
-  }, [isOpen]);
 
   const handleCopy = async () => {
     await copyToClipboard(payload, () => showToast('PIX Copia e Cola copiado!'), (e) => showToast('Erro ao copiar: ' + String(e), 'error'));

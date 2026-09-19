@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
-import { initIcons } from '../utils/iconsPix';
 import { useFocusTrap } from '../utils/focus';
 
 interface ModalPixProps {
@@ -59,13 +58,6 @@ const ModalPixContent: React.FC<ModalPixProps> = ({
     })();
     return () => { mounted = false; };
   }, [isOpen, payload]);
-
-  // Inicializa ícones Lucide
-  useEffect(() => {
-    if (isOpen) {
-      initIcons(document);
-    }
-  }, [isOpen]);
 
   const handleCopy = async () => {
     await copyToClipboard(payload, () => showToast('PIX Copia e Cola copiado!'), (e) => showToast('Erro ao copiar: ' + String(e), 'error'));

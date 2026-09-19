@@ -5,7 +5,6 @@
  * resolução, imprimir a folha do PIX e notificações (toast).
  */
 
-import { initIcons } from '../utils/iconsPix';
 import QRCode from 'qrcode';
 import { generateHighResPng } from '@/components/QrPix';
 
@@ -47,8 +46,6 @@ export function showToast(message: string, type: ToastType = 'success'): void {
   }
   
   root.appendChild(toast);
-
-  initIcons(root);
 
   window.setTimeout(() => {
     toast.classList.add('toast-leave');
