@@ -9,7 +9,9 @@ import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ModalCarrinho from './ModalCarrinho';
 import ModalSelecionarItens from './ModalSelecionarItens';
+import ModalPix from './ModalPix';
 import { useCart } from '../hooks/useCart';
+import { buildPixPayload } from '../utils/pix';
 
 export interface CartItem {
   id: number;
@@ -51,6 +53,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const valorInputRef = useRef<HTMLInputElement | null>(null);
   const observacoesTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
+  const [pixModalOpen, setPixModalOpen] = useState(false);
+  const [pixPayload, setPixPayload] = useState('');
+  const [pixAmount, setPixAmount] = useState<string | null>(null);
 
   // Exibe mensagem de sucesso, erro ou informação
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
@@ -220,6 +225,45 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setCalculatedValue(0);
     // manda o foco para o input de valor
     valorInputRef.current?.focus();
+  };
+
+  const handlePixClick = () => {
+    if (!valor.trim()) {
+      showToast('Informe o valor da venda.', 'error');
+      valorInputRef.current?.focus();
+      return;
+    }
+
+    const valueFromInput = validateCurrency(valor);
+    if (valueFromInput == null) {
+      showToast('Valor inválido.', 'error');
+      valorInputRef.current?.focus();
+      return;
+    }
+
+    const amount = valueFromInput > 0 ? valueFromInput.toFixed(2) : null;
+
+    const pixKey = process.env.NEXT_PUBLIC_PIX_KEY ?? '';
+    const merchantName = process.env.NEXT_PUBLIC_PIX_NAME ?? '';
+    const merchantCity = process.env.NEXT_PUBLIC_PIX_CITY ?? '';
+    const merchantBank = process.env.NEXT_PUBLIC_PIX_BANK ?? '';
+
+    if (!pixKey || !merchantName || !merchantCity) {
+      showToast('Configuração PIX incompleta no .env', 'error');
+      return;
+    }
+
+    const { payload } = buildPixPayload({
+      pixKey,
+      merchantName,
+      merchantCity,
+      amount,
+    });
+
+    setPixPayload(payload);
+    setPixAmount(amount);
+    setPixModalOpen(true);
+    showToast('QR Code PIX gerado!', 'success');
   };
 
   // envia dados para o serviço de vendas
@@ -430,6 +474,11 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   )}
                 </button>
               </div>
+              {/* botão para gerar qrcode pix */}
+              <button type="button" className="pix-button" onClick={handlePixClick}>
+                {/* ícone temporário */}
+                <AddShoppingCartIcon className="pix-icon" />
+              </button>
               <span className="display-value">
                 {formatCurrency(calculatedValue ?? 0, 2)}
               </span>
@@ -483,6 +532,15 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
+      />
+      <ModalPix
+        isOpen={pixModalOpen}
+        onClose={() => setPixModalOpen(false)}
+        payload={pixPayload}
+        merchantName={process.env.NEXT_PUBLIC_PIX_NAME ?? ''}
+        merchantBank={process.env.NEXT_PUBLIC_PIX_BANK ?? ''}
+        amount={pixAmount}
+        pixKey={process.env.NEXT_PUBLIC_PIX_KEY ?? ''}
       />
       <style jsx>{`
         .daily-sale-form {
