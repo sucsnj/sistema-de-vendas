@@ -64,7 +64,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [pages/api/ocr.md](pages/api/ocr.md) - upload e processamento OCR.
 - [pages/api/tabela.md](pages/api/tabela.md) - cadastro e histórico de tabelas.
-- [pages/api/contas-import.md](pages/api/contas/contas-import.md) - importação de contas via XML.
+- [pages/api/contas-import.md](pages/api/contas-import.md) - importação de contas via XML.
 
 ## Serviços
 
