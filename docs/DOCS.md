@@ -1,20 +1,24 @@
 # Documentação do Projeto Vendas
 
+> Contexto rápido para agentes: ver `CONTEXT.md`. Índice completo: `README.md`.
+
 ## Arquitetura Geral
 
 O projeto é uma aplicação Next.js 16 com front-end React e back-end API routes integrados via `src/pages/api`. A arquitetura segue uma separação simples:
 
 - `src/pages`: páginas de rota Next.js que orquestram componentes e estados.
 - `src/components`: componentes visuais reutilizáveis e painéis de UI.
+- `src/hooks`: hooks de estado (carrinho, filtros, toasts e CRUD de catálogo).
 - `src/services`: camada cliente que faz chamadas `fetch` para APIs internas.
 - `src/pages/api`: endpoints REST internos que expõem operações CRUD.
 - `src/database`: abstração local SQLite usando `better-sqlite3` para persistência.
 - `src/utils`: funções utilitárias de formatação, parsing e limpeza.
+- `src/types`: tipos compartilhados entre camadas.
 
 ## Fluxo de Dados
 
 1. A navegação em `src/pages/_app.tsx` envolve as páginas com `React Query` e exibe a `Nav` global.
-2. Páginas como `index.tsx`, `contas-a-pagar.tsx`, `historico.tsx`, `resumo.tsx` e `tabela.tsx` consomem serviços em `src/services`.
+2. Páginas como `index.tsx`, `produtos.tsx`, `cadastro.tsx`, `contas-a-pagar.tsx`, `historico.tsx` e `resumo.tsx` consomem serviços em `src/services`.
 3. Os serviços fazem `fetch` para endpoints sob `src/pages/api`.
 4. Os endpoints usam `src/database` para ler e gravar em bancos SQLite locais.
 5. Componentes exibem formulários, tabelas, gráficos e toasts com retornos das chamadas.
@@ -69,4 +73,5 @@ O projeto é uma aplicação Next.js 16 com front-end React e back-end API route
 - `docs/services`: detalhes das camadas de serviço.
 - `docs/database`: descrição das camadas de dados.
 - `docs/components`: explicação dos componentes principais.
+- `docs/hooks` e `docs/types`: hooks de estado e tipos compartilhados.
 - `docs/utils`: utilitários e funções de apoio.

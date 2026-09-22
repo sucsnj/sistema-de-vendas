@@ -2,6 +2,11 @@
 
 Este arquivo é o ponto de partida para navegar pela documentação do projeto. Aqui você encontra os principais documentos já existentes em `docs/` e em `docs/pages/api/`, organizados por categoria para facilitar o acesso.
 
+## Para agentes de IA
+
+- [CONTEXT.md](CONTEXT.md) - guia de contexto rápido para agentes (evita releitura de código).
+- [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
+
 ## Sumário
 
 - [Visão Geral](#visão-geral)
@@ -10,83 +15,140 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [Serviços](#serviços)
 - [Banco de Dados](#banco-de-dados)
 - [Componentes](#componentes)
+- [Hooks](#hooks)
+- [Tipos](#tipos)
 - [Utilitários](#utilitários)
 
 ## Visão Geral
 
-- [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
+- [DOCS.md](DOCS.md) - arquitetura geral, fluxo de dados, dependências críticas, riscos e melhorias.
+- [CONTEXT.md](CONTEXT.md) - guia rápido para agentes: camadas, bancos, páginas e "tema → documentos".
 
 ## Páginas do Frontend
 
-- [pages/index.md](pages/index.md) - documentação da página principal do dashboard de vendas, incluindo resumo mensal, edição de vendas e backup.
-- [pages/contas-a-pagar.md](pages/contas-a-pagar.md) - documentação da página de contas a pagar, filtros, importação de XML e gestão de pagamentos.
-- [pages/historico.md](pages/historico.md) - documentação da página de histórico de vendas, listagem e busca de registros passados.
-- [pages/resumo.md](pages/resumo.md) - documentação da página de resumo mensal de vendas e totais consolidados.
-- [pages/tabela.md](pages/tabela.md) - documentação da página de upload e consulta de tabela de medicamentos.
-- [pages/_app.md](pages/_app.md) - documentação da configuração global do app e integração com React Query.
+- [pages/index.md](pages/index.md) - dashboard de vendas: resumo mensal, formulário, edição e backup.
+- [pages/produtos.md](pages/produtos.md) - catálogo, estoque e preços de produtos.
+- [pages/cadastro.md](pages/cadastro.md) - cadastros auxiliares (categorias, marcas, fornecedores, unidades de medida).
+- [pages/contas-a-pagar.md](pages/contas-a-pagar.md) - contas a pagar: filtros, importação de XML e pagamentos.
+- [pages/historico.md](pages/historico.md) - histórico de vendas, listagem e busca.
+- [pages/resumo.md](pages/resumo.md) - resumo mensal de vendas e totais consolidados.
+- [pages/tabela.md](pages/tabela.md) - upload e consulta da tabela de medicamentos.
+- [pages/_app.md](pages/_app.md) - configuração global do app e integração com React Query.
 
 ## Referência de API
 
 ### Backup
 
-- [pages/api/backup.md](pages/api/backup.md) - endpoint de backup do banco de dados principal.
-- [pages/api/contas-backup.md](pages/api/contas/contas-backup.md) - endpoint de backup das contas a pagar.
+- [pages/api/backup.md](pages/api/backup.md) - backup do banco de dados principal.
+- [pages/api/contas-backup.md](pages/api/contas-backup.md) - backup das contas a pagar.
 
 ### Financeiro
 
-- [pages/api/vendas.md](pages/api/vendas.md) - API de CRUD de vendas diárias.
-- [pages/api/notas.md](pages/api/notas.md) - API de consulta de notas fiscais.
-- [pages/api/mensais.md](pages/api/mensais.md) - API de relatórios de vendas mensais.
+- [pages/api/vendas.md](pages/api/vendas.md) - CRUD de vendas diárias.
+- [pages/api/venda-itens.md](pages/api/venda-itens.md) - itens de venda (carrinho).
+- [pages/api/notas.md](pages/api/notas.md) - consulta de notas fiscais.
+- [pages/api/mensais.md](pages/api/mensais.md) - relatórios de vendas mensais.
+
+### Produtos e Estoque
+
+- [pages/api/produtos.md](pages/api/produtos.md) - CRUD de produtos (catálogo).
+- [pages/api/produtos/categorias.md](pages/api/produtos/categorias.md) - categorias.
+- [pages/api/produtos/marcas.md](pages/api/produtos/marcas.md) - marcas.
+- [pages/api/produtos/fornecedores.md](pages/api/produtos/fornecedores.md) - fornecedores.
+- [pages/api/produtos/unidades-medida.md](pages/api/produtos/unidades-medida.md) - unidades de medida.
+- [pages/api/produtos/itens.md](pages/api/produtos/itens.md) - itens de produto.
+- [pages/api/produtos/servicos.md](pages/api/produtos/servicos.md) - serviços.
+- [pages/api/produtos/movimentacoes.md](pages/api/produtos/movimentacoes.md) - movimentações de estoque.
 
 ### Importação e OCR
 
-- [pages/api/ocr.md](pages/api/ocr.md) - endpoint de upload e processamento OCR.
-- [pages/api/tabela.md](pages/api/tabela.md) - endpoint de cadastro e histórico de tabelas de vendas/importação.
-- [pages/api/contas-import.md](pages/api/contas/contas-import.md) - endpoint de importação de contas a pagar via XML.
+- [pages/api/ocr.md](pages/api/ocr.md) - upload e processamento OCR.
+- [pages/api/tabela.md](pages/api/tabela.md) - cadastro e histórico de tabelas.
+- [pages/api/contas-import.md](pages/api/contas/contas-import.md) - importação de contas via XML.
 
 ## Serviços
 
-- [services/contasService.md](services/contasService.md) - documentação da camada de API cliente de contas a pagar.
-- [services/notasService.md](services/notasService.md) - documentação da camada de API cliente de notas fiscais.
-- [services/ocrService.md](services/ocrService.md) - documentação da camada de OCR e upload de arquivos.
-- [services/pdfService.md](services/pdfService.md) - documentação da geração e exportação de PDFs.
-- [services/tabelaService.md](services/tabelaService.md) - documentação da camada de serviço para tabelas de vendas.
-- [services/vendasService.md](services/vendasService.md) - documentação da camada de API cliente de vendas diárias.
+- [services/contasService.md](services/contasService.md) - API cliente de contas a pagar.
+- [services/notasService.md](services/notasService.md) - API cliente de notas fiscais.
+- [services/ocrService.md](services/ocrService.md) - OCR e upload de arquivos.
+- [services/pdfService.md](services/pdfService.md) - geração e exportação de PDFs.
+- [services/produtosService.md](services/produtosService.md) - API cliente de produtos/catálogo.
+- [services/tabelaService.md](services/tabelaService.md) - tabelas de vendas.
+- [services/vendasService.md](services/vendasService.md) - API cliente de vendas diárias.
 
 ## Banco de Dados
 
-- [database/db.md](database/db.md) - documentação da configuração e backup do banco SQLite principal.
-- [database/contasDb.md](database/contasDb.md) - documentação da persistência de contas a pagar.
-- [database/notasDb.md](database/notasDb.md) - documentação da persistência de notas fiscais.
-- [database/tabelaDb.md](database/tabelaDb.md) - documentação da persistência de tabelas e histórico de importações.
+- [database/db.md](database/db.md) - configuração e backup do banco SQLite principal (`db.db`).
+- [database/contasDb.md](database/contasDb.md) - persistência de contas a pagar.
+- [database/notasDb.md](database/notasDb.md) - persistência de notas fiscais.
+- [database/tabelaDb.md](database/tabelaDb.md) - persistência de tabelas e histórico.
+- [database/produtosDb.md](database/produtosDb.md) - catálogo e estoque em `produtos.db`.
+- [database/seeds.md](database/seeds.md) - dados iniciais/sementes dos bancos.
 
 ## Componentes
 
-- [components/Agenda.md](components/Agenda.md) - documento do componente de agenda e visualização de datas.
-- [components/ConfirmDialog.md](components/ConfirmDialog.md) - documento do modal de confirmação.
-- [components/ConsolidacaoMensal.md](components/ConsolidacaoMensal.md) - documento do componente de consolidação mensal de vendas.
-- [components/ContasAPagarFilterPanel.md](components/ContasAPagarFilterPanel.md) - documento do painel de filtro de contas a pagar.
-- [components/ContasAPagarForm.md](components/ContasAPagarForm.md) - documento do formulário de contas a pagar.
-- [components/ContasAPagarLastTen.md](components/ContasAPagarLastTen.md) - documento do painel das últimas 10 contas.
-- [components/ContasAPagarModals.md](components/ContasAPagarModals.md) - documento dos modais de contas a pagar.
-- [components/DailySaleForm.md](components/DailySaleForm.md) - documento do formulário de venda diária.
-- [components/DailySalesTotal.md](components/DailySalesTotal.md) - documento do painel de totais de vendas.
-- [components/ExportButtons.md](components/ExportButtons.md) - documento dos botões de exportação de dados.
-- [components/Nav.md](components/Nav.md) - documento da navegação global.
-- [components/NotasDoMes.md](components/NotasDoMes.md) - documento do componente de notas do mês.
-- [components/OcrUpload.md](components/OcrUpload.md) - documento do componente de upload OCR.
-- [components/Resumo.md](components/Resumo.md) - documento do componente de resumo de vendas.
-- [components/SalesChart.md](components/SalesChart.md) - documento do gráfico de vendas.
-- [components/SalesTable.md](components/SalesTable.md) - documento da tabela de vendas.
-- [components/TotaisPorDistribuidora.md](components/TotaisPorDistribuidora.md) - documento do painel de totais por distribuidora.
+### Vendas e Dashboard
+
+- [components/DailySaleForm.md](components/DailySaleForm.md) - formulário de venda diária.
+- [components/EditSaleForm.md](components/EditSaleForm.md) - edição de venda existente.
+- [components/FormularioItem.md](components/FormularioItem.md) - formulário de item de venda.
+- [components/FormularioServico.md](components/FormularioServico.md) - formulário de serviço.
+- [components/ModalCarrinho.md](components/ModalCarrinho.md) - carrinho de compras da venda.
+- [components/DailySalesTotal.md](components/DailySalesTotal.md) - totais do dia.
+- [components/SalesChart.md](components/SalesChart.md) - gráfico de vendas.
+- [components/SalesTable.md](components/SalesTable.md) - tabela de vendas.
+- [components/ConsolidacaoMensal.md](components/ConsolidacaoMensal.md) - consolidação mensal.
+- [components/Resumo.md](components/Resumo.md) - resumo de vendas.
+- [components/NotasDoMes.md](components/NotasDoMes.md) - notas do mês.
+- [components/TotaisPorDistribuidora.md](components/TotaisPorDistribuidora.md) - totais por distribuidora.
+- [components/ExportButtons.md](components/ExportButtons.md) - exportação de dados.
+
+### Contas a Pagar
+
+- [components/ContasAPagarForm.md](components/ContasAPagarForm.md) - formulário de contas.
+- [components/ContasAPagarFilterPanel.md](components/ContasAPagarFilterPanel.md) - painel de filtros.
+- [components/ContasAPagarLastTen.md](components/ContasAPagarLastTen.md) - últimas 10 contas.
+- [components/ContasAPagarModals.md](components/ContasAPagarModals.md) - modais de contas.
+- [components/ContasAPagarHeader.md](components/ContasAPagarHeader.md) - cabeçalho do módulo.
+
+### Produtos e Estoque
+
+- [components/ProdutosList.md](components/ProdutosList.md) - listagem de produtos.
+- [components/FormularioProduto.md](components/FormularioProduto.md) - formulário de produto.
+- [components/ModaisDeProdutos.md](components/ModaisDeProdutos.md) - modais de produtos.
+- [components/ModaisCadastro.md](components/ModaisCadastro.md) - modais de cadastro (categorias, marcas, fornecedores, unidades, importação).
+- [components/ModalAjusteEstoque.md](components/ModalAjusteEstoque.md) - ajuste de estoque.
+
+### PIX e Pagamento
+
+- [components/Pix.md](components/Pix.md) - fluxo de PIX: `ActionPix`, `FloatingPixWindow`, `FormPix`, `ModalPix`, `QrPix`.
+
+### Gerais e Relatórios
+
+- [components/Agenda.md](components/Agenda.md) - agenda e visualização de datas.
+- [components/ConfirmDialog.md](components/ConfirmDialog.md) - modal de confirmação.
+- [components/Nav.md](components/Nav.md) - navegação global.
+- [components/OcrUpload.md](components/OcrUpload.md) - upload OCR.
+- [components/Filtros.md](components/Filtros.md) - filtros de listagens.
+- [components/Toast.md](components/Toast.md) - notificações.
+- [components/BarcodeManager.md](components/BarcodeManager.md) - leitura de código de barras.
+
+## Hooks
+
+- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`.
+
+## Tipos
+
+- [types/Types.md](types/Types.md) - tipos compartilhados (`categoria.ts`, declarações `pdf-poppler.d.ts`).
 
 ## Utilitários
 
-- [utils/Utils.md](utils/Utils.md) - documento que descreve utilitários de formatação, parsing e limpeza de dados.
+- [utils/Utils.md](utils/Utils.md) - formatação, parsing e limpeza de dados.
 
 ## Como usar este índice
 
-1. Comece por `DOCS.md` para entender a arquitetura geral do projeto.
+1. Comece por `CONTEXT.md` (guia rápido) e `DOCS.md` para entender a arquitetura geral.
 2. Acesse as páginas do frontend para entender cada rota principal.
 3. Consulte a seção de API para detalhes dos endpoints internos.
-4. Use as seções de serviços, banco de dados e componentes para entender a implementação por camada.
+4. Use as seções de serviços, banco de dados, componentes, hooks e tipos para entender a implementação por camada.
+5. Ao adicionar um doc novo, inclua-o aqui.

@@ -1,14 +1,15 @@
-# `src/pages/api/contas/backup.ts`
+# `src/pages/api/contas-backup.ts`
+
+_Status: rascunho — estrutura criada, conteúdo a validar via leitura do código._
 
 ## Descrição
 
-Endpoint para fazer backup das contas a pagar.
+<!-- TODO: endpoint de backup do banco de contas a pagar (contas.db) -->
 
 ## Métodos
 
-- `POST` - gera arquivo de backup das contas usando `src/database/contasDb.ts`.
+- `GET` - <!-- TODO: descrição -->
 
 ## Observações
 
-- Destinado a salvar o estado atual das contas a pagar.
-- Retorna o caminho do arquivo ou erro 500 em caso de problema.
+<!-- TODO: - destino/forma do backup (ex.: cópia do arquivo em db/) -->
