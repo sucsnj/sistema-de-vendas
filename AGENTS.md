@@ -22,6 +22,8 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 - `npm run build` — build de produção.
 - `npm run lint` — lint (eslint).
 - `/context` — carrega o contexto do projeto a partir da documentação.
+- `/skill fritar` — invoca a skill `grill-with-docs` (entrevista de design + ADRs).
+- `/skill ensinar` — invoca a skill `teach` (aprendizado em workspace guiado).
 
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
