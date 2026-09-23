@@ -12,6 +12,16 @@ Utilizado no resumo de pagamentos para exibir valores pagos e pendentes por mês
 - Renderizar tabela resumida de consolidação mensal.
 - Formatar valores usando utilitário de moeda.
 
+## Assinatura
+
+```ts
+interface ConsolidacaoMensalProps {
+  meses: { mes: number; pago: number; pendente: number }[];
+}
+
+const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps>;
+```
+
 ## Props
 
 - `meses` - lista de objetos com `mes`, `pago` e `pendente`.

@@ -1,18 +1,35 @@
 # `src/pages/api/produtos/fornecedores.ts`
 
-_Status: rascunho — estrutura criada, conteúdo a validar via leitura do código._
-
 ## Descrição
 
-<!-- TODO: endpoint REST de fornecedores -->
+CRUD de fornecedores. Usa `db/produtos.db` (tabela `fornecedores`).
 
 ## Métodos
 
-- `GET` - <!-- TODO: descrição -->
-- `POST` - <!-- TODO: descrição -->
-- `PUT` - <!-- TODO: descrição -->
-- `DELETE` - <!-- TODO: descrição -->
+### `GET /api/produtos/fornecedores`
 
-## Observações
+**Resposta 200:** `[{ "id": 1, "nome": "Sem fornecedor" }, ...]` ordenados por nome.
 
-<!-- TODO: - regras de negócio e validações -->
+### `POST /api/produtos/fornecedores`
+
+**Body:** `{ "nome": "..." }`.
+
+**Validações (400):** nome obrigatório; duplicado (case-insensitive).
+
+**Resposta:** `201 {"id": <id>, "message": "Fornecedor cadastrado com sucesso."}`.
+
+### `PUT /api/produtos/fornecedores?id=`
+
+**Body:** `{ "nome": "..." }`. `id` na query.
+
+**Resposta:** `200 {"message": "Fornecedor atualizado com sucesso."}`.
+
+### `DELETE /api/produtos/fornecedores?id=`
+
+**Resposta:** `200 {"message": "Fornecedor apagado com sucesso."}`.
+
+## Regras e Observações
+
+- `id=1` (fornecedor "Sem fornecedor") não pode ser atualizado/apagado.
+- Ao apagar fornecedor com itens associados, os itens são migrados para "Sem fornecedor" (id 1).
+- Erros → `500`; métodos não suportados → `405` (`Allow: GET, POST, DELETE, PUT, PATCH`).

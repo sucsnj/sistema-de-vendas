@@ -13,6 +13,16 @@ Usado para exibir totais pendentes por distribuidora em um painel de resumo fina
 - Renderizar totais pendentes por distribuidora.
 - Exibir estado vazio quando não houver valores.
 
+## Assinatura
+
+```ts
+interface TotaisPorDistribuidoraProps {
+  totaisPorDistribuidora: Record<string, number>;
+}
+
+const TotaisPorDistribuidora: React.FC<TotaisPorDistribuidoraProps>;
+```
+
 ## Props
 
 - `totaisPorDistribuidora` - mapa de distribuidora para valor.

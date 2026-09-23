@@ -2,40 +2,36 @@
 
 ## Descrição
 
-Componente de cabeçalho do Contas a Pagar.
+Cabeçalho do módulo **Contas a pagar**: título, seletor de ano/mês e botão de **Backup Anual**.
 
 ## Contexto
 
-Utilizado no Contas a Pagar para exibir dados do ano e mês atual.
-
-## Responsabilidades
-
-- Exibir dados do ano e mês atual.
-- Exibir botão de backup.
-- Exibir botão de navegação para o menu principal.
+Renderizado no topo de `contas-a-pagar.tsx`.
 
 ## Props
 
-- `ano`, `setAno` - ano atual.
-- `mes`, `setMes` - mês atual.
-- `handleBackup` - callback para o botão de backup.
+```ts
+interface ContasAPagarHeaderProps {
+  ano: number;
+  mes: number;
+  setAno: (ano: number) => void;
+  setMes: (mes: number) => void;
+  handleBackup: () => Promise<void>;
+}
+```
+
+## Comportamento/Responsabilidades
+
+- Campo **Ano** (input numérico): `onChange` usa `parseInt(...)` ou `today.year()` como fallback.
+- Select **Mês** com 12 opções (`capitalize(formatMonthName(1..12))`).
+- Botão **Backup Anual** (ícone `Backup`) → `handleBackup`.
+- `today = now()` (timezone `America/Recife`).
 
 ## Dependências
 
-- `date` (formatação e timestamp).
-
-## Exemplo de uso
-
-```tsx
-<ContasAPagarHeader
-  ano={ano}
-  setAno={setAno}
-  mes={mes}
-  setMes={setMes}
-  handleBackup={handleBackup}
-/>
-```
+- `src/utils/date` (`formatMonthName`, `now`), `src/utils/captalize` (`capitalize`).
+- `src/styles/contas.module.css`; `@mui/icons-material` (`Backup`).
 
 ## Observações
 
-- Utiliza `capitalize` para formatar o nome do mês.
+- Não possui estado interno; não navega para menu (responsabilidade está no `Nav` global).

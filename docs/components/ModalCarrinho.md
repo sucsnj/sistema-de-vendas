@@ -1,23 +1,72 @@
 # `src/components/ModalCarrinho.tsx`
 
-_Status: rascunho — estrutura criada, conteúdo a validar via leitura do código._
-
 ## Descrição
 
-<!-- TODO: modal do carrinho de compras de uma venda -->
+Modal, renderizado via `createPortal` no `document.body`, que exibe os itens atuais do carrinho de uma venda (produtos/serviços) com controle de quantidade, subtotal por item, total geral e ações de remoção/limpeza.
+
+## Contexto
+
+Usado pelo `DailySaleForm` (venda nova) e pelo `EditSaleForm` (edição de venda) para gerenciar os itens antes de salvar. O estado dos itens vem do hook `useCart`.
 
 ## Responsabilidades
 
-<!-- TODO: - listar itens do carrinho, adicionar/remover, calcular total, confirmar venda -->
+- Listar itens do carrinho (nome, tipo PRODUTO/SERVICO, código interno, preço unitário).
+- Controlar quantidade por item (botões `−`/`+` e input numérico com mínimo 1).
+- Exibir subtotal por item e total geral.
+- Remover item individual e limpar todo o carrinho.
+- Fechar por ESC, clique no overlay ("fora") ou botão "Concluir".
+- Manter foco dentro do modal via `useFocusTrap`.
+
+## Assinatura
+
+```ts
+interface ModalCarrinhoProps {
+  isOpen: boolean;
+  onClose: () => void;
+  cartItems: CartItem[];
+  onUpdateQuantity: (id: number, tipo: 'PRODUTO' | 'SERVICO', newQty: number) => void;
+  onRemoveItem: (id: number, tipo: 'PRODUTO' | 'SERVICO') => void;
+  onClearCart: () => void;
+}
+
+const ModalCarrinho: React.FC<ModalCarrinhoProps>;
+```
+
+`CartItem` é o tipo exportado por `DailySaleForm`:
+
+```ts
+interface CartItem {
+  id: number;
+  tipo: 'PRODUTO' | 'SERVICO';
+  nome: string;
+  preco_venda?: number | null;
+  quantidade: number;
+  codigo_interno?: string;
+  referencia?: string;
+}
+```
 
 ## Props
 
-<!-- TODO: - listar props -->
+- `isOpen` - controla exibição/ocultamento do modal.
+- `onClose` - fecha o modal (ESC, overlay, botão "Concluir").
+- `cartItems` - itens atuais do carrinho.
+- `onUpdateQuantity` - atualiza a quantidade de um item.
+- `onRemoveItem` - remove um item do carrinho.
+- `onClearCart` - esvazia o carrinho.
 
 ## Dependências
 
-<!-- TODO: - listar dependências (useCart, FormularioItem, serviços) -->
+- `createPortal` (React DOM).
+- `useFocusTrap` (`src/utils/focus`).
+- `formatCurrency` (`src/utils/formatter`).
+- Ícones MUI (`ShoppingCartIcon`, `DeleteIcon`, `CloseIcon`, `AddIcon`, `RemoveIcon`).
+- Estilo próprio via CSS `<style jsx>` (classes `cart-modal-*`).
 
 ## Observações
 
-<!-- TODO: - integração com venda nova/edição e persistência de itens -->
+- Retorna `null` se `isOpen` for `false` ou se `typeof document === 'undefined'` (seguro para SSR).
+- `totalItems` soma as quantidades; `totalValue` soma `preco_venda × quantidade`.
+- Badge de tipo: `badge-produto` (azul) ou `badge-servico` (roxo).
+- Responsivo: abaixo de 640px o layout muda para coluna.
+- Z-index alto (`99999`) para ficar acima de outros modais.

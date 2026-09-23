@@ -2,13 +2,19 @@
 
 ## Descrição
 
-Endpoint para criar backup do banco de vendas principal.
+Endpoint para criar backup do banco de vendas (`db/vendas.db`).
 
 ## Métodos
 
-- `POST` - chama `backupDatabase()` em `src/database/db.ts` e retorna o caminho do arquivo criado.
+### `POST`
+
+Gera o backup.
+
+- **Body**: nenhum.
+- **Resposta 200**: `{ message: 'Backup criado', path }` — `path` aponta para `backup-<YYYY-MM-DD>.db` na raiz do projeto (via `backupDatabase()` em `src/database/db.ts`).
+- **Erros**: 500 `{ error: 'Erro no backup' }`.
 
 ## Observações
 
-- Não aceita outros métodos.
-- Retorna erro 500 em caso de falha.
+- Único método aceito é `POST`; outros retornam **405**.
+- Consumido por `fazerBackup` em `src/services/vendasService.ts`.

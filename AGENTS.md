@@ -13,7 +13,7 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 
 - Stack: Next.js 16 + React 19 + TypeScript + MUI + React Query; persistência local SQLite (`better-sqlite3`, bancos em `db/`).
 - Páginas em `src/pages/`, API interna em `src/pages/api/`, UI em `src/components/`, cliente HTTP em `src/services/`, persistência em `src/database/`, hooks em `src/hooks/`, utilitários em `src/utils/`, tipos em `src/types/`.
-- Bancos: `db.db` (vendas), `contas.db`, `notas.db`, `tabela.db`, `produtos.db`.
+- Bancos: `vendas.db` (vendas), `contas.db`, `notas.db`, `tabela.db`, `produtos.db` (todos em `db/`).
 - Timezone padrão de datas: `America/Recife`.
 
 ## Comandos úteis

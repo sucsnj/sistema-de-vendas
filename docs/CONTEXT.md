@@ -31,7 +31,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 
 Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 
-- `db.db` — vendas diárias e itens de venda.
+- `vendas.db` — vendas diárias, itens de venda e consolidação mensal.
 - `contas.db` — contas a pagar.
 - `notas.db` — notas fiscais importadas.
 - `tabela.db` — tabelas de medicamentos importadas.
@@ -54,13 +54,13 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 | Arquitetura geral / fluxo de dados | `docs/DOCS.md` |
 | Dashboard / vendas do dia | `docs/pages/index.md`, `docs/pages/api/vendas.md`, `docs/pages/api/venda-itens.md`, `docs/services/vendasService.md` |
 | Histórico / relatórios | `docs/pages/historico.md`, `docs/pages/resumo.md`, `docs/pages/api/mensais.md` |
-| Contas a pagar | `docs/pages/contas-a-pagar.md`, `docs/database/contasDb.md`, `docs/services/contasService.md` |
+| Contas a pagar | `docs/pages/contas-a-pagar.md`, `docs/database/contasDb.md`, `docs/services/contasService.md`, `docs/pages/api/contas.md`, `docs/pages/api/contas-import.md`, `docs/pages/api/contas-backup.md` |
 | Produtos / estoque | `docs/pages/produtos.md`, `docs/database/produtosDb.md`, `docs/pages/api/produtos*.md`, `docs/services/produtosService.md` |
 | Cadastros auxiliares | `docs/pages/cadastro.md`, `docs/components/ModaisCadastro.md` |
 | PIX / pagamento | `docs/components/Pix.md` |
 | Carrinho de compras | `docs/components/ModalCarrinho.md`, `docs/hooks/Hooks.md` (useCart) |
 | Formulários de venda (dia/item) | `docs/components/DailySaleForm.md`, `docs/components/FormularioItem.md`, `docs/components/EditSaleForm.md` |
-| OCR / importação | `docs/pages/api/ocr.md`, `docs/services/ocrService.md`, `OCR.md` |
+| OCR / importação | `docs/pages/api/ocr.md`, `docs/services/ocrService.md`, `docs/services/pdfService.md`, `docs/components/OcrUpload.md` |
 | Tabela de medicamentos | `docs/pages/tabela.md`, `docs/database/tabelaDb.md` |
 | Notas fiscais | `docs/pages/api/notas.md`, `docs/database/notasDb.md` |
 | Backup | `docs/pages/api/backup.md`, `docs/pages/api/contas-backup.md` |

@@ -17,9 +17,25 @@ Painel de resumo financeiro para contas a pagar. Exibe totais pagos, pendentes, 
   - `ConsolidacaoMensal`
   - `NotasDoMes`
 
+## Assinatura
+
+```ts
+interface ResumoProps {
+  contasAno: ContaDetalhe[];
+  ano: number;
+  mes: number;
+  setAno: (ano: number) => void;
+  setMes: (mes: number) => void;
+}
+
+const Resumo: React.FC<ResumoProps>;
+```
+
 ## Props
 
-- `contasAno`, `ano`, `mes`, `setAno`, `setMes`
+- `contasAno` - contas do ano (`ContaDetalhe[]`).
+- `ano`, `mes` - período selecionado.
+- `setAno`, `setMes` - atualizadores do período.
 
 ## Dependências
 

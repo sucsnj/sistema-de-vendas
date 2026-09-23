@@ -2,33 +2,38 @@
 
 ## Descrição
 
-Serviços cliente para a gestão de contas a pagar. Encapsula chamadas para criação, busca, pagamento e backup de contas.
+Cliente HTTP **fetch** para o domínio de contas a pagar. Todos os endpoints são internos (`/api/contas*`). As funções retornam `response.json()` sem lançar erro — a **página** verifica `error`/`message` no retorno.
 
-## Responsabilidades
+## Tipo
 
-- Registrar contas via `/api/contas`.
-- Buscar contas por ano e mês.
-- Atualizar contas existentes.
-- Excluir contas.
-- Marcar contas como pagas e cancelar pagamentos.
-- Backup da base de contas.
+```ts
+export interface ContaDetalhe {
+  id: number;
+  distribuidora: string;
+  valor: number;
+  vencimento: string;                 // 'YYYY-MM-DD'
+  documento: string;
+  status: 'Pendente' | 'Pago';
+  banco_observacoes?: string;
+  criado_em?: string;
+}
+```
 
-## Funções Principais
+## Funções
 
-- `registrarConta(...)`
-- `importarContasXML(xml)`
-- `buscarContas(ano, mes)`
-- `pagarConta(id)`
-- `cancelarPagamentoConta(id)`
-- `atualizarConta(...)`
-- `excluirConta(id)`
-- `fazerBackupContas()`
-
-## Tipos
-
-- `ContaDetalhe` representa o registro de cada conta.
+```ts
+registrarConta(distribuidora, valor, vencimento, documento, bancoObservacoes?)  // POST /api/contas
+importarContasXML(xml)                                                          // POST /api/contas/import
+buscarContas(ano: number, mes?: number): Promise<ContaDetalhe[]>                // GET /api/contas?ano=&mes=
+pagarConta(id)                                                                  // POST /api/contas {action:'pagar', id}
+cancelarPagamentoConta(id)                                                      // POST /api/contas {action:'cancelar', id}
+atualizarConta(id, distribuidora, valor, vencimento, documento, bancoObservacoes?) // PUT /api/contas
+excluirConta(id)                                                                // DELETE /api/contas {id}
+fazerBackupContas()                                                             // POST /api/contas/backup
+```
 
 ## Observações
 
-- O backend precisa interpretar a ação `pagar` e `cancelar` no mesmo endpoint `/api/contas`.
-- A interface confia em um formato estável de retorno JSON.
+- `buscarContas` monta a query string; `mes` é omitido quando não informado.
+- Pagar/cancelar usam `POST` com `action` no mesmo endpoint (não há rota REST dedicada).
+- Não valida `ok`/status HTTP — por isso a página checa `response.error`/`response.message` (ex.: duplicidade de distribuidora+documento retornada pela API).

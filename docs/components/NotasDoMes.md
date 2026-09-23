@@ -15,6 +15,28 @@ Painel que exibe notas fiscais do mês e permite excluir registros.
 - Calcular somatório de valores de notas.
 - Excluir nota após confirmação.
 
+## Assinatura
+
+```ts
+interface NotasDoMesProps {
+  ano: number;
+  mes: number;
+  setAno: (ano: number) => void;
+  setMes: (mes: number) => void;
+}
+
+const NotasDoMes: React.FC<NotasDoMesProps>;
+```
+
+Query do React Query:
+
+```ts
+useQuery<NotaDetalhe[]>({
+  queryKey: ['notas', ano, mes],
+  queryFn: () => buscarNotasPorPeriodo(ano, mes), // aceita array ou objeto único
+});
+```
+
 ## Props
 
 - `ano`, `mes`, `setAno`, `setMes`

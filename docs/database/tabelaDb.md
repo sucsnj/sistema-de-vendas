@@ -2,24 +2,40 @@
 
 ## Descrição
 
-Módulo de persistência para histórico de buscas na tabela de medicamentos. Usa `better-sqlite3` com banco `db/tabela.db`.
+Módulo de persistência do **histórico/cache de buscas** da tabela de medicamentos — banco SQLite `db/tabela.db` via `better-sqlite3`. Singleton criado no import do módulo.
 
-## Responsabilidades
+## Conexão e tabela
 
-- Criar tabela `tabela_search_history`.
-- Armazenar consultas normalizadas e resultados em JSON.
-- Recuperar histórico recente.
-- Limpar histórico mantendo apenas as últimas 100 entradas.
+- `dbPath = db/tabela.db`; `PRAGMA journal_mode = WAL` e `PRAGMA synchronous = FULL`.
+- Tabela `tabela_search_history`:
 
-## Funções Principais
+```
+id                INTEGER PRIMARY KEY AUTOINCREMENT
+query             TEXT NOT NULL
+normalized_query  TEXT NOT NULL UNIQUE   -- chave do cache
+result_json       TEXT NOT NULL           -- resultados serializados em JSON
+result_count      INTEGER NOT NULL
+updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP
+```
 
-- `findTabelaSearchHistory(normalizedQuery)`
-- `saveTabelaSearchHistory(query, normalizedQuery, results)`
-- `getRecentTabelaSearchHistory()`
-- `clearTabelaSearchHistory()`
-- `pruneTabelaSearchHistory()`
+## Funções
+
+```ts
+findTabelaSearchHistory(normalizedQuery: string): Record<string, any> | null
+saveTabelaSearchHistory(query, normalizedQuery, results: any[])       // upsert e depois prune
+getRecentTabelaSearchHistory(): any[]                                 // últimos 25 por updated_at DESC
+clearTabelaSearchHistory(): better-sqlite3.RunResult                  // DELETE de tudo
+pruneTabelaSearchHistory(): better-sqlite3.RunResult                  // não exportado (local)
+```
+
+## Comportamentos
+
+- `saveTabelaSearchHistory` usa `INSERT ... ON CONFLICT(normalized_query) DO UPDATE` — reconsultar a mesma consulta normalizada atualiza `result_json`, `result_count` e `updated_at` em vez de duplicar linha.
+- Logo após inserir/atualizar, chama `pruneTabelaSearchHistory()`, que apaga tudo exceto os **25 registros mais recentes** por `updated_at`.
+- `getRecentTabelaSearchHistory` retorna só `id, query, result_count, updated_at` (sem o JSON), com limite `LIMIT 25`.
 
 ## Observações
 
-- O módulo mantém o histórico restrito às 25 consultas mais recentes.
-- Armazena resultados como JSON bruto, o que facilita o cache, mas pode ser pesado.
+- O limite real mantido no banco é **25** consultas; a página `tabela.tsx` exibe o texto "Últimas 100 buscas gravadas no cache" — **discrepância entre UI e persistência** (a UI nunca chega a 100, pois o prune corta em 25).
+- `result_json` guarda o array cru de resultados em texto — eficiente para cache, porém sem schema/tipagem ao ler de volta (`JSON.parse` na API).
+- Consumido exclusivamente por `src/pages/api/tabela.ts`.

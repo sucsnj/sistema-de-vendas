@@ -6,6 +6,8 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [CONTEXT.md](CONTEXT.md) - guia de contexto rápido para agentes (evita releitura de código).
 - [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
+- [adr/](adr/) - Decisões de Arquitetura (ADRs) do projeto.
+- [glossary.md](glossary.md) - glossário de termos do domínio.
 
 ## Sumário
 
@@ -18,11 +20,13 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [Hooks](#hooks)
 - [Tipos](#tipos)
 - [Utilitários](#utilitários)
+- [Glossário](#glossário)
 
 ## Visão Geral
 
 - [DOCS.md](DOCS.md) - arquitetura geral, fluxo de dados, dependências críticas, riscos e melhorias.
 - [CONTEXT.md](CONTEXT.md) - guia rápido para agentes: camadas, bancos, páginas e "tema → documentos".
+- [adr/0001-documentacao-do-codigo.md](adr/0001-documentacao-do-codigo.md) - ADR: documentação do código por blocos.
 
 ## Páginas do Frontend
 
@@ -48,6 +52,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [pages/api/venda-itens.md](pages/api/venda-itens.md) - itens de venda (carrinho).
 - [pages/api/notas.md](pages/api/notas.md) - consulta de notas fiscais.
 - [pages/api/mensais.md](pages/api/mensais.md) - relatórios de vendas mensais.
+- [pages/api/contas.md](pages/api/contas.md) - CRUD de contas a pagar (listar, criar, pagar, cancelar, atualizar, excluir).
 
 ### Produtos e Estoque
 
@@ -63,7 +68,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 ### Importação e OCR
 
 - [pages/api/ocr.md](pages/api/ocr.md) - upload e processamento OCR.
-- [pages/api/tabela.md](pages/api/tabela.md) - cadastro e histórico de tabelas.
+- [pages/api/tabela.md](pages/api/tabela.md) - upload, busca com cache e histórico da tabela de medicamentos.
 - [pages/api/contas-import.md](pages/api/contas-import.md) - importação de contas via XML.
 
 ## Serviços
@@ -71,17 +76,17 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [services/contasService.md](services/contasService.md) - API cliente de contas a pagar.
 - [services/notasService.md](services/notasService.md) - API cliente de notas fiscais.
 - [services/ocrService.md](services/ocrService.md) - OCR e upload de arquivos.
-- [services/pdfService.md](services/pdfService.md) - geração e exportação de PDFs.
+- [services/pdfService.md](services/pdfService.md) - conversão de PDF em imagem e pré-processamento para OCR.
 - [services/produtosService.md](services/produtosService.md) - API cliente de produtos/catálogo.
-- [services/tabelaService.md](services/tabelaService.md) - tabelas de vendas.
+- [services/tabelaService.md](services/tabelaService.md) - API cliente da tabela de medicamentos (upload, busca, histórico, status).
 - [services/vendasService.md](services/vendasService.md) - API cliente de vendas diárias.
 
 ## Banco de Dados
 
-- [database/db.md](database/db.md) - configuração e backup do banco SQLite principal (`db.db`).
+- [database/db.md](database/db.md) - configuração e backup do banco SQLite de vendas (`vendas.db`).
 - [database/contasDb.md](database/contasDb.md) - persistência de contas a pagar.
 - [database/notasDb.md](database/notasDb.md) - persistência de notas fiscais.
-- [database/tabelaDb.md](database/tabelaDb.md) - persistência de tabelas e histórico.
+- [database/tabelaDb.md](database/tabelaDb.md) - persistência do histórico/cache de buscas da tabela de medicamentos.
 - [database/produtosDb.md](database/produtosDb.md) - catálogo e estoque em `produtos.db`.
 - [database/seeds.md](database/seeds.md) - dados iniciais/sementes dos bancos.
 
@@ -115,7 +120,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [components/ProdutosList.md](components/ProdutosList.md) - listagem de produtos.
 - [components/FormularioProduto.md](components/FormularioProduto.md) - formulário de produto.
-- [components/ModaisDeProdutos.md](components/ModaisDeProdutos.md) - modais de produtos.
+- [components/ModaisDeProdutos.md](components/ModaisDeProdutos.md) - ponte para modais de produtos/cadastro (consolidado em `ModaisCadastro.md`).
 - [components/ModaisCadastro.md](components/ModaisCadastro.md) - modais de cadastro (categorias, marcas, fornecedores, unidades, importação).
 - [components/ModalAjusteEstoque.md](components/ModalAjusteEstoque.md) - ajuste de estoque.
 
@@ -125,7 +130,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ### Gerais e Relatórios
 
-- [components/Agenda.md](components/Agenda.md) - agenda e visualização de datas.
+- [components/Agenda.md](components/Agenda.md) - agenda de contas pendentes, próximas contas e leitura por OCR.
 - [components/ConfirmDialog.md](components/ConfirmDialog.md) - modal de confirmação.
 - [components/Nav.md](components/Nav.md) - navegação global.
 - [components/OcrUpload.md](components/OcrUpload.md) - upload OCR.
@@ -144,6 +149,10 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 ## Utilitários
 
 - [utils/Utils.md](utils/Utils.md) - formatação, parsing e limpeza de dados.
+
+## Glossário
+
+- [glossary.md](glossary.md) - termos do domínio por área (Vendas, PIX, Cadastro/Catálogo, Contas).
 
 ## Como usar este índice
 

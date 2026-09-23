@@ -56,6 +56,6 @@ Usado para realizar ajustes no estoque de produtos/serviços.
 
 ## Observações
 
-- Ao abrir o modal, o foco é colocado no campo de quantidade.
-- O modal é fechado quando o botão "Cancelar" é clicado, sem salvar nada.
-- O modal é fechado quando o botão "Registrar Ajuste" é clicado, salvando o ajuste.
+- Ao abrir o modal, o foco é colocado no campo de quantidade (`autoFocus`).
+- É um componente controlado: o fechamento é responsabilidade do pai (`onClose` nos dois botões); "Registrar Ajuste" chama `onSave` (o pai grava via PUT e fecha por conta própria).
+- A seção "Últimas 10 movimentações" é apenas informativa (dados `movimentacoes`); a inclusão da movimentação AJUSTE acontece no salvamento do produto, não neste modal.

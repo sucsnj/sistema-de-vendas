@@ -2,63 +2,51 @@
 
 ## Descrição
 
-Componentes de modal para exibição de detalhes da conta e confirmação de pagamento.
+Agrupa os modais do módulo Contas a Pagar: **detalhes da conta** (com edição inline) e **observações do pagamento**.
 
 ## Contexto
 
-Utilizado no Contas a Pagar para exibir detalhes de contas e confirmação de pagamentos.
-
-## Responsabilidades
-
-- Mostrar detalhes completos de uma conta selecionada.
-- Permitir edição inline dos campos quando a conta está em modo de edição.
-- Exibir modal de observações ao pagar uma conta.
-- Fechar e cancelar ações de forma segura.
+Renderizado em `contas-a-pagar.tsx`. Estados controlados pelo pai (`selectedConta`, `editingConta`, `payModalOpen`).
 
 ## Props
 
-- `selectedConta`, `editingConta`
-- estados de campos editáveis e setters
-- `payModalOpen`, `payObservacao`, `setPayObservacao`
-- callbacks de fechamento, edição, pagamento e cancelamento
+```ts
+interface ContasAPagarModalsProps {
+  selectedConta: ContaDetalhe | null;    // abre o modal de detalhes
+  editingConta: ContaDetalhe | null;     // modo edição dentro do modal
+  distribuidora; setDistribuidora;        // campos editáveis (inline)
+  valor; setValor;
+  vencimento; setVencimento;
+  documento; setDocumento;
+  bancoObservacoes; setBancoObservacoes;
+  payModalOpen: boolean;                  // abre o modal de observações do pagamento
+  payObservacao: string; setPayObservacao;
+  onCloseSelectedConta: () => void;
+  onEditar: (conta: ContaDetalhe) => void;
+  onCancelEdit: () => void;
+  onStartPayment: (conta: ContaDetalhe) => void;
+  onConfirmPayment: () => void;
+  onClosePayModal: () => void;
+  onCancelPayment: (id: number) => void;
+  onSave: (...args: any[]) => void;
+}
+```
+
+## Comportamento/Responsabilidades
+
+- **Modal de detalhes:** mostra Distribuidora, Valor, Vencimento, Documento, Status e Banco/Observações. Quando `editingConta?.id === selectedConta.id`, os campos viram inputs/textareas editáveis com botões "Salvar" (`onSave`) e "Cancelar" (`onCancelEdit`); senão, exibe botão "Editar" (`onEditar`).
+- Ações inferiores: `status === 'Pendente'` → "Pagar conta" (`onStartPayment`); senão → "Cancelar pagamento" (`onCancelPayment` + `onCancelEdit`). Botão "Fechar" (`onCloseSelectedConta` + `onCancelEdit`).
+- **Modal de pagamento:** textarea de observações (`autoFocus`) + "Confirmar pagamento" (`onConfirmPayment`) / "Cancelar".
+- `useFocusTrap(modalRef, Boolean(selectedConta || payModalOpen))` — ambos modais compartilham a ref.
+- `useShortcuts(['Escape'], ...)`: fecha edição primeiro, depois o modal principal.
+- Overlay fecha ao clicar fora (`onClick` no overlay + `stopPropagation` no conteúdo).
 
 ## Dependências
 
-- `formatter` (formatação de moeda).
-- `date` (formatação e timestamp).
-- `useShortcuts` (captura de atalhos de teclado).
-- `useFocusTrap` (mantém foco dentro do modal).
-
-## Exemplo de uso
-
-```tsx
-<ContasAPagarModals
-  selectedConta={selectedConta}
-  editingConta={editingConta}
-  distribuidora={distribuidora}
-  setDistribuidora={setDistribuidora}
-  valor={valor}
-  setValor={setValor}
-  vencimento={vencimento}
-  setVencimento={setVencimento}
-  documento={documento}
-  setDocumento={setDocumento}
-  bancoObservacoes={bancoObservacoes}
-  setBancoObservacoes={setBancoObservacoes}
-  payModalOpen={payModalOpen}
-  payObservacao={payObservacao}
-  setPayObservacao={setPayObservacao}
-  onCloseSelectedConta={onCloseSelectedConta}
-  onEditar={onEditar}
-  onCancelEdit={onCancelEdit}
-  onStartPayment={onStartPayment}
-  onConfirmPayment={onConfirmPayment}
-  onClosePayModal={onClosePayModal}
-  onCancelPayment={onCancelPayment}
-/>
-```
+- `src/utils/shortcuts` (`useShortcuts`), `src/utils/focus` (`useFocusTrap`).
+- `src/utils/formatter` (`formatCurrency`), `src/services/contasService` (`ContaDetalhe`), `src/styles/contas.module.css`.
 
 ## Observações
 
-- O modal previne propagation para clique fora do conteúdo.
-- A ação de salvar é delegada ao callback `onSave`.
+- **Quirk:** o botão "Salvar" chama `onSave(event)` passando um `MouseEvent` de `onClick` (não um `FormEvent`). Funciona porque `handleSubmit` da página só usa `preventDefault()` e lê valores do **estado**, não do `event.target`.
+- Não há modal de criação separado — a criação usa o formulário principal; os modais cobrem detalhe/edição e pagamento.

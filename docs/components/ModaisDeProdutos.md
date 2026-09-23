@@ -1,24 +1,13 @@
-## Descrição
+# Modais de Produtos
 
-Este arquivo contém a documentação dos modais de produtos, que são responsáveis por exibir os produtos cadastrados no sistema. 
+> **Este documento foi consolidado em [ModaisCadastro.md](ModaisCadastro.md).**
 
-## Contexto
+Os modais de cadastro do catálogo — categorias, marcas, fornecedores e unidades de medida (criar/editar/excluir), importação de itens via NF-e, seleção de itens para o carrinho, modal de serviços e confirmações de exclusão — estão documentados em `docs/components/ModaisCadastro.md` (válido a partir da leitura do código no bloco Produtos/Estoque). Este arquivo é mantido apenas como ponte de navegação.
 
-Contém as informações para os modais de fornecedor, categoria, marca e unidade de medida.
+Resumo rápido:
 
-## Responsabilidades
+- CRUD (criar/editar): `ModalCategoria`, `ModalCategoriaEdit`, `ModalMarca`, `ModalMarcaEdit`, `ModalFornecedor`, `ModalFornecedorEdit`, `ModalUnidadeMedida`, `ModalUnidadeMedidaEdit`.
+- Importação/outros: `ModalImportItens`, `ModalServicos`, `ModalSelecionarItens`.
+- Confirmação de exclusão: `ModalProdExclusao` + `ModalCatExclusao`, `ModalMarcaExclusao`, `ModalFornecedorExclusao`, `ModalUomExclusao`.
 
-- Criação, edição e exclusão.
-
-## Props
-
-- ...
-
-## Dependências
-
-Depende principalmente de hooks hook/useFocus.ts e utils/focus.ts.
-
-## Observações
-
-- Os modais são responsáveis por exibir as opções de categoria, marca, unidade de medida e fornecedor.
-- Os modais são abertos quando os botões "Categoria", "Marca", "Unidade de Medida" ou "Fornecedor" são clicados.
+Ver também `docs/hooks/Hooks.md` (padrão comum dos hooks de catálogo) e `docs/pages/cadastro.md`.

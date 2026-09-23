@@ -52,6 +52,7 @@ Ultilizado durante o cadastro e edição de produtos.
 
 ## Observações
 
-- Não permite a duplicação de códigos de barras.
-- Não permite mais de um produto com o mesmo código de barras.
+- Componente de apresentação controlada: a validação de duplicidade e o vínculo de novos códigos ficam nos handlers do pai (`cadastro.tsx`), não neste componente.
+- Enter no campo dispõe para adicionar o código atual (além do botão "Adicionar").
+- Um código pode ser marcado como **Principal** (estrela); o botão de remoção e o título da estrela recebem `id`s com o código (`principal-star-<cod>`, `remove-barcode-<cod>`).
 - Alguns estilos estão aplicados inline.

@@ -13,6 +13,7 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 - `formatter.tsx` - formatação de valores monetários.
 - `forms.tsx` - validação de campos obrigatórios e ocultação de campos.
 - `number.ts` - parsing de números com suporte a formatos brasileiros.
+- `pix.ts` - geração de payload PIX EMVCo (TLV, CRC16) e validação de chaves PIX (ver `docs/components/Pix.md`).
 - `shortcuts.tsx` - atalhos de teclado.
 - `validation.ts` - validações centralizadas (email, currency, date, regras de edição).
 

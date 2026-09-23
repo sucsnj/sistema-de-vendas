@@ -2,33 +2,43 @@
 
 ## Descrição
 
-Formulário de cadastro e edição de contas a pagar.
+Formulário de **cadastro/edição** de contas a pagar, com botões de cadastrar/salvar, limpar, importar XML e cancelar edição.
 
 ## Contexto
-Utilizado no Contas a Pagar para cadastrar e editar contas.
 
-## Responsabilidades
-
-- Receber dados básicos da conta: distribuidora, valor, vencimento, documento e observações.
-- Alternar entre modo de criação e edição.
-- Disparar ações de importação XML.
+Renderizado em `contas-a-pagar.tsx`, abaixo do painel de filtros. Validação fica no pai (`handleSubmit`); o componente é controlado.
 
 ## Props
 
-- `distribuidora`, `setDistribuidora`
-- `valor`, `setValor`
-- `vencimento`, `setVencimento`
-- `documento`, `setDocumento`
-- `bancoObservacoes`, `setBancoObservacoes`
-- `editingConta` - conta atualmente em edição.
-- `onSubmit` / `onReset` / `onImportXML` / `onCancelarEdicao`
-- `distribuidoraInputRef` - ref para foco automático.
+```ts
+interface ContasAPagarFormProps {
+  distribuidora: string;       setDistribuidora: (value: string) => void;
+  valor: string;               setValor: (value: string) => void;
+  vencimento: string;          setVencimento: (value: string) => void;
+  documento: string;           setDocumento: (value: string) => void;
+  bancoObservacoes: string;    setBancoObservacoes: (value: string) => void;
+  editingConta: ContaDetalhe | null;
+  onSubmit: (event: React.FormEvent) => Promise<void>;
+  onReset: () => void;
+  onImportXML: () => Promise<void>;
+  onCancelarEdicao: () => void;
+  distribuidoraInputRef: React.RefObject<HTMLInputElement | null>;
+  valorInputRef: React.RefObject<HTMLInputElement | null>;
+  dataInputRef: React.RefObject<HTMLInputElement | null>;
+  documentoInputRef: React.RefObject<HTMLInputElement | null>;
+}
+```
+
+## Comportamento/Responsabilidades
+
+- Campos: **Distribuidora** (texto), **Valor** (com `step="0.01"`), **Vencimento** (`type="date"`), **Documento** (texto) — numa linha — e **Banco / Observações** (textarea 4 linhas).
+- Ações: botão principal **"Cadastrar Conta"** → **"Salvar Alteração"** quando `editingConta`; **"Limpar Campos"** (`onReset`); **"Importar XML"** (`onImportXML`); botão **"Cancelar"** extra quando em edição (`onCancelarEdicao`).
+- Refs ligadas aos inputs para `highlightField`/foco do pai.
 
 ## Dependências
 
-- `date` (formatação e timestamp).
+- `src/services/contasService` (tipo `ContaDetalhe`), `src/styles/contas.module.css`, `@mui/icons-material` (`NoteAdd`, `ClearAll`, `ImportExport`).
 
 ## Observações
 
-- Utiliza estilos de `contas.module.css`.
-- Mantém o formulário simples e direto, delegando validação ao pai.
+- Componente de apresentação; toda a lógica (validação, chamada à API) vive na página.

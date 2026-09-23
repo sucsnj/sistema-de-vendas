@@ -2,38 +2,42 @@
 
 ## Descrição
 
-Página principal do dashboard de vendas. Exibe resumo mensal, formulário de cadastro diário, gráficos e exportação de dados.
+Página principal — **Dashboard de Vendas**. Exibe o resumo do período, formulário de registro de venda diária, edição, gráfico, exportação e ações de consolidação/backup.
 
 ## Responsabilidades
 
-- Carregar vendas diárias para o mês/ano selecionado.
-- Controlar edição de vendas recentes.
-- Consolidar o mês e acionar backup.
+- Manter o período selecionado (`mes`, `ano` + campo de texto `anoInput` com commit apenas de valores válidos) e a `selectedDate` do formulário.
+- Carregar as vendas do mês via `useVendas` sempre que `loadSales` mudar (período).
+- Calcular `recentSales`: últimas 4 vendas, ordenadas por data desc e depois id desc.
+- Renderizar e orquestrar os subcomponentes da tela.
 - Exibir notificações via `Toast`.
-- Renderizar componentes:
-  - `DailySaleForm`
-  - `DailySalesTotal`
-  - `SalesChart`
-  - `ExportButtons`
 
-## Funções Principais
+## Componentes
 
-- `loadSales()` - busca vendas do serviço e aciona a consolidação automática.
-- `showToast()` / `closeToast()` - controla a barra de notificações.
-- `handleConsolidate()` - dispara o endpoint de consolidação mensal.
-- `handleBackup()` - dispara o backup do banco.
-- `handleEditSale()` / `handleSaveEdit()` / `handleCancelEdit()` - fluxo de edição de vendas.
-- `handleDeleteSale()` - exclui venda se estiver dentro do período editável.
+- `DailySalesTotal` — encapsula `DailySaleForm` como filho e recebe `recentSales`, `onEditSale`, `onDeleteSale`.
+- `DailySaleForm` — formulário de venda do dia (`showHistory={false}`).
+- `EditSaleForm` — renderizado somente quando `editingSale` está definido.
+- `SalesChart` — gráfico com `data={sales}`.
+- `ExportButtons` — exportação/importação (com `onImportCompleted={loadSales}`).
+- `Toast` — notificações (posição `top-right`).
+- `SalesTable` — **comentado** no JSX (não renderizado atualmente).
+- Rodapé: seletores de mês/ano + botões "Consolidar Mês" e "Fazer Backup".
+
+## Estado e Funções Principais
+
+- `mes`, `ano`, `anoInput` — filtro do período; `selectedDate` — data do formulário.
+- `loadSales()` — recarrega as vendas (via `useVendas(mes, ano, showToast)`).
+- `handleConsolidate()` / `handleBackup()` — dispara consolidação e backup.
+- `handleEditSale()` — abre a edição; `handleSaved()` / `handleCancelEdit()` — fecha e recarrega.
+- `handleDeleteSale(id)` — exclui (respeitando janela de 2 dias).
+- `showToast` / `closeToast` — controle do toast.
 
 ## Dependências
 
-- `src/services/vendasService`
-- `src/components/*`
-- `dayjs`
-- `src/utils/captalize`
-- `src/utils/edit`
+- `useToast`, `useVendas` (`src/hooks/*`).
+- Utilitários: `capitalize`, `getDateArray`, `now`, `toTimestamp`, `formatMonthName`.
 
 ## Observações
 
-- A função `autoConsolidar()` roda após carregar vendas, mas não bloqueia a renderização.
-- A edição de vendas é permitida apenas em vendas com até 2 dias de idade.
+- O filtro carregado é o padrão do `useVendas` (`filtro: 'positivas'`).
+- A data inicial do formulário é hoje no fuso do app (`America/Recife`).

@@ -1,15 +1,24 @@
-# `src/pages/api/contas-backup.ts`
+# `src/pages/api/contas/backup.ts`
 
-_Status: rascunho — estrutura criada, conteúdo a validar via leitura do código._
+> Arquivo original do rascunho foi nomeado `contas-backup.md`; o endpoint real vive em `src/pages/api/contas/backup.ts`.
 
 ## Descrição
 
-<!-- TODO: endpoint de backup do banco de contas a pagar (contas.db) -->
+Endpoint de **backup do banco de contas a pagar** (`db/contas.db`).
 
-## Métodos
+## Método
 
-- `GET` - <!-- TODO: descrição -->
+### `POST /api/contas/backup`
+
+- Chama `backupContasDatabase()` (backup nativo SQLite → `db/contas-backup-YYYY-MM-DD.db`).
+- Retorna `200 { message: 'Backup de contas criado', path }` (caminho do arquivo gerado).
+- Em erro: `500 { error: 'Erro no backup de contas' }`.
+
+### Outros métodos
+
+- `405` com `Allow: POST`.
 
 ## Observações
 
-<!-- TODO: - destino/forma do backup (ex.: cópia do arquivo em db/) -->
+- Apenas `POST`.
+- O backup é diário por nome (sobrescreve o arquivo do mesmo dia); não há retenção automática.

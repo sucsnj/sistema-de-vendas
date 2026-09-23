@@ -2,19 +2,49 @@
 
 ## Descrição
 
-API REST para operações de vendas diárias.
+API REST para operações de vendas diárias. Endpoint interno em `src/pages/api/vendas.ts`.
 
 ## Métodos
 
-- `GET` - busca vendas por `mes` e `ano`.
-- `POST` - insere nova venda; aceita `data`, `valor`, `observacoes` e `criado_em`.
-- `PUT` - atualiza venda existente; valida limite de edição de até 2 dias.
-- `DELETE` - exclui venda existente; valida limite de exclusão de até 2 dias.
+### `GET`
+
+Busca vendas de um mês.
+
+- **Query params**: `mes`, `ano` (números) e `filtro` (`positivas` | `negativas` | `todas`; valor inválido cai em `todas`).
+- **Resposta 200**: array de vendas de `vendas_diarias` (data, valor, observações, carrinho_id, criado_em).
+- **Resposta 500**: `{ error, details }`.
+
+### `POST`
+
+Registra uma venda.
+
+- **Body**: `{ data, valor, observacoes?, criado_em?, itens? }`.
+  - `valor` aceita número ou texto (normalizado por `validateCurrency`).
+  - `itens` (opcional): array com `{ id, tipo, nome, quantidade, preco_venda?, preco_unitario?, codigo_interno?, referencia? }` — inseridos em `venda_itens` vinculados ao novo id.
+- **Resposta 200**: `{ message: 'Venda registrada com sucesso', id }`.
+- **Erros**: 400 `{ error }` (data/valor inválidos); 500 `{ error, details }`.
+
+### `PUT`
+
+Atualiza venda existente.
+
+- **Body**: `{ id, data, valor, observacoes?, itens? }`.
+- Regra: só permite edição de vendas com até **2 dias** de idade (`isEditableDate` sobre a data original). Fora disso retorna **403**.
+- Substitui os itens: remove os existentes (`deleteVendaItens`) e reinsere os novos.
+- **Resposta 200**: `{ message: 'Venda atualizada com sucesso' }`.
+- **Erros**: 400 (dados inválidos), 404 (venda não encontrada), 403 (fora do período editável), 500.
+
+### `DELETE`
+
+Exclui venda existente.
+
+- **Body**: `{ id }`.
+- Regra: mesma janela de **até 2 dias**; fora dela retorna **403**.
+- **Resposta 200**: `{ message: 'Venda excluída com sucesso' }`.
+- **Erros**: 400 (id obrigatório), 404, 403, 500.
 
 ## Observações
 
-- A rota impede edição/exclusão fora do período de 2 dias.
-- Retorna erros detalhados em JSON quando os dados são inválidos.
- - Validações de `data` e `valor` agora são centralizadas em `src/utils/validation.ts`.
- - `data` é validada usando `dayjs` no timezone de Recife (`America/Recife`) para consistência.
- - `valor` aceita textos numéricos (vírgula ou ponto) e é normalizado pela função `validateCurrency`.
+- Métodos não suportados retornam **405** com `Allow` header.
+- Validações de `data` e `valor` centralizadas em `src/utils/validation.ts` (`validateDate`, `validateCurrency`, `isEditableDate`).
+- Persistência em `src/database/db.ts` (`db/vendas.db`).
