@@ -8,6 +8,7 @@ import {
 import { FornecedorFormData } from '@/components/ModalFornecedorEdit'
 import { ProdutoFormData } from '@/components/FormularioProduto';
 import { ProdutoOptions } from '@/components/FormularioProduto';
+import { validateRequired } from '../utils/validation';
 
 interface UseFornecedorParams {
     form: ProdutoFormData;
@@ -45,8 +46,9 @@ export const useFornecedor = ({
     // Cadastro de Fornecedor Inline
     const handleSalvarFornecedor = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!novoFornecedorNome.trim()) {
-            showToast('O nome do fornecedor é obrigatório.', 'error');
+        const nomeFornecedor = validateRequired(novoFornecedorNome, 'O nome do fornecedor');
+        if (!nomeFornecedor.ok) {
+            showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {
@@ -76,8 +78,9 @@ export const useFornecedor = ({
     // Ediçao de fornecedor
     const handleAtualizarFornecedor = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!fornecedorForm.nome.trim()) {
-            showToast('O nome do fornecedor é obrigatório.', 'error');
+        const nomeFornecedor = validateRequired(fornecedorForm.nome, 'O nome do fornecedor');
+        if (!nomeFornecedor.ok) {
+            showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {

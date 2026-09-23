@@ -3,6 +3,7 @@ import { buscarMarcas, criarMarca, deletarMarca, atualizarMarca } from "../servi
 import { MarcaFormData } from "@/components/ModalMarcaEdit";
 import { ProdutoFormData } from "@/components/FormularioProduto";
 import { ProdutoOptions } from "@/components/FormularioProduto";
+import { validateRequired } from "../utils/validation";
 
 interface UseMarcaParams {
     form: ProdutoFormData;
@@ -40,8 +41,9 @@ export const useMarca = ({
     // Cadastro de Marca Inline
     const handleSalvarMarca = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!novaMarcaNome.trim()) {
-            showToast('O nome da marca é obrigatório.', 'error');
+        const nomeMarca = validateRequired(novaMarcaNome, "O nome da marca");
+        if (!nomeMarca.ok) {
+            showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {
@@ -71,8 +73,9 @@ export const useMarca = ({
     // Edição de marca
     const handleAtualizarMarca = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!marcaForm.nome.trim()) {
-            showToast('O nome da marca é obrigatório.', 'error');
+        const nomeMarca = validateRequired(marcaForm.nome, "O nome da marca");
+        if (!nomeMarca.ok) {
+            showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {

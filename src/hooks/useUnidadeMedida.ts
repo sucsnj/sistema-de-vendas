@@ -7,6 +7,7 @@ import {
 } from '../services/produtosService';
 import { ProdutoFormData } from '@/components/FormularioProduto';
 import { ProdutoOptions } from '@/components/FormularioProduto';
+import { validateRequired } from '../utils/validation';
 
 export interface UnidadeMedidaFormData {
     sigla: string;
@@ -53,8 +54,9 @@ export const useUnidadeMedida = ({
   // Cadastro de Unidade de Medida Inline
   const handleSalvarUnidadeMedida = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uomForm.sigla.trim()) {
-      showToast('A sigla da unidade de medida é obrigatória.', 'error');
+    const siglaUnidade = validateRequired(uomForm.sigla, 'A sigla da unidade de medida');
+    if (!siglaUnidade.ok) {
+      showToast(siglaUnidade.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {

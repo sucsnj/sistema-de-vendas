@@ -8,6 +8,7 @@ import {
 import { CategoriaFormData } from '@/types/categoria';
 import { ProdutoFormData } from '@/components/FormularioProduto';
 import { ProdutoOptions } from '@/components/FormularioProduto';
+import { validateRequired } from '../utils/validation';
 
 interface UseCategoriaParams {
   form: ProdutoFormData;
@@ -44,8 +45,9 @@ export const useCategoria = ({
   // Cadastro de Categoria Inline
   const handleSalvarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!catForm.nome.trim()) {
-      showToast('O nome da categoria é obrigatório.', 'error');
+    const nomeCategoria = validateRequired(catForm.nome, 'O nome da categoria');
+    if (!nomeCategoria.ok) {
+      showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {
@@ -75,8 +77,9 @@ export const useCategoria = ({
   // Ediçao de categoria
   const handleAtualizarCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!catForm.nome.trim()) {
-      showToast('O nome da categoria é obrigatório.', 'error');
+    const nomeCategoria = validateRequired(catForm.nome, 'O nome da categoria');
+    if (!nomeCategoria.ok) {
+      showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {

@@ -23,6 +23,7 @@ import {
 import { highlightField } from '../utils/forms';
 import { useShortcuts } from '../utils/shortcuts';
 import { getDateArray, toTimestamp, now } from '../utils/date';
+import { validateRequired, validateCurrency } from '../utils/validation';
 
 const hoje = now().format('YYYY-MM-DD');
 
@@ -139,34 +140,38 @@ const ContasAPagar: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Validações para campos vazios
-    if (!distribuidora.trim()) {
-      showToast('Informe a distribuidora.', 'error');
+    // Validações de campos obrigatórios e formato (contrato ADR 0002)
+    const distribuidoraCheck = validateRequired(distribuidora, 'Distribuidora');
+    if (!distribuidoraCheck.ok) {
+      showToast(distribuidoraCheck.message ?? 'Campo obrigatório.', 'error');
       highlightField(distribuidoraInputRef);
       return;
     }
 
-    if (!valor.trim()) {
-      showToast('Informe o valor.', 'error');
-      highlightField(valorInputRef);
-      return;
-    }
-    
-    // Se valor não for um número
-    if (isNaN(Number(valor))) {
-      showToast('Informe um número válido.', 'error');
+    const valorCheck = validateRequired(valor, 'Valor');
+    if (!valorCheck.ok) {
+      showToast(valorCheck.message ?? 'Campo obrigatório.', 'error');
       highlightField(valorInputRef);
       return;
     }
 
-    if (!vencimento) {
-      showToast('Informe a data de vencimento.', 'error');
+    const valorFormato = validateCurrency(valor);
+    if (!valorFormato.ok) {
+      showToast(valorFormato.message ?? 'Valor inválido.', 'error');
+      highlightField(valorInputRef);
+      return;
+    }
+
+    const vencimentoCheck = validateRequired(vencimento, 'Vencimento');
+    if (!vencimentoCheck.ok) {
+      showToast(vencimentoCheck.message ?? 'Campo obrigatório.', 'error');
       highlightField(dataInputRef);
       return;
     }
 
-    if (!documento.trim()) {
-      showToast('Informe o documento.', 'error');
+    const documentoCheck = validateRequired(documento, 'Documento');
+    if (!documentoCheck.ok) {
+      showToast(documentoCheck.message ?? 'Campo obrigatório.', 'error');
       highlightField(documentoInputRef);
       return;
     }

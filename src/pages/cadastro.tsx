@@ -23,6 +23,7 @@ import {
     MovimentacaoEstoqueData,
 } from '../services/produtosService';
 import { parseNumber } from '../utils/number';
+import { validateRequired } from '../utils/validation';
 import BarcodeManager from '@/components/BarcodeManager';
 import FormularioItem from '@/components/FormularioItem';
 import ModalCategoria from '@/components/ModalCategoria';
@@ -385,8 +386,9 @@ const CadastroPage: React.FC = () => {
     // Adiciona Código de Barras ao formulário
     const handleAddBarcode = () => {
         const code = novoCodigoBarras.trim();
-        if (!code) {
-            showToast('Código de barras não pode ser vazio.', 'error');
+        const barcodeCheck = validateRequired(code, 'Código de barras');
+        if (!barcodeCheck.ok) {
+            showToast(barcodeCheck.message ?? 'Código de barras é obrigatório.', 'error');
             barcodeInputRef.current?.focus();
             return;
         }
@@ -431,26 +433,31 @@ const CadastroPage: React.FC = () => {
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!form.nome.trim()) {
-            showToast('O nome do item é obrigatório.', 'error');
+        const nomeCheck = validateRequired(form.nome, 'O nome do item');
+        if (!nomeCheck.ok) {
+            showToast(nomeCheck.message ?? 'O nome do item é obrigatório.', 'error');
             nomeInputRef.current?.focus();
             return;
         }
-        if (!form.categoriaId) {
-            showToast('Selecione uma categoria.', 'error');
+        const categoriaCheck = validateRequired(form.categoriaId, 'Categoria');
+        if (!categoriaCheck.ok) {
+            showToast(categoriaCheck.message ?? 'Selecione uma categoria.', 'error');
             return;
         }
         if (form.tipo === 'PRODUTO') {
-            if (!form.marcaId) {
-                showToast('Selecione uma marca.', 'error');
+            const marcaCheck = validateRequired(form.marcaId, 'Marca');
+            if (!marcaCheck.ok) {
+                showToast(marcaCheck.message ?? 'Selecione uma marca.', 'error');
                 return;
             }
-            if (!form.fornecedorId) {
-                showToast('Selecione um fornecedor.', 'error');
+            const fornecedorCheck = validateRequired(form.fornecedorId, 'Fornecedor');
+            if (!fornecedorCheck.ok) {
+                showToast(fornecedorCheck.message ?? 'Selecione um fornecedor.', 'error');
                 return;
             }
-            if (!form.unidadeMedidaId) {
-                showToast('Selecione uma unidade de medida.', 'error');
+            const unidadeCheck = validateRequired(form.unidadeMedidaId, 'Unidade de medida');
+            if (!unidadeCheck.ok) {
+                showToast(unidadeCheck.message ?? 'Selecione uma unidade de medida.', 'error');
                 return;
             }
         }

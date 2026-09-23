@@ -4,8 +4,8 @@ import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
 import { parseCurrency } from '../utils/number';
-import { toDate } from '../utils/date';
 import { useShortcuts } from '../utils/shortcuts';
+import { validateRequired, validateCurrency, validateDate } from '../utils/validation';
 import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -226,15 +226,16 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   };
 
   const handlePixClick = () => {
-    if (!valor.trim()) {
-      showToast('Informe o valor da venda.', 'error');
+    const valorCheck = validateRequired(valor, 'Valor');
+    if (!valorCheck.ok) {
+      showToast(valorCheck.message ?? 'Informe o valor da venda.', 'error');
       valorInputRef.current?.focus();
       return;
     }
 
     const valueFromInput = parseCurrency(valor);
     if (valueFromInput == null) {
-      showToast('Valor inválido.', 'error');
+      showToast(validateCurrency(valor).message ?? 'Valor inválido.', 'error');
       valorInputRef.current?.focus();
       return;
     }
@@ -276,28 +277,30 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setLoading(true);
 
     try {
-      // Validar data e valor antes de enviar
-      const dateOk = toDate(selectedDate);
-      const valueFromInput = calculatedValue !== null ? calculatedValue : parseCurrency(valor);
-      if (!dateOk) {
-        showToast('Data inválida.', 'error');
+      // Validar data e valor antes de enviar (contrato ADR 0002)
+      const dataCheck = validateDate(selectedDate);
+      if (!dataCheck.ok) {
+        showToast(dataCheck.message ?? 'Data inválida.', 'error');
         setLoading(false);
         return;
       }
 
+      const valueFromInput = calculatedValue !== null ? calculatedValue : parseCurrency(valor);
+
       // Toast para o campo valor vazio
-      if (!valor.trim()) {
-        showToast('Informe o valor da venda.', 'error');
+      const valorCheck = validateRequired(valor, 'Valor');
+      if (!valorCheck.ok) {
+        showToast(valorCheck.message ?? 'Informe o valor da venda.', 'error');
         highlightField(valorInputRef);
         setLoading(false);
         valorInputRef.current?.focus();
         return;
       }
 
-      // Toast para o campo valor inválido
+      // Toast para o campo valor inválido (formato monetário digitado)
       if (valueFromInput == null) {
         highlightField(valorInputRef);
-        showToast('Valor inválido.', 'error');
+        showToast(validateCurrency(valor).message ?? 'Valor inválido.', 'error');
         setLoading(false);
         return;
       }

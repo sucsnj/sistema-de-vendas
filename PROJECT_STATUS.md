@@ -68,11 +68,19 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - `ModalPix.tsx`/`FloatingPixWindow.tsx`: `CloseIcon`, `ContentCopyIcon`, `FileDownloadIcon`, `PrintIcon`.
 - `ActionPix.tsx`: o toast injeta SVG inline (via `innerHTML`), já que ícones MUI exigem React/JSX.
 
+### Adoção incremental do contrato `{ ok, message }` (ADR 0002)
+
+- Hooks de cadastro (`useCategoria`, `useFornecedor`, `useMarca`, `useUnidadeMedida`): obrigatórios (nome/sigla) via `validateRequired`.
+- `contas-a-pagar.tsx`: distribuidora, valor, vencimento e documento via `validateRequired`/`validateCurrency`; mantidas a regra de negócio "valor > 0" e a normalização com `parseNumber`.
+- `cadastro.tsx`: nome do item, categoria, marca, fornecedor, unidade de medida e código de barras via `validateRequired`.
+- `DailySaleForm.tsx`: valor (obrigatório/formato) e data via `validateRequired`/`validateCurrency`/`validateDate`; removido o uso direto de `toDate` no submit.
+- Lint, tsc e build verdes.
+
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
-- **Adoção incremental do contrato `{ ok, message }`**: os validadores existem no `validation.ts`; falta migrar os formulários/páginas que validam inline (produtos, cadastro, contas-a-pagar) e campos que ainda usam mensagens soltas (P2 da centralização).
-- Nada commitado ainda.
+- **Restante da adoção do contrato (ADR 0002)**: mensagens soltas que ainda ficam fora do padrão — ex.: "Valor deve ser um número maior que zero" (`contas-a-pagar.tsx`), "Ajuste de estoque deve ser um número válido" (`cadastro.tsx`), e toasts de carga/erro de API em `produtos.tsx`/`tabela.tsx`/`useVendas`/`useMensais` (decisão a tomar: adotar ou manter fora do contrato).
+- Nada do trabalho atual commitado (aguardando solicitação de commit).
 
 ## Futuras / Melhorias sugeridas
 
