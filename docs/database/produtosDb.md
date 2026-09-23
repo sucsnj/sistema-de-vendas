@@ -115,6 +115,11 @@ interface ItemInput {
   multiplicador_unidade: number; codigo_interno?: string; referencia?: string | null;
   ativo?: number; codigos_barras?: BarcodeData[]; unidades_medida?: ItemUnidadeData[];
 }
+
+interface ItemUnidadeData {
+  unidade_medida_id: number; multiplicador_unidade: number; principal: number;
+  sigla?: string; descricao?: string;   // preenchidos ao resolver o JOIN com unidades_medida
+}
 ```
 
 ## Regras de estoque (movimentações)

@@ -5,6 +5,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 ## Para agentes de IA
 
 - [CONTEXT.md](CONTEXT.md) - guia de contexto rápido para agentes (evita releitura de código).
+- [PROJECT_STATUS.md](../../PROJECT_STATUS.md) - estado atual do projeto: últimas mudanças, pendentes e futuras.
 - [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
 - [adr/](adr/) - Decisões de Arquitetura (ADRs) do projeto.
 - [glossary.md](glossary.md) - glossário de termos do domínio.
@@ -144,7 +145,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Tipos
 
-- [types/Types.md](types/Types.md) - tipos compartilhados (`categoria.ts`, declarações `pdf-poppler.d.ts`).
+- [types/Types.md](types/Types.md) - tipos compartilhados (`categoria.ts`).
 
 ## Utilitários
 

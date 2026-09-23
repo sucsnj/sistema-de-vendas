@@ -19,12 +19,12 @@ Ultilizado durante o cadastro e edição de produtos.
 - `data` - dados do componente.
     - `codigosBarras` - códigos de barras do produto.
     - `novoCodigoBarras` - novo código de barras.
-    - `inputRef` - ref do input.
 - `actions` - ações do componente.
     - `adicionar` - adicionar código de barras.
     - `definirPrincipal` - definir código de barras como principal.
     - `alterar` - alterar código de barras.
     - `remover` - remover código de barras.
+- `inputRef` - `React.RefObject<HTMLInputElement | null>`; ref do input, aplicada via `ref={inputRef}`. Prop separada de `data` (refs não devem trafegar dentro do objeto de dados).
 
 ## Dependências
 
@@ -39,7 +39,6 @@ Ultilizado durante o cadastro e edição de produtos.
   data={{
     codigosBarras,
     novoCodigoBarras,
-    inputRef,
   }}
   actions={{
     adicionar,
@@ -47,6 +46,7 @@ Ultilizado durante o cadastro e edição de produtos.
     alterar,
     remover,
   }}
+  inputRef={inputRef}
 />
 ```
 

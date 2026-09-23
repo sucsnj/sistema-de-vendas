@@ -1,6 +1,6 @@
 # Contexto Rápido para Agentes
 
-> Este documento existe para que o agente entenda o projeto sem reler o código. Complementa `docs/README.md` (índice completo) e `docs/DOCS.md` (arquitetura).
+> Este documento existe para que o agente entenda o projeto sem reler o código. Complementa `docs/README.md` (índice completo) e `docs/DOCS.md` (arquitetura). O estado atual do projeto (últimas mudanças, pendentes e futuras) fica em `PROJECT_STATUS.md` (raiz).
 
 ## O que é este projeto
 
@@ -12,8 +12,8 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 - **React 19** + **MUI** (`@mui/material`, `@emotion`) para UI.
 - **@tanstack/react-query** — cache/estado de servidor no cliente.
 - **better-sqlite3** — persistência local (bancos em `db/`).
-- **dayjs / date-fns-tz** — datas (timezone padrão `America/Recife`).
-- **recharts** — gráficos; **jspdf/html2canvas** — PDF; **xlsx** — planilhas; **papaparse** — CSV.
+- **dayjs** — datas (timezone padrão `America/Recife`).
+- **recharts** — gráficos; **jspdf/html2canvas** — PDF; **xlsx** — planilhas.
 - **multer + pdf2pic + sharp + tesseract.js** — upload e OCR de notas.
 
 ## Camadas (onde mora cada coisa)
@@ -68,12 +68,15 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 
 ## Regras para o agente
 
-1. **Documentação primeiro.** Consulte `docs/` antes do código. Se precisou ler o código, atualize o doc correspondente em `docs/` (e o índice `docs/README.md` se for doc novo).
-2. **Next.js novo.** Esta versão do Next tem breaking changes. Cheque `node_modules/next/dist/docs/` quando for escrever código (ver `AGENTS.md`).
-3. **Timezones.** Datas são tratadas em `America/Recife`.
-4. **Validação.** Regras de data/valor ficam centralizadas em `src/utils/validation.ts`.
-5. **Backups.** Ao alterar estrutura de um banco, revise os endpoints de backup correspondentes.
-6. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`.
+1. **Estado do projeto.** Leia `PROJECT_STATUS.md` (raiz) antes de trabalhar; ele registra o estado atual, últimas mudanças, pendentes e futuras.
+2. **Documentação primeiro.** Consulte `docs/` antes do código. Se precisou ler o código, atualize o doc correspondente em `docs/` (e o índice `docs/README.md` se for doc novo).
+3. **Documentar mudanças.** Ao concluir modificações de código, atualize `PROJECT_STATUS.md` e o doc afetado em `docs/` (e `docs/CONTEXT.md` se o contexto geral mudar).
+4. **Next.js novo.** Esta versão do Next tem breaking changes. Cheque `node_modules/next/dist/docs/` quando for escrever código (ver `AGENTS.md`).
+5. **Timezones.** Datas são tratadas em `America/Recife`.
+6. **Validação.** Regras de data/valor ficam centralizadas em `src/utils/validation.ts`.
+7. **Backups.** Ao alterar estrutura de um banco, revise os endpoints de backup correspondentes.
+8. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`.
+9. **Conflito com as regras.** Se uma mudança solicitada violar regras de arquitetura/projeto/negócios/framework/boas práticas, pergunte explicitamente, explique o problema e proponha alternativa antes de implementar (ver `AGENTS.md`).
 
 ## Como manter este guia
 

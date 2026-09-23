@@ -28,7 +28,7 @@ interface ContasAPagarModalsProps {
   onConfirmPayment: () => void;
   onClosePayModal: () => void;
   onCancelPayment: (id: number) => void;
-  onSave: (...args: any[]) => void;
+  onSave: (event: React.FormEvent<HTMLButtonElement>) => void;
 }
 ```
 
@@ -48,5 +48,5 @@ interface ContasAPagarModalsProps {
 
 ## Observações
 
-- **Quirk:** o botão "Salvar" chama `onSave(event)` passando um `MouseEvent` de `onClick` (não um `FormEvent`). Funciona porque `handleSubmit` da página só usa `preventDefault()` e lê valores do **estado**, não do `event.target`.
+- **Quirk:** o botão "Salvar" chama `onSave(event)` passando um `MouseEvent` de `onClick` (não um `FormEvent`). A assinatura foi tipada de acordo (`React.FormEvent<HTMLButtonElement>`). Funciona porque `handleSubmit` da página só usa `preventDefault()` e lê valores do **estado**, não do `event.target`.
 - Não há modal de criação separado — a criação usa o formulário principal; os modais cobrem detalhe/edição e pagamento.

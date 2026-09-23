@@ -9,6 +9,25 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 3. Se a documentação estiver incompleta ou desatualizada: leia o código com moderação e **atualize o documento correspondente** em `docs/`.
 4. Ao criar um arquivo novo em `src/`, garanta o doc correspondente em `docs/` e inclua-o no índice `docs/README.md`.
 
+## Regras para os agentes
+
+### Estado do projeto (`PROJECT_STATUS.md`)
+
+1. Antes de começar qualquer tarefa, leia `PROJECT_STATUS.md` (estado atual, últimas mudanças, pendentes e futuras) junto com `/context`.
+2. Ao concluir qualquer modificação de código, **documente o que foi feito**:
+   - atualize `PROJECT_STATUS.md` (seções "Últimas mudanças", "Pendentes" e "Futuras", e a data no topo);
+   - atualize o documento correspondente em `docs/` (e o índice `docs/README.md` se houver doc novo);
+   - atualize `docs/CONTEXT.md` se o contexto geral mudar (novas regras, camadas, bancos, páginas).
+
+### Framework e boas práticas
+
+3. Siga as regras do framework: esta versão do Next.js tem breaking changes — leia `node_modules/next/dist/docs/` antes de escrever código e atente a avisos de depreciação.
+4. Siga as boas práticas do projeto: TypeScript forte (sem `any`), validação centralizada em `src/utils/validation.ts`, datas em `America/Recife`, `refs` em vez de `document.querySelector`, e revisão dos endpoints de backup ao alterar estrutura de banco.
+
+### Conflito com as regras
+
+5. Se uma mudança solicitada violar regras de **arquitetura, projeto, negócios, framework ou boas práticas**, pergunte explicitamente antes de implementar: explique o problema, o impacto e proponha uma alternativa viável.
+
 ## Contexto rápido
 
 - Stack: Next.js 16 + React 19 + TypeScript + MUI + React Query; persistência local SQLite (`better-sqlite3`, bancos em `db/`).

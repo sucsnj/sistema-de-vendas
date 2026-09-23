@@ -21,6 +21,14 @@ Registra uma venda.
 - **Body**: `{ data, valor, observacoes?, criado_em?, itens? }`.
   - `valor` aceita número ou texto (normalizado por `validateCurrency`).
   - `itens` (opcional): array com `{ id, tipo, nome, quantidade, preco_venda?, preco_unitario?, codigo_interno?, referencia? }` — inseridos em `venda_itens` vinculados ao novo id.
+
+### Normalização de itens (`ItemVendaApi`)
+
+Antes de gravar, o array é mapeado para `VendaItemInput` via interface local `ItemVendaApi` (que aceita tanto `id`/`preco_venda` do carrinho do cliente quanto `item_id`/`preco_unitario` vindos do banco):
+
+- **POST**: `item_id` = `item.id`; `preco_unitario` = `preco_venda ?? preco_unitario ?? 0`; `subtotal` = `preco_unitario * quantidade`.
+- **PUT**: `item_id` = `item.item_id ?? item.id`; `preco_unitario` = `preco_unitario ?? preco_venda ?? 0`; `subtotal` = `preco_unitario * quantidade`.
+- `codigo_interno`/`referencia` vazios (null/undefined) viram `undefined`; o bind em `insertVendaItens` coage para `NULL`.
 - **Resposta 200**: `{ message: 'Venda registrada com sucesso', id }`.
 - **Erros**: 400 `{ error }` (data/valor inválidos); 500 `{ error, details }`.
 
