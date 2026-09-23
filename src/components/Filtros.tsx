@@ -137,7 +137,7 @@ const Filtros: React.FC<FiltrosProps> = ({
                         className={`${styles.filterSelect} headerSelect`}
                         value={state.status}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, status: e.target.value as any }));
+                            setFiltros(prev => ({ ...prev, status: e.target.value as 'ATIVO' | 'INATIVO' | 'TODOS' }));
                             actions.mudarPagina(1);
                         }}
                     >

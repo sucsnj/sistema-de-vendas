@@ -1,13 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
+import { resolve } from 'path';
+import { existsSync, readFileSync } from 'fs';
+import { spawn } from 'child_process';
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+
+const require = createRequire(import.meta.url);
 
 function loadEnvFile(filePath, override = false) {
-  if (!fs.existsSync(filePath)) {
+  if (!existsSync(filePath)) {
     return;
   }
 
-  const content = fs.readFileSync(filePath, 'utf8');
+  const content = readFileSync(filePath, 'utf8');
   const lines = content.split(/\r?\n/);
 
   for (const line of lines) {
@@ -34,15 +38,15 @@ function loadEnvFile(filePath, override = false) {
   }
 }
 
-const projectRoot = path.resolve(__dirname, '..');
-loadEnvFile(path.join(projectRoot, '.env'));
-loadEnvFile(path.join(projectRoot, '.env.local'), true);
+const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+loadEnvFile(resolve(projectRoot, '.env'));
+loadEnvFile(resolve(projectRoot, '.env.local'), true);
 
 const [command, ...extraArgs] = process.argv.slice(2);
 const port = process.env.PORT || '3000';
 
 if (!command) {
-  console.error('Uso: node scripts/run-next.js <dev|start> [extra args]');
+  console.error('Uso: node scripts/run-next.mjs <dev|start> [extra args]');
   process.exit(1);
 }
 

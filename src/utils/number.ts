@@ -1,5 +1,5 @@
 // Função exportada.
-export function parseNumber(value: any): number {
+export function parseNumber(value: unknown): number {
   if (value == null) return NaN;
 
   if (typeof value === 'number') return value;

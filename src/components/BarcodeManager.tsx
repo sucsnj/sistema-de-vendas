@@ -9,7 +9,6 @@ import {
 export interface BarcodeManagerData {
   codigosBarras: BarcodeData[];
   novoCodigoBarras: string;
-  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export interface BarcodeManagerActions {
@@ -22,18 +21,20 @@ export interface BarcodeManagerActions {
 interface BarcodeManagerProps {
   data: BarcodeManagerData;
   actions: BarcodeManagerActions;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const BarcodeManager: React.FC<BarcodeManagerProps> = ({
   data,
   actions,
+  inputRef,
 }) => {
   return (
     <div className={styles.barcodeSection}>
       <div className={styles.barcodeTitle}>Códigos de Barras</div>
       <div className={styles.barcodeInputRow}>
         <input
-          ref={data.inputRef}
+          ref={inputRef}
           type="text"
           className={styles.inputField}
           placeholder="Digitar código de barras..."

@@ -36,18 +36,14 @@ interface DailySaleFormProps {
 }
 
 const DailySaleForm: React.FC<DailySaleFormProps> = ({
-  sales = [],
   selectedDate,
   onDateChange,
   onSaleAdded,
-  onEditSale,
-  onDeleteSale,
-  showHistory = true,
 }) => {
   const [valor, setValor] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [loading, setLoading] = useState(false);
-  const [limpando, setLimpando] = useState(false);
+  const [limpando] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
   const [toastOpen, setToastOpen] = useState(false);
@@ -142,7 +138,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         setCalculatedValue(result);
         return;
       }
-    } catch (_error) {
+    } catch {
       // Se erro, tentar remover o último operador
       try {
         let expression = input.replace(/,/g, '.');
@@ -156,7 +152,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             return;
           }
         }
-      } catch (_innerError) {
+      } catch {
         // Ignorar
       }
     }
@@ -254,7 +250,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     const pixKey = process.env.NEXT_PUBLIC_PIX_KEY ?? '';
     const merchantName = process.env.NEXT_PUBLIC_PIX_NAME ?? '';
     const merchantCity = process.env.NEXT_PUBLIC_PIX_CITY ?? '';
-    const merchantBank = process.env.NEXT_PUBLIC_PIX_BANK ?? '';
 
     if (!pixKey || !merchantName || !merchantCity) {
       showToast('Configuração PIX incompleta no .env', 'error');
@@ -345,7 +340,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       if (onSaleAdded) {
         onSaleAdded();
       }
-    } catch (_error) {
+    } catch {
       showToast('Erro ao registrar venda.', 'error');
     }
     setLoading(false);

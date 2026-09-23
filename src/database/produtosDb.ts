@@ -272,13 +272,35 @@ const syncSharedAutoincrementSequence = () => {
 
 syncSharedAutoincrementSequence();
 
+export interface CategoriaRow {
+  id: number;
+  nome: string;
+  descricao: string | null;
+}
+
+export interface MarcaRow {
+  id: number;
+  nome: string;
+}
+
+export interface FornecedorRow {
+  id: number;
+  nome: string;
+}
+
+export interface UnidadeMedidaRow {
+  id: number;
+  sigla: string;
+  descricao: string | null;
+}
+
 // Helpers para Categorias
 export const getCategorias = () => {
-  return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as any[];
+  return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as unknown as CategoriaRow[];
 };
 
 export const getCategoriaById = (id: number) => {
-  return db.prepare('SELECT * FROM categorias WHERE id = ?').get(id) as any;
+  return db.prepare('SELECT * FROM categorias WHERE id = ?').get(id) as unknown as CategoriaRow | undefined;
 };
 
 export const insertCategoria = (nome: string, descricao?: string) => {
@@ -309,11 +331,11 @@ export const updateCategoria = (id: number, nome: string, descricao?: string) =>
 
 // Helpers para Marcas
 export const getMarcas = () => {
-  return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as any[];
+  return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as unknown as MarcaRow[];
 };
 
 export const getMarcaById = (id: number) => {
-  return db.prepare('SELECT * FROM marcas WHERE id = ?').get(id) as any;
+  return db.prepare('SELECT * FROM marcas WHERE id = ?').get(id) as unknown as MarcaRow | undefined;
 };
 
 export const insertMarca = (nome: string) => {
@@ -345,11 +367,11 @@ export const updateMarca = (id: number, nome: string) => {
 
 // Helpers para Fornecedores
 export const getFornecedores = () => {
-  return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as any[];
+  return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as unknown as FornecedorRow[];
 };
 
 export const getFornecedorById = (id: number) => {
-  return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as any;
+  return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as unknown as FornecedorRow | undefined;
 };
 
 export const insertFornecedor = (nome: string) => {
@@ -381,11 +403,11 @@ export const updateFornecedor = (id: number, nome: string) => {
 
 // Helpers para Unidades de Medida
 export const getUnidadesMedida = () => {
-  return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as any[];
+  return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as unknown as UnidadeMedidaRow[];
 };
 
 export const getUnidadeMedidaById = (id: number) => {
-  return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as any;
+  return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as unknown as UnidadeMedidaRow | undefined;
 };
 
 export const insertUnidadeMedida = (sigla: string, descricao?: string) => {
@@ -516,7 +538,7 @@ export const getMovimentacoesEstoque = (itemId: number) => {
 export const checkDuplicateCodigoInterno = (codigoInterno: string, excludeId?: number) => {
   if (!codigoInterno || !codigoInterno.trim()) return false;
   let query = 'SELECT id FROM itens WHERE LOWER(codigo_interno) = LOWER(?)';
-  const params: any[] = [codigoInterno.trim()];
+  const params: unknown[] = [codigoInterno.trim()];
   if (excludeId) {
     query += ' AND id != ?';
     params.push(excludeId);
@@ -533,7 +555,7 @@ export const checkDuplicateBarcode = (barcodes: string[], excludeItemId?: number
   query += cleaned.map(() => '?').join(',');
   query += ')';
 
-  const params: any[] = [...cleaned];
+  const params: unknown[] = [...cleaned];
   if (excludeItemId) {
     query += ' AND item_id != ?';
     params.push(excludeItemId);
@@ -571,7 +593,7 @@ export interface ServicoInput {
 export const checkDuplicateServicoCodigoInterno = (codigoInterno: string, excludeId?: number) => {
   if (!codigoInterno || !codigoInterno.trim()) return false;
   let query = 'SELECT id FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)';
-  const params: any[] = [codigoInterno.trim()];
+  const params: unknown[] = [codigoInterno.trim()];
   if (excludeId) {
     query += ' AND id != ?';
     params.push(excludeId);
@@ -592,7 +614,7 @@ export const getServicos = (options: {
   const offset = (page - 1) * pageSize;
 
   const queryConditions: string[] = [];
-  const params: any[] = [];
+  const params: unknown[] = [];
 
   if (options.categoria_id) {
     queryConditions.push('s.categoria_id = ?');
@@ -734,6 +756,8 @@ export interface ItemUnidadeData {
   unidade_medida_id: number;
   multiplicador_unidade: number;
   principal: number;
+  sigla?: string;
+  descricao?: string;
 }
 
 export interface ItemInput {
@@ -756,6 +780,17 @@ export interface ItemInput {
   unidades_medida?: ItemUnidadeData[];
 }
 
+export interface ItemRow extends ItemInput {
+  id: number;
+  data_criacao: string;
+  data_atualizacao: string;
+  categoria_nome: string;
+  marca_nome: string;
+  unidade_medida_sigla: string;
+  unidade_medida_descricao: string;
+  duracao_minutos?: number | null;
+}
+
 export const getItens = (options: {
   search?: string;
   categoria_id?: number;
@@ -770,7 +805,7 @@ export const getItens = (options: {
   const offset = (page - 1) * pageSize;
 
   const productConditions: string[] = [];
-  const productParams: any[] = [];
+  const productParams: unknown[] = [];
 
   if (options.categoria_id) {
     productConditions.push('i.categoria_id = ?');
@@ -843,7 +878,7 @@ export const getItens = (options: {
     LIMIT ? OFFSET ?
   `;
 
-  const items = db.prepare(itemsQuery).all(...productParams, pageSize, offset) as any[];
+  const items = db.prepare(itemsQuery).all(...productParams, pageSize, offset) as unknown as ItemRow[];
 
   const barcodesStmt = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC');
   const unidadesStmt = db.prepare(`
@@ -855,8 +890,8 @@ export const getItens = (options: {
   `);
 
   for (const item of items) {
-    item.codigos_barras = barcodesStmt.all(item.id);
-    item.unidades_medida = unidadesStmt.all(item.id);
+    item.codigos_barras = barcodesStmt.all(item.id) as unknown as BarcodeData[];
+    item.unidades_medida = unidadesStmt.all(item.id) as unknown as ItemUnidadeData[];
     if (!item.unidades_medida || item.unidades_medida.length === 0) {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,
@@ -909,10 +944,10 @@ export const getItemById = (id: number) => {
     JOIN fornecedores f ON i.fornecedor_id = f.id
     JOIN unidades_medida u ON i.unidade_medida_id = u.id
     WHERE i.id = ?
-  `).get(id) as any;
+  `).get(id) as unknown as ItemRow | undefined;
 
   if (item) {
-    item.codigos_barras = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC').all(id);
+    item.codigos_barras = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC').all(id) as unknown as BarcodeData[];
     const unidades = db.prepare(`
       SELECT um.unidade_medida_id, um.multiplicador_unidade, um.principal, u.sigla, u.descricao
       FROM item_unidades_medida um
@@ -922,7 +957,7 @@ export const getItemById = (id: number) => {
     `).all(id);
 
     if (unidades && unidades.length > 0) {
-      item.unidades_medida = unidades;
+      item.unidades_medida = unidades as unknown as ItemUnidadeData[];
     } else {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,

@@ -58,7 +58,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="data" />
             <YAxis />
-            <Tooltip formatter={(value: any) => formatCurrency(Number(value), 2)} />
+            <Tooltip formatter={(value) => formatCurrency(Number(value), 2)} />
             <Line type="monotone" dataKey="valor" stroke="#8884d8" />
           </LineChart>
         ) : (
@@ -66,7 +66,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="data" />
             <YAxis />
-            <Tooltip formatter={(value: any) => formatCurrency(Number(value), 2)} />
+            <Tooltip formatter={(value) => formatCurrency(Number(value), 2)} />
             <Bar dataKey="valor" fill="#8884d8" />
           </BarChart>
         )}

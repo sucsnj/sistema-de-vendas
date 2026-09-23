@@ -65,6 +65,7 @@ const ItemNomeDropdown: React.FC<ItemNomeDropdownProps> = ({
     disabled = false,
 }) => {
     const [termo, setTermo] = useState(item.descricao || '');
+    const [descricaoAnterior, setDescricaoAnterior] = useState(item.descricao || '');
     const [sugestoes, setSugestoes] = useState<SugestaoItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [aberto, setAberto] = useState(false);
@@ -72,9 +73,10 @@ const ItemNomeDropdown: React.FC<ItemNomeDropdownProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
+    if (item.descricao !== descricaoAnterior) {
+        setDescricaoAnterior(item.descricao || '');
         setTermo(item.descricao || '');
-    }, [item.descricao]);
+    }
 
     useEffect(() => {
         const handleClickFora = (event: MouseEvent) => {
@@ -283,7 +285,8 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
 
     useEffect(() => {
         if (initialFile) {
-            processarArquivo(initialFile);
+            const timer = setTimeout(() => processarArquivo(initialFile), 0);
+            return () => clearTimeout(timer);
         }
     }, [initialFile, processarArquivo]);
 

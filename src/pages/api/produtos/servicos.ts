@@ -7,7 +7,7 @@ import {
   updateServico,
 } from '../../../database/produtosDb';
 
-const normalizeServicoPayload = (body: any) => {
+const normalizeServicoPayload = (body: Record<string, unknown>) => {
   const payload = body && typeof body === 'object' ? body : {};
 
   const categoriaId = Number(payload.categoria_id);
@@ -63,8 +63,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       const id = insertServico(payload);
       return res.status(201).json(getServicoById(Number(id)) ?? { id });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message || 'Erro ao criar serviço.' });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao criar serviço.' });
     }
   }
 
@@ -84,8 +84,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       updateServico(id, payload);
       return res.status(200).json(getServicoById(id));
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message || 'Erro ao atualizar serviço.' });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao atualizar serviço.' });
     }
   }
 
@@ -101,8 +101,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       deleteServico(id);
       return res.status(200).json({ message: 'Serviço excluído com sucesso.' });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message || 'Erro ao excluir serviço.' });
+    } catch (error: unknown) {
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao excluir serviço.' });
     }
   }
 

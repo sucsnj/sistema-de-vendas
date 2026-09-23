@@ -2,6 +2,18 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens, deleteVendaItens } from '../../database/db';
 import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
 
+interface ItemVendaApi {
+  id?: number;
+  item_id?: number;
+  tipo: 'PRODUTO' | 'SERVICO';
+  nome: string;
+  quantidade: number;
+  preco_venda?: number;
+  preco_unitario?: number;
+  codigo_interno?: string | null;
+  referencia?: string | null;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const { data, valor, observacoes, criado_em, itens } = req.body;
@@ -23,15 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (itens && Array.isArray(itens) && itens.length > 0 && result.lastInsertRowid) {
         insertVendaItens(
           Number(result.lastInsertRowid),
-          itens.map((item: any) => ({
+          itens.map((item: ItemVendaApi) => ({
             item_id: item.id,
             tipo: item.tipo,
             nome: item.nome,
             quantidade: item.quantidade,
             preco_unitario: item.preco_venda ?? item.preco_unitario ?? 0,
             subtotal: (item.preco_venda ?? item.preco_unitario ?? 0) * item.quantidade,
-            codigo_interno: item.codigo_interno,
-            referencia: item.referencia,
+            codigo_interno: item.codigo_interno ?? undefined,
+            referencia: item.referencia ?? undefined,
           }))
         );
       }
@@ -65,15 +77,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (itens && Array.isArray(itens) && itens.length > 0) {
         insertVendaItens(
           Number(id),
-          itens.map((item: any) => ({
-            item_id: item.item_id ?? item.id ?? null,
+          itens.map((item: ItemVendaApi) => ({
+            item_id: item.item_id ?? item.id ?? undefined,
             tipo: item.tipo,
             nome: item.nome,
             quantidade: item.quantidade,
             preco_unitario: item.preco_unitario ?? item.preco_venda ?? 0,
             subtotal: (item.preco_unitario ?? item.preco_venda ?? 0) * item.quantidade,
-            codigo_interno: item.codigo_interno ?? null,
-            referencia: item.referencia ?? null,
+            codigo_interno: item.codigo_interno ?? undefined,
+            referencia: item.referencia ?? undefined,
           }))
         );
       }

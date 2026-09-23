@@ -8,14 +8,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const total = getMonthlyTotal(parseInt(mes as string), parseInt(ano as string));
         res.status(200).json(total);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erro ao buscar total mensal' });
       }
     } else {
       try {
         const all = getAllMonthly();
         res.status(200).json(all);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erro ao buscar totais mensais' });
       }
     }
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       consolidateMonthly(mes, ano);
       res.status(200).json({ message: 'Consolidação realizada' });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Erro na consolidação' });
     }
   } else if (req.method === 'DELETE') {

@@ -55,9 +55,6 @@ const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loa
                             </thead>
                             <tbody>
                                 {items.map((item) => {
-                                    const principalBarcode = item.codigos_barras?.find((c) => c.principal === 1)?.codigo_barras || '—';
-                                    const extraBarcodesCount = (item.codigos_barras?.length || 0) - 1;
-
                                     return (
                                         <tr key={item.id}>
                                             <td>

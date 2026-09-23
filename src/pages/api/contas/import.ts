@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let distribuidora = formatarDistribuidora(distribuidoraRaw);
     const documentoBase = normalizarDocumento(nNF);
 
-    const registros: any[] = [];
+    const registros: { distribuidora: string; valor: number; vencimento: string; documento: string }[] = [];
 
     for (let i = 0; i < duplicatas.length; i++) {
       let valor = parseNumber(duplicatas[i].vDup[0]);

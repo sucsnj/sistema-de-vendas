@@ -1,9 +1,24 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import Toast from './Toast';
+
+interface OcrResultado {
+    arquivo: string;
+    linha?: string;
+    erro?: string;
+}
 
 // Handler de API ou componente exportado.
 export default function OcrUpload() {
-    const [resultado, setResultado] = useState<any>(null);
+    const lerOcrRecente = (): OcrResultado[] | null => {
+        try {
+            const ocrJson = localStorage.getItem("ocrRecente");
+            return ocrJson ? (JSON.parse(ocrJson) as OcrResultado[]) : null;
+        } catch {
+            return null;
+        }
+    };
+
+    const [resultado, setResultado] = useState<OcrResultado[] | null>(lerOcrRecente);
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
@@ -53,28 +68,6 @@ export default function OcrUpload() {
         }
     }
 
-    // procura o OCR recente no localStorage com nome de "ocrRecente" e converte de volta para objeto
-    const [ocrRecente, setOcrRecente] = useState<any>(null);
-
-    // Procura o OCR recente no localStorage com nome de "ocrRecente"
-    useEffect(() => {
-        const ocrJson = localStorage.getItem("ocrRecente");
-        if (ocrJson) {
-            try {
-                setOcrRecente(JSON.parse(ocrJson));
-            } catch (err) {
-                console.error("Erro ao parsear OCR recente:", err);
-            }
-        }
-    }, []);
-
-    // se houver um OCR recente, mostra ele no resultado
-    useEffect(() => {
-        if (ocrRecente) {
-            setResultado(ocrRecente);
-        }
-    }, [ocrRecente]);
-
     // Função de copiar conteúdo para a área de transferência (cópia apenas a linha digitável)
     function copiarConteudo(texto: string) {
 
@@ -99,11 +92,11 @@ export default function OcrUpload() {
 
             {resultado && (
                 <div className="ocr-results">
-                    {resultado.map((item: any, index: number) => (
+                    {resultado.map((item: OcrResultado, index: number) => (
                         <pre
                             key={index}
                             className="ocr-upload-wrapper"
-                            onClick={() => copiarConteudo(item.linha)}>
+                            onClick={() => copiarConteudo(item.linha || '')}>
                             <strong>{item.arquivo}</strong>
                             {"\n"}
                             {item.linha || item.erro}

@@ -24,11 +24,11 @@ interface UseUnidadeMedidaParams {
   setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
   showToast: (message: string, type: 'success' | 'error' | 'info') => void;
   carregarItens: () => void;
-  items: any[];
+  items: unknown[];
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setItemParaExcluir: React.Dispatch<React.SetStateAction<any>>;
+  setItemParaExcluir: (value: null) => void;
 }
 
 export const useUnidadeMedida = ({
@@ -69,8 +69,8 @@ export const useUnidadeMedida = ({
       // Fecha modal
       setModalUnidadeMedidaOpen(false);
       setUomForm({ sigla: '', descricao: '' });
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao criar unidade de medida.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao criar unidade de medida.', 'error');
     }
   };
 
@@ -104,8 +104,8 @@ export const useUnidadeMedida = ({
       setModalUnidadeMedidaEditOpen(false);
       setUomForm({ sigla: '', descricao: '' });
       carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar unidade de medida.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao atualizar unidade de medida.', 'error');
     }
   };
 
@@ -135,8 +135,8 @@ export const useUnidadeMedida = ({
       } else {
         carregarItens();
       }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao deletar unidade de medida.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao deletar unidade de medida.', 'error');
     }
   };
 

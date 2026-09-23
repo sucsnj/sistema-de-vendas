@@ -1,6 +1,5 @@
 // forms.tsx
 import React from 'react';
-import stylesContas from '@/styles/contas.module.css';
 
 // Adiciona classe para validação de campos obrigatórios
 const highlightField = (ref: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>) => {

@@ -15,11 +15,11 @@ interface UseCategoriaParams {
   setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
   showToast: (message: string, type: 'success' | 'error' | 'info') => void;
   carregarItens: () => void;
-  items: any[];
+  items: unknown[];
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setItemParaExcluir: React.Dispatch<React.SetStateAction<any>>;
+  setItemParaExcluir: (value: null) => void;
 }
 
 export const useCategoria = ({
@@ -60,8 +60,8 @@ export const useCategoria = ({
       // Fecha modal
       setModalCategoriaOpen(false);
       setCatForm({ nome: '', descricao: '' });
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao criar categoria.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao criar categoria.', 'error');
     }
   };
 
@@ -95,8 +95,8 @@ export const useCategoria = ({
       setModalCategoriaEditOpen(false);
       setCatForm({ nome: '', descricao: '' });
       carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao atualizar categoria.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao atualizar categoria.', 'error');
     }
   };
 
@@ -126,8 +126,8 @@ export const useCategoria = ({
       } else {
         carregarItens();
       }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao deletar categoria.', 'error');
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : 'Erro ao deletar categoria.', 'error');
     }
   };
 

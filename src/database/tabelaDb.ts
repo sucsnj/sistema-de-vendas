@@ -32,11 +32,11 @@ try {
 // Constante exportada com função.
 export const findTabelaSearchHistory = (normalizedQuery: string) => {
   const stmt = db.prepare('SELECT * FROM tabela_search_history WHERE normalized_query = ?');
-  return stmt.get(normalizedQuery) as Record<string, any> | null;
+  return stmt.get(normalizedQuery) as Record<string, unknown> | null;
 };
 
 // Constante exportada com função.
-export const saveTabelaSearchHistory = (query: string, normalizedQuery: string, results: any[]) => {
+export const saveTabelaSearchHistory = (query: string, normalizedQuery: string, results: unknown[]) => {
   const stmt = db.prepare(
     `INSERT INTO tabela_search_history (query, normalized_query, result_json, result_count, updated_at)
       VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)

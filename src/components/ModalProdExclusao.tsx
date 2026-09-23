@@ -46,9 +46,10 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     onConfirm,
     onClose,
 }) => {
-    if (!open || !item) return null;
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
+
+    if (!open || !item) return null;
 
     return (
         <div className={styles.modalOverlay} role="presentation">
@@ -86,9 +87,10 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
 };
 
 export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
-    if (!open) return null;
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
+
+    if (!open) return null;
 
     return (
         <div className={styles.modalOverlay} role="presentation">
@@ -109,9 +111,10 @@ export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, catego
 };
 
 export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
-    if (!open) return null;
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
+
+    if (!open) return null;
 
     return (
         <div className={styles.modalOverlay} role="presentation">
@@ -132,9 +135,10 @@ export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, ma
 };
 
 export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
-    if (!open) return null;
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
+
+    if (!open) return null;
 
     return (
         <div className={styles.modalOverlay} role="presentation">
@@ -155,9 +159,10 @@ export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = (
 };
 
 export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
-    if (!open) return null;
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
+
+    if (!open) return null;
 
     return (
         <div className={styles.modalOverlay} role="presentation">

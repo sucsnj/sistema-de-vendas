@@ -39,41 +39,52 @@ export default function ModalServicos({ isOpen, onClose, servicos, onSave }: Mod
     const [error, setError] = useState('');
 
     const isEdit = Boolean(servicos?.id);
+    const servicoId = servicos?.id;
+
+    const [prevModalKey, setPrevModalKey] = useState(`${isOpen}:${servicoId ?? 'novo'}`);
+    const modalKey = `${isOpen}:${servicoId ?? 'novo'}`;
+    if (modalKey !== prevModalKey) {
+        setPrevModalKey(modalKey);
+        setError('');
+        setFormData(createInitialForm(servicos));
+    }
 
     useFocusTrap(dialogRef, isOpen);
 
     useEffect(() => {
         if (!isOpen) return;
 
-        setError('');
-        setFormData(createInitialForm(servicos));
-
+        let active = true;
         const loadCategorias = async () => {
             try {
                 const categoriasData = await buscarCategorias();
-                setCategorias(categoriasData);
+                if (active) setCategorias(categoriasData);
             } catch {
-                setCategorias([]);
+                if (active) setCategorias([]);
             }
         };
 
         loadCategorias();
 
-        if (servicos?.id) {
+        if (servicoId) {
             const loadServico = async () => {
                 try {
-                    const servicoAtual = await buscarServicoPorId(servicos.id);
-                    if (servicoAtual) {
+                    const servicoAtual = await buscarServicoPorId(servicoId);
+                    if (active && servicoAtual) {
                         setFormData(createInitialForm(servicoAtual));
                     }
                 } catch {
-                    setError('Não foi possível carregar os dados do serviço.');
+                    if (active) setError('Não foi possível carregar os dados do serviço.');
                 }
             };
 
             loadServico();
         }
-    }, [isOpen, servicos?.id]);
+
+        return () => {
+            active = false;
+        };
+    }, [isOpen, servicoId]);
 
     useEffect(() => {
         if (isOpen) {

@@ -25,6 +25,19 @@ export interface VendaItemData {
   criado_em: string;
 }
 
+export interface VendaItemInput {
+  id?: number;
+  item_id?: number | null;
+  tipo: 'PRODUTO' | 'SERVICO';
+  nome: string;
+  quantidade: number;
+  preco_unitario?: number;
+  preco_venda?: number;
+  codigo_interno?: string | null;
+  referencia?: string | null;
+  estoque?: number;
+}
+
 export interface VendaMensal {
   id: number;
   mes: number;
@@ -41,14 +54,12 @@ export interface VendaMensal {
   totalEsp: number;
 }
 
-let consolidado = false;
-
 // Função assíncrona exportada.
 export const registrarVenda = async (
   data: string,
   valor: number,
   observacoes?: string,
-  itens?: any[]
+  itens?: VendaItemInput[]
 ) => {
   const response = await fetch('/api/vendas', {
     method: 'POST',
@@ -84,7 +95,7 @@ export const buscarVendasDiarias = async (
 };
 
 // Função assíncrona exportada.
-export const atualizarVenda = async (id: number, data: string, valor: number, observacoes?: string, itens?: any[]) => {
+export const atualizarVenda = async (id: number, data: string, valor: number, observacoes?: string, itens?: VendaItemInput[]) => {
   const response = await fetch('/api/vendas', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -148,8 +159,9 @@ export const verificarConsolidado = async (mes: number, ano: number): Promise<bo
 
 // Função assíncrona exportada.
 export const autoConsolidar = async () => {
-  let [day, month, year] = getDateArray();
-  if (!day || !month || !year) return;
+  const [day, month, initialYear] = getDateArray();
+  if (!day || !month || !initialYear) return;
+  let year = initialYear;
 
   let mesAnterior = month - 1;
   if (month === 1) {
@@ -164,7 +176,6 @@ export const autoConsolidar = async () => {
 
   const jaConsolidado = await verificarConsolidado(mesAnterior, year);
   if (jaConsolidado) {
-    consolidado = true;
     return;
   }
 

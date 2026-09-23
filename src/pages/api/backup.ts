@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const path = backupDatabase();
       res.status(200).json({ message: 'Backup criado', path });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Erro no backup' });
     }
   } else {

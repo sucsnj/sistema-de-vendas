@@ -1,4 +1,4 @@
 declare module "pdf-poppler" {
-    const pdf: any;
+    const pdf: unknown;
     export = pdf;
 }

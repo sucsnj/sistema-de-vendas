@@ -104,20 +104,30 @@ const CadastroPage: React.FC = () => {
     // Flag para ignorar o guard durante redirecionamento pós-salvo
     const skipDirtyGuard = useRef(false);
 
+    // Deriva o estado "dirty": marca o formulário como editado quando o nome sai de vazio
+    const [nomeEraVazio, setNomeEraVazio] = useState(true);
+    const nomePreenchido = form.nome.trim() !== '';
+    if (nomePreenchido !== nomeEraVazio) {
+        setNomeEraVazio(nomePreenchido);
+        if (nomePreenchido) {
+            setIsDirty(true);
+        }
+    }
+
     // Refs para focar campos
     const nomeInputRef = useRef<HTMLInputElement | null>(null);
     const barcodeInputRef = useRef<HTMLInputElement | null>(null);
 
-    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
         setToastMessage(message);
         setToastType(type);
         setToastOpen(true);
-    };
+    }, []);
 
     const closeToast = () => setToastOpen(false);
 
     // Carrega opções auxiliares
-    const carregarAuxiliares = async () => {
+    const carregarAuxiliares = useCallback(async () => {
         try {
             const [cats, brands, forns, uoms] = await Promise.all([
                 buscarCategorias(),
@@ -135,10 +145,46 @@ const CadastroPage: React.FC = () => {
             console.error(error);
             showToast('Erro ao carregar dados auxiliares (categorias, marcas, fornecedores, unidades de medida).', 'error');
         }
-    };
+    }, [showToast]);
+
+    // Preenche o formulário com os dados de um item existente
+    const preencherFormComItem = useCallback((item: ItemData) => {
+        setEditingId(item.id);
+        setForm({
+            tipo: item.tipo,
+            nome: item.nome,
+            descricao: item.descricao || '',
+            categoriaId: item.categoria_id,
+            marcaId: item.marca_id,
+            fornecedorId: item.fornecedor_id,
+            precoCompra: String(item.preco_compra),
+            margemLucro: String(item.margem_lucro),
+            precoVenda: String(item.preco_venda),
+            estoque: String(item.estoque),
+            multiplicadorUnidade: String(item.multiplicador_unidade ?? 1),
+            unidadeMedidaId: item.unidade_medida_id,
+            codigoInterno: item.codigo_interno || '',
+            referencia: item.referencia || '',
+            duracaoMinutos: String(item.duracao_minutos ?? ''),
+            ativo: item.ativo ?? 1,
+            unidadesMedida: item.unidades_medida ? item.unidades_medida.map(u => ({
+                unidadeMedidaId: u.unidade_medida_id,
+                multiplicadorUnidade: String(u.multiplicador_unidade),
+                principal: u.principal === 1,
+            })) : [{ unidadeMedidaId: item.unidade_medida_id, multiplicadorUnidade: String(item.multiplicador_unidade ?? 1), principal: true }],
+        });
+        setFormCodigosBarras(item.codigos_barras || []);
+        setNovoCodigoBarras('');
+        setAjusteQuantidade('');
+        setAjusteDescricao('');
+        setMovimentacoesEstoque([]);
+        setModalAjusteOpen(false);
+        setIsDirty(false);
+        nomeInputRef.current?.focus();
+    }, []);
 
     // Carrega item pelo ID (vindo da query ?id=X) para pré-preencher o formulário de edição
-    const carregarItemParaEdicao = async (id: number) => {
+    const carregarItemParaEdicao = useCallback(async (id: number) => {
         try {
             // Tenta buscar como produto primeiro, depois como serviço
             const [produtosData, servicosData] = await Promise.all([
@@ -181,47 +227,14 @@ const CadastroPage: React.FC = () => {
             console.error(error);
             showToast('Erro ao carregar item para edição.', 'error');
         }
-    };
-
-    // Preenche o formulário com os dados de um item existente
-    const preencherFormComItem = (item: ItemData) => {
-        setEditingId(item.id);
-        setForm({
-            tipo: item.tipo,
-            nome: item.nome,
-            descricao: item.descricao || '',
-            categoriaId: item.categoria_id,
-            marcaId: item.marca_id,
-            fornecedorId: item.fornecedor_id,
-            precoCompra: String(item.preco_compra),
-            margemLucro: String(item.margem_lucro),
-            precoVenda: String(item.preco_venda),
-            estoque: String(item.estoque),
-            multiplicadorUnidade: String(item.multiplicador_unidade ?? 1),
-            unidadeMedidaId: item.unidade_medida_id,
-            codigoInterno: item.codigo_interno || '',
-            referencia: item.referencia || '',
-            duracaoMinutos: String(item.duracao_minutos ?? ''),
-            ativo: item.ativo ?? 1,
-            unidadesMedida: item.unidades_medida ? item.unidades_medida.map(u => ({
-                unidadeMedidaId: u.unidade_medida_id,
-                multiplicadorUnidade: String(u.multiplicador_unidade),
-                principal: u.principal === 1,
-            })) : [{ unidadeMedidaId: item.unidade_medida_id, multiplicadorUnidade: String(item.multiplicador_unidade ?? 1), principal: true }],
-        });
-        setFormCodigosBarras(item.codigos_barras || []);
-        setNovoCodigoBarras('');
-        setAjusteQuantidade('');
-        setAjusteDescricao('');
-        setMovimentacoesEstoque([]);
-        setModalAjusteOpen(false);
-        setIsDirty(false);
-        nomeInputRef.current?.focus();
-    };
+    }, [showToast, preencherFormComItem]);
 
     useEffect(() => {
-        carregarAuxiliares();
-    }, []);
+        const timer = setTimeout(() => {
+            void carregarAuxiliares();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, [carregarAuxiliares]);
 
     const queryProcessada = useRef(false);
 
@@ -234,66 +247,65 @@ const CadastroPage: React.FC = () => {
             const numId = Number(id);
             if (!isNaN(numId) && numId > 0) {
                 queryProcessada.current = true;
-                carregarItemParaEdicao(numId);
+                const timer = setTimeout(() => {
+                    void carregarItemParaEdicao(numId);
+                }, 0);
+                return () => clearTimeout(timer);
             }
         } else if (novoImport || nome) {
             queryProcessada.current = true;
-            const nomeStr = typeof nome === 'string' ? nome : '';
-            const precoCompraStr = typeof precoCompra === 'string' ? precoCompra : '';
-            const estoqueStr = typeof estoque === 'string' ? estoque : '';
-            const unidadeStr = typeof unidade === 'string' ? unidade.trim().toUpperCase() : '';
-            const eanStr = typeof ean === 'string' ? ean.trim() : '';
-            const codigoInternoStr = typeof codigoInterno === 'string' ? codigoInterno.trim() : '';
+            const timer = setTimeout(() => {
+                const nomeStr = typeof nome === 'string' ? nome : '';
+                const precoCompraStr = typeof precoCompra === 'string' ? precoCompra : '';
+                const estoqueStr = typeof estoque === 'string' ? estoque : '';
+                const unidadeStr = typeof unidade === 'string' ? unidade.trim().toUpperCase() : '';
+                const eanStr = typeof ean === 'string' ? ean.trim() : '';
+                const codigoInternoStr = typeof codigoInterno === 'string' ? codigoInterno.trim() : '';
 
-            let uomId = 1;
-            if (unidadeStr && options.unidadesMedida.length > 0) {
-                const encontrada = options.unidadesMedida.find(
-                    u => u.sigla.toUpperCase() === unidadeStr || u.sigla.toUpperCase().includes(unidadeStr)
-                );
-                if (encontrada) uomId = encontrada.id;
-            }
+                let uomId = 1;
+                if (unidadeStr && options.unidadesMedida.length > 0) {
+                    const encontrada = options.unidadesMedida.find(
+                        u => u.sigla.toUpperCase() === unidadeStr || u.sigla.toUpperCase().includes(unidadeStr)
+                    );
+                    if (encontrada) uomId = encontrada.id;
+                }
 
-            const precoCompraNum = parseNumber(precoCompraStr) || 0;
-            const margemPadrao = 50;
-            const precoVendaCalculado = precoCompraNum > 0 ? (precoCompraNum * (1 + margemPadrao / 100)).toFixed(2) : '';
+                const precoCompraNum = parseNumber(precoCompraStr) || 0;
+                const margemPadrao = 50;
+                const precoVendaCalculado = precoCompraNum > 0 ? (precoCompraNum * (1 + margemPadrao / 100)).toFixed(2) : '';
 
-            setEditingId(null);
-            setForm({
-                tipo: 'PRODUTO',
-                nome: nomeStr,
-                descricao: 'Importado via XML da NF-e',
-                categoriaId: 1,
-                marcaId: 1,
-                fornecedorId: 1,
-                precoCompra: precoCompraStr,
-                margemLucro: precoCompraNum > 0 ? String(margemPadrao) : '',
-                precoVenda: precoVendaCalculado,
-                estoque: estoqueStr,
-                multiplicadorUnidade: '1',
-                unidadeMedidaId: uomId,
-                codigoInterno: codigoInternoStr,
-                referencia: '',
-                duracaoMinutos: '',
-                ativo: 1,
-                unidadesMedida: [{ unidadeMedidaId: uomId, multiplicadorUnidade: '1', principal: true }],
-            });
+                setEditingId(null);
+                setForm({
+                    tipo: 'PRODUTO',
+                    nome: nomeStr,
+                    descricao: 'Importado via XML da NF-e',
+                    categoriaId: 1,
+                    marcaId: 1,
+                    fornecedorId: 1,
+                    precoCompra: precoCompraStr,
+                    margemLucro: precoCompraNum > 0 ? String(margemPadrao) : '',
+                    precoVenda: precoVendaCalculado,
+                    estoque: estoqueStr,
+                    multiplicadorUnidade: '1',
+                    unidadeMedidaId: uomId,
+                    codigoInterno: codigoInternoStr,
+                    referencia: '',
+                    duracaoMinutos: '',
+                    ativo: 1,
+                    unidadesMedida: [{ unidadeMedidaId: uomId, multiplicadorUnidade: '1', principal: true }],
+                });
 
-            if (eanStr) {
-                setFormCodigosBarras([{ codigo_barras: eanStr, principal: 1 }]);
-            } else {
-                setFormCodigosBarras([]);
-            }
+                if (eanStr) {
+                    setFormCodigosBarras([{ codigo_barras: eanStr, principal: 1 }]);
+                } else {
+                    setFormCodigosBarras([]);
+                }
 
-            showToast('Dados do item preenchidos para cadastro. Complete as informações e salve.', 'info');
+                showToast('Dados do item preenchidos para cadastro. Complete as informações e salve.', 'info');
+            }, 0);
+            return () => clearTimeout(timer);
         }
-    }, [router.isReady, router.query, options.unidadesMedida]);
-
-    // Marca formulário como dirty quando o nome é preenchido (proxy de "usuário começou a editar")
-    useEffect(() => {
-        if (form.nome.trim() !== '') {
-            setIsDirty(true);
-        }
-    }, [form, formCodigosBarras]);
+    }, [router.isReady, router.query, options.unidadesMedida, carregarItemParaEdicao, showToast]);
 
     // Guard: aviso nativo do browser ao fechar aba ou recarregar página
     useEffect(() => {
@@ -361,7 +373,7 @@ const CadastroPage: React.FC = () => {
         try {
             const data = await buscarMovimentacoesEstoque(itemId);
             setMovimentacoesEstoque(data.slice(0, 10));
-        } catch (error: any) {
+        } catch (error) {
             console.error(error);
             showToast('Erro ao carregar histórico de movimentações.', 'error');
             setMovimentacoesEstoque([]);
@@ -456,11 +468,15 @@ const CadastroPage: React.FC = () => {
         const multiplicadorValor = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
         // Validação de código principal nos códigos de barras
-        if (formCodigosBarras.length > 0) {
-            const temPrincipal = formCodigosBarras.some((c) => c.principal === 1);
+        let codigosBarrasFinal = formCodigosBarras;
+        if (codigosBarrasFinal.length > 0) {
+            const temPrincipal = codigosBarrasFinal.some((c) => c.principal === 1);
             if (!temPrincipal) {
                 // Força o primeiro como principal se nenhum foi marcado
-                formCodigosBarras[0].principal = 1;
+                codigosBarrasFinal = codigosBarrasFinal.map((c, index) =>
+                    index === 0 ? { ...c, principal: 1 } : c
+                );
+                setFormCodigosBarras(codigosBarrasFinal);
             }
         }
 
@@ -481,7 +497,7 @@ const CadastroPage: React.FC = () => {
             referencia: form.referencia.trim(),
             duracao_minutos: Number(form.duracaoMinutos) || 0,
             ativo: form.ativo,
-            codigos_barras: formCodigosBarras,
+            codigos_barras: codigosBarrasFinal,
             unidades_medida: form.unidadesMedida.map(u => ({
                 unidade_medida_id: Number(u.unidadeMedidaId),
                 multiplicador_unidade: parseNumber(u.multiplicadorUnidade) || 1,
@@ -521,8 +537,8 @@ const CadastroPage: React.FC = () => {
             setIsDirty(false);
             skipDirtyGuard.current = true;
             setTimeout(() => router.push('/produtos'), 2000);
-        } catch (error: any) {
-            showToast(error.message || 'Erro ao salvar o item.', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Erro ao salvar o item.', 'error');
         }
     };
 
@@ -539,8 +555,8 @@ const CadastroPage: React.FC = () => {
             setDeleteConfirmOpen(false);
             setItemParaExcluir(null);
             resetForm();
-        } catch (error: any) {
-            showToast(error.message || 'Erro ao excluir item.', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Erro ao excluir item.', 'error');
         }
     };
 
@@ -711,8 +727,8 @@ const CadastroPage: React.FC = () => {
                                         data={{
                                             codigosBarras: formCodigosBarras,
                                             novoCodigoBarras: novoCodigoBarras,
-                                            inputRef: barcodeInputRef,
                                         }}
+                                        inputRef={barcodeInputRef}
                                         actions={{
                                             adicionar: handleAddBarcode,
                                             definirPrincipal: handleSetPrincipalBarcode,

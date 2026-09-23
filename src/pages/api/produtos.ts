@@ -11,12 +11,32 @@ import {
 } from '../../database/produtosDb';
 import { parseNumber } from '../../utils/number';
 
+interface UnidadePayload {
+  unidade_medida_id: number;
+  multiplicador_unidade: number;
+  principal: number;
+}
+
+interface BarcodePayload {
+  codigo_barras: string;
+  principal: number;
+}
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
       const { search, categoria_id, marca_id, fornecedor_id, preco_venda, ativo, page, pageSize } = req.query;
 
-      const parsedOptions: any = {
+      const parsedOptions: {
+        search?: string;
+        categoria_id?: number;
+        marca_id?: number;
+        fornecedor_id?: number;
+        preco_venda?: number;
+        ativo?: number;
+        page?: number;
+        pageSize?: number;
+      } = {
         search: search ? String(search) : undefined,
         categoria_id: categoria_id ? Number(categoria_id) : undefined,
         marca_id: marca_id ? Number(marca_id) : undefined,
@@ -68,10 +88,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
       // Validação de unidades de medida
-      let listUnidades: any[] = [];
+      let listUnidades: UnidadePayload[] = [];
       if (tipo === 'PRODUTO') {
         if (unidades_medida && Array.isArray(unidades_medida)) {
-          listUnidades = unidades_medida.map((u: any) => ({
+          listUnidades = unidades_medida.map((u: UnidadePayload) => ({
             unidade_medida_id: Number(u.unidade_medida_id),
             multiplicador_unidade: parseNumber(u.multiplicador_unidade),
             principal: u.principal ? 1 : 0
@@ -119,14 +139,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       // Validação de códigos de barras
-      let listBarcodes: any[] = [];
+      let listBarcodes: BarcodePayload[] = [];
       if (codigos_barras && Array.isArray(codigos_barras)) {
         listBarcodes = codigos_barras
-          .map((cb: any) => ({
+          .map((cb: BarcodePayload) => ({
             codigo_barras: cb.codigo_barras ? String(cb.codigo_barras).trim() : '',
             principal: cb.principal ? 1 : 0
           }))
-          .filter((cb: any) => cb.codigo_barras.length > 0);
+          .filter((cb) => cb.codigo_barras.length > 0);
 
         const codes = listBarcodes.map(c => c.codigo_barras);
         const duplicatesInInput = codes.filter((item, index) => codes.indexOf(item) !== index);
@@ -222,10 +242,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
       // Validação de unidades de medida
-      let listUnidades: any[] = [];
+      let listUnidades: UnidadePayload[] = [];
       if (tipo === 'PRODUTO') {
         if (unidades_medida && Array.isArray(unidades_medida)) {
-          listUnidades = unidades_medida.map((u: any) => ({
+          listUnidades = unidades_medida.map((u: UnidadePayload) => ({
             unidade_medida_id: Number(u.unidade_medida_id),
             multiplicador_unidade: parseNumber(u.multiplicador_unidade),
             principal: u.principal ? 1 : 0
@@ -285,14 +305,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       // Validação de códigos de barras
-      let listBarcodes: any[] = [];
+      let listBarcodes: BarcodePayload[] = [];
       if (codigos_barras && Array.isArray(codigos_barras)) {
         listBarcodes = codigos_barras
-          .map((cb: any) => ({
+          .map((cb: BarcodePayload) => ({
             codigo_barras: cb.codigo_barras ? String(cb.codigo_barras).trim() : '',
             principal: cb.principal ? 1 : 0
           }))
-          .filter((cb: any) => cb.codigo_barras.length > 0);
+          .filter((cb) => cb.codigo_barras.length > 0);
 
         const codes = listBarcodes.map(c => c.codigo_barras);
         const duplicatesInInput = codes.filter((item, index) => codes.indexOf(item) !== index);
@@ -354,7 +374,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'DELETE') {
     try {
-      const { id, tipo } = req.body;
+      const { id } = req.body;
       if (!id) {
         return res.status(400).json({ error: 'ID é obrigatório para exclusão.' });
       }

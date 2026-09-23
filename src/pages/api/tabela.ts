@@ -18,10 +18,16 @@ export const config = {
 
 const upload = multer({ dest: 'uploads/' });
 
+type MulterMiddleware = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  next: (result?: unknown) => void,
+) => void;
+
 // Função utilitária.
-function runMiddleware(req: any, res: any, fn: any) {
+function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: MulterMiddleware) {
   return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
+    fn(req, res, (result?: unknown) => {
       if (result instanceof Error) {
         return reject(result);
       }
@@ -80,7 +86,18 @@ const parseTabelaWorksheet = (filePath: string) => {
   }
 };
 
-let cachedTabelaTable: any[] | null = null;
+interface TabelaRow {
+  substancia: string;
+  laboratorio: string;
+  ean: string;
+  produto: string;
+  apresentacao: string;
+  classeTerapeutica: string;
+  pf205: string;
+  pmc205: string;
+}
+
+let cachedTabelaTable: Record<string, unknown>[] | null = null;
 
 // Função local ou componente.
 const loadTabelaTable = () => {
@@ -95,7 +112,7 @@ const loadTabelaTable = () => {
   if (fs.existsSync(jsonPath)) {
     try {
       const raw = fs.readFileSync(jsonPath, 'utf-8');
-      cachedTabelaTable = JSON.parse(raw) as any[];
+      cachedTabelaTable = JSON.parse(raw) as Record<string, unknown>[];
       return cachedTabelaTable;
     } catch (error) {
       console.error('Erro ao carregar tabela de tabela JSON:', error);
@@ -119,7 +136,7 @@ const loadTabelaTable = () => {
 };
 
 // Função local ou componente.
-const searchTabelaTable = (query: string, table: any[]) => {
+const searchTabelaTable = (query: string, table: Record<string, unknown>[]) => {
   const normalizedQuery = normalizeText(query);
   const results = table
     .map((row) => {
@@ -165,7 +182,7 @@ const searchTabelaTable = (query: string, table: any[]) => {
         score,
       };
     })
-    .filter(Boolean) as Array<{ row: any; score: number }>;
+    .filter(Boolean) as Array<{ row: TabelaRow; score: number }>;
 
   return results
     .sort((a, b) => b.score - a.score)
@@ -176,9 +193,9 @@ loadTabelaTable();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    await runMiddleware(req, res, upload.single('file'));
+    await runMiddleware(req, res, upload.single('file') as unknown as MulterMiddleware);
 
-    const file = (req as any).file;
+    const file = (req as { file?: Express.Multer.File }).file;
     if (!file) {
       return res.status(400).json({ error: 'Arquivo XLSX não enviado.' });
     }
@@ -202,7 +219,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const normalizedRows = rows
         .map((rawRow) => {
-          const row: Record<string, any> = {};
+          const row: Record<string, unknown> = {};
           Object.entries(rawRow).forEach(([key, value]) => {
             const normalizedKey = normalizeHeader(key);
             row[normalizedKey] = value;
@@ -283,7 +300,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const cached = findTabelaSearchHistory(normalizedQuery);
     if (cached) {
       try {
-        const results = JSON.parse(cached.result_json);
+        const results = JSON.parse(cached.result_json as string);
         return res.status(200).json({ source: 'history', results, query });
       } catch (error) {
         console.error('Erro ao parsear resultados do cache de tabela:', error);

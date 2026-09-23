@@ -8,12 +8,8 @@ dayjs.extend(timezone);
 dayjs.locale('pt-br');
 
 // TimeZones
-const RECIFE_TZ = 'America/Recife';
-const SAO_PAULO_TZ = 'America/Sao_Paulo';
-const BRASILIA_TZ = 'America/Brasilia';
-
 // TimeZone Selecionado
-const TZ = RECIFE_TZ;
+const TZ = 'America/Recife';
 
 // Função utilitária para pegar o "agora"
 export function now() {

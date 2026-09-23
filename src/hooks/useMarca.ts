@@ -10,11 +10,11 @@ interface UseMarcaParams {
     setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
     carregarItens: () => void;
-    items: any[];
+    items: unknown[];
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setItemParaExcluir: React.Dispatch<React.SetStateAction<any>>;
+    setItemParaExcluir: (value: null) => void;
 }
 
 export const useMarca = ({
@@ -56,8 +56,8 @@ export const useMarca = ({
             // Fecha modal
             setModalMarcaOpen(false);
             setNovaMarcaNome('');
-        } catch (error: any) {
-            showToast(error.message || 'Erro ao criar marca.', 'error');
+        } catch (error: unknown) {
+            showToast(error instanceof Error ? error.message : 'Erro ao criar marca.', 'error');
         }
     };
 
@@ -90,8 +90,8 @@ export const useMarca = ({
             setModalMarcaEditOpen(false);
             setMarcaForm({ nome: '' });
             carregarItens();
-        } catch (error: any) {
-            showToast(error.message || 'Erro ao atualizar marca.', 'error');
+        } catch (error: unknown) {
+            showToast(error instanceof Error ? error.message : 'Erro ao atualizar marca.', 'error');
         }
     };
 
@@ -121,8 +121,8 @@ export const useMarca = ({
             } else {
                 carregarItens();
             }
-        } catch (error: any) {
-            showToast(error.message || 'Erro ao deletar marca.', 'error');
+        } catch (error: unknown) {
+            showToast(error instanceof Error ? error.message : 'Erro ao deletar marca.', 'error');
         }
     };
 

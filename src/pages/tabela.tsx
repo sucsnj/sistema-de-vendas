@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Toast from '../components/Toast';
 import styles from '../styles/contas.module.css';
 import {
@@ -29,11 +29,6 @@ const Tabela: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    loadSearchHistory();
-    loadTabelaStatus();
-  }, []);
-
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToastMessage(message);
     setToastType(type);
@@ -42,16 +37,16 @@ const Tabela: React.FC = () => {
 
   const closeToast = () => setToastOpen(false);
 
-  const loadSearchHistory = async () => {
+  const loadSearchHistory = useCallback(async () => {
     try {
       const recent = await fetchTabelaHistory();
       setHistory(recent);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
-  const loadTabelaStatus = async () => {
+  const loadTabelaStatus = useCallback(async () => {
     try {
       const status = await fetchTabelaStatus();
       setTabelaLoaded(status.loaded);
@@ -59,7 +54,15 @@ const Tabela: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadSearchHistory();
+      loadTabelaStatus();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadSearchHistory, loadTabelaStatus]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

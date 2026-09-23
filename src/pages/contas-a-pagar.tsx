@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import Toast from '../components/Toast';
-import dayjs from 'dayjs';
 import Agenda from '@/components/Agenda';
 import Resumo from '@/components/Resumo';
 import ContasAPagarHeader from '@/components/ContasAPagarHeader';
@@ -43,8 +42,14 @@ const ContasAPagar: React.FC = () => {
   const [selectedConta, setSelectedConta] = useState<ContaDetalhe | null>(null);
   const [filtroDistribuidora, setFiltroDistribuidora] = useState('');
   const [filtroStatus, setFiltroStatus] = useState<'Todos' | 'Pendente' | 'Pago'>('Todos');
-  const [filtroVencimentoDe, setFiltroVencimentoDe] = useState(hoje);
-  const [filtroVencimentoAte, setFiltroVencimentoAte] = useState(hoje);
+  const [filtroVencimentoDe, setFiltroVencimentoDe] = useState(() => {
+    if (typeof window === 'undefined') return hoje;
+    return localStorage.getItem('filtroVencimentoDe') || hoje;
+  });
+  const [filtroVencimentoAte, setFiltroVencimentoAte] = useState(() => {
+    if (typeof window === 'undefined') return hoje;
+    return localStorage.getItem('filtroVencimentoAte') || hoje;
+  });
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
@@ -53,73 +58,74 @@ const ContasAPagar: React.FC = () => {
   const dataInputRef = useRef<HTMLInputElement | null>(null);
   const documentoInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editingValue, setEditingValue] = useState('');
   const [payModalOpen, setPayModalOpen] = useState(false);
   const [payObservacao, setPayObservacao] = useState('');
 
-  useEffect(() => {
+  const handleFiltroVencimentoDeChange = (value: string) => {
+    setFiltroVencimentoDe(value);
     if (typeof window !== 'undefined') {
-      const savedDe = localStorage.getItem('filtroVencimentoDe');
-      const savedAte = localStorage.getItem('filtroVencimentoAte');
-      if (savedDe) setFiltroVencimentoDe(savedDe);
-      if (savedAte) setFiltroVencimentoAte(savedAte);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // se vencimento de for maior que vencimento ate, igualar o valor de vencimento ate com o vencimento de
-      if (filtroVencimentoDe > filtroVencimentoAte) {
-        setFiltroVencimentoAte(filtroVencimentoDe);
+      localStorage.setItem('filtroVencimentoDe', value);
+      if (value > filtroVencimentoAte) {
+        localStorage.setItem('filtroVencimentoAte', value);
       }
-      localStorage.setItem('filtroVencimentoDe', filtroVencimentoDe);
     }
-  }, [filtroVencimentoDe]);
+    if (value > filtroVencimentoAte) {
+      setFiltroVencimentoAte(value);
+    }
+  };
 
-  useEffect(() => {
+  const handleFiltroVencimentoAteChange = (value: string) => {
+    setFiltroVencimentoAte(value);
     if (typeof window !== 'undefined') {
-      // se vencimento ate for menor que vencimento de, igualar o valor de vencimento de com o vencimento ate
-      if (filtroVencimentoAte < filtroVencimentoDe) {
-        setFiltroVencimentoDe(filtroVencimentoAte);
+      localStorage.setItem('filtroVencimentoAte', value);
+      if (value < filtroVencimentoDe) {
+        localStorage.setItem('filtroVencimentoDe', value);
       }
-      localStorage.setItem('filtroVencimentoAte', filtroVencimentoAte);
     }
-  }, [filtroVencimentoAte]);
+    if (value < filtroVencimentoDe) {
+      setFiltroVencimentoDe(value);
+    }
+  };
 
-  useEffect(() => {
-    loadContasMes();
-  }, [mes, ano]);
-
-  useEffect(() => {
-    loadContasAno();
-  }, [ano]);
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToastMessage(message);
     setToastType(type);
     setToastOpen(true);
-  };
+  }, []);
 
   const closeToast = () => setToastOpen(false);
 
-  const loadContasMes = async () => {
+  const loadContasMes = useCallback(async () => {
     try {
       const data = await buscarContas(ano, mes);
       setContasMes(data);
-    } catch (error) {
+    } catch {
       showToast('Não foi possível carregar as contas do mês.', 'error');
     }
-  };
+  }, [ano, mes, showToast]);
 
-  const loadContasAno = async () => {
+  const loadContasAno = useCallback(async () => {
     try {
       const data = await buscarContas(ano);
       setContasAno(data);
-    } catch (error) {
+    } catch {
       showToast('Não foi possível carregar o resumo anual.', 'error');
     }
-  };
+  }, [ano, showToast]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadContasMes();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadContasMes]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadContasAno();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadContasAno]);
 
   const resetForm = () => {
     setDistribuidora('');
@@ -145,7 +151,7 @@ const ContasAPagar: React.FC = () => {
       highlightField(valorInputRef);
       return;
     }
-
+    
     // Se valor não for um número
     if (isNaN(Number(valor))) {
       showToast('Informe um número válido.', 'error');
@@ -197,7 +203,7 @@ const ContasAPagar: React.FC = () => {
       resetForm();
       loadContasMes();
       loadContasAno();
-    } catch (error) {
+    } catch {
       showToast('Erro ao salvar a conta.', 'error');
     }
   };
@@ -223,7 +229,7 @@ const ContasAPagar: React.FC = () => {
       loadContasMes();
       loadContasAno();
       setSelectedConta((current) => (current?.id === id ? null : current));
-    } catch (error) {
+    } catch {
       showToast('Erro ao excluir a conta.', 'error');
     }
   };
@@ -251,20 +257,8 @@ const ContasAPagar: React.FC = () => {
       loadContasAno();
 
       setSelectedConta(null);
-    } catch (error) {
+    } catch {
       showToast('Erro ao pagar conta.', 'error');
-    }
-  };
-
-  const handlePagar = async (id: number) => {
-    try {
-      await pagarConta(id);
-      showToast('Conta marcada como paga.', 'success');
-      loadContasMes();
-      loadContasAno();
-      setSelectedConta(null);
-    } catch (error) {
-      showToast('Erro ao pagar a conta.', 'error');
     }
   };
 
@@ -275,7 +269,7 @@ const ContasAPagar: React.FC = () => {
       loadContasMes();
       loadContasAno();
       setSelectedConta(null);
-    } catch (error) {
+    } catch {
       showToast('Erro ao cancelar o pagamento.', 'error');
     }
   };
@@ -284,7 +278,7 @@ const ContasAPagar: React.FC = () => {
     try {
       const result = await fazerBackupContas();
       showToast(result.message || 'Backup criado com sucesso.', 'success');
-    } catch (error) {
+    } catch {
       showToast('Erro ao fazer backup das contas.', 'error');
     }
   };
@@ -295,8 +289,9 @@ const ContasAPagar: React.FC = () => {
       const fileInput = document.createElement('input');
       fileInput.type = 'file';
       fileInput.accept = '.xml';
-      fileInput.onchange = async (event: any) => {
-        const file = event.target.files[0];
+      fileInput.onchange = async (event: Event) => {
+        const files = (event.target as HTMLInputElement).files;
+        const file = files?.[0];
         if (!file) return;
 
         const text = await file.text();
@@ -365,9 +360,9 @@ const ContasAPagar: React.FC = () => {
             filtroStatus={filtroStatus}
             setFiltroStatus={setFiltroStatus}
             filtroVencimentoDe={filtroVencimentoDe}
-            setFiltroVencimentoDe={setFiltroVencimentoDe}
+            setFiltroVencimentoDe={handleFiltroVencimentoDeChange}
             filtroVencimentoAte={filtroVencimentoAte}
-            setFiltroVencimentoAte={setFiltroVencimentoAte}
+            setFiltroVencimentoAte={handleFiltroVencimentoAteChange}
             hoje={hoje}
             filteredContas={filteredContas}
             handleView={handleView}

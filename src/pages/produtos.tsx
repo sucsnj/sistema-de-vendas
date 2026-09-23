@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -62,16 +62,16 @@ const ProdutosPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToastMessage(message);
     setToastType(type);
     setToastOpen(true);
-  };
+  }, []);
 
   const closeToast = () => setToastOpen(false);
 
   // Carrega opções auxiliares para os filtros
-  const carregarAuxiliares = async () => {
+  const carregarAuxiliares = useCallback(async () => {
     try {
       const [cats, brands, forns, uoms] = await Promise.all([
         buscarCategorias(),
@@ -89,10 +89,10 @@ const ProdutosPage: React.FC = () => {
       console.error(error);
       showToast('Erro ao carregar dados auxiliares.', 'error');
     }
-  };
+  }, [showToast]);
 
   // Carrega o catálogo a partir das tabelas específicas de cada tipo
-  const carregarItens = async () => {
+  const carregarItens = useCallback(async () => {
     setLoading(true);
     try {
       const [produtosData, servicosData] = await Promise.all([
@@ -148,15 +148,19 @@ const ProdutosPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.fornecedorId, state.status, showToast]);
 
   useEffect(() => {
-    carregarAuxiliares();
-  }, []);
+    const timer = setTimeout(() => {
+      carregarAuxiliares();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [carregarAuxiliares]);
 
   useEffect(() => {
-    carregarItens();
-  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.fornecedorId, state.status]);
+    const timer = setTimeout(() => carregarItens(), 0);
+    return () => clearTimeout(timer);
+  }, [carregarItens]);
 
   // Handler de Busca
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -198,8 +202,8 @@ const ProdutosPage: React.FC = () => {
         'success'
       );
       carregarItens();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao alterar status.', 'error');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Erro ao alterar status.', 'error');
     }
   };
 
@@ -226,8 +230,8 @@ const ProdutosPage: React.FC = () => {
       } else {
         carregarItens();
       }
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao excluir item.', 'error');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Erro ao excluir item.', 'error');
     }
   };
 

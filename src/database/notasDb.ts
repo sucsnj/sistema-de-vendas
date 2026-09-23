@@ -30,6 +30,14 @@ try {
 }
 
 // Constante exportada com função.
+export interface NotaRow {
+  id: number;
+  distribuidora: string;
+  chave: string;
+  data_emissao: string;
+  valor_nota: number;
+}
+
 export const insertNota = (
   distribuidora: string,
   chave: string,
@@ -80,13 +88,13 @@ export const getNotasByPeriod = (ano: number, mes?: number) => {
     'SELECT * FROM notas_detalhes WHERE substr(data_emissao, 1, 10) >= ? AND substr(data_emissao, 1, 10) <= ? ORDER BY data_emissao DESC, id DESC'
   );
 
-  return stmt.all(startDate, endDate) as any[];
+  return stmt.all(startDate, endDate) as unknown as NotaRow[];
 };
 
 // Constante exportada com função.
 export const getAllNotas = () => {
   const stmt = db.prepare('SELECT * FROM notas_detalhes ORDER BY data_emissao DESC, id DESC');
-  return stmt.all() as any[];
+  return stmt.all() as unknown as NotaRow[];
 };
 
 // Constante exportada com função.

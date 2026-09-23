@@ -109,7 +109,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       const workbook = XLSX.read(data, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const rows: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, {
+      const rows: Record<string, unknown>[] = XLSX.utils.sheet_to_json(worksheet, {
         defval: '',
       });
 
@@ -122,7 +122,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       const errors: string[] = [];
 
       rows.forEach((row, index) => {
-        const normalizedRow: Record<string, any> = {};
+        const normalizedRow: Record<string, unknown> = {};
         Object.keys(row).forEach((key) => {
           normalizedRow[normalizeHeader(key)] = row[key];
         });
@@ -211,7 +211,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
   };
 
   // Formata o valor.
-  const formatValue = (value: any) => {
+  const formatValue = (value: unknown) => {
     return parseNumber(value);
   };
 

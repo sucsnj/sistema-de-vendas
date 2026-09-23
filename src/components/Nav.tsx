@@ -12,16 +12,14 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import InventoryIcon from '@mui/icons-material/Inventory';
 
 const Nav: React.FC = () => {
-  const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
-
-  // Pega o tema salvo no localStorage.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'system';
     const saved = localStorage.getItem('themeMode');
     if (saved === 'light' || saved === 'dark' || saved === 'system') {
-      setThemeMode(saved);
+      return saved;
     }
-  }, []);
+    return 'system';
+  });
 
   // Controla o tema.
   useEffect(() => {

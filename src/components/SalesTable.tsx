@@ -20,18 +20,16 @@ interface SalesTableProps {
 const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale }) => {
   const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
 
-  const [maxSales, setMaxSales] = React.useState(5);
+  const [maxSales, setMaxSales] = React.useState(() => {
+    if (typeof window === 'undefined') return 5;
+    const saved = localStorage.getItem("maxSales");
+    const parsed = saved ? parseInt(saved) : NaN;
+    return Number.isNaN(parsed) ? 5 : parsed;
+  });
 
   // estado para o diálogo
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  React.useEffect(() => {
-    const saved = localStorage.getItem("maxSales");
-    if (saved) {
-      setMaxSales(parseInt(saved));
-    }
-  }, []);
 
   const changeMaxSales = (value: number) => {
     setMaxSales(value);

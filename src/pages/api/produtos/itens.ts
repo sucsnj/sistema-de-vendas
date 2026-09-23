@@ -3,6 +3,26 @@ import db, { insertItem, getItemByBarcode, checkDuplicateBarcode, insertMoviment
 import { parseNumber } from '../../../utils/number';
 import { parseStringPromise } from 'xml2js';
 
+interface ItemExistenteRow {
+  id: number;
+  nome: string;
+  preco_venda: number;
+  estoque: number;
+}
+
+interface ProdutoPreview {
+  cProd: string;
+  ean: string;
+  descricao: string;
+  descricaoOriginal: string;
+  unidadeMedida: string;
+  quantidade: number;
+  valorUnitario: number;
+  tipoMovimentacao: string;
+  existe: boolean;
+  itemIdExistente?: number;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Método não permitido' });
@@ -25,10 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const infNFe = parsed.nfeProc.NFe[0].infNFe[0];
             const itens = infNFe.det || [];
-            const produtos: any[] = [];
+            const produtos: ProdutoPreview[] = [];
 
-            const ide = infNFe.ide?.[0] || {};
-            const tpNF = ide.tpNF?.[0]; // 0=entrada, 1=saída do fornecedor
             // Na importação de nota (mesmo sendo saída do fornecedor), para a loja local é um AJUSTE ou ENTRADA para somar no estoque.
             const tipoMovimentacao = 'ENTRADA';
 
@@ -38,25 +56,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const cProd = prod.cProd?.[0] ? String(prod.cProd[0]).trim() : '';
                 const ean = prod.cEAN && prod.cEAN[0] !== 'SEM GTIN' ? String(prod.cEAN[0]).trim() : '';
                 const descricao = prod.xProd?.[0] ? String(prod.xProd[0]).trim() : '';
-                const unidadeMedida = prod.uCom?.[0] ? String(prod.uCom[0]).trim() : '';
                 const quantidade = parseNumber(prod.qCom[0]);
                 const valorUnitario = parseNumber(prod.vUnCom[0]);
+                const unidadeMedida = prod.uCom?.[0] ? String(prod.uCom[0]).trim() : '';
                 
                 // Verifica se já existe no banco de dados
-                let itemExistente: any = null;
+                let itemExistente: ItemExistenteRow | null | undefined = null;
                 if (ean) {
                     itemExistente = getItemByBarcode(ean);
                 }
                 if (!itemExistente && cProd) {
-                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd);
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ItemExistenteRow | undefined;
                     if (!itemExistente) {
-                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd);
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ItemExistenteRow | undefined;
                     }
                 }
                 if (!itemExistente && descricao) {
-                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao);
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ItemExistenteRow | undefined;
                     if (!itemExistente) {
-                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao);
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ItemExistenteRow | undefined;
                     }
                 }
 
@@ -87,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // MODO 2: Importar um produto específico
         if (importar && produto) {
-            const { ean, descricao, unidadeMedida, quantidade, valorUnitario, tipoMovimentacao, itemIdExistente } = produto;
+            const { ean, descricao, quantidade, valorUnitario, tipoMovimentacao, itemIdExistente } = produto;
 
             // 1. Se já possui item vinculado pelo usuário ou preview, atualiza o estoque
             if (itemIdExistente) {
@@ -154,8 +172,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(400).json({ error: 'Modo de operação inválido' });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Erro na API de importação de itens:', error);
-        return res.status(500).json({ error: error.message || 'Erro interno no servidor' });
+        return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro interno no servidor' });
     }
 }

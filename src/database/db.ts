@@ -91,6 +91,15 @@ export interface VendaItemData extends VendaItemInput {
   criado_em: string;
 }
 
+export interface DailySaleRow {
+  id: number;
+  data: string;
+  valor: number;
+  observacoes: string | null;
+  carrinho_id: number | null;
+  criado_em: string;
+}
+
 // Função local ou componente.
 const getLocalTimestamp = () => {
   return now().format('YYYY-MM-DD HH:mm:ss');
@@ -201,7 +210,7 @@ export const getDailySales = (mes: number, ano: number, filtro?: 'positivas' | '
     query += ' ORDER BY data DESC';
 
     const stmt = db.prepare(query);
-    const sales = stmt.all(startDate, ultimoDia) as any[];
+    const sales = stmt.all(startDate, ultimoDia) as unknown as DailySaleRow[];
     console.log(`Buscando vendas de ${startDate} a ${ultimoDia} (${filtro || 'todas'}):`, sales.length, 'registros');
     return sales;
   } catch (error) {
@@ -359,12 +368,12 @@ export const consolidateMonthly = (mes: number, ano: number) => {
     const qtdVendasEspeciais = vendasEspeciais[0];
 
     // Vendas Diárias
-    const sales = getDailySales(mes, ano) as { valor: number }[];
+    const sales = getDailySales(mes, ano);
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
     const ticketMedio = getTickerMedio(sales);
-    const { media, mediaNegativa } = getMediaClientes(sales as any);
+    const { media, mediaNegativa } = getMediaClientes(sales);
     const mediaClientes = media;
-    const melhorDia = getMelhorDia(sales as any, mes, ano);
+    const melhorDia = getMelhorDia(sales, mes, ano);
     const maiorVenda = getMaiorVenda(sales);
     const qtdVendas = getQtdVendas(sales) - qtdVendasEspeciais;
 

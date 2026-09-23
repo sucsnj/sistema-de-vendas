@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import styles from '../styles/contas.module.css';
 import { ContaDetalhe } from '../services/contasService';
 import { formatCurrency } from '../utils/formatter';
@@ -29,7 +29,7 @@ interface ContasAPagarModalsProps {
   onConfirmPayment: () => void;
   onClosePayModal: () => void;
   onCancelPayment: (id: number) => void;
-  onSave: (...args: any[]) => void;
+  onSave: (event: React.FormEvent<HTMLButtonElement>) => void;
 }
 
 const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
