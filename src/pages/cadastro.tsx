@@ -23,7 +23,7 @@ import {
     MovimentacaoEstoqueData,
 } from '../services/produtosService';
 import { parseNumber } from '../utils/number';
-import { validateRequired } from '../utils/validation';
+import { validateNumber, validateRequired } from '../utils/validation';
 import BarcodeManager from '@/components/BarcodeManager';
 import FormularioItem from '@/components/FormularioItem';
 import ModalCategoria from '@/components/ModalCategoria';
@@ -876,11 +876,12 @@ const CadastroPage: React.FC = () => {
                         movimentacoes={movimentacoesEstoque}
                         movimentacoesLoading={movimentacoesLoading}
                         onSave={() => {
-                            const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
-                            if (isNaN(quantidadeAjusteNumero)) {
-                                showToast('Ajuste de estoque deve ser um número válido.', 'error');
+                            const quantidadeCheck = validateNumber(ajusteQuantidade);
+                            if (!quantidadeCheck.ok) {
+                                showToast(quantidadeCheck.message ?? 'Número inválido.', 'error');
                                 return;
                             }
+                            const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
 
                             setForm((prev) => {
                                 const estoqueAtual = parseNumber(prev.estoque) || 0;

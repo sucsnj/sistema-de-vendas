@@ -1,4 +1,4 @@
-import { parseCurrency } from './number';
+import { parseCurrency, parseNumber } from './number';
 import { toDate } from './date';
 
 /**
@@ -46,6 +46,14 @@ export function validateCurrency(value: string | number): ValidationResult {
 }
 
 /**
+ * Valida número não monetário (inteiro, decimal ou string numérica).
+ * Retorna `{ ok, message }`. A normalização fica em `parseNumber` (`utils/number.ts`).
+ */
+export function validateNumber(value: unknown): ValidationResult {
+  return Number.isFinite(parseNumber(value)) ? ok() : fail('Número inválido.');
+}
+
+/**
  * Valida data (ISO, YYYY-MM-DD ou formatos aceitos por `toDate`).
  * Retorna `{ ok, message }`. A normalização fica em `toDate` (`utils/date.ts`).
  */
@@ -57,6 +65,7 @@ const validation = {
   validateRequired,
   validateEmail,
   validateCurrency,
+  validateNumber,
   validateDate,
 };
 

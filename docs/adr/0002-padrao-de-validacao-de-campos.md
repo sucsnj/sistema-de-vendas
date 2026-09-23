@@ -26,7 +26,7 @@ Pergunta: **qual contrato e arquitetura padronizam a validação de campos em to
    - **Contas a pagar**: distribuidora, valor, vencimento, documento, observações e **status da conta**.
    - **Produtos**: nome, descrição, ids (categoria/marca/fornecedor/unidade de medida), preços (compra/venda), margem, estoque, multiplicador, código interno, referência, barcodes.
    - **Cadastros auxiliares**: nome e descrição (categoria/marca), sigla e descrição (unidade de medida).
-   - **Transversais**: obrigatório, ids numéricos, tamanho máximo de strings, e-mail.
+   - **Transversais**: obrigatório, ids numéricos, números não monetários (`validateNumber`), tamanho máximo de strings, e-mail.
 
 ## Alternativas consideradas
 
@@ -40,8 +40,8 @@ Pergunta: **qual contrato e arquitetura padronizam a validação de campos em to
 - Validação e mensagens uniformes em todas as páginas e endpoints (`ValidationResult` com pt-BR hardcoded).
 - `validation.ts` fica puro (sem parsing nem regra de negócio); parsing em `number.ts`/`date.ts`.
 - Call sites migrados para `parseCurrency`/`toDate`/`canEdit`: `vendas.ts`, `contas/import.ts`, `DailySaleForm`.
-- Adoção incremental do contrato nos formulários: `contas-a-pagar.tsx` (distribuidora, valor, vencimento, documento), `cadastro.tsx` (nome, categoria, marca, fornecedor, unidade de medida, código de barras) e hooks de cadastro (`useCategoria`, `useFornecedor`, `useMarca`, `useUnidadeMedida`) passam a usar `validateRequired`/`validateCurrency`/`validateDate`.
-- Regras de negócio permanecem nos call sites (ex.: "Valor deve ser um número maior que zero" em `contas-a-pagar.tsx`, quantidade numérica de ajuste de estoque em `cadastro.tsx`); toasts de carga/erro de API ficam fora do escopo do contrato.
+- Adoção incremental do contrato nos formulários: `contas-a-pagar.tsx` (distribuidora, valor, vencimento, documento), `cadastro.tsx` (nome, categoria, marca, fornecedor, unidade de medida, código de barras, ajuste de estoque) e hooks de cadastro (`useCategoria`, `useFornecedor`, `useMarca`, `useUnidadeMedida`) passam a usar `validateRequired`/`validateCurrency`/`validateNumber`/`validateDate`.
+- **Fora do contrato (decisão registrada)**: regras de negócio nos call sites (ex.: "Valor deve ser um número maior que zero" em `contas-a-pagar.tsx`), validação de IDs/parâmetros dos endpoints internos (`!id || isNaN(Number(id))` em `api/produtos*`, `api/tabela`, `api/venda-itens`) e toasts de carga/erro de API (`produtos.tsx`, `tabela.tsx`, `useVendas`, `useMensais`) permanecem nos call sites/endpoints.
 - `isEditableDate` consolidada em `canEdit` (`utils/edit.ts`); elimina a duplicidade da regra de 2 dias.
 - `validateEmail` passou para o contrato `{ ok, message }`; e-mail é usado em chaves PIX (`pix.ts` valida com `{ valid, error }` — estrutura análoga) e como validador central do módulo.
 - Métrica de qualidade: `npm run lint`, `npx tsc --noEmit` e `npm run build` limpos após a adoção.

@@ -74,12 +74,14 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - `contas-a-pagar.tsx`: distribuidora, valor, vencimento e documento via `validateRequired`/`validateCurrency`; mantidas a regra de negócio "valor > 0" e a normalização com `parseNumber`.
 - `cadastro.tsx`: nome do item, categoria, marca, fornecedor, unidade de medida e código de barras via `validateRequired`.
 - `DailySaleForm.tsx`: valor (obrigatório/formato) e data via `validateRequired`/`validateCurrency`/`validateDate`; removido o uso direto de `toDate` no submit.
+- `validation.ts`: novo `validateNumber` (números não monetários — transversal do ADR); ajuste de estoque do `cadastro.tsx` migrado para ele.
+- **Decisão (opção A)**: regras de negócio (ex.: "valor > 0"), validação de IDs/parâmetros dos endpoints e toasts de carga/erro de API ficam **fora** do contrato — decisão documentada no ADR 0002.
 - Lint, tsc e build verdes.
 
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
-- **Restante da adoção do contrato (ADR 0002)**: mensagens soltas que ainda ficam fora do padrão — ex.: "Valor deve ser um número maior que zero" (`contas-a-pagar.tsx`), "Ajuste de estoque deve ser um número válido" (`cadastro.tsx`), e toasts de carga/erro de API em `produtos.tsx`/`tabela.tsx`/`useVendas`/`useMensais` (decisão a tomar: adotar ou manter fora do contrato).
+- **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: centralizar toasts/mensagens de erro; abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
 - Nada do trabalho atual commitado (aguardando solicitação de commit).
 
 ## Futuras / Melhorias sugeridas

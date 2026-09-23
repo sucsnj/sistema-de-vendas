@@ -15,7 +15,7 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 - `number.ts` - parsing de números: `parseNumber` e `parseCurrency` (normalizadores desacoplados da validação).
 - `pix.ts` - geração de payload PIX EMVCo (TLV, CRC16) e validação de chaves PIX (ver `docs/components/Pix.md`).
 - `shortcuts.tsx` - atalhos de teclado.
-- `validation.ts` - validações centralizadas de campos no contrato `{ ok, message }` (ADR 0002): `validateRequired`, `validateEmail`, `validateCurrency`, `validateDate`.
+- `validation.ts` - validações centralizadas de campos no contrato `{ ok, message }` (ADR 0002): `validateRequired`, `validateEmail`, `validateCurrency`, `validateNumber`, `validateDate`.
 
 ## Observações
 
