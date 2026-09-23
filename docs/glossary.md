@@ -31,3 +31,13 @@ _Manter em pt-BR. Ampliar conforme a documentação avança — alimentado pelas
 | Termo | Definição |
 | --- | --- |
 | Conta a pagar | Despesa com distribuidora, valor, vencimento e status (Pago/Pendente). |
+| Status da conta | Estado da conta: `Pago` ou `Pendente`; campo sujeito a validação no padrão de campos (ver ADR 0002). |
+
+## Padrões de validação
+
+| Termo | Definição |
+| --- | --- |
+| Validação de campo | Checagem **sintática/de obrigatoriedade** de um valor isolado; devolve `{ ok, message }` (ADR 0002). |
+| `ValidationResult` | Contrato de saída dos validadores: `{ ok: boolean; message: string | null }`, mensagens pt-BR hardcoded no módulo. |
+| Normalizador | Função que converte/limpa um valor (ex.: `parseCurrency`, `parseDate`); desacoplada da validação. |
+| Regra de negócio | Restrição de domínio fora da sintaxe do campo (ex.: janela de 2 dias para editar venda — `isEditableDate`); vive na camada de negócio, não no módulo de validação. |

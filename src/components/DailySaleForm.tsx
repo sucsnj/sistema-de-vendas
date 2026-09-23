@@ -3,7 +3,8 @@ import Toast from './Toast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
-import { validateCurrency, validateDate } from '../utils/validation';
+import { parseCurrency } from '../utils/number';
+import { toDate } from '../utils/date';
 import { useShortcuts } from '../utils/shortcuts';
 import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -231,7 +232,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       return;
     }
 
-    const valueFromInput = validateCurrency(valor);
+    const valueFromInput = parseCurrency(valor);
     if (valueFromInput == null) {
       showToast('Valor inválido.', 'error');
       valorInputRef.current?.focus();
@@ -276,8 +277,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
     try {
       // Validar data e valor antes de enviar
-      const dateOk = validateDate(selectedDate);
-      const valueFromInput = calculatedValue !== null ? calculatedValue : validateCurrency(valor);
+      const dateOk = toDate(selectedDate);
+      const valueFromInput = calculatedValue !== null ? calculatedValue : parseCurrency(valor);
       if (!dateOk) {
         showToast('Data inválida.', 'error');
         setLoading(false);

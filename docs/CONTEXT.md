@@ -65,6 +65,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 | Notas fiscais | `docs/pages/api/notas.md`, `docs/database/notasDb.md` |
 | Backup | `docs/pages/api/backup.md`, `docs/pages/api/contas-backup.md` |
 | Componente/hook/util específico | procurar em `docs/components/`, `docs/hooks/`, `docs/utils/` |
+| Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/utils/Utils.md` (`validation.ts`, `forms.tsx`) |
 
 ## Regras para o agente
 
@@ -73,7 +74,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 3. **Documentar mudanças.** Ao concluir modificações de código, atualize `PROJECT_STATUS.md` e o doc afetado em `docs/` (e `docs/CONTEXT.md` se o contexto geral mudar).
 4. **Next.js novo.** Esta versão do Next tem breaking changes. Cheque `node_modules/next/dist/docs/` quando for escrever código (ver `AGENTS.md`).
 5. **Timezones.** Datas são tratadas em `America/Recife`.
-6. **Validação.** Regras de data/valor ficam centralizadas em `src/utils/validation.ts`.
+6. **Validação.** Validação de campos em `src/utils/validation.ts` no contrato `{ ok, message }` (ADR 0002); parsing em `number.ts`/`date.ts`; regras de negócio fora da validação (ex.: `edit.ts`).
 7. **Backups.** Ao alterar estrutura de um banco, revise os endpoints de backup correspondentes.
 8. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`.
 9. **Conflito com as regras.** Se uma mudança solicitada violar regras de arquitetura/projeto/negócios/framework/boas práticas, pergunte explicitamente, explique o problema e proponha alternativa antes de implementar (ver `AGENTS.md`).

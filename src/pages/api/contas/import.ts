@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertConta, getAllContas } from '../../../database/contasDb';
 import { getAllNotas, insertNota } from '../../../database/notasDb';
-import parseNumber from '../../../utils/number';
-import { validateCurrency, validateDate } from '../../../utils/validation';
+import parseNumber, { parseCurrency } from '../../../utils/number';
+import { toDate } from '../../../utils/date';
 import { parseStringPromise } from 'xml2js';
 
 // Nomes de distribuidoras válidos
@@ -74,8 +74,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let vencimento = duplicatas[i].dVenc[0];
 
       // valida e normaliza valores e datas
-      const validatedValor = validateCurrency(String(duplicatas[i].vDup[0])) ?? valor;
-      const validatedVencimento = validateDate(vencimento);
+      const validatedValor = parseCurrency(String(duplicatas[i].vDup[0])) ?? valor;
+      const validatedVencimento = toDate(vencimento);
 
       valor = ajustarValorPorDistribuidora(distribuidora, validatedValor);
       vencimento = validatedVencimento ? validatedVencimento.toISOString().split('T')[0] : vencimento;

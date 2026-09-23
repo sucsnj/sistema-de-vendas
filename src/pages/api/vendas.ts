@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens, deleteVendaItens } from '../../database/db';
-import { validateCurrency, validateDate, isEditableDate } from '../../utils/validation';
+import { parseCurrency } from '../../utils/number';
+import { toDate } from '../../utils/date';
+import { canEdit } from '../../utils/edit';
 
 interface ItemVendaApi {
   id?: number;
@@ -19,8 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data, valor, observacoes, criado_em, itens } = req.body;
     try {
       // Validar data e valor
-      const validDate = validateDate(data);
-      const validValue = typeof valor === 'number' ? valor : validateCurrency(String(valor));
+      const validDate = toDate(data);
+      const validValue = typeof valor === 'number' ? valor : parseCurrency(String(valor));
       if (!validDate || validValue == null) {
         return res.status(400).json({ error: 'Dados inválidos: data ou valor inválidos' });
       }
@@ -55,8 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'PUT') {
     const { id, data, valor, observacoes, itens } = req.body;
-    const validDate = validateDate(data);
-    const validValue = typeof valor === 'number' ? valor : validateCurrency(String(valor));
+    const validDate = toDate(data);
+    const validValue = typeof valor === 'number' ? valor : parseCurrency(String(valor));
     if (!id || !validDate || validValue == null) {
       return res.status(400).json({ error: 'Dados inválidos para atualização' });
     }
@@ -66,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!originalSale || typeof originalSale.data !== 'string') {
         return res.status(404).json({ error: 'Venda não encontrada' });
       }
-      if (!isEditableDate(originalSale.data)) {
+      if (!canEdit(originalSale.data)) {
         return res.status(403).json({ error: 'Atualização permitida apenas para vendas dos últimos 2 dias' });
       }
 
@@ -107,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!originalSale || typeof originalSale.data !== 'string') {
         return res.status(404).json({ error: 'Venda não encontrada' });
       }
-      if (!isEditableDate(originalSale.data)) {
+      if (!canEdit(originalSale.data)) {
         return res.status(403).json({ error: 'Exclusão permitida apenas para vendas dos últimos 2 dias' });
       }
 

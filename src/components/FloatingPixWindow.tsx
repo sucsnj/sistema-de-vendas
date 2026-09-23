@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PrintIcon from '@mui/icons-material/Print';
 import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
 
@@ -113,7 +117,7 @@ function FloatingPixWindowContent({
       <div ref={headerRef} className="floating-header">
         <h2>QR Code PIX</h2>
         <button className="floating-close" onClick={onClose} aria-label="Fechar">
-          <i data-lucide="x" className="h-5 w-5"></i>
+          <CloseIcon fontSize="small" />
         </button>
       </div>
       <div className="floating-body">
@@ -127,13 +131,13 @@ function FloatingPixWindowContent({
       </div>
       <div className="floating-actions">
         <button className="action-button" onClick={handleCopy}>
-          <i data-lucide="copy" className="h-4 w-4"></i> Copiar
+          <ContentCopyIcon fontSize="small" /> Copiar
         </button>
         <button className="action-button" onClick={handleDownload}>
-          <i data-lucide="download" className="h-4 w-4"></i> Baixar PNG
+          <FileDownloadIcon fontSize="small" /> Baixar PNG
         </button>
         <button className="action-button" onClick={handlePrint}>
-          <i data-lucide="printer" className="h-4 w-4"></i> Imprimir
+          <PrintIcon fontSize="small" /> Imprimir
         </button>
       </div>
     </div>

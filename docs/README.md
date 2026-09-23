@@ -28,6 +28,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [DOCS.md](DOCS.md) - arquitetura geral, fluxo de dados, dependências críticas, riscos e melhorias.
 - [CONTEXT.md](CONTEXT.md) - guia rápido para agentes: camadas, bancos, páginas e "tema → documentos".
 - [adr/0001-documentacao-do-codigo.md](adr/0001-documentacao-do-codigo.md) - ADR: documentação do código por blocos.
+- [adr/0002-padrao-de-validacao-de-campos.md](adr/0002-padrao-de-validacao-de-campos.md) - ADR: padrão de validação de campos `{ ok, message }`.
 
 ## Páginas do Frontend
 

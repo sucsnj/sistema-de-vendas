@@ -1,84 +1,63 @@
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-// Configura dayjs com suporte a timezone e locale se necessário
-dayjs.extend(utc);
-dayjs.extend(timezone);
-// Força uso do timezone de Recife (UTC-3) nas operações deste utilitário
-const RECIFE_TZ = 'America/Recife';
+import { parseCurrency } from './number';
+import { toDate } from './date';
 
 /**
- * Valida e normaliza um email simples.
- * Retorna `true` se o email parecer válido, `false` caso contrário.
- * Não lança exceções.
- * @param email - string de email para validar
+ * Contrato padrão de validação de campos (ADR 0002).
+ * Todas as validações retornam `{ ok, message }` com mensagem pt-BR
+ * hardcoded no módulo, garantindo feedback uniforme em páginas e API.
  */
-export function validateEmail(email: string): boolean {
-  if (!email || typeof email !== 'string') return false;
+export interface ValidationResult {
+  ok: boolean;
+  message: string | null;
+}
+
+const ok = (): ValidationResult => ({ ok: true, message: null });
+const fail = (message: string): ValidationResult => ({ ok: false, message });
+
+/**
+ * Valida campo obrigatório.
+ * Retorna `{ ok, message }`. Considera vazio: `null`, `undefined`, string somente espaços.
+ * @param value - valor a validar
+ * @param label - rótulo do campo para personalizar a mensagem ("Cliente", "Valor"...)
+ */
+export function validateRequired(value: unknown, label?: string): ValidationResult {
+  const v = typeof value === 'string' ? value.trim() : value;
+  if (v === '' || v == null) return fail(label ? `${label} é obrigatório.` : 'Campo obrigatório.');
+  return ok();
+}
+
+/**
+ * Valida e-mail simples.
+ * Retorna `{ ok, message }`.
+ */
+export function validateEmail(email: string): ValidationResult {
+  if (!email || typeof email !== 'string') return fail('E-mail inválido.');
   const trimmed = email.trim();
-  // Regex simples e permissivo suficiente para validações de frontend/backend leves
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  return re.test(trimmed.toLowerCase());
+  return re.test(trimmed.toLowerCase()) ? ok() : fail('E-mail inválido.');
 }
 
 /**
- * Valida e converte uma string que representa um valor monetário.
- * Aceita vírgulas como separador decimal e expressões numéricas simples já
- * que o projeto utiliza cálculos no campo de valor.
- * Retorna um número (float) quando válido ou `null` quando inválido.
- * @param value - string com representação de número (ex: "1.234,56" ou "1234.56")
+ * Valida valor monetário (string ou número).
+ * Retorna `{ ok, message }`. A normalização fica em `parseCurrency` (`utils/number.ts`).
  */
-export function validateCurrency(value: string): number | null {
-  if (value == null) return null;
-  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
-
-  // Normaliza: remove espaços, substitui vírgula por ponto e retira caracteres não numéricos exceto .-+
-  const cleaned = String(value).trim().replace(/\s+/g, '').replace(/,/g, '.').replace(/[^0-9.\-+eE]/g, '');
-  if (cleaned === '' || cleaned === '.' || cleaned === '-' || cleaned === '+') return null;
-  const n = Number(cleaned);
-  if (!Number.isFinite(n)) return null;
-  return n;
+export function validateCurrency(value: string | number): ValidationResult {
+  return parseCurrency(value) == null ? fail('Valor monetário inválido.') : ok();
 }
 
 /**
- * Valida uma string de data e retorna um objeto Date no timezone de Recife.
- * Aceita formatos ISO e comuns produzidos pelo frontend (`YYYY-MM-DD`).
- * Retorna `Date` quando válido ou `null` quando inválido.
- * @param input - string representando uma data
+ * Valida data (ISO, YYYY-MM-DD ou formatos aceitos por `toDate`).
+ * Retorna `{ ok, message }`. A normalização fica em `toDate` (`utils/date.ts`).
  */
-export function validateDate(input: string): Date | null {
-  if (!input || typeof input !== 'string') return null;
-  // Tenta parsear com dayjs no timezone de Recife
-  const d = dayjs.tz(input, RECIFE_TZ);
-  if (!d.isValid()) {
-    // Tenta formato explícito YYYY-MM-DD
-    const alt = dayjs.tz(input, 'YYYY-MM-DD', RECIFE_TZ);
-    if (!alt.isValid()) return null;
-    return alt.toDate();
-  }
-  return d.toDate();
-}
-
-/**
- * Checa se uma data (string ou Date) é editável conforme regra de negócio:
- * permite operações em vendas com diferença de até 2 dias em relação à data atual
- * no timezone de Recife.
- * @param dateInput - string ou Date representando a data a validar
- */
-export function isEditableDate(dateInput: string | Date): boolean {
-  const now = dayjs().tz(RECIFE_TZ).startOf('day');
-  const d = typeof dateInput === 'string' ? dayjs.tz(dateInput, RECIFE_TZ) : dayjs(dateInput).tz(RECIFE_TZ);
-  if (!d.isValid()) return false;
-  const diffDays = now.diff(d.startOf('day'), 'day');
-  return diffDays >= 0 && diffDays <= 2;
+export function validateDate(input: string): ValidationResult {
+  return toDate(input) == null ? fail('Data inválida.') : ok();
 }
 
 const validation = {
+  validateRequired,
   validateEmail,
   validateCurrency,
   validateDate,
-  isEditableDate,
 };
 
 export default validation;

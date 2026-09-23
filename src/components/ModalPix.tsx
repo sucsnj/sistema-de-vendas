@@ -4,6 +4,9 @@ import { renderQr, pulseQr, QR_SIZE } from './QrPix';
 import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
 import { useFocusTrap } from '../utils/focus';
 import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PrintIcon from '@mui/icons-material/Print';
 
 interface ModalPixProps {
   isOpen: boolean;
@@ -130,13 +133,13 @@ const ModalPixContent: React.FC<ModalPixProps> = ({
         {/* Rodapé Fixo */}
         <div className="modal-actions">
           <button className="action-button" onClick={handleCopy}>
-            <i data-lucide="copy" className="h-4 w-4"></i> Copiar
+            <ContentCopyIcon fontSize="small" /> Copiar
           </button>
           <button className="action-button" onClick={handleDownload}>
-            <i data-lucide="download" className="h-4 w-4"></i> Baixar PNG
+            <FileDownloadIcon fontSize="small" /> Baixar PNG
           </button>
           <button className="action-button" onClick={handlePrint}>
-            <i data-lucide="printer" className="h-4 w-4"></i> Imprimir
+            <PrintIcon fontSize="small" /> Imprimir
           </button>
         </div>
       </div>

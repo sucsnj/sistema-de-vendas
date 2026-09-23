@@ -32,13 +32,17 @@ export function showToast(message: string, type: ToastType = 'success'): void {
   if (!root) return;
 
   const toast = document.createElement('div');
-  const icon = type === 'success' ? 'check' : 'circle-alert';
+  const iconColor = type === 'success' ? 'text-emerald-400' : 'text-rose-400';
+  const iconSvg =
+    type === 'success'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
 
   toast.className =
     'flex items-center gap-2.5 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium ' +
     'text-white shadow-2xl ring-1 ring-white/10 toast-enter';
-  
-  toast.innerHTML = `<i data-lucide="${icon}" class="h-4 w-4 ${type === 'success' ? 'text-emerald-400' : 'text-rose-400'}"></i><span></span>`;
+
+  toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 ${iconColor}" aria-hidden="true">${iconSvg}</svg><span></span>`;
   
   const span = toast.querySelector('span');
   if (span) {

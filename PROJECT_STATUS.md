@@ -47,15 +47,36 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Removida a declaração órfã `src/types/pdf-poppler.d.ts` (o `pdfService.ts` usa `pdf2pic`, não `pdf-poppler`).
 - Docs sincronizados: `docs/CONTEXT.md` (pilha principal), `docs/types/Types.md` e `docs/README.md`.
 
+### Padronização de validação de campos (entrevista `grill-with-docs`, ADR 0002)
+
+- Entrevista concluída; decisões registradas em `docs/adr/0002-padrao-de-validacao-de-campos.md` (**status: aceito e implementado**).
+- Contrato `{ ok, message }` (mensagens pt-BR hardcoded), consumo por campo, parsing desacoplado, `validateEmail` mantida e migrada ao contrato novo, `isEditableDate` consolidada em `canEdit`, escopo de campos: vendas, contas (incl. status), produtos, cadastros auxiliares e transversais (obrigatório, ids numéricos, tamanho, e-mail).
+- Glossário ampliado (`docs/glossary.md`, seção "Padrões de validação"); índice `docs/README.md` e tabela "Tema → Documentos" do `docs/CONTEXT.md` atualizados.
+
+### Implementação do ADR 0002 (código)
+
+- `utils/validation.ts` reescrito como **validação pura**: `ValidationResult` (`{ ok, message }`), `validateRequired`, `validateEmail`, `validateCurrency`, `validateDate`; `isEditableDate` e parsing removidos.
+- `utils/number.ts`: novo normalizador `parseCurrency` (preserva o comportamento do antigo `validateCurrency`, retorno `number | null`).
+- Migração de call sites para normalizadores: `utils/date.ts`/`toDate` para datas e `parseCurrency` para valores em `src/pages/api/vendas.ts`, `src/pages/api/contas/import.ts` e `src/components/DailySaleForm.tsx`.
+- Regra de 2 dias unificada: `isEditableDate` (validation.ts) substituída por `canEdit` (`utils/edit.ts`) na API de vendas — eliminada duplicidade.
+- Verificação: `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
+- Docs sincronizados: `docs/utils/Utils.md` (módulos e observações) e `docs/CONTEXT.md` (regra 6 de validação).
+
+### Ícones PIX migrados para `@mui/icons-material`
+
+- Substituídos todos os ícones `data-lucide` (nunca renderizados, dependiam do pacote removido) por ícones MUI em `ModalPix.tsx`, `FloatingPixWindow.tsx` e no toast de `ActionPix.tsx`.
+- `ModalPix.tsx`/`FloatingPixWindow.tsx`: `CloseIcon`, `ContentCopyIcon`, `FileDownloadIcon`, `PrintIcon`.
+- `ActionPix.tsx`: o toast injeta SVG inline (via `innerHTML`), já que ícones MUI exigem React/JSX.
+
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
+- **Adoção incremental do contrato `{ ok, message }`**: os validadores existem no `validation.ts`; falta migrar os formulários/páginas que validam inline (produtos, cadastro, contas-a-pagar) e campos que ainda usam mensagens soltas (P2 da centralização).
 - Nada commitado ainda.
 
 ## Futuras / Melhorias sugeridas
 
 - Criar commit com as correções (quando o usuário solicitar).
-- Validar os ícones `data-lucide` dos componentes PIX (`ActionPix`, `FloatingPixWindow`, `ModalPix`): dependiam do pacote `lucide` (removido) e nunca eram inicializados via `createIcons` — `<i>` vazios. Decidir entre inicializar o `lucide` de verdade ou trocar por `@mui/icons-material`/`lucide-react`.
 - Validação adicional em `npm run dev` para cenários não cobertos pelo teste crítico.
 - Revisar formatação de exportação (`jspdf`/`xlsx`) para reforço visual, se desejado.
 - Manter docs e `PROJECT_STATUS.md` alinhados a qualquer evolução de API ou regra.
