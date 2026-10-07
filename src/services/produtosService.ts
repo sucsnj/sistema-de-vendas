@@ -449,3 +449,59 @@ export const atualizarUnidadeMedida = async (id: number, sigla: string, descrica
   }
   return response.json();
 };
+
+// Importação de itens via XML de NF-e (/api/produtos/itens)
+export interface ProdutoImportado {
+  cProd?: string;
+  ean: string;
+  descricao: string;
+  descricaoOriginal?: string;
+  unidadeMedida: string;
+  quantidade: number;
+  valorUnitario: number;
+  ncm?: string;
+  cfop?: string;
+  existe?: boolean;
+  itemIdExistente?: number;
+}
+
+export interface InvoiceItemsPreviewResult {
+  ok: boolean;
+  produtos?: ProdutoImportado[];
+  error?: string;
+}
+
+/** Pré-visualiza os itens de uma nota fiscal a partir do XML (modo preview). */
+export async function previewInvoiceItems(xml: string): Promise<InvoiceItemsPreviewResult> {
+  const response = await fetch('/api/produtos/itens', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ xml, preview: true }),
+  });
+  const result = await response.json();
+  if (!response.ok || result.error) {
+    return { ok: false, error: result.error || 'Erro ao processar o arquivo XML.' };
+  }
+  return { ok: true, produtos: result.produtos as ProdutoImportado[] };
+}
+
+export interface InvoiceItemImportResult {
+  ok: boolean;
+  estoqueAtualizado?: boolean;
+  duplicado?: boolean;
+  error?: string;
+}
+
+/** Importa (ou apenas atualiza o estoque de) um item extraído da nota fiscal. */
+export async function importInvoiceItem(produto: ProdutoImportado): Promise<InvoiceItemImportResult> {
+  const response = await fetch('/api/produtos/itens', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ importar: true, produto }),
+  });
+  const result = await response.json();
+  if (!response.ok || result.error) {
+    return { ok: false, duplicado: Boolean(result.duplicado), error: result.error };
+  }
+  return { ok: true, estoqueAtualizado: Boolean(result.estoqueAtualizado) };
+}

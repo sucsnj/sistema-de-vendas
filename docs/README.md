@@ -106,6 +106,10 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [components/FormularioItem.md](components/FormularioItem.md) - formulário de item de venda.
 - [components/FormularioServico.md](components/FormularioServico.md) - formulário de serviço.
 - [components/ModalCarrinho.md](components/ModalCarrinho.md) - carrinho de compras da venda.
+- [components/ModalSelecionarItens.md](components/ModalSelecionarItens.md) - seleção de itens (catálogo) para adicionar ao carrinho.
+- [components/ModalImportItens.md](components/ModalImportItens.md) - importação de itens via XML de NF-e.
+- [components/ItemNomeDropdown.md](components/ItemNomeDropdown.md) - busca de itens (produtos/serviços) com sugestões.
+- [components/CartModalShell.md](components/CartModalShell.md) - casca compartilhada dos modais de carrinho.
 - [components/DailySalesTotal.md](components/DailySalesTotal.md) - totais do dia.
 - [components/SalesChart.md](components/SalesChart.md) - gráfico de vendas.
 - [components/SalesTable.md](components/SalesTable.md) - tabela de vendas.
@@ -147,7 +151,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Hooks
 
-- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`, `useDailySaleForm`.
+- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`, `useDailySaleForm`, `useImportItens`, `useEscClose`.
 
 ## Tipos
 
@@ -155,7 +159,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Utilitários
 
-- [utils/Utils.md](utils/Utils.md) - formatação, parsing, limpeza, clipboard, download, preço/margem de produto, toast (ADR 0003) e QR PIX.
+- [utils/Utils.md](utils/Utils.md) - formatação, parsing, limpeza, clipboard, download, preço/margem/unidades de produto, resumo de carrinho, toast (ADR 0003) e QR PIX.
 
 ## Glossário
 

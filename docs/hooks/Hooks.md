@@ -47,7 +47,7 @@ Centraliza o **carrinho de compras** e o catálogo de seleção (produtos + serv
 - Parâmetro: `onToast?`.
 - Estado: `cartItems` (`CartItem[]`, tipo de `src/types/sale.ts`), `selecionarOpen`, `cartModalOpen`, `cartSearch`, `catalogItems` (`ItemData[]`), `loadingCatalog`, `totalCartCount`, `totalCartValue`.
 - Ações: `handleCartClick()` (abre seleção), `closeSelecao()`, `openCarrinho()`, `closeCarrinho()`, `handleManageCart()` (fecha seleção e abre carrinho), `handleAddToCart(item)` (+1, agrupa por id+tipo), `handleRemoveFromCart(item)` (−1; remove quando chega a 0), `handleUpdateQuantity(id, tipo, qty)` (remove se `qty <= 0`), `handleRemoveItem(id, tipo)`, `handleClearCart()`.
-- Interno: `buscarItensCatalogo(query)` com **debounce de 250ms** enquanto o modal de seleção estiver aberto; busca produtos ativos e serviços via `produtosService` (máximo 50 cada) e mescla ordenado por nome.
+- Interno: `buscarItensCatalogo(query)` com **debounce de 250ms** enquanto o modal de seleção estiver aberto; busca produtos ativos e serviços via `produtosService` (máximo 50 cada) e mescla ordenado por nome. `totalCartCount`/`totalCartValue` vêm de `getCartSummary` (`src/utils/cart`).
 - Observação: serviços são convertidos para `ItemData` com valores de catálogo padrão (unidade 21, marca 1, fornecedor 1, estoque 0).
 
 ### `useDailySaleForm` — `useDailySaleForm.ts`
@@ -61,6 +61,26 @@ Centraliza **estado, validação, ações e efeitos do formulário de venda diá
 - Efeitos: sincronização do campo com o total do carrinho (`totalCartValue`, via `useCart`), ESC limpa o formulário, auto-foco/visibilidade do input (a cada 1 min e 3 min).
 - Interno: usa `useCart(showToast)` (mesmo carrinho compartilhado com `EditSaleForm`) e `evaluateExpression` (`src/utils/calculator.ts`) para o cálculo da expressão do campo de valor.
 - Observação: identificadores renomeados de pt-BR para inglês ao tocar no módulo (ADR 0004): `valor`→`value`, `observacoes`→`observations`, `limpando`→`clearing`.
+
+### `useEscClose` — `useEscClose.ts`
+
+Fecha um modal/componente pela tecla ESC enquanto `isOpen`.
+
+- Parâmetros: `(isOpen: boolean, onClose: () => void)`.
+- Registra `keydown` no `window` apenas repassando o callback quando `event.key === 'Escape'`.
+- Extraído dos modais de carrinho (fonte única, usado pelo `CartModalShell`).
+
+### `useImportItens` — `useImportItens.ts`
+
+Concentra **estado e lógica do modal de importação de itens via XML de NF-e** (`ModalImportItens`), extraídos do componente na refatoração (mesmo padrão de `useDailySaleForm`).
+
+- Parâmetros: `{ onImportSuccess: () => void, initialFile?: File | null }`.
+- Estado: `products` (`ItemComStatus[]`), `fileName`, `loading`, `importing`, `error`, `completed`, `isDragOver`.
+- Refs: `fileInputRef`.
+- Ações: `processFile(file)` (valida `.xml` → `previewInvoiceItems` → monta `ItemComStatus` com `status: 'idle'`), `handleFileChange`, `handleDrop`/`handleDragOver`/`handleDragLeave`, `handleImport()` (laço `importInvoiceItem` atualizando os status por linha; ao final `completed` + `onImportSuccess`), `handleItemDescriptionChange(index, novoNome)` (desvincula o item), `handleSelectSuggestion(index, sugestao)` (vincula ao item do sistema), `handleEditItem(item)`/`handleQuickRegister(item)` (abrem `/cadastro` em nova aba), `resetFile()` ("Trocar arquivo" — limpa estado e o `input[type=file]`).
+- Efeito: processa `initialFile` automaticamente ao montar (com `setTimeout 0`).
+- Tipos exportados: `StatusItem` (`'idle'|'ok'|'duplicado'|'estoque_atualizado'|'erro'`) e `ItemComStatus` (estende `ProdutoImportado` com `status`/`mensagem`) — `ProdutoImportado` vive em `src/services/produtosService.ts`.
+- Observação: identificadores renomeados para inglês (ADR 0004): `produtos`→`products`, `nomeArquivo`→`fileName`, `importando`→`importing`, `concluido`→`completed`, `erro`→`error`, `processarArquivo`→`processFile`, `handleImportar`→`handleImport`, etc.
 
 ### `useFiltro` — `useFiltro.ts`
 

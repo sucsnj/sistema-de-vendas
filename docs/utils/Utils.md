@@ -18,6 +18,8 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 - `pix.ts` - geração de payload PIX EMVCo (TLV, CRC16) e validação de chaves PIX (ver `docs/components/Pix.md`).
 - `pixActions.ts` - ações do painel PIX (baixar PNG de alta resolução e imprimir folha) — movido de `src/components/ActionPix.tsx` (Fase 0 da refatoração); notificações via `utils/toast.ts` (o `showToast` DOM foi removido, ver ADR 0003).
 - `productPrice.ts` - **regra de negócio** do catálogo: `calculateSalePrice` e `calculateMargin` (fonte única usada pelo `FormularioProduto`) — fora do módulo de validação (ADR 0002); renomeado de `produtoPreco.ts`/`calcular*` conforme ADR 0004.
+- `productUnits.ts` - **regras puras das unidades de medida** do `FormularioProduto`: `setUnitAsPrincipal`, `updateUnitId`, `updateUnitMultiplier`, `removeUnit` e `addUnit` (retornam `{ units, unidadeMedidaId?, multiplicadorUnidade? }` — sync dos campos "resumo" quando a unidade alterada é a principal); extraídas dos handlers inline do componente.
+- `cart.ts` - **fonte única do resumo do carrinho**: `getCartSummary(cartItems)` → `{ totalItems, totalValue }` (totalValue = `preco_venda × quantidade`); usado por `useCart` e pelos modais de carrinho/seleção (antes com `reduce` duplicado).
 - `qrPix.ts` - renderização de QR Code (`renderQr`, `generateHighResPng`, `pulseQr`, `QR_SIZE`) — movido de `src/components/QrPix.tsx` (Fase 0 da refatoração).
 - `shortcuts.tsx` - atalhos de teclado.
 - `toast.ts` - **store singleton de notificações** (`showToast`, `dismissToast`, `subscribeToast`, `getToastSnapshot`/`getServerToastSnapshot` para `useSyncExternalStore`) — ver ADR 0003.
@@ -28,6 +30,6 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 
 - `date.ts` usa apenas `dayjs` (com plugin `utc`/`timezone` e locale pt-BR) no timezone `America/Recife`.
 - `cleaner.tsx` é usado apenas no backend para remover arquivos temporários.
-- `validation.ts` expõe **somente validação** `{ ok, message }` (mensagens pt-BR hardcoded); parsing e regras de negócio ficam em `number.ts`/`date.ts`/`edit.ts`/`productPrice.ts` (ver `docs/adr/0002-padrao-de-validacao-de-campos.md`).
+- `validation.ts` expõe **somente validação** `{ ok, message }` (mensagens pt-BR hardcoded); parsing e regras de negócio ficam em `number.ts`/`date.ts`/`edit.ts`/`productPrice.ts`/`productUnits.ts` (ver `docs/adr/0002-padrao-de-validacao-de-campos.md`).
 - `clipboard.ts`, `download.ts` e `pixActions.ts` operam no DOM do navegador (só executados no cliente).
 - `toast.ts` unificou o toast do app: substituiu o toast DOM baseado em `#toast-root` (bug latente — host nunca renderizado) e o estado local por página/componente (ver ADR 0003).

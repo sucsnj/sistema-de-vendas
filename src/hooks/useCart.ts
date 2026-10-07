@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { buscarProdutos, buscarServicos, ItemData, ServicoData } from '../services/produtosService';
+import { getCartSummary } from '../utils/cart';
 import type { CartItem } from '../types/sale';
 
 // Função de notificação opcional (toast) usada pelo formulário de registro e de edição
@@ -188,15 +189,7 @@ export const useCart = (onToast?: CartToast) => {
     onToast?.('Carrinho limpo.', 'info');
   }, [onToast]);
 
-  const totalCartCount = useMemo(
-    () => cartItems.reduce((acc, curr) => acc + curr.quantidade, 0),
-    [cartItems]
-  );
-
-  const totalCartValue = useMemo(
-    () => cartItems.reduce((acc, curr) => acc + (curr.preco_venda ?? 0) * curr.quantidade, 0),
-    [cartItems]
-  );
+  const cartSummary = useMemo(() => getCartSummary(cartItems), [cartItems]);
 
   return {
     cartItems,
@@ -217,7 +210,7 @@ export const useCart = (onToast?: CartToast) => {
     handleUpdateQuantity,
     handleRemoveItem,
     handleClearCart,
-    totalCartCount,
-    totalCartValue,
+    totalCartCount: cartSummary.totalItems,
+    totalCartValue: cartSummary.totalValue,
   };
 };

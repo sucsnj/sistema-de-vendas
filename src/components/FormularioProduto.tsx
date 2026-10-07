@@ -5,6 +5,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { parseNumber } from '../utils/number';
 import { calculateMargin, calculateSalePrice } from '../utils/productPrice';
 import {
+    addUnit,
+    removeUnit,
+    setUnitAsPrincipal,
+    updateUnitId,
+    updateUnitMultiplier,
+} from '../utils/productUnits';
+import {
     CategoriaData,
     MarcaData,
     UnidadeMedidaData,
@@ -390,10 +397,11 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 name="unidadePrincipal"
                                 checked={un.principal}
                                 onChange={() => {
-                                    const newUm = [...form.unidadesMedida];
-                                    newUm.forEach(u => u.principal = false);
-                                    newUm[index].principal = true;
-                                    setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: newUm[index].unidadeMedidaId, multiplicadorUnidade: newUm[index].multiplicadorUnidade }));
+                                    const { units, unidadeMedidaId, multiplicadorUnidade } = setUnitAsPrincipal(
+                                        form.unidadesMedida,
+                                        index
+                                    );
+                                    setForm(prev => ({ ...prev, unidadesMedida: units, unidadeMedidaId, multiplicadorUnidade }));
                                 }}
                                 title="Definir como Principal"
                                 style={{ margin: '0 0.5rem' }}
@@ -404,13 +412,16 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 style={{ flex: 1 }}
                                 value={un.unidadeMedidaId}
                                 onChange={(e) => {
-                                    const newUm = [...form.unidadesMedida];
-                                    newUm[index].unidadeMedidaId = Number(e.target.value);
-                                    if (un.principal) {
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: Number(e.target.value) }));
-                                    } else {
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
-                                    }
+                                    const { units, unidadeMedidaId } = updateUnitId(
+                                        form.unidadesMedida,
+                                        index,
+                                        Number(e.target.value)
+                                    );
+                                    setForm(prev => ({
+                                        ...prev,
+                                        unidadesMedida: units,
+                                        ...(unidadeMedidaId !== undefined ? { unidadeMedidaId } : {}),
+                                    }));
                                 }}
                             >
                                 {options.unidadesMedida.map((u) => (
@@ -428,13 +439,16 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 placeholder="Fator"
                                 value={un.multiplicadorUnidade}
                                 onChange={(e) => {
-                                    const newUm = [...form.unidadesMedida];
-                                    newUm[index].multiplicadorUnidade = e.target.value;
-                                    if (un.principal) {
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, multiplicadorUnidade: e.target.value }));
-                                    } else {
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
-                                    }
+                                    const { units, multiplicadorUnidade } = updateUnitMultiplier(
+                                        form.unidadesMedida,
+                                        index,
+                                        e.target.value
+                                    );
+                                    setForm(prev => ({
+                                        ...prev,
+                                        unidadesMedida: units,
+                                        ...(multiplicadorUnidade !== undefined ? { multiplicadorUnidade } : {}),
+                                    }));
                                 }}
                             />
 
@@ -442,13 +456,16 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                                 type="button"
                                 className={styles.removeBtn}
                                 onClick={() => {
-                                    const newUm = form.unidadesMedida.filter((_, i) => i !== index);
-                                    if (un.principal && newUm.length > 0) {
-                                        newUm[0].principal = true;
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm, unidadeMedidaId: newUm[0].unidadeMedidaId, multiplicadorUnidade: newUm[0].multiplicadorUnidade }));
-                                    } else {
-                                        setForm(prev => ({ ...prev, unidadesMedida: newUm }));
-                                    }
+                                    const { units, unidadeMedidaId, multiplicadorUnidade } = removeUnit(
+                                        form.unidadesMedida,
+                                        index
+                                    );
+                                    setForm(prev => ({
+                                        ...prev,
+                                        unidadesMedida: units,
+                                        ...(unidadeMedidaId !== undefined ? { unidadeMedidaId } : {}),
+                                        ...(multiplicadorUnidade !== undefined ? { multiplicadorUnidade } : {}),
+                                    }));
                                 }}
                                 title="Remover"
                             >
@@ -462,10 +479,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         type="button"
                         className={styles.secondaryButton}
                         onClick={() => {
-                            const prev = form.unidadesMedida || [];
                             setForm(p => ({
                                 ...p,
-                                unidadesMedida: [...prev, { unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: prev.length === 0 }]
+                                unidadesMedida: addUnit(p.unidadesMedida || []),
                             }));
                         }}
                     >

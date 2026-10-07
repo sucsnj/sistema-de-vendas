@@ -68,7 +68,7 @@ interface FormularioProdutoProps {
   - Digitar **Margem (%)** → recalcula Venda.
   - Digitar **Venda** → recalcula Margem a partir de compra/venda.
   - **Estoque:** em edição (`editarProdutoId`) vira um botão **"Ajustar"** que abre `ModalAjusteEstoque`; em cadastro novo é input numérico.
-- **Unidades de Medida:** lista de linhas com radio de principal, select de unidade, multiplicador ("Fator") e botão remover (X). Ao remover a principal, a primeira restante vira principal e sincroniza `unidadeMedidaId`/`multiplicadorUnidade`. Botões "+ Nova Unidade" (default `{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: !vazio }`) e "Cadastro de Unidades" (abre modal).
+- **Unidades de Medida:** lista de linhas com radio de principal, select de unidade, multiplicador ("Fator") e botão remover (X). As regras (selecionar principal, atualizar id/fator com sync quando principal, remover com promoção da primeira restante, adicionar nova com default `{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: !vazio }`) vivem em **`src/utils/productUnits.ts`** (funções puras `setUnitAsPrincipal`/`updateUnitId`/`updateUnitMultiplier`/`removeUnit`/`addUnit`). Botão "Cadastro de Unidades" abre modal.
 - **Código Interno:** desabilitado em edição (não pode ser alterado); placeholder avisa e menciona preenchimento automático quando em branco.
 - **Referência.**
 
@@ -76,10 +76,12 @@ interface FormularioProdutoProps {
 
 - `src/services/produtosService.ts` (tipos `CategoriaData`, `MarcaData`, `UnidadeMedidaData`, `FornecedorData`).
 - `src/utils/number.ts` (`parseNumber`) e `src/utils/formatter.ts` (`formatCurrencyNumber`).
+- `src/utils/productPrice.ts` (`calculateSalePrice`/`calculateMargin`) e `src/utils/productUnits.ts` (regras das unidades de medida).
 - `src/styles/produtos.module.css`; `@mui/icons-material` (`Add`, `MoreVert`, `Close`).
 
 ## Observações
 
 - Componente de **apresentação controlada**: não busca dados nem salva; apenas renderiza o formulário e chama `setForm`.
 - `ProdutoOptions`/`ProdutoFormData`/`ProdutoActions` servem de contrato para os modais e hooks de catálogo.
-- Alterar a unidade principal, o fator da principal ou remover a principal sincroniza `form.unidadeMedidaId`/`form.multiplicadorUnidade` (campos "resumo" usados no payload).
+- Alterar a unidade principal, o fator da principal ou remover a principal sincroniza `form.unidadeMedidaId`/`form.multiplicadorUnidade` (campos "resumo" usados no payload) — via `productUnits.ts`, extraído na refatoração dos handlers inline do componente.
+- Melhoria sutil ao refatorar: "+ Nova Unidade" passou a usar o estado atual (`p.unidadesMedida`) em vez do valor do closure (mesmo resultado na prática, sem estado obsoleto).

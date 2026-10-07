@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Camada cliente (fetch) para os endpoints de produtos/catálogo. Compartilha os tipos `ItemData`, `ServicoData`, `ServicoInput`, `MovimentacaoEstoqueData`, `MovimentacaoEstoqueInput`, `CategoriaData`, `MarcaData`, `FornecedorData`, `UnidadeMedidaData` e `PagedResult<T>`.
+Camada cliente (fetch) para os endpoints de produtos/catálogo. Compartilha os tipos `ItemData`, `ServicoData`, `ServicoInput`, `MovimentacaoEstoqueData`, `MovimentacaoEstoqueInput`, `CategoriaData`, `MarcaData`, `FornecedorData`, `UnidadeMedidaData`, `ProdutoImportado` e `PagedResult<T>`.
 
 ## Assinatura (funções exportadas)
 
@@ -53,6 +53,10 @@ export const buscarUnidadesMedida: () => Promise<UnidadeMedidaData[]>;
 export const criarUnidadeMedida: (sigla: string, descricao?: string) => Promise<{ id: number; message: string }>;
 export const deletarUnidadeMedida: (id: number) => Promise<{ message: string }>;
 export const atualizarUnidadeMedida: (id: number, sigla: string, descricao?: string) => Promise<{ message: string }>;
+
+// Importação de itens via XML de NF-e (/api/produtos/itens)
+export const previewInvoiceItems: (xml: string) => Promise<InvoiceItemsPreviewResult>;
+export const importInvoiceItem: (produto: ProdutoImportado) => Promise<InvoiceItemImportResult>;
 ```
 
 ### Tipos principais
@@ -75,6 +79,16 @@ interface PagedResult<T> {
 }
 
 interface BarcodeData { codigo_barras: string; principal: number; }
+
+// Importação via XML de NF-e
+interface ProdutoImportado {
+  cProd?: string; ean: string; descricao: string; descricaoOriginal?: string;
+  unidadeMedida: string; quantidade: number; valorUnitario: number;
+  ncm?: string; cfop?: string; existe?: boolean; itemIdExistente?: number;
+}
+
+interface InvoiceItemsPreviewResult { ok: boolean; produtos?: ProdutoImportado[]; error?: string; }
+interface InvoiceItemImportResult { ok: boolean; estoqueAtualizado?: boolean; duplicado?: boolean; error?: string; }
 ```
 
 ## Endpoints consumidos
@@ -83,6 +97,7 @@ interface BarcodeData { codigo_barras: string; principal: number; }
 - `GET/POST `/api/produtos/servicos`, `PUT/DELETE /api/produtos/servicos?id=`.
 - `GET /api/produtos/movimentacoes?item_id=`, `POST /api/produtos/movimentacoes`.
 - `GET/POST/PUT/DELETE /api/produtos/categorias`, `.../marcas`, `.../fornecedores`, `.../unidades-medida`.
+- `POST /api/produtos/itens` — `{ xml, preview: true }` (pré-visualização) ou `{ importar: true, produto }` (importação/vínculo).
 
 ## Observações
 
@@ -90,3 +105,4 @@ interface BarcodeData { codigo_barras: string; principal: number; }
 - `buscarServicoPorId` retorna o JSON direto (não normaliza para `{ items }` como `buscarServicos`).
 - `registrarProduto`/`atualizarProduto` tipam `dados` como `Omit<ItemData,...>`, mas as rotas esperam `ItemInput` (só `PRODUTO`) — ver `produtosDb.ts`.
 - A interface `ItemData.tipo` admite `'SERVICO'`, porém a rota `/api/produtos` aceita apenas `PRODUTO`; serviços têm rotas próprias.
+- Funções de importação (`previewInvoiceItems`/`importInvoiceItem`) retornam resultados estruturados (`{ ok, ... }`) ao invés de lançar (padrão usado pelo hook `useImportItens`).
