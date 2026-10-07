@@ -78,10 +78,18 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - **Decisão (opção A)**: regras de negócio (ex.: "valor > 0"), validação de IDs/parâmetros dos endpoints e toasts de carga/erro de API ficam **fora** do contrato — decisão documentada no ADR 0002.
 - Lint, tsc e build verdes.
 
+### Sessão de alinhamento (contexto do domínio)
+
+- Criado `docs/ALIGNMENT.md` — guia de alinhamento (negócio, usuários, fluxos, pontos de atenção) para a futura refatoração, alimentado com o contexto do dono.
+- Já registrado: estabelecimento (farmácia → expandido), origem do sistema, público-alvo (idosos, UX de "digitar valor + ENTER"), uso individual sem auth via Tailscale, rotina (registro de vendas é o fluxo principal) e invariantes que a refatoração não pode quebrar.
+- Seções 2 (fluxos) e 3 (regras de domínio) ainda *aguardando contexto*.
+- Índice (`docs/README.md`) e `docs/CONTEXT.md` atualizados com o novo doc.
+
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: centralizar toasts/mensagens de erro; abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
+- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: padronizar UX/UI; separar camadas (front/backend/banco); eliminar duplicação de lógica com funções compartilhadas em local único.
 - Nada do trabalho atual commitado (aguardando solicitação de commit).
 
 ## Futuras / Melhorias sugeridas

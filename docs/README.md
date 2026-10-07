@@ -5,6 +5,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 ## Para agentes de IA
 
 - [CONTEXT.md](CONTEXT.md) - guia de contexto rápido para agentes (evita releitura de código).
+- [ALIGNMENT.md](ALIGNMENT.md) - domínio do negócio, usuários, fluxos e pontos de atenção para a refatoração.
 - [PROJECT_STATUS.md](../../PROJECT_STATUS.md) - estado atual do projeto: últimas mudanças, pendentes e futuras.
 - [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
 - [adr/](adr/) - Decisões de Arquitetura (ADRs) do projeto.
@@ -27,6 +28,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [DOCS.md](DOCS.md) - arquitetura geral, fluxo de dados, dependências críticas, riscos e melhorias.
 - [CONTEXT.md](CONTEXT.md) - guia rápido para agentes: camadas, bancos, páginas e "tema → documentos".
+- [ALIGNMENT.md](ALIGNMENT.md) - guia de alinhamento: negócio, usuários, fluxos e pontos de atenção para a refatoração.
 - [adr/0001-documentacao-do-codigo.md](adr/0001-documentacao-do-codigo.md) - ADR: documentação do código por blocos.
 - [adr/0002-padrao-de-validacao-de-campos.md](adr/0002-padrao-de-validacao-de-campos.md) - ADR: padrão de validação de campos `{ ok, message }`.
 

@@ -51,6 +51,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 
 | Se você vai mexer em... | Leia primeiro |
 | --- | --- |
+| Alinhamento / domínio / refatoração | `docs/ALIGNMENT.md` (domínio, usuários, fluxos, pontos de atenção) |
 | Arquitetura geral / fluxo de dados | `docs/DOCS.md` |
 | Dashboard / vendas do dia | `docs/pages/index.md`, `docs/pages/api/vendas.md`, `docs/pages/api/venda-itens.md`, `docs/services/vendasService.md` |
 | Histórico / relatórios | `docs/pages/historico.md`, `docs/pages/resumo.md`, `docs/pages/api/mensais.md` |
