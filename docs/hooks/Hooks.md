@@ -45,10 +45,22 @@ Estado das consolidações mensais.
 Centraliza o **carrinho de compras** e o catálogo de seleção (produtos + serviços).
 
 - Parâmetro: `onToast?`.
-- Estado: `cartItems` (`CartItem[]`, tipo de `DailySaleForm`), `selecionarOpen`, `cartModalOpen`, `cartSearch`, `catalogItems` (`ItemData[]`), `loadingCatalog`, `totalCartCount`, `totalCartValue`.
+- Estado: `cartItems` (`CartItem[]`, tipo de `src/types/sale.ts`), `selecionarOpen`, `cartModalOpen`, `cartSearch`, `catalogItems` (`ItemData[]`), `loadingCatalog`, `totalCartCount`, `totalCartValue`.
 - Ações: `handleCartClick()` (abre seleção), `closeSelecao()`, `openCarrinho()`, `closeCarrinho()`, `handleManageCart()` (fecha seleção e abre carrinho), `handleAddToCart(item)` (+1, agrupa por id+tipo), `handleRemoveFromCart(item)` (−1; remove quando chega a 0), `handleUpdateQuantity(id, tipo, qty)` (remove se `qty <= 0`), `handleRemoveItem(id, tipo)`, `handleClearCart()`.
 - Interno: `buscarItensCatalogo(query)` com **debounce de 250ms** enquanto o modal de seleção estiver aberto; busca produtos ativos e serviços via `produtosService` (máximo 50 cada) e mescla ordenado por nome.
 - Observação: serviços são convertidos para `ItemData` com valores de catálogo padrão (unidade 21, marca 1, fornecedor 1, estoque 0).
+
+### `useDailySaleForm` — `useDailySaleForm.ts`
+
+Centraliza **estado, validação, ações e efeitos do formulário de venda diária** (`DailySaleForm`), extraídos do componente na refatoração. O componente ficou apresentacional (ver `docs/components/DailySaleForm.md`).
+
+- Parâmetros: `{ selectedDate, onSaleAdded? }`.
+- Estado: `value`, `observations` (+ `setObservations`), `loading`, `clearing`, `calculatedValue`, `pixModalOpen` (+ `setPixModalOpen`), `pixPayload`, `pixAmount`.
+- Refs: `valueInputRef`, `observationsTextareaRef`, `formRef`.
+- Ações/Handlers: `handleKeyDown` (filtro de teclas do campo de valor), `handleValueChange` (sanitiza e recalcula), `handlePixClick` (valida valor e abre `ModalPix` com payload EMVCo), `handleSubmit` (cadeia de validação ADR 0002 → `registrarVenda` → limpeza/foco), `handleClear`, `addOperator(op)` (botões `+ − × ÷`).
+- Efeitos: sincronização do campo com o total do carrinho (`totalCartValue`, via `useCart`), ESC limpa o formulário, auto-foco/visibilidade do input (a cada 1 min e 3 min).
+- Interno: usa `useCart(showToast)` (mesmo carrinho compartilhado com `EditSaleForm`) e `evaluateExpression` (`src/utils/calculator.ts`) para o cálculo da expressão do campo de valor.
+- Observação: identificadores renomeados de pt-BR para inglês ao tocar no módulo (ADR 0004): `valor`→`value`, `observacoes`→`observations`, `limpando`→`clearing`.
 
 ### `useFiltro` — `useFiltro.ts`
 

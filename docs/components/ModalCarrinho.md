@@ -32,7 +32,7 @@ interface ModalCarrinhoProps {
 const ModalCarrinho: React.FC<ModalCarrinhoProps>;
 ```
 
-`CartItem` é o tipo exportado por `DailySaleForm`:
+`CartItem` é o tipo de `src/types/sale.ts` (movido de `DailySaleForm` na refatoração):
 
 ```ts
 interface CartItem {

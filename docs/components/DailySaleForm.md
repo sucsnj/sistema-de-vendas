@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Componente de formulário usado na página principal para registrar vendas diárias. Também mostra histórico recente e permite operações de edição/exclusão.
+Formulário de **venda diária** usado na página principal (`/`). Componente **apresentacional**: a lógica (estado, validação, ações, efeitos) foi extraída para o hook `useDailySaleForm` (refatoração dos componentes grandes — ver `docs/hooks/Hooks.md`).
 
 ## Contexto
 
@@ -10,26 +10,13 @@ Utilizado no Dashboard de Vendas para registrar vendas diárias.
 
 ## Responsabilidades
 
-- Exibir campos de data, valor e observações.
-- Permitir cálculos matemáticos no campo de valor (`+`, `-`, `*`, `/`).
-- Chamar `registrarVenda()` do serviço de vendas.
-- Mostrar mensagens com `Toast`.
-- Exibir as últimas 4 vendas e ações rápidas de edição/exclusão.
+- Renderizar os campos (data, valor com calculadora, observações) e botões (Registrar/Limpar, operadores `+ − × ÷`, carrinho, PIX).
+- Ligar os controles ao hook `useDailySaleForm` (que valida, calcula a expressão, integra o carrinho e envia ao serviço).
+- Renderizar os modais do fluxo: `ModalSelecionarItens` (catálogo), `ModalCarrinho` e `ModalPix`.
 
 ## Assinatura
 
 ```ts
-export interface CartItem {
-  id: number;
-  tipo: 'PRODUTO' | 'SERVICO';
-  nome: string;
-  preco_venda: number;
-  quantidade: number;
-  codigo_interno?: string;
-  referencia?: string;
-  estoque?: number;
-}
-
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
   selectedDate: string;
@@ -45,27 +32,17 @@ const DailySaleForm: React.FC<DailySaleFormProps>;
 
 ## Props
 
-- `sales` - lista de vendas atuais (default `[]`).
 - `selectedDate` - data selecionada para registro.
 - `onDateChange` - callback para atualizar data.
 - `onSaleAdded` - callback após inserir venda.
-- `onEditSale` - callback para iniciar edição.
-- `onDeleteSale` - callback para excluir.
-- `showHistory` - controla se o painel de histórico aparece (default `true`).
+- `sales`, `onEditSale`, `onDeleteSale`, `showHistory` - mantidos na assinatura para compatibilidade (hoje não usados pelo componente).
 
 ## Dependências
 
-- `formatter` (formatação de moeda).
-- `date` (formatação e timestamp).
-- `validation` (`validateCurrency`, `validateDate`).
-- `expr-eval` (`Parser`) - cálculo de expressões no campo de valor.
-- `useShortcuts` (captura de atalhos de teclado).
-- `highlightField` (`src/utils/forms`).
-- `useCart` (estado do carrinho, compartilhado com `EditSaleForm`).
-- `buildPixPayload` (`src/utils/pix`) + `ModalPix` (geração de QR PIX).
-- `ModalCarrinho`, `ModalSelecionarItens`.
-- `Toast`.
-- `useEffect`, `useRef`, `useState`.
+- `useDailySaleForm` (`src/hooks/useDailySaleForm.ts`) — toda a lógica de estado/ações.
+- `formatCurrency` (`src/utils/formatter`) — exibição do valor calculado.
+- `ModalCarrinho`, `ModalSelecionarItens`, `ModalPix` (PIX/QR).
+- Ícones MUI (`AddShoppingCartIcon`, `QrCode2Icon`).
 
 ## Exemplo de uso
 
@@ -83,9 +60,6 @@ const DailySaleForm: React.FC<DailySaleFormProps>;
 
 ## Observações
 
-- Envia dados para `/api/vendas` via `src/services/vendasService`.
-- Usa `expr-eval` para calcular expressões no campo de valor.
-- Possui lógica de limpeza com `Escape` para limpar o campo.
-- O campo de valor filtra teclas: só números, operadores `+ - * / ( ) . ,` e teclas de navegação; bloqueia símbolos duplicados e operadores consecutivos.
-- Gera payload PIX (via `buildPixPayload`) e abre `ModalPix` com o QR Code para pagamento.
-- Exibe o total do carrinho (`totalCartValue`) e integra com o formulário de edição (`EditSaleForm`).
+- `CartItem`/`CatalogItemType` (tipo do carrinho) foram movidos para `src/types/sale.ts` (compartilhados com `useCart`, `ModalCarrinho`, `ModalSelecionarItens` e `EditSaleForm`).
+- O `<style jsx>` permanece no componente (decisão de padronização de estilos ainda pendente).
+- O hook documenta as regras removidas daqui: filtro de teclas, `expr-eval` (via `evaluateExpression`), sincronização com o carrinho, PIX, ESC/limpar, auto-foco.

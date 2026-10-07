@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { buscarProdutos, buscarServicos, ItemData, ServicoData } from '../services/produtosService';
-import type { CartItem } from '../components/DailySaleForm';
+import type { CartItem } from '../types/sale';
 
 // Função de notificação opcional (toast) usada pelo formulário de registro e de edição
 type CartToast = (message: string, type?: 'success' | 'error' | 'info') => void;

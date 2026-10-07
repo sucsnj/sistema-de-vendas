@@ -21,6 +21,7 @@ Pacote de utilitários usados em toda a aplicação para formatação, parsing e
 - `qrPix.ts` - renderização de QR Code (`renderQr`, `generateHighResPng`, `pulseQr`, `QR_SIZE`) — movido de `src/components/QrPix.tsx` (Fase 0 da refatoração).
 - `shortcuts.tsx` - atalhos de teclado.
 - `toast.ts` - **store singleton de notificações** (`showToast`, `dismissToast`, `subscribeToast`, `getToastSnapshot`/`getServerToastSnapshot` para `useSyncExternalStore`) — ver ADR 0003.
+- `calculator.ts` - avaliação de expressões matemáticas puras do campo de valor das vendas (`evaluateExpression`, via `expr-eval`) — extraído de `DailySaleForm` na refatoração (usado por `useDailySaleForm`).
 - `validation.ts` - validações centralizadas de campos no contrato `{ ok, message }` (ADR 0002): `validateRequired`, `validateEmail`, `validateCurrency`, `validateNumber`, `validateDate`.
 
 ## Observações

@@ -1,30 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
-import { useToast } from '../hooks/useToast';
-import { registrarVenda, VendaDiaria } from '../services/vendasService';
-import { Parser } from 'expr-eval';
-import { formatCurrency } from '../utils/formatter';
-import { parseCurrency } from '../utils/number';
-import { useShortcuts } from '../utils/shortcuts';
-import { validateRequired, validateCurrency, validateDate } from '../utils/validation';
-import { highlightField } from '../utils/forms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import { formatCurrency } from '../utils/formatter';
+import { useDailySaleForm } from '../hooks/useDailySaleForm';
+import type { VendaDiaria } from '../services/vendasService';
 import ModalCarrinho from './ModalCarrinho';
-import ModalSelecionarItens from './ModalSelecionarItens';
 import ModalPix from './ModalPix';
-import { useCart } from '../hooks/useCart';
-import { buildPixPayload } from '../utils/pix';
-
-export interface CartItem {
-  id: number;
-  tipo: 'PRODUTO' | 'SERVICO';
-  nome: string;
-  preco_venda: number;
-  quantidade: number;
-  codigo_interno?: string;
-  referencia?: string;
-  estoque?: number;
-}
+import ModalSelecionarItens from './ModalSelecionarItens';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -36,30 +17,35 @@ interface DailySaleFormProps {
   showHistory?: boolean;
 }
 
+// Formulário de venda diária (dashboard `/`). Componente apresentacional:
+// a lógica de estado/validação/ações vive em `useDailySaleForm`
+// (ver docs/components/DailySaleForm.md e docs/hooks/Hooks.md).
 const DailySaleForm: React.FC<DailySaleFormProps> = ({
   selectedDate,
   onDateChange,
   onSaleAdded,
 }) => {
-  const [valor, setValor] = useState('');
-  const [observacoes, setObservacoes] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [limpando] = useState(false);
-  const valorInputRef = useRef<HTMLInputElement | null>(null);
-  const observacoesTextareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
-  const [pixModalOpen, setPixModalOpen] = useState(false);
-  const [pixPayload, setPixPayload] = useState('');
-  const [pixAmount, setPixAmount] = useState<string | null>(null);
-
-  // Notificações (toast) do store global
-  const { showToast } = useToast();
-
-  // Estado e ações do carrinho (catálogo, seleção e gerenciamento), compartilhado
-  // com o formulário de edição através do hook useCart
   const {
+    value,
+    observations,
+    setObservations,
+    loading,
+    clearing,
+    calculatedValue,
+    pixModalOpen,
+    setPixModalOpen,
+    pixPayload,
+    pixAmount,
+    valueInputRef,
+    observationsTextareaRef,
+    formRef,
+    handleKeyDown,
+    handleValueChange,
+    handlePixClick,
+    handleSubmit,
+    handleClear,
+    addOperator,
     cartItems,
-    setCartItems,
     cartSearch,
     setCartSearch,
     catalogItems,
@@ -76,312 +62,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     handleRemoveItem,
     handleClearCart,
     totalCartCount,
-    totalCartValue,
-  } = useCart(showToast);
-
-  // Constante com as teclas permitidas para o input de valor
-  const allowedKeys = [
-    "Backspace", "Delete", "Enter", "Tab", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"
-  ];
-
-  // Quando uma tecla é pressionada no input de valor, verifica se é permitida
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const { key, currentTarget } = event;
-
-    // Teclas permitidas: números, operadores matemáticos, parênteses, vírgula e ponto
-    if (allowedKeys.includes(key)) return;
-    if (/^[0-9]$/.test(key)) return;
-    if (["+", "-", "*", "/", "(", ")", ".", ","].includes(key)) {
-      const value = currentTarget.value;
-      const lastChar = value.slice(-1);
-
-      // Bloquear duplicação do mesmo símbolo
-      if (lastChar === key) {
-        event.preventDefault();
-        return;
-      }
-
-      // Bloquear dois operadores diferentes seguidos (ex: "+*")
-      if (/[+\-*/.,]/.test(lastChar) && /[+\-*/.,]/.test(key)) {
-        event.preventDefault();
-        return;
-      }
-      return;
-    };
-
-    // Bloquear qualquer outro caractere
-    event.preventDefault();
-  };
-
-  // Calcula o valor do campo de valor
-  const calculateValue = (input: string) => {
-    if (!input.trim()) {
-      setCalculatedValue(0);
-      return;
-    }
-    try {
-      // Substituir vírgulas por pontos para cálculo
-      const expression = input.replace(/,/g, '.');
-      const parser = new Parser();
-      const result = parser.evaluate(expression);
-      if (typeof result === 'number' && !isNaN(result)) {
-        setCalculatedValue(result);
-        return;
-      }
-    } catch {
-      // Se erro, tentar remover o último operador
-      try {
-        let expression = input.replace(/,/g, '.');
-        const lastChar = expression.slice(-1);
-        if (/[+\-*/]$/.test(lastChar)) {
-          expression = expression.slice(0, -1);
-          const parser = new Parser();
-          const result = parser.evaluate(expression);
-          if (typeof result === 'number' && !isNaN(result)) {
-            setCalculatedValue(result);
-            return;
-          }
-        }
-      } catch {
-        // Ignorar
-      }
-    }
-    setCalculatedValue(null);
-  };
-
-  const formatCartValue = (val: number): string => {
-    return val.toFixed(2).replace('.', ',');
-  };
-
-  const prevCartValueRef = useRef<number>(0);
-
-  // Sempre que o valor total do carrinho mudar, atualiza o campo input adicionando +valor_do_carrinho
-  useEffect(() => {
-    const prevCartVal = prevCartValueRef.current;
-    if (prevCartVal === totalCartValue) return;
-
-    const oldCartStr = prevCartVal > 0 ? formatCartValue(prevCartVal) : '';
-    const newCartStr = totalCartValue > 0 ? formatCartValue(totalCartValue) : '';
-
-    setValor((currentValor) => {
-      let base = currentValor;
-
-      if (oldCartStr) {
-        if (currentValor.endsWith('+' + oldCartStr)) {
-          base = currentValor.slice(0, -(oldCartStr.length + 1));
-        } else if (currentValor.endsWith(oldCartStr)) {
-          base = currentValor.slice(0, -oldCartStr.length);
-        } else if (currentValor === oldCartStr) {
-          base = '';
-        }
-      }
-
-      let updatedValor = base;
-      if (newCartStr) {
-        const trimmedBase = base.trim();
-        if (!trimmedBase) {
-          updatedValor = newCartStr;
-        } else if (/[+\-*/]$/.test(trimmedBase)) {
-          updatedValor = trimmedBase + newCartStr;
-        } else {
-          updatedValor = trimmedBase + '+' + newCartStr;
-        }
-      }
-
-      calculateValue(updatedValor);
-      return updatedValor;
-    });
-
-    prevCartValueRef.current = totalCartValue;
-  }, [totalCartValue]);
-
-  // apagar se pressionar esc no teclado
-  useShortcuts(['Escape'], () => {
-    setCalculatedValue(0); // limpa o somatório
-    setValor('');
-    setCartItems([]);
-    prevCartValueRef.current = 0;
-  });
-
-  // botão para limpar valor e observações
-  const handleClear = () => {
-    setCartItems([]);
-    prevCartValueRef.current = 0;
-    setValor('');
-    setObservacoes('');
-    setCalculatedValue(0);
-    // manda o foco para o input de valor
-    valorInputRef.current?.focus();
-  };
-
-  const handlePixClick = () => {
-    const valorCheck = validateRequired(valor, 'Valor');
-    if (!valorCheck.ok) {
-      showToast(valorCheck.message ?? 'Informe o valor da venda.', 'error');
-      valorInputRef.current?.focus();
-      return;
-    }
-
-    const valueFromInput = parseCurrency(valor);
-    if (valueFromInput == null) {
-      showToast(validateCurrency(valor).message ?? 'Valor inválido.', 'error');
-      valorInputRef.current?.focus();
-      return;
-    }
-
-    if (valueFromInput < 0) {
-      showToast('Não pode haver pix negativo.', 'info');
-      highlightField(observacoesTextareaRef);
-      setLoading(false);
-      return;
-    }
-
-    const amount = valueFromInput > 0 ? valueFromInput.toFixed(2) : null;
-
-    const pixKey = process.env.NEXT_PUBLIC_PIX_KEY ?? '';
-    const merchantName = process.env.NEXT_PUBLIC_PIX_NAME ?? '';
-    const merchantCity = process.env.NEXT_PUBLIC_PIX_CITY ?? '';
-
-    if (!pixKey || !merchantName || !merchantCity) {
-      showToast('Configuração PIX incompleta no .env', 'error');
-      return;
-    }
-
-    const { payload } = buildPixPayload({
-      pixKey,
-      merchantName,
-      merchantCity,
-      amount,
-    });
-
-    setPixPayload(payload);
-    setPixAmount(amount);
-    setPixModalOpen(true);
-    showToast('QR Code PIX gerado!', 'success');
-  };
-
-  // envia dados para o serviço de vendas
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Validar data e valor antes de enviar (contrato ADR 0002)
-      const dataCheck = validateDate(selectedDate);
-      if (!dataCheck.ok) {
-        showToast(dataCheck.message ?? 'Data inválida.', 'error');
-        setLoading(false);
-        return;
-      }
-
-      const valueFromInput = calculatedValue !== null ? calculatedValue : parseCurrency(valor);
-
-      // Toast para o campo valor vazio
-      const valorCheck = validateRequired(valor, 'Valor');
-      if (!valorCheck.ok) {
-        showToast(valorCheck.message ?? 'Informe o valor da venda.', 'error');
-        highlightField(valorInputRef);
-        setLoading(false);
-        valorInputRef.current?.focus();
-        return;
-      }
-
-      // Toast para o campo valor inválido (formato monetário digitado)
-      if (valueFromInput == null) {
-        highlightField(valorInputRef);
-        showToast(validateCurrency(valor).message ?? 'Valor inválido.', 'error');
-        setLoading(false);
-        return;
-      }
-
-      // Se for 0 ou menos, pede o preenchimento do campo de observações
-      if (observacoes.trim() === '' && valueFromInput <= 0) {
-        showToast('Informe o motivo da venda.', 'info');
-        highlightField(observacoesTextareaRef);
-        setLoading(false);
-        return;
-      }
-
-      // Registra a venda
-      await registrarVenda(
-        selectedDate,
-        valueFromInput,
-        observacoes,
-        cartItems
-      );
-
-      if (formRef.current) {
-        const top =
-          formRef.current.getBoundingClientRect().top +
-          window.scrollY -
-          80;
-
-        window.scrollTo({
-          top,
-          behavior: 'smooth',
-        });
-      }
-
-      showToast(`Venda registrada com sucesso: R$ ${valueFromInput.toFixed(2)}`, 'success');
-      setValor('');
-      setObservacoes('');
-      setCalculatedValue(0);
-      setCartItems([]);
-      prevCartValueRef.current = 0;
-      valorInputRef.current?.focus();
-      valorInputRef.current?.select();
-      if (onSaleAdded) {
-        onSaleAdded();
-      }
-    } catch {
-      showToast('Erro ao registrar venda.', 'error');
-    }
-    setLoading(false);
-  };
-
-  // Trata de manter o input de valor visível a cada 3 minutos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const input = valorInputRef.current;
-      if (input) {
-        const rect = input.getBoundingClientRect();
-
-        const estaVisivel =
-          rect.top >= 70 && // distancia do topo
-          rect.bottom <= window.innerHeight;
-
-        if (!estaVisivel) {
-          input?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-          valorInputRef.current?.focus({ preventScroll: true });
-        }
-      }
-    }, 180000); // 3 minutos
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Trás o foco para o input de venda a cada 1 minuto
-  useEffect(() => {
-    const interval = setInterval(() => {
-      valorInputRef.current?.focus();
-    }, 60000); // 1 minuto
-    return () => clearInterval(interval);
-  }, []);
-
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  const addOperator = (operator: string) => {
-    const novoValor = valor + operator;
-    setValor(novoValor);
-    calculateValue(novoValor);
-
-    requestAnimationFrame(() => {
-      valorInputRef.current?.focus();
-    });
-  };
+  } = useDailySaleForm({ selectedDate, onSaleAdded });
 
   return (
     <>
@@ -390,7 +71,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         <div className="sale-form-grid">
           <div className="sale-form-fields">
             <label>
-              {/* Data:  */}
+              {/* Data: */}
               <input
                 type="date"
                 value={selectedDate}
@@ -440,19 +121,13 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               {/* Valor: */}
               <div className="input-with-icon-wrapper">
                 <input
-                  ref={valorInputRef}
+                  ref={valueInputRef}
                   type="text"
                   onKeyDown={handleKeyDown}
                   inputMode="decimal"
                   enterKeyHint="done"
-                  value={valor}
-                  onChange={(e) => {
-                    // Limpa o input em caso de caracteres inválidos
-                    const value = e.target.value.replace(/[^0-9+\-*/(),.]/g, "");
-                    e.target.value = value;
-                    setValor(e.target.value);
-                    calculateValue(e.target.value);
-                  }}
+                  value={value}
+                  onChange={handleValueChange}
                   autoFocus
                   className="flex-grow-valor"
                   placeholder={'Valor'}
@@ -483,9 +158,9 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <label>
               {/* Observações: */}
               <textarea
-                value={observacoes}
-                ref={observacoesTextareaRef}
-                onChange={(e) => setObservacoes(e.target.value)}
+                value={observations}
+                ref={observationsTextareaRef}
+                onChange={(e) => setObservations(e.target.value)}
                 className="flex-grow-observacoes"
                 placeholder={'Observações...'}
               />
@@ -493,20 +168,21 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <div className="buttons-wrapper">
               <button
                 type="submit"
-                className='register-button'
-                disabled={loading}>
+                className="register-button"
+                disabled={loading}
+              >
                 {loading ? 'Registrando...' : 'Registrar'}
               </button>
               <button
                 type="button"
-                className='clear-button'
-                disabled={limpando}
-                onClick={handleClear}>
-                {limpando ? 'Limpando...' : 'Limpar'}
+                className="clear-button"
+                disabled={clearing}
+                onClick={handleClear}
+              >
+                {clearing ? 'Limpando...' : 'Limpar'}
               </button>
             </div>
           </div>
-
         </div>
       </form>
       <ModalSelecionarItens
@@ -663,7 +339,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           min-width: 110px;
           text-align: right;
           margin-right: 10px;
-          
+
           display: flex;
           align-items: center;
           justify-content: space-between;

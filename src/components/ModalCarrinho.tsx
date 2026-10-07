@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { formatCurrency } from '../utils/formatter';
 import { useFocusTrap } from '../utils/focus';
-import { CartItem } from './DailySaleForm';
+import type { CartItem } from '../types/sale';
 
 interface ModalCarrinhoProps {
   isOpen: boolean;

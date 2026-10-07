@@ -147,11 +147,11 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Hooks
 
-- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`.
+- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`, `useDailySaleForm`.
 
 ## Tipos
 
-- [types/Types.md](types/Types.md) - tipos compartilhados (`categoria.ts`).
+- [types/Types.md](types/Types.md) - tipos compartilhados (`categoria.ts`, `sale.ts` com `CartItem`).
 
 ## Utilitários
 

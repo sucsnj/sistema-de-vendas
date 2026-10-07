@@ -117,15 +117,25 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - `src/utils/productPrice.ts` renomeado para o novo padrão (antes `produtoPreco.ts`; ver acima).
 - **`FormPix.tsx` removido** (legado sem chamadas ativas, decisão do dono); docs atualizados em `docs/components/Pix.md` e `docs/README.md`.
 
+### Refatoração de `DailySaleForm` (primeiro componente grande)
+
+- **`src/types/sale.ts` criado** — `CartItem`/`CatalogItemType` movidos do componente `DailySaleForm` para a camada de tipos (compartilhados por `useCart`, `ModalCarrinho`, `ModalSelecionarItens` e `DailySaleForm`/`EditSaleForm`); importadores atualizados (importação `type`).
+- **`src/utils/calculator.ts` criado** — `evaluateExpression(input)` puro/testável (`expr-eval`) com a regra do campo de valor (vírgula→ponto, fallback sem o último operador).
+- **`src/hooks/useDailySaleForm.ts` criado** — concentra estado/validação/ações/efeitos do formulário: filtro de teclas, sanitização do valor, sincronização com o total do carrinho, ESC/limpar, PIX, `handleSubmit` (cadeia de validação ADR 0002 → `registrarVenda` → limpeza/foco), auto-foco (1min/3min); usa `useCart(showToast)` e `evaluateExpression`.
+- **`DailySaleForm.tsx` reescrito fino** (691 → ~417 linhas): apresentacional, apenas JSX + `<style jsx>` + ligação ao hook. **Comportamento preservado** (nenhuma regra alterada).
+- **ADR 0004 aplicado no módulo**: `valor`→`value`, `observacoes`→`observations`, `limpando`→`clearing`, `estaVisivel`→`isVisible`, comentários/regra do `expr-eval` extraída.
+- Docs: `docs/components/DailySaleForm.md` (reescrito), `docs/hooks/Hooks.md` (nova seção `useDailySaleForm` + nota do `CartItem`), `docs/types/Types.md` (nova seção `sale.ts`), `docs/components/ModalCarrinho.md` (origem do tipo), `docs/utils/Utils.md` (`calculator.ts`), `docs/README.md` (índice).
+- Verificação: lint, tsc e build de produção verdes.
+
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
-- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003) e padrão de nomenclatura (ADR 0004) concluídos. Próximos alvos:
-  - **Grandes componentes** mistos (UI+estado+validação+API): `DailySaleForm`, `ModalCarrinho`, `ModalImportItens`, `FormularioProduto`, `ModalSelecionarItens` — extraídas hooks/serviços/subcomponentes.
+- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004) e `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`) concluídos. Próximos alvos:
+  - **Grandes componentes** mistos (UI+estado+validação+API): `ModalCarrinho`, `ModalImportItens`, `FormularioProduto`, `ModalSelecionarItens` — extraídas hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
   - **Renomeação incremental** dos identificadores pt-BR restantes para inglês (ADR 0004), ao tocar nos módulos.
   - **Decisão pendente do dono**: padronização de estilos (CSS Modules × classes globais × inline).
-- Commit das mudanças atuais realizado na branch `refactor`.
+- Commit das mudanças atuais **não realizado** (por solicitação do usuário nesta rodada).
 
 ## Futuras / Melhorias sugeridas
 

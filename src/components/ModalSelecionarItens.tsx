@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { formatCurrency } from '../utils/formatter';
 import { useFocusTrap } from '../utils/focus';
 import { ItemData } from '../services/produtosService';
-import { CartItem } from './DailySaleForm';
+import type { CartItem } from '../types/sale';
 
 interface ModalSelecionarItensProps {
   isOpen: boolean;
