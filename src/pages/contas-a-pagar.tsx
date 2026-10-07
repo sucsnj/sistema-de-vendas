@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import Toast from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 import Agenda from '@/components/Agenda';
 import Resumo from '@/components/Resumo';
 import ContasAPagarHeader from '@/components/ContasAPagarHeader';
@@ -51,9 +51,6 @@ const ContasAPagar: React.FC = () => {
     if (typeof window === 'undefined') return hoje;
     return localStorage.getItem('filtroVencimentoAte') || hoje;
   });
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
   const distribuidoraInputRef = useRef<HTMLInputElement | null>(null);
   const valorInputRef = useRef<HTMLInputElement | null>(null);
   const dataInputRef = useRef<HTMLInputElement | null>(null);
@@ -88,13 +85,7 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  }, []);
-
-  const closeToast = () => setToastOpen(false);
+  const { showToast } = useToast();
 
   const loadContasMes = useCallback(async () => {
     try {
@@ -428,8 +419,6 @@ const ContasAPagar: React.FC = () => {
         <Resumo contasAno={contasAno} ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
 
       </main>
-
-      <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
 
       <ContasAPagarModals
         selectedConta={selectedConta}

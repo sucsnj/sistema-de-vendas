@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
-import Toast from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 import {
     buscarProdutos,
     buscarServicos,
@@ -93,10 +93,8 @@ const CadastroPage: React.FC = () => {
     const [modalImportOpen, setModalImportOpen] = useState(false);
     const [importFile, setImportFile] = useState<File | null>(null);
 
-    // Toast notifications
-    const [toastOpen, setToastOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-    const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
+    // Notificações (toast) do store global
+    const { showToast } = useToast();
 
     // Controle de alterações não salvas
     const [isDirty, setIsDirty] = useState(false);
@@ -118,14 +116,6 @@ const CadastroPage: React.FC = () => {
     // Refs para focar campos
     const nomeInputRef = useRef<HTMLInputElement | null>(null);
     const barcodeInputRef = useRef<HTMLInputElement | null>(null);
-
-    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
-        setToastMessage(message);
-        setToastType(type);
-        setToastOpen(true);
-    }, []);
-
-    const closeToast = () => setToastOpen(false);
 
     // Carrega opções auxiliares
     const carregarAuxiliares = useCallback(async () => {
@@ -923,15 +913,6 @@ const CadastroPage: React.FC = () => {
                         }}
                     />
                 )}
-
-                {/* Notificações Toast */}
-                <Toast
-                    open={toastOpen}
-                    message={toastMessage}
-                    type={toastType}
-                    onClose={closeToast}
-                    position="top-right"
-                />
 
                 {/* Diálogo de confirmação: descartar alterações não salvas */}
                 <ConfirmDialog

@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
 import { parseNumber } from '../utils/number';
-import { formatCurrencyNumber } from '../utils/formatter';
+import { calculateMargin, calculateSalePrice } from '../utils/productPrice';
 import {
     CategoriaData,
     MarcaData,
@@ -280,13 +280,13 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             const margemValor = parseNumber(form.margemLucro);
 
                             if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
-                                const novoPrecoVenda = formatCurrencyNumber(compraValor * (1 + margemValor / 100), 2);
+                                const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
                                 setForm(prev => ({ ...prev, precoCompra, precoVenda: String(novoPrecoVenda) }));
                                 return;
                             }
 
                             if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
-                                const novaMargem = formatCurrencyNumber((vendaValor / compraValor - 1) * 100, 2);
+                                const novaMargem = calculateMargin(compraValor, vendaValor);
                                 setForm(prev => ({ ...prev, precoCompra, margemLucro: String(novaMargem) }));
                                 return;
                             }
@@ -313,7 +313,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             const margemValor = parseNumber(margemLucro);
 
                             if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
-                                const novoPrecoVenda = formatCurrencyNumber(compraValor * (1 + margemValor / 100), 2);
+                                const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
                                 setForm(prev => ({ ...prev, margemLucro, precoVenda: String(novoPrecoVenda) }));
                                 return;
                             }
@@ -340,7 +340,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                             const vendaValor = parseNumber(precoVenda);
 
                             if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
-                                const novaMargem = formatCurrencyNumber((vendaValor / compraValor - 1) * 100, 2);
+                                const novaMargem = calculateMargin(compraValor, vendaValor);
                                 setForm(prev => ({ ...prev, precoVenda, margemLucro: String(novaMargem) }));
                                 return;
                             }

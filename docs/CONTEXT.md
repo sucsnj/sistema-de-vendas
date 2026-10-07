@@ -67,12 +67,13 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 | Backup | `docs/pages/api/backup.md`, `docs/pages/api/contas-backup.md` |
 | Componente/hook/util específico | procurar em `docs/components/`, `docs/hooks/`, `docs/utils/` |
 | Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/utils/Utils.md` (`validation.ts`, `forms.tsx`) |
+| Notificações / toast | `docs/components/Toast.md`, `docs/utils/Utils.md` (`toast.ts`), `docs/adr/0003-padrao-de-notificacoes-toast.md` |
 
 ## Regras para o agente
 
 1. **Estado do projeto.** Leia `PROJECT_STATUS.md` (raiz) antes de trabalhar; ele registra o estado atual, últimas mudanças, pendentes e futuras.
 2. **Documentação primeiro.** Consulte `docs/` antes do código. Se precisou ler o código, atualize o doc correspondente em `docs/` (e o índice `docs/README.md` se for doc novo).
-3. **Documentar mudanças.** Ao concluir modificações de código, atualize `PROJECT_STATUS.md` e o doc afetado em `docs/` (e `docs/CONTEXT.md` se o contexto geral mudar).
+3. **Documentar mudanças.** Ao concluir modificações de código, atualize `PROJECT_STATUS.md` e o doc afetado em `docs/` (e `docs/CONTEXT.md` se o contexto geral mudar). Siga `docs/documentation-guidelines.md` (padrão de documentação inclusive para ADRs).
 4. **Next.js novo.** Esta versão do Next tem breaking changes. Cheque `node_modules/next/dist/docs/` quando for escrever código (ver `AGENTS.md`).
 5. **Timezones.** Datas são tratadas em `America/Recife`.
 6. **Validação.** Validação de campos em `src/utils/validation.ts` no contrato `{ ok, message }` (ADR 0002); parsing em `number.ts`/`date.ts`; regras de negócio fora da validação (ex.: `edit.ts`).

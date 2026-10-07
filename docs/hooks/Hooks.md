@@ -8,10 +8,12 @@ Hooks de estado do cliente, usados pelas páginas e componentes do app.
 
 ### `useToast` — `useToast.ts`
 
-Gerencia notificações (Toast).
+Consome o **store singleton** de notificações (`src/utils/toast.ts`) via `useSyncExternalStore` — **sem estado local**. É a única fonte de toast do app (um host `<Toaster/>` único em `_app`).
 
 - Estado: `toastOpen`, `toastMessage`, `toastType` (`'success' | 'error' | 'info'`, default `'info'`), `toastDuration` (ms, default 3000; `null` = permanece aberto).
-- Ações: `showToast(message, type?, duration?)`, `closeToast()`.
+- Ações: `showToast(message, type?, duration?)`, `closeToast()` — funções estáveis (módulo), seguras como dependência de `useCallback`.
+- Robusto em SSR: `getServerSnapshot` retorna o estado inicial (nenhum toast no servidor).
+- Padrão documentado em `docs/components/Toast.md` e `docs/adr/0003-padrao-de-notificacoes-toast.md`.
 
 ### `useConfirmDialog` — `useConfirmDialog.ts`
 
@@ -104,4 +106,4 @@ Todos os quatro (`useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`
 
 ## Observações
 
-- Padrão geral: estado React local + chamadas a `src/services/*`; notificações são injetadas por `useToast`.
+- Padrão geral: estado React local + chamadas a `src/services/*`; notificações vêm do store global de toasts (`useToast` → `utils/toast.ts`, ver ADR 0003).

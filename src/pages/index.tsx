@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import DailySaleForm from '../components/DailySaleForm';
 import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
-import Toast from '../components/Toast';
 import ExportButtons from '../components/ExportButtons';
 import EditSaleForm from '../components/EditSaleForm';
 import { useToast } from '../hooks/useToast';
@@ -30,7 +29,7 @@ const Home: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(hoje);
 
   // Notificações (toast) exibidas na página
-  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  const { showToast } = useToast();
   // Estado e ações de vendas (carregar, editar, excluir, consolidar, backup)
   const {
     sales,
@@ -144,14 +143,6 @@ const Home: React.FC = () => {
             </button>
           </div>
         </div>
-        <Toast
-          open={toastOpen}
-          message={toastMessage}
-          type={toastType}
-          duration={toastDuration}
-          onClose={closeToast}
-          position="top-right"
-        />
       </div>
     </>
   );

@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **22/09/2026**
+Atualizado em: **07/10/2026**
 
 ## Resumo executivo
 
@@ -85,16 +85,51 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Seções 2 (fluxos) e 3 (regras de domínio) ainda *aguardando contexto*.
 - Índice (`docs/README.md`) e `docs/CONTEXT.md` atualizados com o novo doc.
 
+### Fundações da refatoração — Fase 0 (utilitários compartilhados)
+
+- Decisões do dono: começar pelas **fundações/utilitários**; direção de estilos **decidida depois**.
+- Novos módulos em `src/utils/` (fonte única e descobrível, perfil de `ALIGNMENT.md` §4.5):
+  - `clipboard.ts` — `copyToClipboard` extraído de `ActionPix.tsx` (API nativa + fallback `execCommand`).
+  - `download.ts` — `downloadDataUrl` (extraído do `downloadQrPng`).
+  - `productPrice.ts` — `calculateSalePrice`/`calculateMargin`: **regra de negócio** do catálogo que estava duplicada nos 3 handlers de preço do `FormularioProduto.tsx` (agora centralizada; import de `formatCurrencyNumber` removido do componente; renomeado de `produtoPreco.ts` para o padrão de nomenclatura em inglês — ADR 0004).
+- Módulos não-UI movidos de `src/components/` para `src/utils/`: `QrPix.tsx` → `qrPix.ts` e `ActionPix.tsx` → `pixActions.ts` (comportamento preservado; `copyToClipboard` passou a vir de `clipboard.ts` e o download de `download.ts`).
+- Importadores atualizados: `ModalPix.tsx` e `FloatingPixWindow.tsx` (`@/utils/qrPix`, `@/utils/pixActions`, `@/utils/clipboard`).
+- **Achados (registrados para a próxima fase)**: `#toast-root` não é renderizado por nenhuma página → `pixActions.showToast` não exibe nada (bug latente; unificação de toasts é o próximo alvo); `FormPix.tsx` (`src/components/`) é módulo legado (DOM, `.tsx` sem JSX) **sem chamadas ativas** — candidato a remoção.
+- Verificação: `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
+- Docs sincronizados: `docs/utils/Utils.md` (5 módulos novos + observações), `docs/components/Pix.md` (caminhos/assinaturas) e `docs/README.md` (índice).
+
+### Unificação de toasts (ADR 0003)
+
+- **Store singleton** `src/utils/toast.ts` (`showToast`, `dismissToast`, `subscribeToast`, `getToastSnapshot`/`getServerToastSnapshot`) como fonte única de notificações.
+- `src/hooks/useToast.ts` reescrito para consumir o store via `useSyncExternalStore` (mesma API pública; funções estáveis seguras em deps de `useCallback`).
+- **Host global** `src/components/Toaster.tsx` montado em `src/pages/_app.tsx` (uma única instância, posição `top-right`).
+- Migradas 7 páginas (`index`, `historico`, `resumo`, `produtos`, `cadastro`, `contas-a-pagar`, `tabela`) e 2 componentes (`DailySaleForm`, `OcrUpload`) para `useToast()` — estado local e `<Toast>` por página removidos.
+- `pixActions.showToast` (DOM) **removido**; `ModalPix`/`FloatingPixWindow` usam `showToast` do store — **corrige o bug** do toast PIX (`#toast-root` nunca era renderizado, toasts eram silenciosamente inexistentes).
+- Decisão de UX (aprovada): toast da venda passa de `local-top-right` para `top-right` global.
+- SSR: `getServerSnapshot` retornando estado inicial (nenhum toast no servidor; build de produção OK).
+- Docs: `docs/components/Toast.md` (reescrito), `docs/hooks/Hooks.md`, `docs/utils/Utils.md`, `docs/components/Pix.md`, `docs/pages/_app.md`, `docs/README.md`, `docs/CONTEXT.md`, **novo ADR** `docs/adr/0003-padrao-de-notificacoes-toast.md`.
+- **Novos padrões**: `docs/documentation-guidelines.md` (padrão de documentação, referenciado no `AGENTS.md`).
+- Verificação: lint, tsc e build verdes.
+
+### Padrão de nomenclatura (ADR 0004) e limpeza do legado
+
+- Decisão do dono: identificadores, funções e nomes de arquivo em **inglês**; pt-BR apenas em strings visíveis ao usuário. Regra no `AGENTS.md` (boas práticas) + **novo ADR** `docs/adr/0004-padrao-de-nomenclatura-dos-identificadores.md`. Aplicação: gradual — código novo/refatorado em inglês; a renomeação do restante ocorre ao tocar nos módulos.
+- `src/utils/productPrice.ts` renomeado para o novo padrão (antes `produtoPreco.ts`; ver acima).
+- **`FormPix.tsx` removido** (legado sem chamadas ativas, decisão do dono); docs atualizados em `docs/components/Pix.md` e `docs/README.md`.
+
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
-- **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: centralizar toasts/mensagens de erro; abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
-- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: padronizar UX/UI; separar camadas (front/backend/banco); eliminar duplicação de lógica com funções compartilhadas em local único.
-- Nada do trabalho atual commitado (aguardando solicitação de commit).
+- **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
+- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003) e padrão de nomenclatura (ADR 0004) concluídos. Próximos alvos:
+  - **Grandes componentes** mistos (UI+estado+validação+API): `DailySaleForm`, `ModalCarrinho`, `ModalImportItens`, `FormularioProduto`, `ModalSelecionarItens` — extraídas hooks/serviços/subcomponentes.
+  - **Renomeação incremental** dos identificadores pt-BR restantes para inglês (ADR 0004), ao tocar nos módulos.
+  - **Decisão pendente do dono**: padronização de estilos (CSS Modules × classes globais × inline).
+- Commit das mudanças atuais realizado na branch `refactor`.
 
 ## Futuras / Melhorias sugeridas
 
-- Criar commit com as correções (quando o usuário solicitar).
+- Renomeação incremental dos identificadores pt-BR restantes para inglês (ADR 0004) conforme os módulos forem tocados.
 - Validação adicional em `npm run dev` para cenários não cobertos pelo teste crítico.
 - Revisar formatação de exportação (`jspdf`/`xlsx`) para reforço visual, se desejado.
 - Manter docs e `PROJECT_STATUS.md` alinhados a qualquer evolução de API ou regra.

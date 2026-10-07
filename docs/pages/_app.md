@@ -2,13 +2,14 @@
 
 ## Descrição
 
-Componente root do Next.js. Envolve todas as páginas com o provedor de cache `@tanstack/react-query` e renderiza a navegação global.
+Componente root do Next.js. Envolve todas as páginas com o provedor de cache `@tanstack/react-query`, renderiza a navegação global e o **host global de notificações** (`<Toaster/>`).
 
 ## Responsabilidades
 
 - Injetar `QueryClientProvider` para toda a aplicação.
 - Definir metadados HTML como título e descrição.
 - Renderizar componente `Nav` global.
+- Montar `<Toaster/>` (uma única instância do toast global; ver `docs/components/Toast.md` e ADR 0003).
 
 ## Observações
 

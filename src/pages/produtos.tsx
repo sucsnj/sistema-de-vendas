@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import styles from '../styles/produtos.module.css';
-import Toast from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 import {
   buscarProdutos,
   buscarServicos,
@@ -57,18 +57,8 @@ const ProdutosPage: React.FC = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemParaExcluir, setItemParaExcluir] = useState<ItemData | null>(null);
 
-  // Toast notifications
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
-
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  }, []);
-
-  const closeToast = () => setToastOpen(false);
+  // Notificações (toast) do store global
+  const { showToast } = useToast();
 
   // Carrega opções auxiliares para os filtros
   const carregarAuxiliares = useCallback(async () => {
@@ -294,15 +284,6 @@ const ProdutosPage: React.FC = () => {
             }}
           />
         )}
-
-        {/* Notificações Toast */}
-        <Toast
-          open={toastOpen}
-          message={toastMessage}
-          type={toastType}
-          onClose={closeToast}
-          position="top-right"
-        />
 
         {/* Botão flutuante: Novo Cadastro */}
         <Link href="/cadastro" className={styles.fab} id="fab-novo-cadastro" title="Novo cadastro">

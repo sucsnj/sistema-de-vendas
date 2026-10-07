@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Toast from './Toast';
+import { useToast } from '../hooks/useToast';
 
 interface OcrResultado {
     arquivo: string;
@@ -19,18 +19,9 @@ export default function OcrUpload() {
     };
 
     const [resultado, setResultado] = useState<OcrResultado[] | null>(lerOcrRecente);
-    const [toastOpen, setToastOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState("");
-    const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
-    const [duration, setToastDuration] = useState<number | null>(3000);
 
-    // Função utilitária para abrir toast
-    function showToast(message: string, type: "success" | "error" | "info", duration: number | null = 3000) {
-        setToastMessage(message);
-        setToastType(type);
-        setToastDuration(duration);
-        setToastOpen(true);
-    }
+    // Notificações (toast) do store global
+    const { showToast } = useToast();
 
     // Função de upload
     async function uploadArquivo(e: React.ChangeEvent<HTMLInputElement>) {
@@ -104,15 +95,6 @@ export default function OcrUpload() {
                     ))}
                 </div>
             )}
-
-            <Toast
-                open={toastOpen}
-                message={toastMessage}
-                type={toastType}
-                duration={duration}
-                onClose={() => setToastOpen(false)}
-                position="top-right"
-            />
 
             <style jsx>{`
                 .ocr-results {

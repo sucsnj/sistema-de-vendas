@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Toast from '../components/Toast';
 import { formatCurrency } from '../utils/formatter';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
@@ -16,7 +15,7 @@ dayjs.locale('pt-br');
 // usando os hooks useToast, useMensais e useConfirmDialog.
 const Resumo: React.FC = () => {
   // Notificações (toast) exibidas na tela
-  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  const { showToast } = useToast();
   // Consolidações mensais (carregar e excluir)
   const { mensais, loadMensais, handleDelete } = useMensais(showToast);
   // Diálogo de confirmação antes de excluir
@@ -137,16 +136,6 @@ const Resumo: React.FC = () => {
         cancelText="Cancelar"
         onConfirm={handleConfirm}
         onCancel={cancelConfirm}
-      />
-
-      {/* Notificação (toast) da página */}
-      <Toast
-        open={toastOpen}
-        message={toastMessage}
-        type={toastType}
-        duration={toastDuration}
-        onClose={closeToast}
-        position="top-right"
       />
       </div>
     </>

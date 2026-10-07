@@ -1,5 +1,5 @@
 /**
- * src/components/qr.ts
+ * src/utils/qrPix.ts
  *
  * Renderização do QR Code usando a biblioteca `qrcode` e utilitários
  * para exportação em PNG de alta resolução e re-renderização animada.

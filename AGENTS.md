@@ -11,18 +11,28 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 
 ## Regras para os agentes
 
+### Documentação (obrigatória)
+
+0. **Mudança significativa exige documentação** — siga `docs/documentation-guidelines.md`. Ao concluir qualquer modificação relevante de código/regra:
+   - atualize `PROJECT_STATUS.md` (seções "Últimas mudanças", "Pendentes" e "Futuras", e a data no topo);
+   - atualize o documento correspondente em `docs/` (e o índice `docs/README.md` se houver doc novo);
+   - atualize `docs/CONTEXT.md` se o contexto geral mudar (novas regras, camadas, bancos, páginas);
+   - crie **ADR** em `docs/adr/` quando a mudança criar/alterar um padrão de arquitetura (impacta mais de uma camada).
+   - "mudança significativa" inclui: arquivo novo em `src/`, alteração de assinatura/comportamento, regra de negócio, padrão novo e correção de bug com impacto de UX.
+
+### Melhorias e questionamento
+
+- Ao encontrar algo que **possa melhorar** (código, docs, arquitetura, convenção) — mesmo que pareça intencional do projeto — **comunique e questione** o usuário antes de aplicar fora do escopo solicitado: explique o problema, o impacto e proponha alternativa.
+
 ### Estado do projeto (`PROJECT_STATUS.md`)
 
 1. Antes de começar qualquer tarefa, leia `PROJECT_STATUS.md` (estado atual, últimas mudanças, pendentes e futuras) junto com `/context`.
-2. Ao concluir qualquer modificação de código, **documente o que foi feito**:
-   - atualize `PROJECT_STATUS.md` (seções "Últimas mudanças", "Pendentes" e "Futuras", e a data no topo);
-   - atualize o documento correspondente em `docs/` (e o índice `docs/README.md` se houver doc novo);
-   - atualize `docs/CONTEXT.md` se o contexto geral mudar (novas regras, camadas, bancos, páginas).
 
 ### Framework e boas práticas
 
-3. Siga as regras do framework: esta versão do Next.js tem breaking changes — leia `node_modules/next/dist/docs/` antes de escrever código e atente a avisos de depreciação.
-4. Siga as boas práticas do projeto: TypeScript forte (sem `any`), validação centralizada em `src/utils/validation.ts`, datas em `America/Recife`, `refs` em vez de `document.querySelector`, e revisão dos endpoints de backup ao alterar estrutura de banco.
+2. Siga as regras do framework: esta versão do Next.js tem breaking changes — leia `node_modules/next/dist/docs/` antes de escrever código e atente a avisos de depreciação.
+3. Siga as boas práticas do projeto: TypeScript forte (sem `any`), validação centralizada em `src/utils/validation.ts`, datas em `America/Recife`, `refs` em vez de `document.querySelector`, e revisão dos endpoints de backup ao alterar estrutura de banco.
+4. **Nomenclatura de código (ADR 0004)**: identificadores, funções e nomes de arquivo em **inglês**; pt-BR apenas em strings visíveis ao usuário. Código novo/refatorado nasce em inglês; identificadores pt-BR restantes são renomeados ao tocar nos módulos (sem renames massivos fora de contexto).
 
 ### Conflito com as regras
 

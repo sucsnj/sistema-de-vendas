@@ -1,8 +1,8 @@
 # Componentes de PIX
 
-Documenta o fluxo de pagamento via PIX: `ActionPix`, `FloatingPixWindow`, `FormPix`, `ModalPix`, `QrPix` e o gerador de payload em `src/utils/pix.ts`.
+Documenta o fluxo de pagamento via PIX: os utilitários `pix.ts`, `pixActions.ts` e `qrPix.ts` (em `src/utils/`), e os componentes React `FloatingPixWindow` e `ModalPix`.
 
-> Observação: apesar de `ActionPix`, `FormPix` e `QrPix` residirem em `src/components/`, são módulos utilitários (sem JSX exportado). Apenas `FloatingPixWindow` e `ModalPix` são componentes React.
+> Observação: `FloatingPixWindow` e `ModalPix` são componentes React em `src/components/`. Já os módulos de PIX sem JSX vivem em `src/utils/`: `pix.ts` (payload/validação), `qrPix.ts` (QR Code) e `pixActions.ts` (ações) — movidos de `src/components/` na Fase 0 da refatoração.
 
 ---
 
@@ -66,7 +66,7 @@ export function buildPixPayload(params: BuildPixPayloadParams): BuildPixPayloadR
 
 ---
 
-## `src/components/QrPix.tsx`
+## `src/utils/qrPix.ts`
 
 ### Descrição
 
@@ -91,17 +91,15 @@ export function pulseQr(target: HTMLElement | null): void;
 
 ---
 
-## `src/components/ActionPix.tsx`
+## `src/utils/pixActions.ts`
 
 ### Descrição
 
-Ações utilitárias do painel PIX: toast próprio, copiar "Copia e Cola", baixar PNG de alta resolução e imprimir a folha do PIX.
+Ações do painel PIX: baixar PNG de alta resolução e imprimir a folha do PIX. Notificações usam o **store global de toasts** (`src/utils/toast.ts`).
 
 ### Assinatura
 
 ```ts
-export type ToastType = 'success' | 'error';
-
 export interface PrintSheetData {
   payload: string;
   name: string;
@@ -110,17 +108,14 @@ export interface PrintSheetData {
   key: string;
 }
 
-export function showToast(message: string, type?: ToastType): void;                        // 2600ms
-export async function copyToClipboard(text: string, onSuccess?: () => void, onError?: (e: unknown) => void): Promise<void>;
 export async function downloadQrPng(payload: string): Promise<void>;
 export async function printPixSheet(data: PrintSheetData): Promise<void>;
 ```
 
 ### Observações
 
-- `showToast` cria/remove toast DOM no `#toast-root` (classes Tailwind + `toast-enter`/`toast-leave`).
-- `copyToClipboard` usa `navigator.clipboard` em contexto seguro; senão fallback com `textarea` + `document.execCommand('copy')`.
-- `downloadQrPng` gera PNG via `generateHighResPng` e dispara download `pix-qrcode-YYYY-MM-DD.png`.
+- `copyToClipboard` vive em `src/utils/clipboard.ts` e o `showToast` em `src/utils/toast.ts` — ambos usados por `ModalPix`/`FloatingPixWindow` (toasts do PIX agora **são exibidos**, corrigindo o bug do antigo `#toast-root` — ver ADR 0003).
+- `downloadQrPng` gera PNG via `generateHighResPng` (de `qrPix.ts`) e dispara download `pix-qrcode-YYYY-MM-DD.png` via `downloadDataUrl` (de `src/utils/download.ts`).
 - `printPixSheet` desenha o QR no canvas `#print-canvas` (250×250, `errorCorrectionLevel: 'M'`), preenche `#print-*` e chama `window.print()` com `body.printing`.
 - `formatBRL` (privada) formata `"15.00"` → `"R$ 15,00"`.
 
@@ -193,65 +188,12 @@ const FloatingPixWindow: React.FC<FloatingPixWindowProps>;
 
 ---
 
-## `src/components/FormPix.tsx`
-
-### Descrição
-
-Módulo de gerenciamento do formulário de PIX: estado do formulário, máscara de moeda pt-BR, validação da chave e seletor CPF ↔ Celular. Opera sobre elementos DOM diretamente (sem JSX).
-
-### Assinatura
-
-```ts
-export type ForcedKeyType = 'cpf' | 'phone' | null;
-
-export interface FormState {
-  key: string;
-  keyType: KeyType;
-  keyValid: boolean;
-  keyForcedType: ForcedKeyType;
-  amountRaw: string;
-  merchantName: string;
-  merchantBank: string;
-}
-
-export interface FormElements {
-  form: HTMLFormElement;
-  key: HTMLInputElement;
-  keyTypeLabel: HTMLElement;
-  keyFeedback: HTMLElement;
-  keyToggle: HTMLElement;
-  amount: HTMLInputElement;
-  merchantName: HTMLInputElement;
-  merchantBank: HTMLInputElement;
-}
-
-export interface InitFormReturn {
-  onInput: (cb: () => void) => void;
-  getState: () => FormState;
-  update: () => void;
-  reset: () => void;
-}
-
-export function initForm(els: FormElements, fallback?: { merchantKey?: string }): InitFormReturn;
-export const state: FormState;   // estado global do formulário
-```
-
-### Observações
-
-- `state` é um objeto exportado (singleton) — ambos `initForm` e consumidores leem o mesmo estado.
-- Máscara de moeda: `maskAmount` (input, dígitos viram centavos) e `commitAmount` (blur, garante 2 casas).
-- Chave em branco usa o fallback `merchantKey` (do `.env`); feedback indica "Usando a chave padrão" ou "a chave padrão do .env é inválida".
-- Seleto CPF ↔ Celular aparece apenas quando `validatePixKey` marca `ambiguous` (11 dígitos); `state.keyForcedType` força a interpretação.
-- `reset()` limpa campo, estado e classes de validação; `update()` revalida e emite `change`.
-
----
-
 ## Fluxo completo
 
-1. `FormPix` captura chave/valor/nome/banco e valida a chave (`validatePixKey`).
+1. `DailySaleForm` / `ModalPix` capturam chave/valor/nome/banco e validam a chave (`validatePixKey`).
 2. `buildPixPayload` (`utils/pix.ts`) gera o payload EMVCo com CRC16.
-3. `ModalPix` / `FloatingPixWindow` renderizam o QR via `QrPix.renderQr`.
-4. Ações: `ActionPix.copyToClipboard` (Copia e Cola), `downloadQrPng` (PNG), `printPixSheet` (impressão).
+3. `ModalPix` / `FloatingPixWindow` renderizam o QR via `qrPix.renderQr`.
+4. Ações: `clipboard.copyToClipboard` (Copia e Cola), `pixActions.downloadQrPng` (PNG), `printPixSheet` (impressão).
 
 ## Integração
 

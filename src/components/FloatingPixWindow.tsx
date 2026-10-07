@@ -4,8 +4,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import PrintIcon from '@mui/icons-material/Print';
-import { renderQr, pulseQr, QR_SIZE } from './QrPix';
-import { copyToClipboard, downloadQrPng, printPixSheet, showToast, type PrintSheetData } from './ActionPix';
+import { renderQr, pulseQr, QR_SIZE } from '@/utils/qrPix';
+import { downloadQrPng, printPixSheet, type PrintSheetData } from '@/utils/pixActions';
+import { showToast } from '@/utils/toast';
+import { copyToClipboard } from '@/utils/clipboard';
 
 interface FloatingPixWindowProps {
   isOpen: boolean;

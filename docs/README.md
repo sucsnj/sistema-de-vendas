@@ -6,6 +6,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [CONTEXT.md](CONTEXT.md) - guia de contexto rápido para agentes (evita releitura de código).
 - [ALIGNMENT.md](ALIGNMENT.md) - domínio do negócio, usuários, fluxos e pontos de atenção para a refatoração.
+- [documentation-guidelines.md](documentation-guidelines.md) - padrão de documentação: o que registrar, onde e quando (incl. ADRs e `PROJECT_STATUS`).
 - [PROJECT_STATUS.md](../../PROJECT_STATUS.md) - estado atual do projeto: últimas mudanças, pendentes e futuras.
 - [DOCS.md](DOCS.md) - documento de arquitetura geral do projeto, fluxo de dados, dependências críticas, riscos e sugestões de melhoria.
 - [adr/](adr/) - Decisões de Arquitetura (ADRs) do projeto.
@@ -31,6 +32,8 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [ALIGNMENT.md](ALIGNMENT.md) - guia de alinhamento: negócio, usuários, fluxos e pontos de atenção para a refatoração.
 - [adr/0001-documentacao-do-codigo.md](adr/0001-documentacao-do-codigo.md) - ADR: documentação do código por blocos.
 - [adr/0002-padrao-de-validacao-de-campos.md](adr/0002-padrao-de-validacao-de-campos.md) - ADR: padrão de validação de campos `{ ok, message }`.
+- [adr/0003-padrao-de-notificacoes-toast.md](adr/0003-padrao-de-notificacoes-toast.md) - ADR: padrão de notificações (toast) — store singleton + host global.
+- [adr/0004-padrao-de-nomenclatura-dos-identificadores.md](adr/0004-padrao-de-nomenclatura-dos-identificadores.md) - ADR: identificadores/funções/arquivos em inglês (pt-BR só em strings de UI).
 
 ## Páginas do Frontend
 
@@ -130,7 +133,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ### PIX e Pagamento
 
-- [components/Pix.md](components/Pix.md) - fluxo de PIX: `ActionPix`, `FloatingPixWindow`, `FormPix`, `ModalPix`, `QrPix`.
+- [components/Pix.md](components/Pix.md) - fluxo de PIX: utilitários (`pix.ts`, `pixActions.ts`, `qrPix.ts`) e componentes (`FloatingPixWindow`, `ModalPix`).
 
 ### Gerais e Relatórios
 
@@ -139,7 +142,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [components/Nav.md](components/Nav.md) - navegação global.
 - [components/OcrUpload.md](components/OcrUpload.md) - upload OCR.
 - [components/Filtros.md](components/Filtros.md) - filtros de listagens.
-- [components/Toast.md](components/Toast.md) - notificações.
+- [components/Toast.md](components/Toast.md) - notificações: componente `Toast`, host global `Toaster` e store `utils/toast.ts` (ADR 0003).
 - [components/BarcodeManager.md](components/BarcodeManager.md) - leitura de código de barras.
 
 ## Hooks
@@ -152,7 +155,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Utilitários
 
-- [utils/Utils.md](utils/Utils.md) - formatação, parsing e limpeza de dados.
+- [utils/Utils.md](utils/Utils.md) - formatação, parsing, limpeza, clipboard, download, preço/margem de produto, toast (ADR 0003) e QR PIX.
 
 ## Glossário
 

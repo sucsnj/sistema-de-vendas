@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import SalesTable from '../components/SalesTable';
-import Toast from '../components/Toast';
 import ExportButtons from '../components/ExportButtons';
 import EditSaleForm from '../components/EditSaleForm';
 import { capitalize } from '../utils/captalize';
@@ -18,7 +17,7 @@ const Historico: React.FC = () => {
   const [ano, setAno] = useState(getDateArray()[2]);
 
   // Notificações (toast) exibidas na tela
-  const { toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast } = useToast();
+  const { showToast } = useToast();
   // Filtro de vendas (persistido no localStorage)
   const { filtro, changeFiltro } = useFiltro();
   // Estado e ações de vendas (carregar, editar, excluir). Aqui o autoConsolidar
@@ -94,8 +93,6 @@ const Historico: React.FC = () => {
         <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
         {/* Exportação e importação de vendas */}
         <ExportButtons sales={sales} mes={mes} ano={ano} onMessage={showToast} />
-        {/* Notificação (toast) da página */}
-        <Toast open={toastOpen} message={toastMessage} type={toastType} duration={toastDuration} onClose={closeToast} position="top-right" />
       </div>
     </>
   );

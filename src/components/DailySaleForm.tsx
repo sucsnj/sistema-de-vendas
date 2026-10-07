@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import Toast from './Toast';
+import { useToast } from '../hooks/useToast';
 import { registrarVenda, VendaDiaria } from '../services/vendasService';
 import { Parser } from 'expr-eval';
 import { formatCurrency } from '../utils/formatter';
@@ -45,9 +45,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [observacoes, setObservacoes] = useState('');
   const [loading, setLoading] = useState(false);
   const [limpando] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
-  const [toastOpen, setToastOpen] = useState(false);
   const valorInputRef = useRef<HTMLInputElement | null>(null);
   const observacoesTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
@@ -55,16 +52,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
   const [pixPayload, setPixPayload] = useState('');
   const [pixAmount, setPixAmount] = useState<string | null>(null);
 
-  // Exibe mensagem de sucesso, erro ou informação
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  };
-
-  const closeToast = () => {
-    setToastOpen(false);
-  };
+  // Notificações (toast) do store global
+  const { showToast } = useToast();
 
   // Estado e ações do carrinho (catálogo, seleção e gerenciamento), compartilhado
   // com o formulário de edição através do hook useCart
@@ -520,7 +509,6 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
         </div>
       </form>
-      <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="local-top-right" />
       <ModalSelecionarItens
         isOpen={selecionarOpen}
         onClose={closeSelecao}

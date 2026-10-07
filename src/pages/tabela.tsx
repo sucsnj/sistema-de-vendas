@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Toast from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 import styles from '../styles/contas.module.css';
 import {
   uploadTabela,
@@ -23,19 +23,10 @@ const Tabela: React.FC = () => {
   const [results, setResults] = useState<TabelaRow[]>([]);
   const [history, setHistory] = useState<TabelaSearchHistoryItem[]>([]);
   const [source, setSource] = useState<'history' | 'table' | ''>('');
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('info');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastOpen(true);
-  };
-
-  const closeToast = () => setToastOpen(false);
+  const { showToast } = useToast();
 
   const loadSearchHistory = useCallback(async () => {
     try {
@@ -273,8 +264,6 @@ const Tabela: React.FC = () => {
           )}
         </aside>
       </div>
-
-      <Toast open={toastOpen} message={toastMessage} type={toastType} onClose={closeToast} position="top-right" />
 
       <style jsx>{`
         .results-grid {
