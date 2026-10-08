@@ -1,4 +1,4 @@
-﻿import { FormEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, useState, useEffect, useRef } from "react";
 import { buscarVendaItens, atualizarVenda, VendaDiaria, VendaItemData } from "../services/vendasService";
 import ModalCarrinho from "./ModalCarrinho";
 import ModalSelecionarItens from "./ModalSelecionarItens";

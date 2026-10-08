@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **07/10/2026**
+Atualizado em: **08/10/2026**
 
 ## Resumo executivo
 
@@ -18,6 +18,14 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 | Teste manual (funcionalidades críticas) | OK |
 
 ## Últimas mudanças
+
+### Limpeza de encoding: mojibake e BOM (08/10/2026)
+
+- `node scripts/check-encoding.mjs` encontrou **82 problemas** em 9 arquivos: mojibake (UTF-8 interpretado como ANSI/cp1252 — acentos e travessões virando dois caracteres lixo) e BOM (U+FEFF) no início do arquivo — gerados por gravação via PowerShell (Windows-1252/ANSI).
+- Reparados com `node scripts/check-encoding.mjs --fix`; segunda execução: **ENCODING OK** (nenhum mojibake, BOM ou caractere estranho).
+- Arquivos corrigidos: `src/components/EditSaleForm.tsx`, `src/components/cart/{CartModal,CartModalShell,SelectItemsModal}.tsx`, `src/components/forms/ProductForm.tsx`, `src/components/import/{ImportItemsModal,ItemNameDropdown}.tsx`, `src/pages/{cadastro,index}.tsx`.
+- Verificação: `npm run lint` e `npx tsc --noEmit` verdes.
+- **Nova regra de agente**: proibido criar/gravar código via PowerShell — registrada em `AGENTS.md` (regra 5, "Framework e boas práticas") e `docs/CONTEXT.md` (regra 10).
 
 ### Limpeza de lint: 188 problemas → 0 (etapas 1–10)
 
@@ -126,6 +134,13 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - **ADR 0004 aplicado no módulo**: `valor`→`value`, `observacoes`→`observations`, `limpando`→`clearing`, `estaVisivel`→`isVisible`, comentários/regra do `expr-eval` extraída.
 - Docs: `docs/components/DailySaleForm.md` (reescrito), `docs/hooks/Hooks.md` (nova seção `useDailySaleForm` + nota do `CartItem`), `docs/types/Types.md` (nova seção `sale.ts`), `docs/components/ModalCarrinho.md` (origem do tipo), `docs/utils/Utils.md` (`calculator.ts`), `docs/README.md` (índice).
 - Verificação: lint, tsc e build de produção verdes.
+
+## Gravação de arquivos: nunca usar PowerShell
+
+- **Proibido gravar/editar arquivos do projeto com cmdlets do PowerShell** (`Set-Content`, `Out-File`, `Add-Content` etc.): a codificação padrão do Windows (ANSI/cp1252) gera arquivos *válidos* em UTF-8 porém com os acentos de palavras como `mês` virados em dois caracteres lixo, e o estrago só aparece na tela — lint, typecheck e build passam normalmente.
+- Sempre gravar em UTF-8 explícito (as ferramentas de edição do opencode gravam UTF-8).
+- **Rede de segurança**: `node scripts/check-encoding.mjs` (relata e sai com exit 1) e `node scripts/check-encoding.mjs --fix` (repara mojibake/BOM inequívocos). Rodar antes de commitar; sem dependências (só `node:fs`/`node:path`).
+- Caracteres legítimos (`—`, `–`, `…`, aspas curvas) não são afetados: o script é sensível ao contexto e não acusa texto bom.
 
 ## Pendentes
 

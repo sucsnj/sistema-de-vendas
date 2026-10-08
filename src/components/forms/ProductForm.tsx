@@ -1,4 +1,4 @@
-﻿import styles from '../../styles/produtos.module.css';
+import styles from '../../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
@@ -89,7 +89,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                         onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
                     >
                         <option value={1}>Sim</option>
-                        <option value={0}>NÃ£o</option>
+                        <option value={0}>Não</option>
                     </select>
                 </div>
             </div>
@@ -111,12 +111,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-descricao">
-                    DescriÃ§Ã£o:
+                    Descrição:
                 </label>
                 <textarea
                     id="form-descricao"
                     className={styles.textareaField}
-                    placeholder="Detalhes ou especificaÃ§Ãµes"
+                    placeholder="Detalhes ou especificações"
                     rows={3}
                     value={form.descricao}
                     onChange={(e) => setForm(prev => ({ ...prev, descricao: e.target.value }))}
@@ -151,7 +151,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     >
                         <AddIcon fontSize="small" />
                     </button>
-                    {/* BotÃ£o dos 3 pontinhos para abrir modal de gerenciamento de categorias */}
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de categorias */}
                     <button
                         type="button"
                         className={styles.manageButton}
@@ -199,7 +199,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     >
                         <AddIcon fontSize="small" />
                     </button>
-                    {/* BotÃ£o dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
                     <button
                         type="button"
                         className={styles.manageButton}
@@ -247,7 +247,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                     >
                         <AddIcon fontSize="small" />
                     </button>
-                    {/* BotÃ£o dos 3 pontinhos para abrir modal de gerenciamento de fornecedores*/}
+                    {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de fornecedores*/}
                     <button
                         type="button"
                         className={styles.manageButton}
@@ -267,7 +267,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </div>
             </div>
 
-            <label className={styles.formLabel}>PreÃ§o, margem e estoque</label>
+            <label className={styles.formLabel}>Preço, margem e estoque</label>
             <div className={styles.valoresGroup}>
                 <div className={styles.formGroup}>
                     <label className={styles.formLabel} htmlFor="form-preco-compra">
@@ -500,13 +500,13 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-cod-interno">
-                    CÃ³digo Interno:
+                    Código Interno:
                 </label>
                 <input
                     id="form-cod-interno"
                     type="text"
                     className={styles.inputField}
-                    placeholder={editarProdutoId ? "CÃ³digo Interno nÃ£o pode ser alterado" : "Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"}
+                    placeholder={editarProdutoId ? "Código Interno não pode ser alterado" : "Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"}
                     value={form.codigoInterno}
                     onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
                     disabled={!!editarProdutoId}
@@ -515,7 +515,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
 
             <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="form-referencia">
-                    ReferÃªncia:
+                    Referência:
                 </label>
                 <input
                     id="form-referencia"

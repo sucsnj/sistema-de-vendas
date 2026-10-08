@@ -1,10 +1,10 @@
-﻿/**
+/**
  * src/components/ModalCarrinho.tsx
  *
- * Modal do carrinho de vendas. Apresentacional â€” sem estado prÃ³prio:
- * lÃ³gica fica no `useCart` (pai) e a casca visual no `CartModalShell`.
+ * Modal do carrinho de vendas. Apresentacional — sem estado próprio:
+ * lógica fica no `useCart` (pai) e a casca visual no `CartModalShell`.
  * Estilos: classes globais `cart-modal-*` para o chrome e `<style jsx>`
- * local apenas para itens/quantidade/aÃ§Ãµes.
+ * local apenas para itens/quantidade/ações.
  * Ver docs/components/ModalCarrinho.md.
  */
 
@@ -58,8 +58,8 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
       {cartItems.length === 0 ? (
         <div className="cart-modal-empty">
           <ShoppingCartIcon style={{ fontSize: '3rem', opacity: 0.3 }} />
-          <p>Seu carrinho estÃ¡ vazio.</p>
-          <span>Selecione produtos ou serviÃ§os no formulÃ¡rio para adicionar.</span>
+          <p>Seu carrinho está vazio.</p>
+          <span>Selecione produtos ou serviços no formulário para adicionar.</span>
         </div>
       ) : (
         <div className="cart-items-list">
@@ -67,7 +67,7 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
             const subtotal = (item.preco_venda ?? 0) * item.quantidade;
             return (
               <div className="cart-item-row" key={`${item.tipo}-${item.id}-${index}`}>
-                {/* InformaÃ§Ãµes do Item */}
+                {/* Informações do Item */}
                 <div className="cart-item-main">
                   <div className="cart-item-header">
                     <span className="cart-item-name">{item.nome}</span>
@@ -76,7 +76,7 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
                         item.tipo === 'PRODUTO' ? 'badge-produto' : 'badge-servico'
                       }`}
                     >
-                      {item.tipo === 'PRODUTO' ? 'Produto' : 'ServiÃ§o'}
+                      {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
                     </span>
                   </div>
                   <div className="cart-item-details">
@@ -89,7 +89,7 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
                   </div>
                 </div>
 
-                {/* Controles de Quantidade, Subtotal e RemoÃ§Ã£o */}
+                {/* Controles de Quantidade, Subtotal e Remoção */}
                 <div className="cart-item-actions">
                   <div className="cart-qty-control">
                     <button

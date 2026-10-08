@@ -1,9 +1,9 @@
-﻿/**
+/**
  * src/components/ItemNameDropdown.tsx
  *
- * Campo com busca de itens cadastrados (produtos/serviÃ§os) usado na
- * coluna "Item no Sistema" do ModalImportItens. Seletor com sugestÃµes
- * (busca com debounce), extraÃ­do do modal para isolamento e reuso.
+ * Campo com busca de itens cadastrados (produtos/serviços) usado na
+ * coluna "Item no Sistema" do ModalImportItens. Seletor com sugestões
+ * (busca com debounce), extraído do modal para isolamento e reuso.
  * Ver docs/components/ItemNameDropdown.md.
  */
 
@@ -105,7 +105,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
       setSuggestions([...produtos, ...servicos]);
       setIsOpen(true);
     } catch (err) {
-      console.error('Erro na busca de sugestÃµes:', err);
+      console.error('Erro na busca de sugestões:', err);
       setSuggestions([]);
     } finally {
       setLoading(false);
@@ -154,7 +154,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
           }}
           disabled={disabled}
           placeholder="Digite para buscar itens..."
-          title="Digite para buscar produtos/serviÃ§os cadastrados"
+          title="Digite para buscar produtos/serviços cadastrados"
         />
         <SearchIcon className={importStyles.searchFieldIcon} fontSize="inherit" />
       </div>
@@ -185,7 +185,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
                             : importStyles.typeBadgeServ
                         }
                       >
-                        {s.tipo === 'PRODUTO' ? 'PRODUTO' : 'SERVIÃ‡O'}
+                        {s.tipo === 'PRODUTO' ? 'PRODUTO' : 'SERVIÇO'}
                       </span>
                     </div>
                     <div className={importStyles.dropdownItemMeta}>
@@ -198,7 +198,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
                       </span>
                       {s.tipo === 'PRODUTO' && <span>Estoque: {s.estoque ?? 0}</span>}
                       {s.ean && <span>EAN: {s.ean}</span>}
-                      {s.codigoInterno && <span>CÃ³d: {s.codigoInterno}</span>}
+                      {s.codigoInterno && <span>Cód: {s.codigoInterno}</span>}
                     </div>
                   </li>
                 ))}
@@ -206,7 +206,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
             </>
           ) : hasSearched ? (
             <div className={importStyles.dropdownEmpty}>
-              Nenhum produto ou serviÃ§o encontrado para &quot;{term}&quot;
+              Nenhum produto ou serviço encontrado para &quot;{term}&quot;
             </div>
           ) : null}
         </div>

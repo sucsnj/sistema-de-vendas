@@ -1,9 +1,9 @@
-﻿/**
+/**
  * src/components/CartModalShell.tsx
  *
  * Casca visual compartilhada dos modais de carrinho (ModalCarrinho e
  * ModalSelecionarItens). Concentra overlay/header/footer, portal,
- * focus-trap e fechamento por ESC â€” fonte Ãºnica do "chrome" do modal,
+ * focus-trap e fechamento por ESC — fonte única do "chrome" do modal,
  * estilizada pelas classes globais `cart-modal-*` (src/styles/globals.css).
  * Ver docs/components/CartModalShell.md.
  */
@@ -63,7 +63,7 @@ export const CartModalShell: React.FC<CartModalShellProps> = ({
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* CabeÃ§alho Fixo */}
+        {/* Cabeçalho Fixo */}
         <div className="cart-modal-header">
           <div className="cart-modal-title-group">
             {icon}
@@ -87,7 +87,7 @@ export const CartModalShell: React.FC<CartModalShellProps> = ({
         {/* Corpo do Modal */}
         <div className="cart-modal-body">{children}</div>
 
-        {/* RodapÃ© Fixo */}
+        {/* Rodapé Fixo */}
         <div className="cart-modal-footer">
           <div className="cart-modal-footer-left">{footerLeft}</div>
           <div className="cart-modal-footer-right">

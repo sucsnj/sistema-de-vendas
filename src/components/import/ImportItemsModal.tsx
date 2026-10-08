@@ -1,8 +1,8 @@
-﻿/**
+/**
  * src/components/ModalImportItens.tsx
  *
- * Modal de importaÃ§Ã£o de produtos via nota fiscal (XML). Apresentacional â€”
- * lÃ³gica no `useImportItens` e seletor de vÃ­nculo no `ItemNameDropdown`.
+ * Modal de importação de produtos via nota fiscal (XML). Apresentacional —
+ * lógica no `useImportItens` e seletor de vínculo no `ItemNameDropdown`.
  * Ver docs/components/ModalImportItens.md.
  */
 
@@ -82,7 +82,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
         aria-labelledby="modal-import-title"
         tabIndex={-1}
       >
-        {/* CabeÃ§alho */}
+        {/* Cabeçalho */}
         <div className={importStyles.modalHeader}>
           <h3 id="modal-import-title" className={styles.modalTitle}>
             Importar Produtos via Nota Fiscal (XML)
@@ -92,7 +92,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
           </button>
         </div>
 
-        {/* Ãrea de upload */}
+        {/* Área de upload */}
         {!products.length && !loading && (
           <div
             className={`${importStyles.dropZone} ${isDragOver ? importStyles.dropZoneActive : ''}`}
@@ -102,7 +102,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
             onClick={() => fileInputRef.current?.click()}
             role="button"
             tabIndex={0}
-            aria-label="Ãrea para soltar arquivo XML"
+            aria-label="Área para soltar arquivo XML"
             onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
           >
             <UploadFileIcon className={importStyles.dropIcon} />
@@ -124,7 +124,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
         {loading && (
           <div className={importStyles.loadingArea}>
             <div className={importStyles.spinner} />
-            <p>Lendo nota fiscalâ€¦</p>
+            <p>Lendo nota fiscal…</p>
           </div>
         )}
 
@@ -155,7 +155,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
               <div className={importStyles.resumoBanner}>
                 <FileDownloadDoneIcon />
                 <span>
-                  ImportaÃ§Ã£o concluÃ­da: <strong>{counts.okCount}</strong> inserido(s)
+                  Importação concluída: <strong>{counts.okCount}</strong> inserido(s)
                   {counts.updatedCount > 0 && (
                     <>
                       , <strong>{counts.updatedCount}</strong> estoque atualizado
@@ -181,7 +181,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                   <tr>
                     <th>#</th>
                     <th style={{ minWidth: '220px' }}>Produto na NF-e</th>
-                    <th style={{ minWidth: '250px' }}>Item no Sistema (VÃ­nculo)</th>
+                    <th style={{ minWidth: '250px' }}>Item no Sistema (Vínculo)</th>
                     <th>Un.</th>
                     <th>Qtd.</th>
                     <th>Vlr. Unit. (R$)</th>
@@ -202,8 +202,8 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                         {(p.ean || p.cProd) && (
                           <div className={importStyles.subCode}>
                             {p.ean && <span>EAN: {p.ean}</span>}
-                            {p.ean && p.cProd && p.cProd !== p.ean && <span> Â· </span>}
-                            {p.cProd && p.cProd !== p.ean && <span>CÃ³d: {p.cProd}</span>}
+                            {p.ean && p.cProd && p.cProd !== p.ean && <span> · </span>}
+                            {p.cProd && p.cProd !== p.ean && <span>Cód: {p.cProd}</span>}
                           </div>
                         )}
                       </td>
@@ -221,7 +221,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                 type="button"
                                 className={importStyles.btnEditarItem}
                                 onClick={() => handleEditItem(p)}
-                                title="Abrir ediÃ§Ã£o deste item em nova aba"
+                                title="Abrir edição deste item em nova aba"
                               >
                                 <EditIcon fontSize="inherit" />
                                 <span>Editar item</span>
@@ -235,10 +235,10 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                                 type="button"
                                 className={importStyles.btnCadastroRapido}
                                 onClick={() => handleQuickRegister(p)}
-                                title="Abrir formulÃ¡rio de cadastro em nova aba"
+                                title="Abrir formulário de cadastro em nova aba"
                               >
                                 <AddIcon fontSize="inherit" />
-                                <span>Cadastro rÃ¡pido</span>
+                                <span>Cadastro rápido</span>
                                 <OpenInNewIcon
                                   fontSize="inherit"
                                   className={importStyles.iconExternal}
@@ -261,13 +261,13 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                           (p.existe ? (
                             <span
                               className={importStyles.badgeExistente}
-                              title="Produto jÃ¡ cadastrado no sistema"
+                              title="Produto já cadastrado no sistema"
                             >
                               <CheckCircleOutlineIcon fontSize="inherit" /> No Sistema
                             </span>
                           ) : (
                             <span className={importStyles.badgeNaoCadastrado} title="Produto novo">
-                              NÃ£o Cadastrado
+                              Não Cadastrado
                             </span>
                           ))}
                         {p.status === 'ok' && (
@@ -302,7 +302,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
           </>
         )}
 
-        {/* RodapÃ© */}
+        {/* Rodapé */}
         <div className={styles.modalActions}>
           {products.length > 0 && !completed && (
             <button
@@ -312,7 +312,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
               disabled={importing}
               id="btn-confirmar-importacao"
             >
-              {importing ? 'Importandoâ€¦' : `Importar ${products.length} produto(s)`}
+              {importing ? 'Importando…' : `Importar ${products.length} produto(s)`}
             </button>
           )}
           <button

@@ -1,8 +1,8 @@
-﻿/**
+/**
  * src/components/ModalSelecionarItens.tsx
  *
- * Modal de seleÃ§Ã£o de itens do catÃ¡logo. Apresentacional â€” sem estado
- * prÃ³prio (busca/soma vÃªm do `useCart` via props) e com a casca visual
+ * Modal de seleção de itens do catálogo. Apresentacional — sem estado
+ * próprio (busca/soma vêm do `useCart` via props) e com a casca visual
  * compartilhada no `CartModalShell`. Ver docs/components/ModalSelecionarItens.md.
  */
 
@@ -42,7 +42,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Foco automÃ¡tico na busca ao abrir a janela
+  // Foco automático na busca ao abrir a janela
   useEffect(() => {
     if (isOpen) {
       const timeoutId = window.setTimeout(() => {
@@ -61,7 +61,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
       title="Adicionar Itens"
       titleId="cart-select-title"
       icon={<AddShoppingCartIcon className="cart-modal-icon" />}
-      closeAriaLabel="Fechar janela de seleÃ§Ã£o de itens"
+      closeAriaLabel="Fechar janela de seleção de itens"
       summary={summary}
       footerLeft={
         summary.totalItems > 0 ? (
@@ -72,12 +72,12 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
         ) : undefined
       }
     >
-      {/* Corpo com busca e catÃ¡logo */}
+      {/* Corpo com busca e catálogo */}
       <div className="cart-catalog-search">
         <input
           ref={searchInputRef}
           type="text"
-          placeholder="Buscar produto ou serviÃ§o..."
+          placeholder="Buscar produto ou serviço..."
           value={cartSearch}
           onChange={(e) => onCartSearchChange(e.target.value)}
           onKeyDown={(e) => e.stopPropagation()}
@@ -89,7 +89,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
             className="cart-search-clear"
             onClick={() => onCartSearchChange('')}
           >
-            âœ•
+            ✕
           </button>
         )}
       </div>
@@ -98,7 +98,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
         {loadingCatalog ? (
           <div className="cart-catalog-empty">Buscando itens...</div>
         ) : catalogItems.length === 0 ? (
-          <div className="cart-catalog-empty">Nenhum produto ou serviÃ§o encontrado</div>
+          <div className="cart-catalog-empty">Nenhum produto ou serviço encontrado</div>
         ) : (
           catalogItems.map((item) => {
             const inCart = cartItems.find((ci) => ci.id === item.id && ci.tipo === item.tipo);
@@ -113,7 +113,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
                     e.stopPropagation();
                     onRemoveFromCart(item);
                   }}
-                  title={hasInCart ? 'Subtrair 1 unidade' : 'Item nÃ£o estÃ¡ no carrinho'}
+                  title={hasInCart ? 'Subtrair 1 unidade' : 'Item não está no carrinho'}
                   aria-label="Subtrair 1 unidade"
                 >
                   -
@@ -124,7 +124,7 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
                     <span className="cart-item-name">{item.nome}</span>
                     <div className="cart-item-meta">
                       <span className={`cart-type-badge ${item.tipo.toLowerCase()}`}>
-                        {item.tipo === 'PRODUTO' ? 'Produto' : 'ServiÃ§o'}
+                        {item.tipo === 'PRODUTO' ? 'Produto' : 'Serviço'}
                       </span>
                       {item.tipo === 'PRODUTO' && item.estoque !== undefined && (
                         <span className="cart-item-stock">Est: {item.estoque}</span>

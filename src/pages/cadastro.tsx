@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
@@ -56,7 +56,7 @@ const CadastroPage: React.FC = () => {
         unidadesMedida: [],
     });
 
-    // Estado do formulÃ¡rio de Cadastro/EdiÃ§Ã£o
+    // Estado do formulário de Cadastro/Edição
     const [editingId, setEditingId] = useState<number | null>(null);
     const [form, setForm] = useState<ProdutoFormData>({
         tipo: 'PRODUTO',
@@ -85,25 +85,25 @@ const CadastroPage: React.FC = () => {
     const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
     const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
 
-    // Modal de confirmaÃ§Ã£o de exclusÃ£o
+    // Modal de confirmação de exclusão
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [itemParaExcluir, setItemParaExcluir] = useState<ItemData | null>(null);
 
-    // Modal de ImportaÃ§Ã£o XML
+    // Modal de Importação XML
     const [modalImportOpen, setModalImportOpen] = useState(false);
     const [importFile, setImportFile] = useState<File | null>(null);
 
-    // NotificaÃ§Ãµes (toast) do store global
+    // Notificações (toast) do store global
     const { showToast } = useToast();
 
-    // Controle de alteraÃ§Ãµes nÃ£o salvas
+    // Controle de alterações não salvas
     const [isDirty, setIsDirty] = useState(false);
     const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
     const pendingNavUrl = useRef<string | null>(null);
-    // Flag para ignorar o guard durante redirecionamento pÃ³s-salvo
+    // Flag para ignorar o guard durante redirecionamento pós-salvo
     const skipDirtyGuard = useRef(false);
 
-    // Deriva o estado "dirty": marca o formulÃ¡rio como editado quando o nome sai de vazio
+    // Deriva o estado "dirty": marca o formulário como editado quando o nome sai de vazio
     const [nomeEraVazio, setNomeEraVazio] = useState(true);
     const nomePreenchido = form.nome.trim() !== '';
     if (nomePreenchido !== nomeEraVazio) {
@@ -117,7 +117,7 @@ const CadastroPage: React.FC = () => {
     const nomeInputRef = useRef<HTMLInputElement | null>(null);
     const barcodeInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Carrega opÃ§Ãµes auxiliares
+    // Carrega opções auxiliares
     const carregarAuxiliares = useCallback(async () => {
         try {
             const [cats, brands, forns, uoms] = await Promise.all([
@@ -138,7 +138,7 @@ const CadastroPage: React.FC = () => {
         }
     }, [showToast]);
 
-    // Preenche o formulÃ¡rio com os dados de um item existente
+    // Preenche o formulário com os dados de um item existente
     const preencherFormComItem = useCallback((item: ItemData) => {
         setEditingId(item.id);
         setForm({
@@ -174,10 +174,10 @@ const CadastroPage: React.FC = () => {
         nomeInputRef.current?.focus();
     }, []);
 
-    // Carrega item pelo ID (vindo da query ?id=X) para prÃ©-preencher o formulÃ¡rio de ediÃ§Ã£o
+    // Carrega item pelo ID (vindo da query ?id=X) para pré-preencher o formulário de edição
     const carregarItemParaEdicao = useCallback(async (id: number) => {
         try {
-            // Tenta buscar como produto primeiro, depois como serviÃ§o
+            // Tenta buscar como produto primeiro, depois como serviço
             const [produtosData, servicosData] = await Promise.all([
                 buscarProdutos({ page: 1, pageSize: 10000 }),
                 buscarServicos({ page: 1, pageSize: 10000 }),
@@ -209,14 +209,14 @@ const CadastroPage: React.FC = () => {
 
             const item = [...todosProdutos, ...todosServicos].find((i) => i.id === id);
             if (!item) {
-                showToast('Item nÃ£o encontrado para ediÃ§Ã£o.', 'error');
+                showToast('Item não encontrado para edição.', 'error');
                 return;
             }
 
             preencherFormComItem(item);
         } catch (error) {
             console.error(error);
-            showToast('Erro ao carregar item para ediÃ§Ã£o.', 'error');
+            showToast('Erro ao carregar item para edição.', 'error');
         }
     }, [showToast, preencherFormComItem]);
 
@@ -229,7 +229,7 @@ const CadastroPage: React.FC = () => {
 
     const queryProcessada = useRef(false);
 
-    // LÃª a query: prÃ©-carrega para ediÃ§Ã£o (?id=X) ou preenche para cadastro rÃ¡pido (?novoImport=1...)
+    // Lê a query: pré-carrega para edição (?id=X) ou preenche para cadastro rápido (?novoImport=1...)
     useEffect(() => {
         if (!router.isReady || queryProcessada.current) return;
         const { id, novoImport, nome, precoCompra, estoque, unidade, ean, codigoInterno } = router.query;
@@ -292,13 +292,13 @@ const CadastroPage: React.FC = () => {
                     setFormCodigosBarras([]);
                 }
 
-                showToast('Dados do item preenchidos para cadastro. Complete as informaÃ§Ãµes e salve.', 'info');
+                showToast('Dados do item preenchidos para cadastro. Complete as informações e salve.', 'info');
             }, 0);
             return () => clearTimeout(timer);
         }
     }, [router.isReady, router.query, options.unidadesMedida, carregarItemParaEdicao, showToast]);
 
-    // Guard: aviso nativo do browser ao fechar aba ou recarregar pÃ¡gina
+    // Guard: aviso nativo do browser ao fechar aba ou recarregar página
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (!isDirty) return;
@@ -309,14 +309,14 @@ const CadastroPage: React.FC = () => {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [isDirty]);
 
-    // Guard: intercepta navegaÃ§Ãµes do Next.js router (Links, router.push, etc.)
+    // Guard: intercepta navegações do Next.js router (Links, router.push, etc.)
     const handleRouteChangeStart = useCallback((url: string) => {
         if (skipDirtyGuard.current || !isDirty) return;
-        // Aborta a navegaÃ§Ã£o
+        // Aborta a navegação
         router.events.emit('routeChangeError');
         pendingNavUrl.current = url;
         setDiscardDialogOpen(true);
-        // LanÃ§a erro para cancelar o routeChange (padrÃ£o Next.js Pages Router)
+        // Lança erro para cancelar o routeChange (padrão Next.js Pages Router)
         throw 'routeChange aborted by unsaved changes guard';
     }, [isDirty, router.events]);
 
@@ -325,7 +325,7 @@ const CadastroPage: React.FC = () => {
         return () => router.events.off('routeChangeStart', handleRouteChangeStart);
     }, [handleRouteChangeStart, router.events]);
 
-    // Reseta FormulÃ¡rio
+    // Reseta Formulário
     const resetForm = () => {
         queryProcessada.current = false;
         setIsDirty(false);
@@ -355,7 +355,7 @@ const CadastroPage: React.FC = () => {
         setAjusteDescricao('');
         setMovimentacoesEstoque([]);
         setModalAjusteOpen(false);
-        // Remove o ?id da URL sem recarregar a pÃ¡gina
+        // Remove o ?id da URL sem recarregar a página
         router.replace('/cadastro', undefined, { shallow: true });
     };
 
@@ -366,30 +366,30 @@ const CadastroPage: React.FC = () => {
             setMovimentacoesEstoque(data.slice(0, 10));
         } catch (error) {
             console.error(error);
-            showToast('Erro ao carregar histÃ³rico de movimentaÃ§Ãµes.', 'error');
+            showToast('Erro ao carregar histórico de movimentações.', 'error');
             setMovimentacoesEstoque([]);
         } finally {
             setMovimentacoesLoading(false);
         }
     };
 
-    // Adiciona CÃ³digo de Barras ao formulÃ¡rio
+    // Adiciona Código de Barras ao formulário
     const handleAddBarcode = () => {
         const code = novoCodigoBarras.trim();
-        const barcodeCheck = validateRequired(code, 'CÃ³digo de barras');
+        const barcodeCheck = validateRequired(code, 'Código de barras');
         if (!barcodeCheck.ok) {
-            showToast(barcodeCheck.message ?? 'CÃ³digo de barras Ã© obrigatÃ³rio.', 'error');
+            showToast(barcodeCheck.message ?? 'Código de barras é obrigatório.', 'error');
             barcodeInputRef.current?.focus();
             return;
         }
 
         if (formCodigosBarras.some((c) => c.codigo_barras === code)) {
-            showToast('Este cÃ³digo de barras jÃ¡ foi adicionado a este item.', 'error');
+            showToast('Este código de barras já foi adicionado a este item.', 'error');
             barcodeInputRef.current?.focus();
             return;
         }
 
-        // Se for o primeiro, ele serÃ¡ o principal
+        // Se for o primeiro, ele será o principal
         const principal = formCodigosBarras.length === 0 ? 1 : 0;
         setFormCodigosBarras([...formCodigosBarras, { codigo_barras: code, principal }]);
 
@@ -397,12 +397,12 @@ const CadastroPage: React.FC = () => {
         barcodeInputRef.current?.focus();
     };
 
-    // Remove CÃ³digo de Barras do formulÃ¡rio
+    // Remove Código de Barras do formulário
     const handleRemoveBarcode = (code: string) => {
         const itemToRemove = formCodigosBarras.find((c) => c.codigo_barras === code);
         const updated = formCodigosBarras.filter((c) => c.codigo_barras !== code);
 
-        // Se o removido era o principal e sobrou algum cÃ³digo, define o primeiro como principal
+        // Se o removido era o principal e sobrou algum código, define o primeiro como principal
         if (itemToRemove?.principal === 1 && updated.length > 0) {
             updated[0].principal = 1;
         }
@@ -410,7 +410,7 @@ const CadastroPage: React.FC = () => {
         setFormCodigosBarras(updated);
     };
 
-    // Alterna o CÃ³digo de Barras Principal
+    // Alterna o Código de Barras Principal
     const handleSetPrincipalBarcode = (code: string) => {
         const updated = formCodigosBarras.map((c) => ({
             ...c,
@@ -419,13 +419,13 @@ const CadastroPage: React.FC = () => {
         setFormCodigosBarras(updated);
     };
 
-    // Submit do formulÃ¡rio de Cadastro/EdiÃ§Ã£o
+    // Submit do formulário de Cadastro/Edição
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const nomeCheck = validateRequired(form.nome, 'O nome do item');
         if (!nomeCheck.ok) {
-            showToast(nomeCheck.message ?? 'O nome do item Ã© obrigatÃ³rio.', 'error');
+            showToast(nomeCheck.message ?? 'O nome do item é obrigatório.', 'error');
             nomeInputRef.current?.focus();
             return;
         }
@@ -464,12 +464,12 @@ const CadastroPage: React.FC = () => {
         const estoqueValor = Number.isFinite(estoqueRaw) ? estoqueRaw : 0;
         const multiplicadorValor = Number.isFinite(multiplicadorRaw) && multiplicadorRaw > 0 ? multiplicadorRaw : 1;
 
-        // ValidaÃ§Ã£o de cÃ³digo principal nos cÃ³digos de barras
+        // Validação de código principal nos códigos de barras
         let codigosBarrasFinal = formCodigosBarras;
         if (codigosBarrasFinal.length > 0) {
             const temPrincipal = codigosBarrasFinal.some((c) => c.principal === 1);
             if (!temPrincipal) {
-                // ForÃ§a o primeiro como principal se nenhum foi marcado
+                // Força o primeiro como principal se nenhum foi marcado
                 codigosBarrasFinal = codigosBarrasFinal.map((c, index) =>
                     index === 0 ? { ...c, principal: 1 } : c
                 );
@@ -516,10 +516,10 @@ const CadastroPage: React.FC = () => {
             if (form.tipo === 'SERVICO') {
                 if (editingId) {
                     await atualizarServico(editingId, servicePayload);
-                    showToast('ServiÃ§o atualizado com sucesso. Redirecionando...', 'success');
+                    showToast('Serviço atualizado com sucesso. Redirecionando...', 'success');
                 } else {
                     await registrarServico(servicePayload);
-                    showToast('ServiÃ§o cadastrado com sucesso. Redirecionando...', 'success');
+                    showToast('Serviço cadastrado com sucesso. Redirecionando...', 'success');
                 }
             } else {
                 if (editingId) {
@@ -530,7 +530,7 @@ const CadastroPage: React.FC = () => {
                     showToast('Item cadastrado com sucesso. Redirecionando...', 'success');
                 }
             }
-            // Limpa dirty antes de navegar para nÃ£o disparar o guard
+            // Limpa dirty antes de navegar para não disparar o guard
             setIsDirty(false);
             skipDirtyGuard.current = true;
             setTimeout(() => router.push('/produtos'), 2000);
@@ -539,7 +539,7 @@ const CadastroPage: React.FC = () => {
         }
     };
 
-    // Confirma exclusÃ£o
+    // Confirma exclusão
     const handleConfirmExcluir = async () => {
         if (!itemParaExcluir) return;
         try {
@@ -548,7 +548,7 @@ const CadastroPage: React.FC = () => {
             } else {
                 await excluirProduto(itemParaExcluir.id);
             }
-            showToast('Item excluÃ­do com sucesso.', 'success');
+            showToast('Item excluído com sucesso.', 'success');
             setDeleteConfirmOpen(false);
             setItemParaExcluir(null);
             resetForm();
@@ -661,7 +661,7 @@ const CadastroPage: React.FC = () => {
         setItemParaExcluir,
     });
 
-    // FunÃ§Ã£o para importaÃ§Ã£o de XML
+    // Função para importação de XML
     const handleImportXML = (file?: File) => {
         setImportFile(file || null);
         setModalImportOpen(true);
@@ -670,22 +670,22 @@ const CadastroPage: React.FC = () => {
     return (
         <>
             <Head>
-                <title>Produtos e ServiÃ§os | Cadastro e EdiÃ§Ã£o</title>
+                <title>Produtos e Serviços | Cadastro e Edição</title>
                 <meta
                     name="description"
-                    content="Cadastro/EdiÃ§Ã£o de produtos e serviÃ§os, suporte a mÃºltiplos cÃ³digos de barras."
+                    content="Cadastro/Edição de produtos e serviços, suporte a múltiplos códigos de barras."
                 />
             </Head>
 
             <div className={styles.produtosPage}>
 
                 <div>
-                    <h1 id="page-title">Produtos e ServiÃ§os</h1>
-                    <p>Cadastro/EdiÃ§Ã£o de produtos e serviÃ§os, suporte a mÃºltiplos cÃ³digos de barras.</p>
+                    <h1 id="page-title">Produtos e Serviços</h1>
+                    <p>Cadastro/Edição de produtos e serviços, suporte a múltiplos códigos de barras.</p>
                 </div>
 
                 <div className={styles.cadastroEdicaoGrid}>
-                    {/* FormulÃ¡rio de Cadastro/EdiÃ§Ã£o */}
+                    {/* Formulário de Cadastro/Edição */}
                     <div className={styles.produtosGridRight}>
                         <section className="glass-form" aria-labelledby="form-title">
                             <h2 id="form-title" style={{ marginBottom: '15px' }}>
@@ -718,7 +718,7 @@ const CadastroPage: React.FC = () => {
                                     }}
                                 />
 
-                                {/* CÃ³digos de Barras */}
+                                {/* Códigos de Barras */}
                                 {form.tipo === 'PRODUTO' && (
                                     <BarcodeManager
                                         data={{
@@ -735,13 +735,13 @@ const CadastroPage: React.FC = () => {
                                     />
                                 )}
 
-                                {/* BotÃµes de AÃ§Ã£o */}
+                                {/* Botões de Ação */}
                                 <div className={styles.actionButtons}>
                                     <button type="submit"
                                         className={styles.primaryButton}
                                         id="submit-item-btn"
                                     >
-                                        {editingId ? 'Salvar AlteraÃ§Ãµes' : 'Cadastrar'}
+                                        {editingId ? 'Salvar Alterações' : 'Cadastrar'}
                                     </button>
                                     <button
                                         type="button"
@@ -769,7 +769,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: EdiÃ§Ã£o de Categoria */}
+                {/* Modal: Edição de Categoria */}
                 {modalCategoriaEditOpen && (
                     <ModalCategoriaEdit
                         catForm={catForm}
@@ -792,7 +792,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: EdiÃ§Ã£o de Marca */}
+                {/* Modal: Edição de Marca */}
                 {modalMarcaEditOpen && (
                     <ModalMarcaEdit
                         marcaForm={marcaForm}
@@ -815,7 +815,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: EdiÃ§Ã£o de Fornecedor */}
+                {/* Modal: Edição de Fornecedor */}
                 {modalFornecedorEditOpen && (
                     <ModalFornecedorEdit
                         fornecedorForm={fornecedorForm}
@@ -840,7 +840,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: EdiÃ§Ã£o de Unidade de Medida */}
+                {/* Modal: Edição de Unidade de Medida */}
                 {modalUnidadeMedidaEditOpen && (
                     <ModalUnidadeMedidaEdit
                         uomForm={uomForm}
@@ -868,7 +868,7 @@ const CadastroPage: React.FC = () => {
                         onSave={() => {
                             const quantidadeCheck = validateNumber(ajusteQuantidade);
                             if (!quantidadeCheck.ok) {
-                                showToast(quantidadeCheck.message ?? 'NÃºmero invÃ¡lido.', 'error');
+                                showToast(quantidadeCheck.message ?? 'Número inválido.', 'error');
                                 return;
                             }
                             const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
@@ -878,7 +878,7 @@ const CadastroPage: React.FC = () => {
                                 return { ...prev, estoque: String(estoqueAtual + quantidadeAjusteNumero) };
                             });
 
-                            showToast('Ajuste aplicado no formulÃ¡rio. Lembre-se de "Salvar AlteraÃ§Ãµes"!', 'info');
+                            showToast('Ajuste aplicado no formulário. Lembre-se de "Salvar Alterações"!', 'info');
                             setModalAjusteOpen(false);
                             setAjusteQuantidade('');
                             setAjusteDescricao('');
@@ -887,7 +887,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: ConfirmaÃ§Ã£o de ExclusÃ£o */}
+                {/* Modal: Confirmação de Exclusão */}
                 {deleteConfirmOpen && itemParaExcluir && (
                     <ModalProdExclusao
                         open={deleteConfirmOpen}
@@ -900,7 +900,7 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* Modal: ImportaÃ§Ã£o XML */}
+                {/* Modal: Importação XML */}
                 {modalImportOpen && (
                     <ImportItemsModal
                         initialFile={importFile}
@@ -914,11 +914,11 @@ const CadastroPage: React.FC = () => {
                     />
                 )}
 
-                {/* DiÃ¡logo de confirmaÃ§Ã£o: descartar alteraÃ§Ãµes nÃ£o salvas */}
+                {/* Diálogo de confirmação: descartar alterações não salvas */}
                 <ConfirmDialog
                     open={discardDialogOpen}
-                    title="Descartar alteraÃ§Ãµes?"
-                    message="VocÃª tem alteraÃ§Ãµes nÃ£o salvas. Se continuar, elas serÃ£o perdidas."
+                    title="Descartar alterações?"
+                    message="Você tem alterações não salvas. Se continuar, elas serão perdidas."
                     confirmText="Descartar e sair"
                     cancelText="Continuar editando"
                     onConfirm={() => {

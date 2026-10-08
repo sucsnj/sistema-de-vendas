@@ -33,10 +33,11 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 2. Siga as regras do framework: esta versão do Next.js tem breaking changes — leia `node_modules/next/dist/docs/` antes de escrever código e atente a avisos de depreciação.
 3. Siga as boas práticas do projeto: TypeScript forte (sem `any`), validação centralizada em `src/utils/validation.ts`, datas em `America/Recife`, `refs` em vez de `document.querySelector`, e revisão dos endpoints de backup ao alterar estrutura de banco.
 4. **Nomenclatura de código (ADR 0004)**: identificadores, funções e nomes de arquivo em **inglês**; pt-BR apenas em strings visíveis ao usuário. Código novo/refatorado nasce em inglês; identificadores pt-BR restantes são renomeados ao tocar nos módulos (sem renames massivos fora de contexto).
+5. **Sem código criado via PowerShell**: nunca gravar/gerar arquivos do projeto com cmdlets do PowerShell (`Set-Content`, `Out-File`, `Add-Content`, herestrings do shell etc.) — a codificação padrão do Windows gera mojibake (acentos de palavras como `mês` virando dois caracteres lixo) que passa em lint/typecheck/build e só estraga na tela. Use sempre as ferramentas de edição de arquivo (gravação UTF-8) e, após criar/editar, rode `node scripts/check-encoding.mjs` (ver `PROJECT_STATUS.md`, seção "Gravação de arquivos"). Comandos de execução (`npm`, `node`, `git`) no terminal continuam permitidos.
 
 ### Conflito com as regras
 
-5. Se uma mudança solicitada violar regras de **arquitetura, projeto, negócios, framework ou boas práticas**, pergunte explicitamente antes de implementar: explique o problema, o impacto e proponha uma alternativa viável.
+6. Se uma mudança solicitada violar regras de **arquitetura, projeto, negócios, framework ou boas práticas**, pergunte explicitamente antes de implementar: explique o problema, o impacto e proponha uma alternativa viável.
 
 ## Contexto rápido
 
@@ -50,6 +51,7 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 - `npm run dev` — servidor de desenvolvimento.
 - `npm run build` — build de produção.
 - `npm run lint` — lint (eslint).
+- `node scripts/check-encoding.mjs` — checa mojibake/BOM (use `--fix` para reparar); rodar antes de commitar. Nunca gravar arquivos com cmdlets do PowerShell (ver `PROJECT_STATUS.md`, seção "Gravação de arquivos").
 - `/context` — carrega o contexto do projeto a partir da documentação.
 - `/skill fritar` — invoca a skill `grill-with-docs` (entrevista de design + ADRs).
 - `/skill ensinar` — invoca a skill `teach` (aprendizado em workspace guiado).

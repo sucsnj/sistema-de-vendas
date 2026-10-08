@@ -80,6 +80,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 7. **Backups.** Ao alterar estrutura de um banco, revise os endpoints de backup correspondentes.
 8. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`.
 9. **Conflito com as regras.** Se uma mudança solicitada violar regras de arquitetura/projeto/negócios/framework/boas práticas, pergunte explicitamente, explique o problema e proponha alternativa antes de implementar (ver `AGENTS.md`).
+10. **Sem código criado via PowerShell.** Nunca gravar arquivos do projeto com cmdlets do PowerShell (`Set-Content`, `Out-File` etc.): gera mojibake (acentos de palavras como `mês` virando dois caracteres lixo) que passa em lint/typecheck/build e só estraga na tela. Use as ferramentas de edição de arquivo (UTF-8) e rode `node scripts/check-encoding.mjs` (com `--fix` para reparar) após criar/editar; ver `PROJECT_STATUS.md`, seção "Gravação de arquivos: nunca usar PowerShell". Comandos de execução (`npm`, `node`, `git`) no terminal são permitidos.
 
 ## Como manter este guia
 

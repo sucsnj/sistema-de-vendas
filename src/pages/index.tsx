@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DailySaleForm from '../components/DailySaleForm';
 import DailySalesTotal from '../components/DailySalesTotal';
 import SalesChart from '../components/SalesChart';
@@ -11,26 +11,26 @@ import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getDateArray, now, toTimestamp, formatMonthName } from '../utils/date';
 
-// Data de hoje (fuso do app) usada como seleÃ§Ã£o inicial do formulÃ¡rio
+// Data de hoje (fuso do app) usada como seleção inicial do formulário
 const hoje = now().format('YYYY-MM-DD');
 
-// Componente React da pÃ¡gina inicial: Dashboard de Vendas.
+// Componente React da página inicial: Dashboard de Vendas.
 // Orquestra os subcomponentes da tela usando os hooks useToast e useVendas,
-// mantendo apenas o estado de filtro (mÃªs/ano) e da data selecionada.
+// mantendo apenas o estado de filtro (mês/ano) e da data selecionada.
 const Home: React.FC = () => {
-  // PerÃ­odo de hoje (mÃªs/ano no fuso do app), calculado uma Ãºnica vez
+  // Período de hoje (mês/ano no fuso do app), calculado uma única vez
   const [, mesAtual, anoAtual] = getDateArray();
-  // PerÃ­odo selecionado (mÃªs e ano), usado para carregar as vendas
+  // Período selecionado (mês e ano), usado para carregar as vendas
   const [mes, setMes] = useState(mesAtual);
   const [ano, setAno] = useState(anoAtual);
-  // Ano exibido no campo; aceita digitaÃ§Ã£o livre e sÃ³ comita valores vÃ¡lidos
+  // Ano exibido no campo; aceita digitação livre e só comita valores válidos
   const [anoInput, setAnoInput] = useState(String(anoAtual));
-  // Data selecionada no formulÃ¡rio de venda diÃ¡ria
+  // Data selecionada no formulário de venda diária
   const [selectedDate, setSelectedDate] = useState(hoje);
 
-  // NotificaÃ§Ãµes (toast) exibidas na pÃ¡gina
+  // Notificações (toast) exibidas na página
   const { showToast } = useToast();
-  // Estado e aÃ§Ãµes de vendas (carregar, editar, excluir, consolidar, backup)
+  // Estado e ações de vendas (carregar, editar, excluir, consolidar, backup)
   const {
     sales,
     loading,
@@ -44,12 +44,12 @@ const Home: React.FC = () => {
     handleDeleteSale,
   } = useVendas(mes, ano, showToast);
 
-  // Recarrega as vendas sempre que o perÃ­odo (mes/ano) mudar
+  // Recarrega as vendas sempre que o período (mes/ano) mudar
   useEffect(() => {
     loadSales();
   }, [loadSales]);
 
-  // Ãšltimas 4 vendas (por data e id, da mais recente para a mais antiga)
+  // Últimas 4 vendas (por data e id, da mais recente para a mais antiga)
   const recentSales = [...sales]
     .sort((a, b) => {
       const dateA = toTimestamp(`${a.data}T00:00:00`);
@@ -64,7 +64,7 @@ const Home: React.FC = () => {
       <div className="container-padding">
         <h1>Dashboard de Vendas</h1>
         {loading && <p className="loading-text">Carregando vendas...</p>}
-        {/* Resumo do perÃ­odo + formulÃ¡rio de registro de venda */}
+        {/* Resumo do período + formulário de registro de venda */}
         <DailySalesTotal
           sales={sales}
           selectedDay={selectedDate}
@@ -83,7 +83,7 @@ const Home: React.FC = () => {
           />
         </DailySalesTotal>
 
-        {/* FormulÃ¡rio de ediÃ§Ã£o (visÃ­vel apenas quando hÃ¡ uma venda em ediÃ§Ã£o) */}
+        {/* Formulário de edição (visível apenas quando há uma venda em edição) */}
         {editingSale && (
           <EditSaleForm
             sale={editingSale}
@@ -102,11 +102,11 @@ const Home: React.FC = () => {
           onMessage={showToast}
           onImportCompleted={loadSales}
         />
-        {/* RodapÃ© com filtro de perÃ­odo e aÃ§Ãµes de consolidaÃ§Ã£o/backup */}
+        {/* Rodapé com filtro de período e ações de consolidação/backup */}
         <div className="footer-header glass-form">
           <div className="page-actions">
             <label>
-              MÃªs:
+              Mês:
               <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -135,7 +135,7 @@ const Home: React.FC = () => {
             </label>
             <button className="headerButton" onClick={handleConsolidate}>
               <DoneAllIcon />
-              Consolidar MÃªs
+              Consolidar Mês
             </button>
             <button className="headerBackupButton" onClick={handleBackup}>
               <BackupIcon />
