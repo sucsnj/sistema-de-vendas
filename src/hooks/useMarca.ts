@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { buscarMarcas, criarMarca, deletarMarca, atualizarMarca } from "../services/produtosService";
-import { MarcaFormData } from "@/components/ModalMarcaEdit";
-import { ProdutoFormData } from "@/components/FormularioProduto";
-import { ProdutoOptions } from "@/components/FormularioProduto";
+import { MarcaFormData } from "@/components/cadastro/BrandEditModal";
+import { ProdutoFormData } from "@/components/products/ProductForm";
+import { ProdutoOptions } from "@/components/products/ProductForm";
 import { validateRequired } from "../utils/validation";
 
 interface UseMarcaParams {

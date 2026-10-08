@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
-import Nav from '../components/Nav';
-import Toaster from '../components/Toaster';
+import Nav from '../components/common/Nav';
+import Toaster from '../components/common/Toaster';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Head from 'next/head';
 

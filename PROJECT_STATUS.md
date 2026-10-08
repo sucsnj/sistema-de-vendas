@@ -19,6 +19,16 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Componentes: nomes em inglês + subpastas por domínio (ADR 0005) — 08/10/2026
+
+- `src/components/` reorganizado: ~45 arquivos movidos com `git mv` para 9 pastas por domínio (`cart/`, `sales/`, `summary/`, `contas/`, `products/`, `cadastro/`, `import/`, `pix/`, `common/`) e renomeados para inglês (ex.: `ModalCarrinho.tsx` → `cart/CartModal.tsx`, `FormularioProduto.tsx` → `products/ProductForm.tsx`, `Resumo.tsx` → `summary/Summary.tsx`).
+- **Imports corrigidos em todo `src/`** (páginas, hooks, componentes): cross-pasta via `@/components/<pasta>/<Arquivo>`; profundidade de `../utils|services|hooks` ajustada nos arquivos movidos.
+- **Excluídos** (sem uso ativo, confirmado por busca de imports): `ModalServicos.tsx`, `FloatingPixWindow.tsx` e as duplicatas antigas em pt-BR (`ModalCarrinho`, `ModalSelecionarItens`, `CartModalShell`, `FormularioProduto`, `ItemNomeDropdown`, `ModalImportItens` na raiz) — completando a migração parcial anterior.
+- **Identificadores internos mantidos em pt-BR** nesta rodada (decisão do dono): `const ModalCarrinho` continua dentro de `CartModal.tsx`; renomeio segue o ADR 0004, ao tocar nos módulos.
+- Docs: 14 `docs/components/*.md` renomeados para inglês (`CartModal.md`, `SelectItemsModal.md`, `ImportItemsModal.md`, `ProductForm.md`, `ItemForm.md`, `ServiceForm.md`, `ItemNameDropdown.md`, `ProductList.md`, `ProductFilters.md`, `Summary.md`, `MonthlyConsolidation.md`, `MonthNotes.md`, `TotalsByDistributor.md`, `StockAdjustModal.md`); referências em `docs/README.md`, `docs/CONTEXT.md`, `docs/DOCS.md` e docs de páginas/serviços atualizadas; seções de `ModalServicos`/`FloatingPixWindow` removidas de `ModaisCadastro.md`, `ModaisDeProdutos.md` e `Pix.md`.
+- **Novo ADR** `docs/adr/0005-agrupamento-de-componentes-por-dominio.md` (índice `docs/README.md` atualizado).
+- Verificação: `npm run lint`, `npx tsc --noEmit`, `npm run build` e `node scripts/check-encoding.mjs` verdes.
+
 ### Limpeza de encoding: mojibake e BOM (08/10/2026)
 
 - `node scripts/check-encoding.mjs` encontrou **82 problemas** em 9 arquivos: mojibake (UTF-8 interpretado como ANSI/cp1252 — acentos e travessões virando dois caracteres lixo) e BOM (U+FEFF) no início do arquivo — gerados por gravação via PowerShell (Windows-1252/ANSI).
@@ -146,9 +156,9 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
-- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004) e `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`) concluídos. Próximos alvos:
+- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`) e **agrupamento dos componentes em subpastas por domínio com nomes em inglês (ADR 0005)** concluídos. Próximos alvos:
   - **Grandes componentes** mistos (UI+estado+validação+API): `ModalCarrinho`, `ModalImportItens`, `FormularioProduto`, `ModalSelecionarItens` — extraídas hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
-  - **Renomeação incremental** dos identificadores pt-BR restantes para inglês (ADR 0004), ao tocar nos módulos.
+  - **Renomeação incremental** dos identificadores pt-BR restantes para inglês (ADR 0004), ao tocar nos módulos — agora inclusive os nomes dos componentes cujos **arquivos** já estão em inglês (ex.: `const ModalCarrinho` em `cart/CartModal.tsx`).
   - **Decisão pendente do dono**: padronização de estilos (CSS Modules × classes globais × inline).
 - Commit das mudanças atuais **não realizado** (por solicitação do usuário nesta rodada).
 

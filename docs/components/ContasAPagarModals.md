@@ -1,4 +1,4 @@
-# `src/components/ContasAPagarModals.tsx`
+# `src/components/contas/ContasAPagarModals.tsx`
 
 ## Descrição
 

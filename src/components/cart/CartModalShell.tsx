@@ -1,5 +1,5 @@
 /**
- * src/components/CartModalShell.tsx
+ * src/components/cart/CartModalShell.tsx
  *
  * Casca visual compartilhada dos modais de carrinho (ModalCarrinho e
  * ModalSelecionarItens). Concentra overlay/header/footer, portal,

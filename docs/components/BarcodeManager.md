@@ -1,4 +1,4 @@
-# `src/components/BarcodeManager.tsx`
+# `src/components/common/common/BarcodeManager.tsx`
 
 ## Descrição
 

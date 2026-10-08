@@ -1,4 +1,4 @@
-# `src/components/EditSaleForm.tsx`
+# `src/components/sales/sales/EditSaleForm.tsx`
 
 ## Descrição
 

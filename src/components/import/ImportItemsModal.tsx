@@ -1,9 +1,9 @@
 /**
- * src/components/ModalImportItens.tsx
+ * src/components/import/ImportItemsModal.tsx
  *
  * Modal de importação de produtos via nota fiscal (XML). Apresentacional —
  * lógica no `useImportItens` e seletor de vínculo no `ItemNameDropdown`.
- * Ver docs/components/ModalImportItens.md.
+ * Ver docs/components/ImportItemsModal.md.
  */
 
 import { useMemo, useRef } from 'react';

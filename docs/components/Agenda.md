@@ -1,4 +1,4 @@
-# `src/components/Agenda.tsx`
+# `src/components/contas/contas/Agenda.tsx`
 
 ## Descrição
 
@@ -27,7 +27,7 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => ...
 
 ## Dependências
 
-- `@/components/OcrUpload`
+- `@/components/import/OcrUpload`
 - `src/services/contasService` (tipo `ContaDetalhe`)
 - `src/utils/formatter` (`formatCurrency`) e `src/utils/date` (`formatDateString`, `toTimestamp`)
 - `src/styles/contas.module.css` (classes `contasPanel`, `agendaPanel`, `panelHeader`, `statusChip`, `proximasPanel`)

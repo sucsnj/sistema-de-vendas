@@ -41,7 +41,7 @@ interface CartItem {
 ```
 
 - `CatalogItemType`: tipo/categoria de um item do catálogo ou carrinho.
-- `CartItem`: item do carrinho de uma venda — movido de `DailySaleForm.tsx` (componente) para a camada de tipos porque é compartilhado entre **4 arquivos** (`useCart`, `ModalCarrinho`, `ModalSelecionarItens`, `DailySaleForm`/`EditSaleForm`).
+- `CartItem`: item do carrinho de uma venda — movido de `sales/DailySaleForm.tsx` (componente) para a camada de tipos porque é compartilhado entre **4 arquivos** (`useCart`, `ModalCarrinho`, `ModalSelecionarItens`, `DailySaleForm`/`EditSaleForm`).
 
 ## Observações
 

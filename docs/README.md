@@ -34,6 +34,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [adr/0002-padrao-de-validacao-de-campos.md](adr/0002-padrao-de-validacao-de-campos.md) - ADR: padrão de validação de campos `{ ok, message }`.
 - [adr/0003-padrao-de-notificacoes-toast.md](adr/0003-padrao-de-notificacoes-toast.md) - ADR: padrão de notificações (toast) — store singleton + host global.
 - [adr/0004-padrao-de-nomenclatura-dos-identificadores.md](adr/0004-padrao-de-nomenclatura-dos-identificadores.md) - ADR: identificadores/funções/arquivos em inglês (pt-BR só em strings de UI).
+- [adr/0005-agrupamento-de-componentes-por-dominio.md](adr/0005-agrupamento-de-componentes-por-dominio.md) - ADR: componentes em subpastas por domínio com nomes de arquivo em inglês.
 
 ## Páginas do Frontend
 
@@ -99,27 +100,29 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Componentes
 
-### Vendas e Dashboard
+> Arquivos em `src/components/` agrupados por domínio (ADR 0005): `cart/`, `sales/`, `summary/`, `contas/`, `products/`, `cadastro/`, `import/`, `pix/`, `common/`. Os docs abaixo continuam flat em `docs/components/`.
+
+### Vendas e Dashboard (`src/components/sales/`)
 
 - [components/DailySaleForm.md](components/DailySaleForm.md) - formulário de venda diária.
 - [components/EditSaleForm.md](components/EditSaleForm.md) - edição de venda existente.
-- [components/FormularioItem.md](components/FormularioItem.md) - formulário de item de venda.
-- [components/FormularioServico.md](components/FormularioServico.md) - formulário de serviço.
-- [components/ModalCarrinho.md](components/ModalCarrinho.md) - carrinho de compras da venda.
-- [components/ModalSelecionarItens.md](components/ModalSelecionarItens.md) - seleção de itens (catálogo) para adicionar ao carrinho.
-- [components/ModalImportItens.md](components/ModalImportItens.md) - importação de itens via XML de NF-e.
-- [components/ItemNomeDropdown.md](components/ItemNomeDropdown.md) - busca de itens (produtos/serviços) com sugestões.
+- [components/ItemForm.md](components/ItemForm.md) - formulário de item de venda.
+- [components/ServiceForm.md](components/ServiceForm.md) - formulário de serviço.
+- [components/CartModal.md](components/CartModal.md) - carrinho de compras da venda.
+- [components/SelectItemsModal.md](components/SelectItemsModal.md) - seleção de itens (catálogo) para adicionar ao carrinho.
+- [components/ImportItemsModal.md](components/ImportItemsModal.md) - importação de itens via XML de NF-e.
+- [components/ItemNameDropdown.md](components/ItemNameDropdown.md) - busca de itens (produtos/serviços) com sugestões.
 - [components/CartModalShell.md](components/CartModalShell.md) - casca compartilhada dos modais de carrinho.
 - [components/DailySalesTotal.md](components/DailySalesTotal.md) - totais do dia.
 - [components/SalesChart.md](components/SalesChart.md) - gráfico de vendas.
 - [components/SalesTable.md](components/SalesTable.md) - tabela de vendas.
-- [components/ConsolidacaoMensal.md](components/ConsolidacaoMensal.md) - consolidação mensal.
-- [components/Resumo.md](components/Resumo.md) - resumo de vendas.
-- [components/NotasDoMes.md](components/NotasDoMes.md) - notas do mês.
-- [components/TotaisPorDistribuidora.md](components/TotaisPorDistribuidora.md) - totais por distribuidora.
+- [components/MonthlyConsolidation.md](components/MonthlyConsolidation.md) - consolidação mensal.
+- [components/Summary.md](components/Summary.md) - resumo de vendas.
+- [components/MonthNotes.md](components/MonthNotes.md) - notas do mês.
+- [components/TotalsByDistributor.md](components/TotalsByDistributor.md) - totais por distribuidora.
 - [components/ExportButtons.md](components/ExportButtons.md) - exportação de dados.
 
-### Contas a Pagar
+### Contas a Pagar (`src/components/contas/`)
 
 - [components/ContasAPagarForm.md](components/ContasAPagarForm.md) - formulário de contas.
 - [components/ContasAPagarFilterPanel.md](components/ContasAPagarFilterPanel.md) - painel de filtros.
@@ -127,25 +130,25 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [components/ContasAPagarModals.md](components/ContasAPagarModals.md) - modais de contas.
 - [components/ContasAPagarHeader.md](components/ContasAPagarHeader.md) - cabeçalho do módulo.
 
-### Produtos e Estoque
+### Produtos e Estoque (`src/components/products/`, `cadastro/`, `import/`)
 
-- [components/ProdutosList.md](components/ProdutosList.md) - listagem de produtos.
-- [components/FormularioProduto.md](components/FormularioProduto.md) - formulário de produto.
+- [components/ProductList.md](components/ProductList.md) - listagem de produtos.
+- [components/ProductForm.md](components/ProductForm.md) - formulário de produto.
 - [components/ModaisDeProdutos.md](components/ModaisDeProdutos.md) - ponte para modais de produtos/cadastro (consolidado em `ModaisCadastro.md`).
 - [components/ModaisCadastro.md](components/ModaisCadastro.md) - modais de cadastro (categorias, marcas, fornecedores, unidades, importação).
-- [components/ModalAjusteEstoque.md](components/ModalAjusteEstoque.md) - ajuste de estoque.
+- [components/StockAdjustModal.md](components/StockAdjustModal.md) - ajuste de estoque.
 
-### PIX e Pagamento
+### PIX e Pagamento (`src/components/pix/`, `src/utils/`)
 
-- [components/Pix.md](components/Pix.md) - fluxo de PIX: utilitários (`pix.ts`, `pixActions.ts`, `qrPix.ts`) e componentes (`FloatingPixWindow`, `ModalPix`).
+- [components/Pix.md](components/Pix.md) - fluxo de PIX: utilitários (`pix.ts`, `pixActions.ts`, `qrPix.ts`) e componente `ModalPix`.
 
-### Gerais e Relatórios
+### Gerais e Relatórios (`src/components/common/`, `summary/`, `contas/`)
 
 - [components/Agenda.md](components/Agenda.md) - agenda de contas pendentes, próximas contas e leitura por OCR.
 - [components/ConfirmDialog.md](components/ConfirmDialog.md) - modal de confirmação.
 - [components/Nav.md](components/Nav.md) - navegação global.
 - [components/OcrUpload.md](components/OcrUpload.md) - upload OCR.
-- [components/Filtros.md](components/Filtros.md) - filtros de listagens.
+- [components/ProductFilters.md](components/ProductFilters.md) - filtros de listagens.
 - [components/Toast.md](components/Toast.md) - notificações: componente `Toast`, host global `Toaster` e store `utils/toast.ts` (ADR 0003).
 - [components/BarcodeManager.md](components/BarcodeManager.md) - leitura de código de barras.
 

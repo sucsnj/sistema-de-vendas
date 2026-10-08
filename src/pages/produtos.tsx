@@ -17,11 +17,11 @@ import {
   ItemData,
   ServicoData,
 } from '../services/produtosService';
-import { ProdutoOptions } from '@/components/FormularioProduto';
-import ProdutosList from '@/components/ProdutosList';
-import Filtros from '@/components/Filtros';
-import ModalProdExclusao from '@/components/ModalProdExclusao';
-import { FiltrosState } from '@/components/Filtros';
+import { ProdutoOptions } from '@/components/products/ProductForm';
+import ProdutosList from '@/components/products/ProductList';
+import Filtros from '@/components/products/ProductFilters';
+import ModalProdExclusao from '@/components/products/ProductDeleteModal';
+import { FiltrosState } from '@/components/products/ProductFilters';
 
 const ProdutosPage: React.FC = () => {
 

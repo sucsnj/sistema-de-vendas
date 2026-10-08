@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/useToast';
-import Agenda from '@/components/Agenda';
-import Resumo from '@/components/Resumo';
-import ContasAPagarHeader from '@/components/ContasAPagarHeader';
-import ContasAPagarFilterPanel from '@/components/ContasAPagarFilterPanel';
-import ContasAPagarForm from '@/components/ContasAPagarForm';
+import Agenda from '@/components/contas/Agenda';
+import Resumo from '@/components/summary/Summary';
+import ContasAPagarHeader from '@/components/contas/ContasAPagarHeader';
+import ContasAPagarFilterPanel from '@/components/contas/ContasAPagarFilterPanel';
+import ContasAPagarForm from '@/components/contas/ContasAPagarForm';
 import parseNumber from '../utils/number';
-import ContasAPagarLastTen from '@/components/ContasAPagarLastTen';
-import ContasAPagarModals from '@/components/ContasAPagarModals';
+import ContasAPagarLastTen from '@/components/contas/ContasAPagarLastTen';
+import ContasAPagarModals from '@/components/contas/ContasAPagarModals';
 import styles from '@/styles/contas.module.css';
 import {
   buscarContas,

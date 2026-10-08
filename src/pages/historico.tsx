@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import SalesTable from '../components/SalesTable';
-import ExportButtons from '../components/ExportButtons';
-import EditSaleForm from '../components/EditSaleForm';
+import SalesTable from '../components/sales/SalesTable';
+import ExportButtons from '../components/sales/ExportButtons';
+import EditSaleForm from '../components/sales/EditSaleForm';
 import { capitalize } from '../utils/captalize';
 import { getDateArray, formatMonthName } from '../utils/date';
 import { useToast } from '../hooks/useToast';

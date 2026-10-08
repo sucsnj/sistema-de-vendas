@@ -1,5 +1,5 @@
 /**
- * src/components/ItemNameDropdown.tsx
+ * src/components/import/ItemNameDropdown.tsx
  *
  * Campo com busca de itens cadastrados (produtos/serviços) usado na
  * coluna "Item no Sistema" do ModalImportItens. Seletor com sugestões

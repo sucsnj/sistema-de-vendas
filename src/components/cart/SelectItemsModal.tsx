@@ -1,9 +1,9 @@
 /**
- * src/components/ModalSelecionarItens.tsx
+ * src/components/cart/SelectItemsModal.tsx
  *
  * Modal de seleção de itens do catálogo. Apresentacional — sem estado
  * próprio (busca/soma vêm do `useCart` via props) e com a casca visual
- * compartilhada no `CartModalShell`. Ver docs/components/ModalSelecionarItens.md.
+ * compartilhada no `CartModalShell`. Ver docs/components/SelectItemsModal.md.
  */
 
 import React, { useEffect, useMemo, useRef } from 'react';

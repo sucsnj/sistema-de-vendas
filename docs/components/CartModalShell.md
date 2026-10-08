@@ -1,4 +1,4 @@
-# `src/components/CartModalShell.tsx`
+# `src/components/cart/CartModalShell.tsx`
 
 ## Descrição
 

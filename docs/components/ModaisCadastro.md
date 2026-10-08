@@ -1,6 +1,6 @@
 # Modais de Cadastro (Catálogo)
 
-Documenta os modais auxiliares do catálogo: CRUD de categorias/marcas/fornecedores/unidades de medida, importação de itens via NF-e, seleção de itens para o carrinho, modal de serviços e confirmações de exclusão.
+Documenta os modais auxiliares do catálogo: CRUD de categorias/marcas/fornecedores/unidades de medida, importação de itens via NF-e, seleção de itens para o carrinho e confirmações de exclusão.
 
 ## Contexto
 
@@ -12,31 +12,31 @@ São abertos pela página `/cadastro` (formulário de produto) e usam `src/style
 
 Cada entidade tem um par de modais: criação (campos obrigatórios marcados com `*`) e edição (adiciona o botão "Excluir" e embute o modal de confirmação de exclusão correspondente). O fluxo de dados é idêntico e está detalhado em `docs/hooks/Hooks.md` (padrão comum dos hooks de catálogo).
 
-### `ModalCategoria` / `ModalCategoriaEdit` — `src/components/ModalCategoria.tsx` / `ModalCategoriaEdit.tsx`
+### `ModalCategoria` / `ModalCategoriaEdit` — `src/components/cadastro/CategoryModal.tsx` / `cadastro/CategoryEditModal.tsx`
 
 - Criação: campos **Nome** (obrigatório) e **Descrição**; `useFocusTrap(dialogRef, true)`.
 - Props (criação): `{ catForm, setCatForm, options }` onde `options` é `CategoriaOptions` (`{ abrirModalCategoria, salvarCategoria }`) — **tipos de `src/types/categoria.ts`**.
 - Edição: props `{ catForm, setCatForm, onDelete, options }`; ao confirmar exclusão chama `onDelete`, fecha, e `options.abrirModalCategoria()` fecha o modal de edição. Embute `ModalCatExclusao`.
 - Botão "Fechar" reseta `catForm` (`{ nome: '', descricao: '' }`), mas **chama `abrirModalCategoria()`** (inverte o estado de abertura — ver Observações).
 
-### `ModalMarca` / `ModalMarcaEdit` — `src/components/ModalMarca.tsx` / `ModalMarcaEdit.tsx`
+### `ModalMarca` / `ModalMarcaEdit` — `src/components/cadastro/BrandModal.tsx` / `cadastro/BrandEditModal.tsx`
 
 - Criação: campo **Nome** (obrigatório). Props: `{ setModalMarcaOpen, novaMarcaNome, setNovaMarcaNome, handleSalvarMarca }` (diferente do padrão de categoria/uom — recebe setters/handler diretamente).
 - Edição: props `{ marcaForm, setMarcaForm, onDelete, options }`. Exporta `MarcaFormData` (`{ nome }`) e `MarcaOptions` (`{ abrirModalMarca, salvarMarca }`). Embute `ModalMarcaExclusao`.
 
-### `ModalFornecedor` / `ModalFornecedorEdit` — `src/components/ModalFornecedor.tsx` / `ModalFornecedorEdit.tsx`
+### `ModalFornecedor` / `ModalFornecedorEdit` — `src/components/cadastro/SupplierModal.tsx` / `cadastro/SupplierEditModal.tsx`
 
 - Criação: campo **Nome** (obrigatório). Props: `{ setModalFornecedorOpen, novoFornecedorNome, setNovoFornecedorNome, handleSalvarFornecedor }`.
 - Edição: props `{ fornecedorForm, setFornecedorForm, onDelete, options }`. Exporta `FornecedorFormData` e `FornecedorOptions`. Embute `ModalFornecedorExclusao`.
 
-### `ModalUnidadeMedida` / `ModalUnidadeMedidaEdit` — `src/components/ModalUnidadeMedida.tsx` / `ModalUnidadeMedidaEdit.tsx`
+### `ModalUnidadeMedida` / `ModalUnidadeMedidaEdit` — `src/components/cadastro/UomModal.tsx` / `cadastro/UomEditModal.tsx`
 
 - Criação: campos **Sigla** (obrigatório) e **Descrição**. Props: `{ uomForm, setUomForm, options }` com `options` = `UnidadeMedidaOptions` (`{ abrirModalUnidadeMedida, salvarUnidadeMedida }`).
 - Edição: props `{ uomForm, setUomForm, onDelete, options }`. Exporta `UnidadeMedidaFormData` (`{ sigla, descricao }`) e `UnidadeMedidaOptions`. Embute `ModalUomExclusao`.
 
 ---
 
-## `src/components/ModalImportItens.tsx`
+## `src/components/import/ImportItemsModal.tsx`
 
 Importação de **produtos via XML de NF-e** (endpoint `POST /api/produtos/itens`).
 
@@ -77,7 +77,7 @@ type StatusItem = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
 
 ---
 
-## `src/components/ModalSelecionarItens.tsx`
+## `src/components/cart/SelectItemsModal.tsx`
 
 Seleção de itens do catálogo para o **carrinho de venda** (`ModalCarrinho`), usado pelo `useCart`.
 
@@ -107,33 +107,7 @@ interface ModalSelecionarItensProps {
 
 ---
 
-## `src/components/ModalServicos.tsx`
-
-Modal de **criação, edição e exclusão de serviços** (CRUD completo autossuficiente).
-
-### Props
-
-```ts
-interface ModalServicosProps {
-    isOpen: boolean;
-    onClose: () => void;
-    servicos?: ServicoData | null;  // presente = edição; ausente = novo
-    onSave: (servico: ServicoData) => void;
-}
-```
-
-### Comportamento
-
-- Formulário: **Nome** (obrigatório), **Descrição**, **Categoria** (select carregado de `buscarCategorias`), **Preço de venda**, **Código interno**, **Referência**, **Duração (minutos)**.
-- Ao abrir em edição busca o serviço atualizado via `buscarServicoPorId`; limpa estado de erro.
-- Salvar: `registrarServico` (novo) ou `atualizarServico` (edição), depois `onSave(saved)` e fecha.
-- Excluir: botão "Excluir" (só em edição) → `excluirServico` e fecha.
-- Campos `categoria_id`, `preco_venda` e `duracao_minutos` são convertidos para `Number` no submit.
-- Estilos inline (não usa `modalOverlay`/`modalContent` padrão) + `styles.panelHeader`/`formGroup`.
-
----
-
-## `src/components/ModalProdExclusao.tsx`
+## `src/components/products/ProductDeleteModal.tsx`
 
 Modal de **confirmação de exclusão**. Exporta o default `ModalProdExclusao` (item do catálogo) e variantes nomeadas usadas pelos modais de cadastro.
 

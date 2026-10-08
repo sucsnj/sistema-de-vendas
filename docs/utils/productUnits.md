@@ -38,4 +38,4 @@ export interface PrincipalUnitChangeResult {
 
 - Todas as funções são **imutáveis** (criando novos arrays/objetos).
 - Contratos `UnitChangeResult` permitem ao chamador fazer `...(campo !== undefined ? { campo } : {})` ao atualizar `setForm` (evita sobrescrever com `undefined`), mas `PrincipalUnitChangeResult` é estrito (quando existe sincronia garantida — caso de selecionar a principal).
-- Usadas pelo `FormularioProduto.tsx`; comportamento **preservado** em relação ao código inline anterior.
+- Usadas pelo `products/ProductForm.tsx`; comportamento **preservado** em relação ao código inline anterior.

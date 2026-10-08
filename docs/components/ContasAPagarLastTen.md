@@ -1,4 +1,4 @@
-# `src/components/ContasAPagarLastTen.tsx`
+# `src/components/contas/ContasAPagarLastTen.tsx`
 
 ## Descrição
 

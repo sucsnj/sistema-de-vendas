@@ -1,11 +1,11 @@
 /**
- * src/components/ModalCarrinho.tsx
+ * src/components/cart/CartModal.tsx
  *
  * Modal do carrinho de vendas. Apresentacional — sem estado próprio:
  * lógica fica no `useCart` (pai) e a casca visual no `CartModalShell`.
  * Estilos: classes globais `cart-modal-*` para o chrome e `<style jsx>`
  * local apenas para itens/quantidade/ações.
- * Ver docs/components/ModalCarrinho.md.
+ * Ver docs/components/CartModal.md.
  */
 
 import React, { useMemo } from 'react';

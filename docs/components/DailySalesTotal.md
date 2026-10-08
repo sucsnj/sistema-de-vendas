@@ -1,4 +1,4 @@
-# `src/components/DailySalesTotal.tsx`
+# `src/components/sales/sales/DailySalesTotal.tsx`
 
 ## Descrição
 

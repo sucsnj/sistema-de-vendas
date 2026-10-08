@@ -20,8 +20,8 @@ Página de resumo mensal dos registros consolidados de vendas, com opção de ex
 ## Dependências
 
 - `src/services/vendasService`
-- `src/components/Toast`
-- `src/components/ConfirmDialog`
+- `src/components/common/Toast`
+- `src/components/common/ConfirmDialog`
 - `src/utils/formatter`
 - `dayjs`
 

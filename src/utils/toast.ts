@@ -3,7 +3,7 @@
  *
  * Store singleton de notificações (toast) — fonte única de estado para a
  * camada de UI. `useToast` (hooks/useToast.ts) consome via `useSyncExternalStore`
- * e o host `<Toaster/>` (components/Toaster.tsx) renderiza o toast ativo.
+ * e o host `<Toaster/>` (components/common/Toaster.tsx) renderiza o toast ativo.
  *
  * Padrão: chamadas de `showToast` vêm de qualquer camada (páginas, hooks,
  * componentes), sem prop drilling nem estado local duplicado.

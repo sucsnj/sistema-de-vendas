@@ -1,4 +1,4 @@
-# `src/components/ContasAPagarFilterPanel.tsx`
+# `src/components/contas/ContasAPagarFilterPanel.tsx`
 
 ## Descrição
 

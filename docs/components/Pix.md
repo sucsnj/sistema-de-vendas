@@ -1,8 +1,8 @@
 # Componentes de PIX
 
-Documenta o fluxo de pagamento via PIX: os utilitários `pix.ts`, `pixActions.ts` e `qrPix.ts` (em `src/utils/`), e os componentes React `FloatingPixWindow` e `ModalPix`.
+Documenta o fluxo de pagamento via PIX: os utilitários `pix.ts`, `pixActions.ts` e `qrPix.ts` (em `src/utils/`), e o componente React `ModalPix`.
 
-> Observação: `FloatingPixWindow` e `ModalPix` são componentes React em `src/components/`. Já os módulos de PIX sem JSX vivem em `src/utils/`: `pix.ts` (payload/validação), `qrPix.ts` (QR Code) e `pixActions.ts` (ações) — movidos de `src/components/` na Fase 0 da refatoração.
+> Observação: `ModalPix` é um componente React em `src/components/pix/PixModal.tsx`. Já os módulos de PIX sem JSX vivem em `src/utils/`: `pix.ts` (payload/validação), `qrPix.ts` (QR Code) e `pixActions.ts` (ações) — movidos de `src/components/` na Fase 0 da refatoração. O antigo `FloatingPixWindow` (janela flutuante arrastável) foi removido por não ter uso ativo.
 
 ---
 
@@ -114,14 +114,14 @@ export async function printPixSheet(data: PrintSheetData): Promise<void>;
 
 ### Observações
 
-- `copyToClipboard` vive em `src/utils/clipboard.ts` e o `showToast` em `src/utils/toast.ts` — ambos usados por `ModalPix`/`FloatingPixWindow` (toasts do PIX agora **são exibidos**, corrigindo o bug do antigo `#toast-root` — ver ADR 0003).
+- `copyToClipboard` vive em `src/utils/clipboard.ts` e o `showToast` em `src/utils/toast.ts` — ambos usados por `ModalPix` (toasts do PIX agora **são exibidos**, corrigindo o bug do antigo `#toast-root` — ver ADR 0003).
 - `downloadQrPng` gera PNG via `generateHighResPng` (de `qrPix.ts`) e dispara download `pix-qrcode-YYYY-MM-DD.png` via `downloadDataUrl` (de `src/utils/download.ts`).
 - `printPixSheet` desenha o QR no canvas `#print-canvas` (250×250, `errorCorrectionLevel: 'M'`), preenche `#print-*` e chama `window.print()` com `body.printing`.
 - `formatBRL` (privada) formata `"15.00"` → `"R$ 15,00"`.
 
 ---
 
-## `src/components/ModalPix.tsx`
+## `src/components/pix/PixModal.tsx`
 
 ### Descrição
 
@@ -158,41 +158,11 @@ const ModalPix: React.FC<ModalPixProps>;
 
 ---
 
-## `src/components/FloatingPixWindow.tsx`
-
-### Descrição
-
-Janela flutuante (draggable) com o QR Code PIX, alternativa ao `ModalPix`. Compartilha o mesmo conjunto de props/características.
-
-### Assinatura
-
-```ts
-interface FloatingPixWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  payload: string;
-  merchantName: string;
-  merchantBank: string;
-  amount: string | null;
-  pixKey: string;
-}
-
-const FloatingPixWindow: React.FC<FloatingPixWindowProps>;
-```
-
-### Observações
-
-- Renderizada via `createPortal`; retorna `null` se `!isOpen`.
-- Janela arrastável: arrastar pelo cabeçalho (exceto botões) atualiza posição via listeners `mousemove`/`mouseup` (posição inicial `{x:100, y:100}`).
-- Mesmas ações Copiar/Baixar PNG/Imprimir do `ModalPix`.
-
----
-
 ## Fluxo completo
 
 1. `DailySaleForm` / `ModalPix` capturam chave/valor/nome/banco e validam a chave (`validatePixKey`).
 2. `buildPixPayload` (`utils/pix.ts`) gera o payload EMVCo com CRC16.
-3. `ModalPix` / `FloatingPixWindow` renderizam o QR via `qrPix.renderQr`.
+3. `ModalPix` renderiza o QR via `qrPix.renderQr`.
 4. Ações: `clipboard.copyToClipboard` (Copia e Cola), `pixActions.downloadQrPng` (PNG), `printPixSheet` (impressão).
 
 ## Integração

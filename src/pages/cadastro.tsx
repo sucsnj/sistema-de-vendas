@@ -24,25 +24,25 @@ import {
 } from '../services/produtosService';
 import { parseNumber } from '../utils/number';
 import { validateNumber, validateRequired } from '../utils/validation';
-import BarcodeManager from '@/components/BarcodeManager';
-import FormularioItem from '@/components/FormularioItem';
-import ModalCategoria from '@/components/ModalCategoria';
-import ModalMarca from '@/components/ModalMarca';
-import ModalProdExclusao from '@/components/ModalProdExclusao';
-import ModalCategoriaEdit from '@/components/ModalCategoriaEdit';
-import ModalMarcaEdit from '@/components/ModalMarcaEdit';
-import ModalFornecedor from '@/components/ModalFornecedor';
-import ModalFornecedorEdit from '@/components/ModalFornecedorEdit';
-import ModalUnidadeMedida from '@/components/ModalUnidadeMedida';
-import ModalUnidadeMedidaEdit from '@/components/ModalUnidadeMedidaEdit';
-import ModalAjusteEstoque from '@/components/ModalAjusteEstoque';
+import BarcodeManager from '@/components/common/BarcodeManager';
+import FormularioItem from '@/components/products/ItemForm';
+import ModalCategoria from '@/components/cadastro/CategoryModal';
+import ModalMarca from '@/components/cadastro/BrandModal';
+import ModalProdExclusao from '@/components/products/ProductDeleteModal';
+import ModalCategoriaEdit from '@/components/cadastro/CategoryEditModal';
+import ModalMarcaEdit from '@/components/cadastro/BrandEditModal';
+import ModalFornecedor from '@/components/cadastro/SupplierModal';
+import ModalFornecedorEdit from '@/components/cadastro/SupplierEditModal';
+import ModalUnidadeMedida from '@/components/cadastro/UomModal';
+import ModalUnidadeMedidaEdit from '@/components/cadastro/UomEditModal';
+import ModalAjusteEstoque from '@/components/products/StockAdjustModal';
 import ImportItemsModal from '@/components/import/ImportItemsModal';
-import { ProdutoFormData, ProdutoOptions } from '@/components/FormularioProduto';
+import { ProdutoFormData, ProdutoOptions } from '@/components/products/ProductForm';
 import { useCategoria } from '@/hooks/useCategoria';
 import { useMarca } from '@/hooks/useMarca';
 import { useFornecedor } from '@/hooks/useFornecedor';
 import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
-import ConfirmDialog from '@/components/ConfirmDialog';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 
 const CadastroPage: React.FC = () => {
 

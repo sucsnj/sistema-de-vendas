@@ -1,4 +1,4 @@
-# `src/components/ContasAPagarHeader.tsx`
+# `src/components/contas/ContasAPagarHeader.tsx`
 
 ## Descrição
 

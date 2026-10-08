@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent } from 'react';
 import { importInvoiceItem, previewInvoiceItems } from '../services/produtosService';
 import type { ProdutoImportado } from '../services/produtosService';
-import type { SugestaoItem } from '../components/ItemNomeDropdown';
+import type { SugestaoItem } from '../components/import/ItemNameDropdown';
 
 export type StatusItem = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
 

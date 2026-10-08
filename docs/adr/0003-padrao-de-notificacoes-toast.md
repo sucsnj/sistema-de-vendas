@@ -8,7 +8,7 @@
 
 Havia **duas implementações de toast** e múltiplas cópias de estado:
 
-1. Componente React `Toast.tsx` + hooks de estado **local por página/componente** (`toastOpen`, `toastMessage`, `toastType`, …) repetidos em 7 páginas e 2 componentes.
+1. Componente React `common/Toast.tsx` + hooks de estado **local por página/componente** (`toastOpen`, `toastMessage`, `toastType`, …) repetidos em 7 páginas e 2 componentes.
 2. `showToast` DOM em `ActionPix.tsx` (`pixActions.ts`) que escrevia em `#toast-root` — **elemento que nunca era renderizado**, então os toasts do painel PIX eram silenciosamente inexistentes (bug latente).
 
 Além disso, hooks como `useVendas`, `useMensais`, `useCart` e `useCategoria*` recebiam `showToast` por parâmetro (prop drilling), e o `useToast` existente era estado local (uma instância por consumidor). Isso contrariava o perfil de refatoração em `docs/ALIGNMENT.md` §4.5 (fonte única e descobrível para funções compartilhadas).
@@ -19,7 +19,7 @@ Um **store singleton** como fonte única de estado, consumido por `useSyncExtern
 
 - `src/utils/toast.ts` — estado `{ open, message, type, duration }`, ações `showToast(message, type?, duration?)` e `dismissToast()`, e funções `subscribeToast`/`getToastSnapshot`/`getServerToastSnapshot`.
 - `src/hooks/useToast.ts` — reescrito para consumir o store (mesma API pública: `toastOpen`, `toastMessage`, `toastType`, `toastDuration`, `showToast`, `closeToast`), sem estado local.
-- `src/components/Toaster.tsx` — host único renderizado em `src/pages/_app.tsx`, exibindo o toast ativo em `top-right`.
+- `src/components/common/common/Toaster.tsx` — host único renderizado em `src/pages/_app.tsx`, exibindo o toast ativo em `top-right`.
 - Migração de **todas** as páginas/componentes para `useToast()`; remoção do estado local e do `<Toast>` por página.
 - `pixActions.showToast` **removido**; modais PIX passam a usar `showToast` do store.
 

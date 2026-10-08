@@ -6,8 +6,8 @@ import {
   atualizarCategoria,
 } from '../services/produtosService';
 import { CategoriaFormData } from '@/types/categoria';
-import { ProdutoFormData } from '@/components/FormularioProduto';
-import { ProdutoOptions } from '@/components/FormularioProduto';
+import { ProdutoFormData } from '@/components/products/ProductForm';
+import { ProdutoOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';
 
 interface UseCategoriaParams {

@@ -19,7 +19,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 ## Camadas (onde mora cada coisa)
 
 - `src/pages/*.tsx` — rotas/páginas que orquestram tudo.
-- `src/components/*.tsx` — UI: formulários, tabelas, modais, gráficos, navegação.
+- `src/components/<domínio>/*.tsx` — UI agrupada por domínio (ADR 0005): `cart/` (carrinho), `sales/` (vendas do dia), `summary/` (resumo/consolidação), `contas/` (contas a pagar + agenda), `products/` (catálogo/estoque), `cadastro/` (modais de cadastros auxiliares), `import/` (importação XML/OCR), `pix/` (PIX), `common/` (Nav, Toast, ConfirmDialog, BarcodeManager). Arquivos em inglês (ADR 0004); identificadores internos podem ainda estar em pt-BR.
 - `src/hooks/*.ts` — hooks de estado: carrinho, filtros, toasts, CRUD de catálogo.
 - `src/services/*.ts` — cliente `fetch` para os endpoints internos.
 - `src/pages/api/**/*.ts` — endpoints REST internos.
@@ -59,8 +59,8 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 | Produtos / estoque | `docs/pages/produtos.md`, `docs/database/produtosDb.md`, `docs/pages/api/produtos*.md`, `docs/services/produtosService.md` |
 | Cadastros auxiliares | `docs/pages/cadastro.md`, `docs/components/ModaisCadastro.md` |
 | PIX / pagamento | `docs/components/Pix.md` |
-| Carrinho de compras | `docs/components/ModalCarrinho.md`, `docs/hooks/Hooks.md` (useCart) |
-| Formulários de venda (dia/item) | `docs/components/DailySaleForm.md`, `docs/components/FormularioItem.md`, `docs/components/EditSaleForm.md` |
+| Carrinho de compras | `docs/components/CartModal.md`, `docs/hooks/Hooks.md` (useCart) |
+| Formulários de venda (dia/item) | `docs/components/DailySaleForm.md`, `docs/components/ItemForm.md`, `docs/components/EditSaleForm.md` |
 | OCR / importação | `docs/pages/api/ocr.md`, `docs/services/ocrService.md`, `docs/services/pdfService.md`, `docs/components/OcrUpload.md` |
 | Tabela de medicamentos | `docs/pages/tabela.md`, `docs/database/tabelaDb.md` |
 | Notas fiscais | `docs/pages/api/notas.md`, `docs/database/notasDb.md` |

@@ -38,4 +38,4 @@ Multipart (`files` — um ou mais arquivos).
 
 ## Uso
 
-- `src/components/OcrUpload.tsx` (formData com campo `files`).
+- `src/components/import/import/OcrUpload.tsx` (formData com campo `files`).

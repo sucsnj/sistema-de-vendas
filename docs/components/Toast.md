@@ -1,9 +1,9 @@
-# `src/components/Toast.tsx` e `src/components/Toaster.tsx`
+# `src/components/common/common/Toast.tsx` e `src/components/common/common/Toaster.tsx`
 
 ## Descrição
 
-- **`Toast.tsx`** — componente **apresentacional** de notificação flutuante (mensagem + tipo visual + auto-close + fechar manual).
-- **`Toaster.tsx`** — **host global** que lê o store de toasts e renderiza o `Toast` ativo (uma única instância, montada em `src/pages/_app.tsx`).
+- **`common/Toast.tsx`** — componente **apresentacional** de notificação flutuante (mensagem + tipo visual + auto-close + fechar manual).
+- **`common/Toaster.tsx`** — **host global** que lê o store de toasts e renderiza o `Toast` ativo (uma única instância, montada em `src/pages/_app.tsx`).
 
 ## Arquitetura (fonte única) — ver ADR 0003
 
@@ -11,7 +11,7 @@ As notificações têm **um único canal**, sem estado local por página/compone
 
 1. `src/utils/toast.ts` — **store singleton** com `showToast(message, type?, duration?)`, `dismissToast()`, `subscribeToast` e `getToastSnapshot`/`getServerToastSnapshot` (para `useSyncExternalStore`).
 2. `src/hooks/useToast.ts` — hook que consome o store via `useSyncExternalStore`; retorna `{ toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast }`.
-3. `src/components/Toaster.tsx` — renderiza o toast ativo na posição padrão `top-right`.
+3. `src/components/common/common/Toaster.tsx` — renderiza o toast ativo na posição padrão `top-right`.
 
 Qualquer camada (página, hook, component) chama `showToast(...)` vindo de `useToast()` ou direto de `utils/toast.ts`. Sem prop drilling, sem DOM direto, sem `#toast-root`.
 

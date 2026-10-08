@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import DailySaleForm from '../components/DailySaleForm';
-import DailySalesTotal from '../components/DailySalesTotal';
-import SalesChart from '../components/SalesChart';
-import ExportButtons from '../components/ExportButtons';
-import EditSaleForm from '../components/EditSaleForm';
+import DailySaleForm from '../components/sales/DailySaleForm';
+import DailySalesTotal from '../components/sales/DailySalesTotal';
+import SalesChart from '../components/sales/SalesChart';
+import ExportButtons from '../components/sales/ExportButtons';
+import EditSaleForm from '../components/sales/EditSaleForm';
 import { useToast } from '../hooks/useToast';
 import { useVendas } from '../hooks/useVendas';
 import { capitalize } from '../utils/captalize';

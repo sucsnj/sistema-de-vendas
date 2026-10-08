@@ -38,4 +38,4 @@ excluirNota(id: number): Promise<any>                                      // DE
 
 ## Uso
 
-- Único consumidor no frontend: `src/components/NotasDoMes.tsx` (busca por período e exclusão de notas na tela de Contas a Pagar).
+- Único consumidor no frontend: `src/components/summary/MonthNotes.tsx` (busca por período e exclusão de notas na tela de Contas a Pagar).

@@ -34,7 +34,7 @@ showToast(message, type)
 ## Dependências
 
 - `src/services/tabelaService` (upload, busca, histórico, status, tipos)
-- `src/components/Toast`
+- `src/components/common/Toast`
 - `src/utils/shortcuts` (`useShortcuts`) e `src/utils/date` (`parseDate`)
 - `src/styles/contas.module.css` (cabeçalho dos painéis)
 

@@ -5,9 +5,9 @@ import {
     deletarFornecedor,
     atualizarFornecedor,
 } from '../services/produtosService';
-import { FornecedorFormData } from '@/components/ModalFornecedorEdit'
-import { ProdutoFormData } from '@/components/FormularioProduto';
-import { ProdutoOptions } from '@/components/FormularioProduto';
+import { FornecedorFormData } from '@/components/cadastro/SupplierEditModal'
+import { ProdutoFormData } from '@/components/products/ProductForm';
+import { ProdutoOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';
 
 interface UseFornecedorParams {

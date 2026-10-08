@@ -1,4 +1,4 @@
-# `src/components/DailySaleForm.tsx`
+# `src/components/sales/sales/DailySaleForm.tsx`
 
 ## Descrição
 
