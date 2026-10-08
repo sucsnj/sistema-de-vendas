@@ -1,4 +1,4 @@
-# `src/components/contas/ContasAPagarLastTen.tsx`
+# `src/components/payables/PayablesLastTen.tsx`
 
 ## Descrição
 

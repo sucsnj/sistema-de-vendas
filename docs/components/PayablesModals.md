@@ -1,4 +1,4 @@
-# `src/components/contas/ContasAPagarModals.tsx`
+# `src/components/payables/PayablesModals.tsx`
 
 ## Descrição
 

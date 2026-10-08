@@ -1,4 +1,4 @@
-# `src/components/common/common/Toast.tsx` e `src/components/common/common/Toaster.tsx`
+# `src/components/common/Toast.tsx` e `src/components/common/Toaster.tsx`
 
 ## Descrição
 
@@ -11,7 +11,7 @@ As notificações têm **um único canal**, sem estado local por página/compone
 
 1. `src/utils/toast.ts` — **store singleton** com `showToast(message, type?, duration?)`, `dismissToast()`, `subscribeToast` e `getToastSnapshot`/`getServerToastSnapshot` (para `useSyncExternalStore`).
 2. `src/hooks/useToast.ts` — hook que consome o store via `useSyncExternalStore`; retorna `{ toastOpen, toastMessage, toastType, toastDuration, showToast, closeToast }`.
-3. `src/components/common/common/Toaster.tsx` — renderiza o toast ativo na posição padrão `top-right`.
+3. `src/components/common/Toaster.tsx` — renderiza o toast ativo na posição padrão `top-right`.
 
 Qualquer camada (página, hook, component) chama `showToast(...)` vindo de `useToast()` ou direto de `utils/toast.ts`. Sem prop drilling, sem DOM direto, sem `#toast-root`.
 

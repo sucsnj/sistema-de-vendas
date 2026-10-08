@@ -19,7 +19,7 @@ Um **store singleton** como fonte única de estado, consumido por `useSyncExtern
 
 - `src/utils/toast.ts` — estado `{ open, message, type, duration }`, ações `showToast(message, type?, duration?)` e `dismissToast()`, e funções `subscribeToast`/`getToastSnapshot`/`getServerToastSnapshot`.
 - `src/hooks/useToast.ts` — reescrito para consumir o store (mesma API pública: `toastOpen`, `toastMessage`, `toastType`, `toastDuration`, `showToast`, `closeToast`), sem estado local.
-- `src/components/common/common/Toaster.tsx` — host único renderizado em `src/pages/_app.tsx`, exibindo o toast ativo em `top-right`.
+- `src/components/common/Toaster.tsx` — host único renderizado em `src/pages/_app.tsx`, exibindo o toast ativo em `top-right`.
 - Migração de **todas** as páginas/componentes para `useToast()`; remoção do estado local e do `<Toast>` por página.
 - `pixActions.showToast` **removido**; modais PIX passam a usar `showToast` do store.
 

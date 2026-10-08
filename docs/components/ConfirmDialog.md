@@ -1,4 +1,4 @@
-# `src/components/common/common/ConfirmDialog.tsx`
+# `src/components/common/ConfirmDialog.tsx`
 
 ## Descrição
 

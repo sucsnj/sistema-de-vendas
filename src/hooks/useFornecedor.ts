@@ -5,7 +5,7 @@ import {
     deletarFornecedor,
     atualizarFornecedor,
 } from '../services/produtosService';
-import { FornecedorFormData } from '@/components/cadastro/SupplierEditModal'
+import { FornecedorFormData } from '@/components/catalog/SupplierEditModal'
 import { ProdutoFormData } from '@/components/products/ProductForm';
 import { ProdutoOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';

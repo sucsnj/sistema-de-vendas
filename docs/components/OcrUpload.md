@@ -1,4 +1,4 @@
-# `src/components/import/import/OcrUpload.tsx`
+# `src/components/import/OcrUpload.tsx`
 
 ## Descrição
 

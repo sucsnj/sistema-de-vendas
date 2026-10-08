@@ -1,4 +1,4 @@
-# `src/components/sales/sales/SalesChart.tsx`
+# `src/components/sales/SalesChart.tsx`
 
 ## Descrição
 

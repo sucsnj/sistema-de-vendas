@@ -19,9 +19,19 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Componentes: conclusão da padronização em inglês (pastas e arquivos) — 08/10/2026
+
+- Pastas restantes em pt-BR renomeadas com `git mv`: `contas/` → **`payables/`**, `cadastro/` → **`catalog/`** (decisão do dono via questionário).
+- Arquivos `ContasAPagar*` renomeados: `PayablesForm.tsx`, `PayablesFilterPanel.tsx`, `PayablesHeader.tsx`, `PayablesLastTen.tsx`, `PayablesModals.tsx` (5 `docs/components/*.md` correspondentes renomeados).
+- **Imports corrigidos** (`contas-a-pagar.tsx`, `cadastro.tsx`, `useMarca.ts`, `useFornecedor.ts`) e referências/docs atualizados (`README`, `CONTEXT`, `DOCS`, `ModaisCadastro.md`, ADR 0005).
+- **Corrigido bug da rodada anterior**: caminhos duplicados em docs (`src/components/sales/sales/...`, `common/common/`, `import/import/`, `contas/contas/`) — 18 ocorrências em 17 arquivos geradas por substituição de caminho sobre caminho.
+- **Sem subpastas aninhadas**: cada pasta tem 5–8 arquivos; aninhar (`products/`, `products/master-data/` etc.) não ganha organização.
+- **Identificadores internos seguem em pt-BR** (`const ContasAPagarForm` dentro de `PayablesForm.tsx`, `ModalCarrinho` em `CartModal.tsx`...) — renomeio incremental conforme ADR 0004.
+- Verificação: `npm run lint`, `npx tsc --noEmit`, `npm run build` e `node scripts/check-encoding.mjs` verdes.
+
 ### Componentes: nomes em inglês + subpastas por domínio (ADR 0005) — 08/10/2026
 
-- `src/components/` reorganizado: ~45 arquivos movidos com `git mv` para 9 pastas por domínio (`cart/`, `sales/`, `summary/`, `contas/`, `products/`, `cadastro/`, `import/`, `pix/`, `common/`) e renomeados para inglês (ex.: `ModalCarrinho.tsx` → `cart/CartModal.tsx`, `FormularioProduto.tsx` → `products/ProductForm.tsx`, `Resumo.tsx` → `summary/Summary.tsx`).
+- `src/components/` reorganizado: ~45 arquivos movidos com `git mv` para 9 pastas por domínio (`cart/`, `sales/`, `summary/`, `contas/`→`payables/`, `products/`, `cadastro/`→`catalog/`, `import/`, `pix/`, `common/`) e renomeados para inglês (ex.: `ModalCarrinho.tsx` → `cart/CartModal.tsx`, `FormularioProduto.tsx` → `products/ProductForm.tsx`, `Resumo.tsx` → `summary/Summary.tsx`).
 - **Imports corrigidos em todo `src/`** (páginas, hooks, componentes): cross-pasta via `@/components/<pasta>/<Arquivo>`; profundidade de `../utils|services|hooks` ajustada nos arquivos movidos.
 - **Excluídos** (sem uso ativo, confirmado por busca de imports): `ModalServicos.tsx`, `FloatingPixWindow.tsx` e as duplicatas antigas em pt-BR (`ModalCarrinho`, `ModalSelecionarItens`, `CartModalShell`, `FormularioProduto`, `ItemNomeDropdown`, `ModalImportItens` na raiz) — completando a migração parcial anterior.
 - **Identificadores internos mantidos em pt-BR** nesta rodada (decisão do dono): `const ModalCarrinho` continua dentro de `CartModal.tsx`; renomeio segue o ADR 0004, ao tocar nos módulos.
@@ -50,11 +60,11 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - `src/pages/api/produtos/itens.ts`: casts dos `.get()`; variável `unidadeMedida` restaurada.
 - `src/pages/api/tabela.ts`: `JSON.parse(... as string)`.
 - `src/pages/api/vendas.ts`: interface local `ItemVendaApi` + normalização de itens (POST/PUT); import de `VendaItemInput` removido.
-- `src/components/ContasAPagarModals.tsx`: `onSave` tipado como `(event: React.FormEvent<HTMLButtonElement>) => void`.
+- `src/components/PayablesModals.tsx`: `onSave` tipado como `(event: React.FormEvent<HTMLButtonElement>) => void`.
 
 ### Documentação
 
-- `docs/components/BarcodeManager.md`, `docs/components/ContasAPagarModals.md`, `docs/pages/api/vendas.md`, `docs/database/produtosDb.md` atualizados.
+- `docs/components/BarcodeManager.md`, `docs/components/PayablesModals.md`, `docs/pages/api/vendas.md`, `docs/database/produtosDb.md` atualizados.
 - `AGENTS.md` com novas regras para agentes (documentação de mudanças, framework/boas práticas, conflito com regras).
 - Criado este arquivo (`PROJECT_STATUS.md`).
 

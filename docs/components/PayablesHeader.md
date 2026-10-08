@@ -1,4 +1,4 @@
-# `src/components/contas/ContasAPagarHeader.tsx`
+# `src/components/payables/PayablesHeader.tsx`
 
 ## Descrição
 

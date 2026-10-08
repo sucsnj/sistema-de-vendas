@@ -100,7 +100,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Componentes
 
-> Arquivos em `src/components/` agrupados por domínio (ADR 0005): `cart/`, `sales/`, `summary/`, `contas/`, `products/`, `cadastro/`, `import/`, `pix/`, `common/`. Os docs abaixo continuam flat em `docs/components/`.
+> Arquivos em `src/components/` agrupados por domínio (ADR 0005): `cart/`, `sales/`, `summary/`, `payables/`, `products/`, `catalog/`, `import/`, `pix/`, `common/`. Os docs abaixo continuam flat em `docs/components/`.
 
 ### Vendas e Dashboard (`src/components/sales/`)
 
@@ -122,15 +122,15 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 - [components/TotalsByDistributor.md](components/TotalsByDistributor.md) - totais por distribuidora.
 - [components/ExportButtons.md](components/ExportButtons.md) - exportação de dados.
 
-### Contas a Pagar (`src/components/contas/`)
+### Contas a Pagar (`src/components/payables/`)
 
-- [components/ContasAPagarForm.md](components/ContasAPagarForm.md) - formulário de contas.
-- [components/ContasAPagarFilterPanel.md](components/ContasAPagarFilterPanel.md) - painel de filtros.
-- [components/ContasAPagarLastTen.md](components/ContasAPagarLastTen.md) - últimas 10 contas.
-- [components/ContasAPagarModals.md](components/ContasAPagarModals.md) - modais de contas.
-- [components/ContasAPagarHeader.md](components/ContasAPagarHeader.md) - cabeçalho do módulo.
+- [components/PayablesForm.md](components/PayablesForm.md) - formulário de contas.
+- [components/PayablesFilterPanel.md](components/PayablesFilterPanel.md) - painel de filtros.
+- [components/PayablesLastTen.md](components/PayablesLastTen.md) - últimas 10 contas.
+- [components/PayablesModals.md](components/PayablesModals.md) - modais de contas.
+- [components/PayablesHeader.md](components/PayablesHeader.md) - cabeçalho do módulo.
 
-### Produtos e Estoque (`src/components/products/`, `cadastro/`, `import/`)
+### Produtos e Estoque (`src/components/products/`, `catalog/`, `import/`)
 
 - [components/ProductList.md](components/ProductList.md) - listagem de produtos.
 - [components/ProductForm.md](components/ProductForm.md) - formulário de produto.
@@ -142,7 +142,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 - [components/Pix.md](components/Pix.md) - fluxo de PIX: utilitários (`pix.ts`, `pixActions.ts`, `qrPix.ts`) e componente `ModalPix`.
 
-### Gerais e Relatórios (`src/components/common/`, `summary/`, `contas/`)
+### Gerais e Relatórios (`src/components/common/`, `summary/`, `payables/`)
 
 - [components/Agenda.md](components/Agenda.md) - agenda de contas pendentes, próximas contas e leitura por OCR.
 - [components/ConfirmDialog.md](components/ConfirmDialog.md) - modal de confirmação.

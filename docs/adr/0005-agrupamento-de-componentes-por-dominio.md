@@ -17,9 +17,9 @@
 | `cart/` | carrinho da venda | `CartModal`, `CartModalShell`, `SelectItemsModal` |
 | `sales/` | vendas do dia / dashboard / histórico | `DailySaleForm`, `EditSaleForm`, `SalesChart`, `SalesTable`, `ExportButtons` |
 | `summary/` | resumo e consolidação | `Summary`, `MonthlyConsolidation`, `MonthNotes`, `TotalsByDistributor` |
-| `contas/` | contas a pagar | `Agenda`, `ContasAPagar*` |
+| `payables/` | contas a pagar | `Agenda`, `Payables*` (antes `ContasAPagar*`) |
 | `products/` | catálogo e estoque | `ProductList`, `ProductForm`, `ItemForm`, `ServiceForm`, `ProductFilters`, `ProductDeleteModal`, `StockAdjustModal` |
-| `cadastro/` | modais de cadastros auxiliares | `CategoryModal(+Edit)`, `BrandModal(+Edit)`, `SupplierModal(+Edit)`, `UomModal(+Edit)` |
+| `catalog/` | modais de cadastros auxiliares | `CategoryModal(+Edit)`, `BrandModal(+Edit)`, `SupplierModal(+Edit)`, `UomModal(+Edit)` |
 | `import/` | importação XML e OCR | `ImportItemsModal`, `ItemNameDropdown`, `OcrUpload` |
 | `pix/` | pagamento PIX | `PixModal` |
 | `common/` | UI transversal | `Nav`, `Toast`, `Toaster`, `ConfirmDialog`, `BarcodeManager` |

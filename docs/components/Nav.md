@@ -1,4 +1,4 @@
-# `src/components/common/common/Nav.tsx`
+# `src/components/common/Nav.tsx`
 
 ## Descrição
 

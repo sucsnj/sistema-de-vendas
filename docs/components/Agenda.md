@@ -1,4 +1,4 @@
-# `src/components/contas/contas/Agenda.tsx`
+# `src/components/payables/Agenda.tsx`
 
 ## Descrição
 

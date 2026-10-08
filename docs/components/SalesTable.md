@@ -1,4 +1,4 @@
-# `src/components/sales/sales/SalesTable.tsx`
+# `src/components/sales/SalesTable.tsx`
 
 ## Descrição
 

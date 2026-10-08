@@ -12,24 +12,24 @@ São abertos pela página `/cadastro` (formulário de produto) e usam `src/style
 
 Cada entidade tem um par de modais: criação (campos obrigatórios marcados com `*`) e edição (adiciona o botão "Excluir" e embute o modal de confirmação de exclusão correspondente). O fluxo de dados é idêntico e está detalhado em `docs/hooks/Hooks.md` (padrão comum dos hooks de catálogo).
 
-### `ModalCategoria` / `ModalCategoriaEdit` — `src/components/cadastro/CategoryModal.tsx` / `cadastro/CategoryEditModal.tsx`
+### `ModalCategoria` / `ModalCategoriaEdit` — `src/components/catalog/CategoryModal.tsx` / `cadastro/CategoryEditModal.tsx`
 
 - Criação: campos **Nome** (obrigatório) e **Descrição**; `useFocusTrap(dialogRef, true)`.
 - Props (criação): `{ catForm, setCatForm, options }` onde `options` é `CategoriaOptions` (`{ abrirModalCategoria, salvarCategoria }`) — **tipos de `src/types/categoria.ts`**.
 - Edição: props `{ catForm, setCatForm, onDelete, options }`; ao confirmar exclusão chama `onDelete`, fecha, e `options.abrirModalCategoria()` fecha o modal de edição. Embute `ModalCatExclusao`.
 - Botão "Fechar" reseta `catForm` (`{ nome: '', descricao: '' }`), mas **chama `abrirModalCategoria()`** (inverte o estado de abertura — ver Observações).
 
-### `ModalMarca` / `ModalMarcaEdit` — `src/components/cadastro/BrandModal.tsx` / `cadastro/BrandEditModal.tsx`
+### `ModalMarca` / `ModalMarcaEdit` — `src/components/catalog/BrandModal.tsx` / `cadastro/BrandEditModal.tsx`
 
 - Criação: campo **Nome** (obrigatório). Props: `{ setModalMarcaOpen, novaMarcaNome, setNovaMarcaNome, handleSalvarMarca }` (diferente do padrão de categoria/uom — recebe setters/handler diretamente).
 - Edição: props `{ marcaForm, setMarcaForm, onDelete, options }`. Exporta `MarcaFormData` (`{ nome }`) e `MarcaOptions` (`{ abrirModalMarca, salvarMarca }`). Embute `ModalMarcaExclusao`.
 
-### `ModalFornecedor` / `ModalFornecedorEdit` — `src/components/cadastro/SupplierModal.tsx` / `cadastro/SupplierEditModal.tsx`
+### `ModalFornecedor` / `ModalFornecedorEdit` — `src/components/catalog/SupplierModal.tsx` / `cadastro/SupplierEditModal.tsx`
 
 - Criação: campo **Nome** (obrigatório). Props: `{ setModalFornecedorOpen, novoFornecedorNome, setNovoFornecedorNome, handleSalvarFornecedor }`.
 - Edição: props `{ fornecedorForm, setFornecedorForm, onDelete, options }`. Exporta `FornecedorFormData` e `FornecedorOptions`. Embute `ModalFornecedorExclusao`.
 
-### `ModalUnidadeMedida` / `ModalUnidadeMedidaEdit` — `src/components/cadastro/UomModal.tsx` / `cadastro/UomEditModal.tsx`
+### `ModalUnidadeMedida` / `ModalUnidadeMedidaEdit` — `src/components/catalog/UomModal.tsx` / `cadastro/UomEditModal.tsx`
 
 - Criação: campos **Sigla** (obrigatório) e **Descrição**. Props: `{ uomForm, setUomForm, options }` com `options` = `UnidadeMedidaOptions` (`{ abrirModalUnidadeMedida, salvarUnidadeMedida }`).
 - Edição: props `{ uomForm, setUomForm, onDelete, options }`. Exporta `UnidadeMedidaFormData` (`{ sigla, descricao }`) e `UnidadeMedidaOptions`. Embute `ModalUomExclusao`.

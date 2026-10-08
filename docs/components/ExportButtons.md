@@ -1,4 +1,4 @@
-# `src/components/sales/sales/ExportButtons.tsx`
+# `src/components/sales/ExportButtons.tsx`
 
 ## Descrição
 

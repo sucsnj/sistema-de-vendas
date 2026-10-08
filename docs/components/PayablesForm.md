@@ -1,4 +1,4 @@
-# `src/components/contas/ContasAPagarForm.tsx`
+# `src/components/payables/PayablesForm.tsx`
 
 ## Descrição
 
