@@ -18,7 +18,7 @@ import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useImportItens } from '../../hooks/useImportItens';
+import { useImportItens } from '../../hooks/useImportItems';
 import ItemNameDropdown from './ItemNameDropdown';
 
 interface ModalImportItensProps {

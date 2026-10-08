@@ -6,7 +6,7 @@ import { capitalize } from '../utils/captalize';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useToast } from '../hooks/useToast';
-import { useMensais } from '../hooks/useMensais';
+import { useMensais } from '../hooks/useMonthlyData';
 import { useConfirmDialog } from '../hooks/useConfirmDialog';
 dayjs.locale('pt-br');
 

@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import importStyles from '../../styles/modalImport.module.css';
 import { buscarProdutos, buscarServicos } from '../../services/produtosService';
-import type { ItemComStatus } from '../../hooks/useImportItens';
+import type { ItemComStatus } from '../../hooks/useImportItems';
 
 export interface SugestaoItem {
   id: number;

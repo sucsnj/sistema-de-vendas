@@ -154,7 +154,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto. 
 
 ## Hooks
 
-- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado: `useCart`, `useToast`, `useConfirmDialog`, `useVendas`, `useMensais`, `useFiltro`, `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`, `useDailySaleForm`, `useImportItens`, `useEscClose`.
+- [hooks/Hooks.md](hooks/Hooks.md) - hooks de estado (arquivos em inglês; identificadores exportados ainda em pt-BR — ADR 0004): `useBrand`, `useCart`, `useCategory`, `useConfirmDialog`, `useDailySaleForm`, `useEscClose`, `useFilter`, `useImportItems`, `useMonthlyData`, `useSales`, `useSupplier`, `useToast`, `useUnitOfMeasure`.
 
 ## Tipos
 

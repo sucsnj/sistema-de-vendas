@@ -19,11 +19,19 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Hooks: nomes de arquivo padronizados em inglês (flat) — 08/10/2026
+
+- 8 de 13 arquivos de `src/hooks/` renomeados com `git mv`: `useCategoria.ts`→`useCategory.ts`, `useFiltro.ts`→`useFilter.ts`, `useFornecedor.ts`→`useSupplier.ts`, `useImportItens.ts`→`useImportItems.ts`, `useMarca.ts`→`useBrand.ts`, `useMensais.ts`→`useMonthlyData.ts` (nome escolhido pelo dono), `useUnidadeMedida.ts`→`useUnitOfMeasure.ts`, `useVendas.ts`→`useSales.ts`. Os 5 restantes já estavam em inglês (`useCart`, `useConfirmDialog`, `useDailySaleForm`, `useEscClose`, `useToast`).
+- **Estrutura mantida flat** (decisão do dono): 13 arquivos não justificam subpastas — mesmo racional de não aninhar em `src/components/`.
+- Imports corrigidos em `cadastro.tsx`, `historico.tsx`, `index.tsx`, `resumo.tsx`, `import/ImportItemsModal.tsx`, `import/ItemNameDropdown.tsx`; **identificadores exportados seguem em pt-BR** (`useVendas`, `useCategoria`...) — renomeio pendente conforme ADR 0004.
+- Docs: `docs/hooks/Hooks.md` (cabeçalhos com `identificador — arquivo.ts` + nota sobre a divergência), `docs/README.md`, `docs/components/ImportItemsModal.md`, `docs/components/ItemNameDropdown.md`.
+- Verificação: `npm run lint`, `npx tsc --noEmit`, `npm run build` e `node scripts/check-encoding.mjs` verdes.
+
 ### Componentes: conclusão da padronização em inglês (pastas e arquivos) — 08/10/2026
 
 - Pastas restantes em pt-BR renomeadas com `git mv`: `contas/` → **`payables/`**, `cadastro/` → **`catalog/`** (decisão do dono via questionário).
 - Arquivos `ContasAPagar*` renomeados: `PayablesForm.tsx`, `PayablesFilterPanel.tsx`, `PayablesHeader.tsx`, `PayablesLastTen.tsx`, `PayablesModals.tsx` (5 `docs/components/*.md` correspondentes renomeados).
-- **Imports corrigidos** (`contas-a-pagar.tsx`, `cadastro.tsx`, `useMarca.ts`, `useFornecedor.ts`) e referências/docs atualizados (`README`, `CONTEXT`, `DOCS`, `ModaisCadastro.md`, ADR 0005).
+- **Imports corrigidos** (`contas-a-pagar.tsx`, `cadastro.tsx`, `useBrand.ts`, `useSupplier.ts`) e referências/docs atualizados (`README`, `CONTEXT`, `DOCS`, `ModaisCadastro.md`, ADR 0005).
 - **Corrigido bug da rodada anterior**: caminhos duplicados em docs (`src/components/sales/sales/...`, `common/common/`, `import/import/`, `contas/contas/`) — 18 ocorrências em 17 arquivos geradas por substituição de caminho sobre caminho.
 - **Sem subpastas aninhadas**: cada pasta tem 5–8 arquivos; aninhar (`products/`, `products/master-data/` etc.) não ganha organização.
 - **Identificadores internos seguem em pt-BR** (`const ContasAPagarForm` dentro de `PayablesForm.tsx`, `ModalCarrinho` em `CartModal.tsx`...) — renomeio incremental conforme ADR 0004.

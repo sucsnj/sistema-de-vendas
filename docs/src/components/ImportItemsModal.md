@@ -30,7 +30,7 @@ const ModalImportItens: React.FC<ModalImportItensProps>;
 
 ## Dependências
 
-- `useImportItens` (`src/hooks/useImportItens`) — estado + ações (processamento, importação em lote, vínculo, resumo, reset).
+- `useImportItens` (`src/hooks/useImportItems`) — estado + ações (processamento, importação em lote, vínculo, resumo, reset).
 - `ItemNomeDropdown` (`src/components/import/ItemNameDropdown.tsx`) — seletor de item do sistema.
 - `useFocusTrap` (`src/utils/focus`); estilos `styles/produtos.module.css` (chrome) e `styles/modalImport.module.css` (importação); ícones MUI.
 

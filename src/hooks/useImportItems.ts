@@ -1,5 +1,5 @@
 /**
- * src/hooks/useImportItens.ts
+ * src/hooks/useImportItems.ts
  *
  * Hook que concentra o estado e a lógica do modal de importação de itens
  * via XML de NF-e (preview do arquivo, vínculo com itens do sistema e

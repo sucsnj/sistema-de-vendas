@@ -5,8 +5,8 @@ import EditSaleForm from '../components/sales/EditSaleForm';
 import { capitalize } from '../utils/captalize';
 import { getDateArray, formatMonthName } from '../utils/date';
 import { useToast } from '../hooks/useToast';
-import { useVendas } from '../hooks/useVendas';
-import { useFiltro } from '../hooks/useFiltro';
+import { useVendas } from '../hooks/useSales';
+import { useFiltro } from '../hooks/useFilter';
 
 // Componente React: tela de Histórico de Vendas.
 // Lista as vendas do período com filtro (todas/positivas/negativas), permitindo

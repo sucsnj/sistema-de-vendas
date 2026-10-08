@@ -19,7 +19,7 @@ interface SugestaoItem {
 }
 
 interface ItemNomeDropdownProps {
-  item: ItemComStatus;                     // src/hooks/useImportItens
+  item: ItemComStatus;                     // src/hooks/useImportItems
   onSelectSuggestion: (sugestao: SugestaoItem) => void;
   onTextChange: (novoTexto: string) => void;
   disabled?: boolean;

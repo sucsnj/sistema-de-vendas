@@ -5,7 +5,7 @@ import SalesChart from '../components/sales/SalesChart';
 import ExportButtons from '../components/sales/ExportButtons';
 import EditSaleForm from '../components/sales/EditSaleForm';
 import { useToast } from '../hooks/useToast';
-import { useVendas } from '../hooks/useVendas';
+import { useVendas } from '../hooks/useSales';
 import { capitalize } from '../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';

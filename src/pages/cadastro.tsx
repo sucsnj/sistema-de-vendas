@@ -38,10 +38,10 @@ import ModalUnidadeMedidaEdit from '@/components/catalog/UomEditModal';
 import ModalAjusteEstoque from '@/components/products/StockAdjustModal';
 import ImportItemsModal from '@/components/import/ImportItemsModal';
 import { ProdutoFormData, ProdutoOptions } from '@/components/products/ProductForm';
-import { useCategoria } from '@/hooks/useCategoria';
-import { useMarca } from '@/hooks/useMarca';
-import { useFornecedor } from '@/hooks/useFornecedor';
-import { useUnidadeMedida } from '@/hooks/useUnidadeMedida';
+import { useCategoria } from '@/hooks/useCategory';
+import { useMarca } from '@/hooks/useBrand';
+import { useFornecedor } from '@/hooks/useSupplier';
+import { useUnidadeMedida } from '@/hooks/useUnitOfMeasure';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 
 const CadastroPage: React.FC = () => {

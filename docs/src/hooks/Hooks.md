@@ -4,6 +4,8 @@
 
 Hooks de estado do cliente, usados pelas páginas e componentes do app.
 
+> **Nomes de arquivo em inglês, identificadores exportados ainda em pt-BR** (ADR 0004, renomeio pendente): ex.: `useSales.ts` exporta `useVendas`. Cada seção abaixo mostra `identificador` — `arquivo.ts`.
+
 ## Hooks
 
 ### `useToast` — `useToast.ts`
@@ -23,7 +25,7 @@ Gerencia o diálogo de confirmação de exclusão.
 - Estado: `confirmOpen`, `selectedId`.
 - Ações: `openConfirm(id)`, `handleConfirm()` (executa a ação e fecha), `cancelConfirm()`.
 
-### `useVendas` — `useVendas.ts`
+### `useVendas` — `useSales.ts`
 
 Concentra o estado de vendas e suas ações.
 
@@ -32,7 +34,7 @@ Concentra o estado de vendas e suas ações.
 - Estado: `sales` (`VendaDiaria[]`), `editingSale` (`VendaDiaria | null`), `loading`.
 - Ações: `loadSales()` (busca via `buscarVendasDiarias` e dispara `autoConsolidar`), `handleConsolidate()`, `handleBackup()`, `handleEditSale(sale)`, `handleCancelEdit()`, `handleSaved()` (fecha edição e recarrega), `handleDeleteSale(id)` (valida `canEdit` de `src/utils/edit`; mostra toasts apropriados).
 
-### `useMensais` — `useMensais.ts`
+### `useMensais` — `useMonthlyData.ts`
 
 Estado das consolidações mensais.
 
@@ -70,7 +72,7 @@ Fecha um modal/componente pela tecla ESC enquanto `isOpen`.
 - Registra `keydown` no `window` apenas repassando o callback quando `event.key === 'Escape'`.
 - Extraído dos modais de carrinho (fonte única, usado pelo `CartModalShell`).
 
-### `useImportItens` — `useImportItens.ts`
+### `useImportItens` — `useImportItems.ts`
 
 Concentra **estado e lógica do modal de importação de itens via XML de NF-e** (`ModalImportItens`), extraídos do componente na refatoração (mesmo padrão de `useDailySaleForm`).
 
@@ -82,7 +84,7 @@ Concentra **estado e lógica do modal de importação de itens via XML de NF-e**
 - Tipos exportados: `StatusItem` (`'idle'|'ok'|'duplicado'|'estoque_atualizado'|'erro'`) e `ItemComStatus` (estende `ProdutoImportado` com `status`/`mensagem`) — `ProdutoImportado` vive em `src/services/produtosService.ts`.
 - Observação: identificadores renomeados para inglês (ADR 0004): `produtos`→`products`, `nomeArquivo`→`fileName`, `importando`→`importing`, `concluido`→`completed`, `erro`→`error`, `processarArquivo`→`processFile`, `handleImportar`→`handleImport`, etc.
 
-### `useFiltro` — `useFiltro.ts`
+### `useFiltro` — `useFilter.ts`
 
 Filtro do histórico de vendas (página `/historico`), persistido no localStorage.
 
@@ -91,7 +93,7 @@ Filtro do histórico de vendas (página `/historico`), persistido no localStorag
 - Estado inicial (lazy initializer, sem render extra): lê `localStorage['historicoFiltro']`; no servidor (SSR) e para valores inválidos usa `'todas'`.
 - `changeFiltro` atualiza o estado e grava `localStorage['historicoFiltro']`.
 
-### `useCategoria` — `useCategoria.ts`
+### `useCategoria` — `useCategory.ts`
 
 CRUD de **categorias** usado na página `/cadastro` (cadastro rápido + edição + exclusão com confirmação).
 
@@ -100,7 +102,7 @@ CRUD de **categorias** usado na página `/cadastro` (cadastro rápido + edição
 - Ações: `handleSalvarCategoria(e)` (valida `nome`; cria via `criarCategoria`, recarrega `categorias` em `options` e seleciona em `form.categoriaId`), `handleOpenEditModal(categoria)` (pré-seleciona e abre edição), `handleAtualizarCategoria(e)` (via `atualizarCategoria(form.categoriaId, ...)` + atualiza `options` localmente e `carregarItens()`), `handleDeletarCategoria()` (via `deletarCategoria(form.categoriaId)`, remove de `options`, volta `categoriaId` para 1 e ajusta página/lista — mesmo padrão dos demais hooks).
 - Observação: as mensagens vêm da API (`response.message`); o estado `itemParaExcluir`/`setDeleteConfirmOpen` pertence ao `ModalProdExclusao` compartilhado.
 
-### `useMarca` — `useMarca.ts`
+### `useMarca` — `useBrand.ts`
 
 CRUD de **marcas** (mesmo padrão de `useCategoria`).
 
@@ -109,7 +111,7 @@ CRUD de **marcas** (mesmo padrão de `useCategoria`).
 - Ações: `handleSalvarMarca(e)`, `handleOpenEditMarcaModal(marca)`, `handleAtualizarMarca(e)`, `handleDeletarMarca()`.
 - Ao deletar: `form.marcaId` volta para `1` (marca "Outros").
 
-### `useFornecedor` — `useFornecedor.ts`
+### `useFornecedor` — `useSupplier.ts`
 
 CRUD de **fornecedores** (mesmo padrão).
 
@@ -118,7 +120,7 @@ CRUD de **fornecedores** (mesmo padrão).
 - Ações: `handleSalvarFornecedor(e)`, `handleOpenEditFornecedorModal(fornecedor)`, `handleAtualizarFornecedor(e)`, `handleDeletarFornecedor()`.
 - Ao deletar: `form.fornecedorId` volta para `1` (fornecedor "Sem fornecedor").
 
-### `useUnidadeMedida` — `useUnidadeMedida.ts`
+### `useUnidadeMedida` — `useUnitOfMeasure.ts`
 
 CRUD de **unidades de medida** (mesmo padrão), com tipos próprios.
 
