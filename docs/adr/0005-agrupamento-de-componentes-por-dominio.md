@@ -26,7 +26,7 @@
 
 - **Só arquivos/pastas nesta rodada**: os identificadores internos (`const ModalCarrinho`, props, JSX) permanecem em pt-BR e serão renomeados ao tocar nos módulos (ADR 0004, aplicação gradual). Como o default export define o componente, o nome do arquivo não precisa coincidir com o nome do componente.
 - **Imports entre componentes** usam `@/components/<pasta>/<Arquivo>` (cross-pasta) ou `./<Arquivo>` (mesma pasta); imports para `utils`/`services`/`hooks` seguem o estilo de cada arquivo, corrigidos para a nova profundidade.
-- **Docs continuam flat** em `docs/components/` com os mesmos nomes em inglês (`CartModal.md` etc.); `docs/README.md` indica a pasta correspondente de cada seção.
+- **Docs espelham `src/`** em `docs/src/` (mesmos caminhos e nomes) — ver ADR 0006; `docs/README.md` é o índice central.
 - **Removidos por não terem uso ativo** (confirmado por busca de imports): `ModalServicos.tsx`, `FloatingPixWindow.tsx` e as duplicatas antigas em pt-BR substituídas pelas novas.
 
 ## Consequências

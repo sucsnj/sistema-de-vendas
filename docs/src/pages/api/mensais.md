@@ -1,37 +1,18 @@
 # `src/pages/api/mensais.ts`
 
-## Descrição
+> Relatórios mensais consolidados de vendas.
 
-API de relatórios mensais de vendas consolidadas. Endpoint interno em `src/pages/api/mensais.ts`.
+## O que faz
 
-## Métodos
+- `GET ?mes=&ano=`: retorna a linha de `vendas_mensais` do mês; sem query, retorna todos (`ano DESC, mes DESC`).
+- `POST { mes, ano }`: executa `consolidateMonthly`; responde `200 { message: 'Consolidação realizada' }`.
+- `DELETE { id }`: exclui o mês (`id` obrigatório); demais métodos → `405` (`Allow: GET, POST, DELETE`).
 
-### `GET`
+## Relações
 
-Busca dados mensais.
+- **Usa:** `src/database/db.ts` (`getMonthlyTotal`, `getAllMonthly`, `consolidateMonthly`, `deleteMonthly`).
+- **Usado por:** `../index.md` (consolidação) e `../resumo.md` (listagem/exclusão).
 
-- **Com** `mes` e `ano` (query): retorna a linha de `vendas_mensais` do mês (ou `undefined`).
-- **Sem** query: retorna todos os registros em `ano DESC, mes DESC`.
-- **Erros**: 500 `{ error }`.
+## Notas
 
-### `POST`
-
-Executa consolidação mensal (`consolidateMonthly`).
-
-- **Body**: `{ mes, ano }`.
-- **Resposta 200**: `{ message: 'Consolidação realizada' }`.
-- **Erros**: 500 `{ error: 'Erro na consolidação' }`.
-
-### `DELETE`
-
-Exclui um registro mensal.
-
-- **Body**: `{ id }` (obrigatório).
-- **Resposta 200**: `{ message: 'Mês excluído com sucesso' }`.
-- **Erros**: 400 (id obrigatório), 500 `{ error, details }`.
-
-## Observações
-
-- Métodos não suportados retornam **405** com `Allow` header (`GET`, `POST`, `DELETE`).
-- Usado pelo dashboard (`consolidarMensal`, `verificarConsolidado`) e pela página de resumo (`buscarTotalMensal`, `buscarTodosMensais`).
-- A consolidação agrega `vendas_diarias` do mês em `vendas_mensais` (`db/vendas.db`), via `src/database/db.ts`.
+- Consolida `vendas_diarias` do mês em `vendas_mensais` (`db/vendas.db`).

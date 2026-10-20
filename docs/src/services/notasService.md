@@ -1,41 +1,19 @@
 # `src/services/notasService.ts`
 
-## Descrição
+> Cliente HTTP via `fetch` para o domínio de notas fiscais (endpoint interno `/api/notas`).
 
-Cliente HTTP das **notas fiscais importadas** — envolve os endpoints de `/api/notas`.
+## O que faz
 
-## Tipos
+- Expõe `NotaDetalhe` (distribuidora, chave, data_emissao `YYYY-MM-DD`, valor_nota).
+- Lista notas por período (`buscarNotasPorPeriodo`), busca por valor (`buscarNotaPorValor`), lista todas (`buscarTodasNotas`) e exclui (`excluirNota`).
+- Retorna `null` em `buscarNotaPorValor` quando a API responde com status 404.
 
-```ts
-interface NotaDetalhe {
-  id: number;
-  distribuidora: string;
-  chave: string;
-  data_emissao: string;
-  valor_nota: number;
-}
-```
+## Relações
 
-## Funções
+- **Usa:** [`/api/notas`](../pages/api/notas.md)
+- **Usado por:** páginas/fluxos que manipulam notas fiscais
 
-```ts
-buscarNotasPorPeriodo(ano: number, mes?: number): Promise<NotaDetalhe[]>   // GET /api/notas?ano=YYYY&mes=M
-buscarNotaPorValor(valor: number): Promise<NotaDetalhe | null>             // GET /api/notas?valor=...
-buscarTodasNotas(): Promise<NotaDetalhe[]>                                 // GET /api/notas
-excluirNota(id: number): Promise<any>                                      // DELETE /api/notas { id }
-```
+## Notas
 
-## Comportamentos
-
-- `buscarNotasPorPeriodo` monta `URLSearchParams` com `ano` e, se `mes` definido, também `mes`; retorna `response.json()` diretamente.
-- `buscarNotaPorValor` trata `404` retornando `null`; demais status retornam o JSON do corpo como `NotaDetalhe`.
-- `excluirNota` envia `DELETE` com `Content-Type: application/json` e corpo `{ id }`; retorna o JSON (campo `changes`).
-
-## Observações
-
-- As funções **não verificam `response.ok`** (exceto o caso `404` isolado em `buscarNotaPorValor`); em erro 4xx/5xx lançam implicitamente apenas ao parsear JSON, sem mensagem amigável.
-- Não há função para inserir nota por aqui — a criação acontece indiretamente via `importarContasXML` em `contasService.ts` (que usa o endpoint `contas/import`).
-
-## Uso
-
-- Único consumidor no frontend: `src/components/summary/MonthNotes.tsx` (busca por período e exclusão de notas na tela de Contas a Pagar).
+- `buscarNotaPorValor` envia `valor` via query string e trata 404 como "não encontrada".
+- `data_emissao` é retornada como string (formato YYYY-MM-DD conforme API/DB).

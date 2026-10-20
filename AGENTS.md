@@ -5,7 +5,7 @@
 Este projeto tem documentação estruturada em `docs/`. **Não releia código sem necessidade** — o contexto do projeto é carregado a partir da documentação:
 
 1. Antes de qualquer tarefa, rode o comando **`/context`** no opencode (ou leia `docs/CONTEXT.md`, `docs/README.md` e `docs/DOCS.md`).
-2. Use `docs/README.md` como índice central; cada camada tem docs próprios em `docs/pages`, `docs/pages/api`, `docs/services`, `docs/database`, `docs/components`, `docs/hooks`, `docs/utils` e `docs/types`.
+2. Use `docs/README.md` como índice central; a documentação de código espelha `src/` em `docs/src/` (mesmos caminhos e nomes; `docs/src/pages`, `docs/src/pages/api`, `docs/src/services`, `docs/src/database`, `docs/src/components`, `docs/src/hooks`, `docs/src/utils`, `docs/src/types`). Template único e regra de espelho em `docs/documentation-guidelines.md`; valide com `node scripts/check-docs.mjs`.
 3. Se a documentação estiver incompleta ou desatualizada: leia o código com moderação e **atualize o documento correspondente** em `docs/`.
 4. Ao criar um arquivo novo em `src/`, garanta o doc correspondente em `docs/` e inclua-o no índice `docs/README.md`.
 
@@ -52,6 +52,7 @@ Este projeto tem documentação estruturada em `docs/`. **Não releia código se
 - `npm run build` — build de produção.
 - `npm run lint` — lint (eslint).
 - `node scripts/check-encoding.mjs` — checa mojibake/BOM (use `--fix` para reparar); rodar antes de commitar. Nunca gravar arquivos com cmdlets do PowerShell (ver `PROJECT_STATUS.md`, seção "Gravação de arquivos").
+- `node scripts/check-docs.mjs` — valida o espelho `docs/src` ↔ `src` (um `.md` por arquivo-fonte) e os links internos; rodar antes de commitar.
 - `/context` — carrega o contexto do projeto a partir da documentação.
 - `/skill fritar` — invoca a skill `grill-with-docs` (entrevista de design + ADRs).
 - `/skill ensinar` — invoca a skill `teach` (aprendizado em workspace guiado).

@@ -1,27 +1,19 @@
 # `src/database/seeds.ts`
 
-## Descrição
+> Seeds iniciais usados para popular cadastros auxiliares no banco `produtos.db`.
 
-Constantes de **dados iniciais (seeders)** usadas pelo módulo de catálogo `src/database/produtosDb.ts` para popular, na primeira inicialização, tabelas de cadastro auxiliar do banco `db/produtos.db`.
+## O que faz
 
-## Constantes exportadas
+- Exporta `seedUoms`: lista de unidades de medida com `sigla` e `descricao` (inclui `SR` - Serviço, id 21).
+- Exporta `seedCategorias`: `[ { nome: 'Geral', descricao: 'Categoria padrão' } ]`.
+- Exporta `seedMarcas`: `[ { nome: 'Outros' } ]`.
+- Exporta `seedFornecedores`: `[ { nome: 'Sem fornecedor' } ]`.
 
-```ts
-seedUoms: { sigla: string; descricao: string }[]          // 21 unidades de medida, de 'UN' a 'SR' (Serviço) id 21
-seedCategorias: { nome: string; descricao: string }[]     // [{ nome: 'Geral', descricao: 'Categoria padrão' }]
-seedMarcas: { nome: string }[]                             // [{ nome: 'Outros' }]
-seedFornecedores: { nome: string }[]                       // [{ nome: 'Sem fornecedor' }]
-```
+## Relações
 
-- Lista completa de `seedUoms`: UN, DZ, PR, KG, G, MG, MCG, L, ML, MT, CX, PC, SM, TU, RL, CD, CJ, FG, LT, PK, SR.
+- **Usa:** —
+- **Usado por:** [`src/database/produtosDb.ts`](./produtosDb.md) (insere seeds quando tabelas respectivas estão vazias)
 
-## Comportamentos
+## Notas
 
-- O `seed` roda em `produtosDb.ts` dentro de um loop que coexiste com a criação das tabelas, e não cria registros duplicados a cada execução (itens inseridos apenas quando ausentes / contagem zerada).
-- `seedUoms` também é usado como **lista protegida**: siglas presentes em `seedUoms` não podem ser atualizadas nem excluídas pela API de unidades de medida (checagem por igualdade da sigla).
-
-## Observações
-
-- Módulo **sem lógica de execução própria** — só exporta constantes; o "quando roda" é decidido por quem importa (`produtosDb.ts`).
-- `SR (Serviço)` é o último item e o comentário no código indica que equivale à linha de id 21 na tabela.
-- Não há seed idempotente em outros bancos (`vendas.db`, `contas.db`, `notas.db`, `tabela.db` ficam vazios até uso).
+- Esses registros são tratados como "padrão" pelo módulo de produtos: não podem ser apagados/atualizados em certos casos (ex.: categoria Geral, marca Outros, fornecedor Sem fornecedor, unidade UN id=1).

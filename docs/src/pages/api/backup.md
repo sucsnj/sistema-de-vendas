@@ -1,20 +1,18 @@
 # `src/pages/api/backup.ts`
 
-## Descrição
+> Cria o backup do banco de vendas (`db/vendas.db`).
 
-Endpoint para criar backup do banco de vendas (`db/vendas.db`).
+## O que faz
 
-## Métodos
+- `POST` sem corpo: chama `backupDatabase()` e responde `200 { message: 'Backup criado', path }`.
+- Erro → `500 { error: 'Erro no backup' }`.
+- Outros métodos → `405` (`Allow: POST`).
 
-### `POST`
+## Relações
 
-Gera o backup.
+- **Usa:** `backupDatabase` de `src/database/db.ts`.
+- **Usado por:** `fazerBackup` em `src/services/vendasService.ts`; `../index.md` (botão "Fazer Backup").
 
-- **Body**: nenhum.
-- **Resposta 200**: `{ message: 'Backup criado', path }` — `path` aponta para `backup-<YYYY-MM-DD>.db` na raiz do projeto (via `backupDatabase()` em `src/database/db.ts`).
-- **Erros**: 500 `{ error: 'Erro no backup' }`.
+## Notas
 
-## Observações
-
-- Único método aceito é `POST`; outros retornam **405**.
-- Consumido por `fazerBackup` em `src/services/vendasService.ts`.
+- `path` aponta para `backup-<YYYY-MM-DD>.db` na raiz do projeto.

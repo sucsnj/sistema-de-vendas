@@ -1,37 +1,19 @@
 # `src/services/ocrService.ts`
 
-## Descrição
+> Serviço de OCR para extrair linha digitável de boletos a partir de imagem, usando `tesseract.js`.
 
-Serviço de **OCR de boletos** usando `tesseract.js`. Processa uma imagem e tenta extrair a linha digitável (bancária) por regex.
+## O que faz
 
-## Funções
+- Cria worker `eng`, restringe charset a `0123456789. ` e reconhece texto da imagem.
+- Normaliza quebras/espaços e tenta duas regex para capturar linha digitável.
+- Retorna a linha limpa (sem espaços/pontos) ou `null` em caso de falha.
 
-```ts
-lerLinhaDigitavel(imagemPath: string, regexConst: string = "regex1"): Promise<string | null>
-```
+## Relações
 
-## Comportamentos
+- **Usa:** [`tesseract.js`](https://github.com/naptha/tesseract.js)
+- **Usado por:** [`src/services/pdfService.ts`](./pdfService.md)
 
-- Cria um worker Tesseract com idioma `eng` e define whitelist `"0123456789. "` (só dígitos, ponto e espaço), aumentando a precisão para boletos.
-- Normaliza o texto reconhecido: remove quebras de linha e espace corridos.
-- Aplica uma das duas regex de linha digitável:
+## Notas
 
-```
-regex1 = /\d{5}\.?\d{5}\s?\d{5}\.?\d{6}\s?\d{5}\.?\d{6}\s?\d\s?\d{14}/g
-regex2 = /\d{5}[\s\.]?\d{5}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d[\s\.]?\d{13,14}/g
-```
-
-- `regexConst` escolhe o padrão: `"regex1"` (default) ou qualquer outro valor ativa `regex2`. `regex2` aceita separadores opcionais (`[\s\.]?`) e 13–14 dígitos no verificador.
-- Coleta **todos os matches** e retorna o **último** encontrado, com pontos e espaços removidos (linha digitável "crua", sem formatação).
-- Retorna `null` se não houver match ou se ocorrer erro (logado via `console.error`).
-- O worker é encerrado (`worker.terminate()`) em sucesso; em erro de Tesseract o `catch` devolve `null` (sem garantir terminate).
-
-## Observações
-
-- Função server-side: usada pelo endpoint `src/pages/api/ocr.ts` (imagens e PDFs convertidos) e por `pdfService.ts`.
-- Loga bastante (`console.log`) o caminho, texto e matches — ruído proposital para depuração.
-- A whitelist e as regex são específicas de **boleto bancário com barras numéricas**; notas/outros layouts podem falhar.
-
-## Uso
-
-- `src/pages/api/ocr.ts` (caminho direto) e `src/services/pdfService.ts` (`lerPdfComOcr` para PDF de 2 a 3 páginas).
+- Pega **sempre a última** ocorrência encontrada (`matches[matches.length - 1]`).
+- Regex padrão: `regex1`; fallback: `regex2` (quando chamado com `regexConst='regex2'`).

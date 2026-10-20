@@ -1,0 +1,26 @@
+# `src/components/sales/EditSaleForm.tsx`
+
+> Formulário de edição de uma venda existente, com gerenciamento de itens.
+
+## O que faz
+
+- Carrega os itens via `buscarVendaItens` → `CartItem`; permite editar data, valor e observações.
+- Recalcula o valor a partir do carrinho quando ele não está vazio (preserva o campo se for esvaziado).
+- Salva via `atualizarVenda`; integra [SelectItemsModal](../cart/SelectItemsModal.md) e [CartModal](../cart/CartModal.md).
+
+```ts
+interface EditSaleFormProps {
+  sale: VendaDiaria; onSaved: () => void; onCancel: () => void;
+  onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+}
+```
+
+## Relações
+
+- **Usa:** `buscarVendaItens`/`atualizarVenda` (`src/services/vendasService.ts`), `useCart` (`src/hooks/useCart.ts`), `parseNumber`, modais de carrinho.
+- **Usado por:** `../../pages/index.md` quando `editingSale` está preenchido.
+
+## Notas
+
+- Janela de edição de 2 dias validada na página e na API (403).
+- Foca/seleciona o campo de valor ao abrir; mostra `loadingItens` durante a busca.

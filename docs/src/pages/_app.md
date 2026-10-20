@@ -1,17 +1,19 @@
 # `src/pages/_app.tsx`
 
-## Descrição
+> Componente raiz do Next.js: envolve todas as páginas com os provedores globais.
 
-Componente root do Next.js. Envolve todas as páginas com o provedor de cache `@tanstack/react-query`, renderiza a navegação global e o **host global de notificações** (`<Toaster/>`).
+## O que faz
 
-## Responsabilidades
+- Injeta `QueryClientProvider` (`@tanstack/react-query`) para toda a aplicação.
+- Define metadados HTML globais (título "Vendas", descrição e favicon).
+- Renderiza a navegação global `<Nav />` e o host único de notificações `<Toaster />` (ADR 0003).
+- Estrutura padrão das telas: `Nav` + `<Component />` + `Toaster`.
 
-- Injetar `QueryClientProvider` para toda a aplicação.
-- Definir metadados HTML como título e descrição.
-- Renderizar componente `Nav` global.
-- Montar `<Toaster/>` (uma única instância do toast global; ver `docs/components/Toast.md` e ADR 0003).
+## Relações
 
-## Observações
+- **Usa:** `src/components/common/Nav`, `src/components/common/Toaster`, `src/styles/globals.css`.
+- **Usado por:** todas as páginas do Pages Router.
 
-- Este arquivo define configurações globais de cliente e estrutura de layout padrão.
-- Pode ser estendido para incluir temas, erros ou persistência de estado global.
+## Notas
+
+- Ponto de extensão para temas, tratamento de erros e estado global.

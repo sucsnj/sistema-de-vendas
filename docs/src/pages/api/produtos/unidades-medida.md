@@ -1,36 +1,18 @@
 # `src/pages/api/produtos/unidades-medida.ts`
 
-## Descrição
+> CRUD de unidades de medida (`unidades_medida` em `db/produtos.db`).
 
-CRUD de unidades de medida. Usa `db/produtos.db` (tabela `unidades_medida`).
+## O que faz
 
-## Métodos
+- `GET`: lista `[{ id, sigla, descricao }]` ordenada por sigla.
+- `POST { sigla, descricao? }` / `PUT ?id= { sigla, descricao? }`: valida sigla obrigatória e única.
+- `DELETE ?id=`: apaga; demais métodos → `405` (`Allow: GET, POST, DELETE, PUT, PATCH`).
 
-### `GET /api/produtos/unidades-medida`
+## Relações
 
-**Resposta 200:** `[{ "id": 1, "sigla": "UN", "descricao": null }, ...]` ordenadas por sigla.
+- **Usa:** `src/database/produtosDb.ts`.
+- **Usado por:** `produtosService`; `../../cadastro.md` (modal de unidade de medida).
 
-### `POST /api/produtos/unidades-medida`
+## Notas
 
-**Body:** `{ "sigla": "...", "descricao": "..." }`.
-
-**Validações (400):** sigla obrigatória; duplicada (case-insensitive).
-
-**Resposta:** `201 {"id": <id>, "message": "Unidade de medida cadastrada com sucesso."}`.
-
-### `PUT /api/produtos/unidades-medida?id=`
-
-**Body:** `{ "sigla": "...", "descricao": "..." }`. `id` na query.
-
-**Resposta:** `200 {"message": "Unidade de medida atualizada com sucesso."}`.
-
-### `DELETE /api/produtos/unidades-medida?id=`
-
-**Resposta:** `200 {"message": "Unidade de medida apagada com sucesso."}`.
-
-## Regras e Observações
-
-- `id=1` (unidade "UN") não pode ser apagada.
-- Siglas presentes em `seedUoms` não podem ser atualizadas (lança erro na camada de banco).
-- Ao apagar unidade com itens associados, os itens são migrados para `UN` (id 1).
-- Erros → `500`; métodos não suportados → `405` (`Allow: GET, POST, DELETE, PUT, PATCH`).
+- `id=1` ("UN") não pode ser apagada; siglas de `seedUoms` não podem ser atualizadas; itens migram para `UN`.

@@ -1,31 +1,19 @@
 # `src/pages/resumo.tsx`
 
-## Descrição
+> Resumo Mensal (`/resumo`): exibe as consolidações mensais (normal e especial) e permite excluí-las.
 
-Página de resumo mensal dos registros consolidados de vendas, com opção de exclusão de meses consolidados.
+## O que faz
 
-## Responsabilidades
+- Carrega as consolidações via `useMensais` (`loadMensais`).
+- Alterna entre tabela "comum" (ticket médio, melhor dia, maior venda, total) e "especial" (`totalEsp`, `qtdVendasEsp`).
+- Exclui um mês (`handleDelete`) somente após confirmação (`useConfirmDialog` + `ConfirmDialog`).
+- Formata valores com `formatCurrency` e datas com `dayjs` pt-BR.
 
-- Buscar todos os registros mensais consolidados.
-- Exibir informações de ticket médio, melhor dia, maior venda e total.
-- Exibir diálogo de confirmação antes de excluir um mês.
-- Atualizar Toasts conforme o resultado.
+## Relações
 
-## Funções Principais
+- **Usa:** `useToast`, `useMensais`, `useConfirmDialog`; `ConfirmDialog`; utils `formatter`, `captalize`.
+- **Usado por:** consome `./api/mensais.md`.
 
-- `loadMensais()` - carrega o histórico mensal.
-- `handleDelete()` - exclui o registro mensal selecionado.
-- `openConfirm()` - abre o diálogo de confirmação.
+## Notas
 
-## Dependências
-
-- `src/services/vendasService`
-- `src/components/common/Toast`
-- `src/components/common/ConfirmDialog`
-- `src/utils/formatter`
-- `dayjs`
-
-## Observações
-
-- O componente usa `dayjs` para formatação de nomes de mês e dias da semana em pt-BR.
-- A exclusão de meses consolidados é irreversível e exige confirmação.
+- Exclusão de mês consolidado é irreversível.

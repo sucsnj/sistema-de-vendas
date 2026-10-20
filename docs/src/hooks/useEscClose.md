@@ -1,22 +1,18 @@
 # `src/hooks/useEscClose.ts`
 
-## Descrição
+> Hook para fechar modal/componente ao pressionar a tecla ESC enquanto aberto.
 
-Hook pequeno para **fechar por tecla ESC**. Registra um listener de `keydown` no `window` enquanto o componente/modal estiver aberto (`isOpen`). Fonte única extraída dos modais de carrinho (antes com `useEffect` duplicado em `ModalCarrinho` e `ModalSelecionarItens`).
+## O que faz
 
-## Assinatura
+- Registra listener de `keydown` no `window` quando `isOpen` é `true`.
+- Remove listener no cleanup quando fechado ou desmontado.
+- Dispara `onClose()` apenas quando `event.key === 'Escape'`.
 
-```ts
-export const useEscClose = (isOpen: boolean, onClose: () => void): void;
-```
+## Relações
 
-## Comportamento
+- **Usa:** `React.useEffect`.
+- **Usado por:** `src/components/cart/CartModalShell.tsx`.
 
-- Adiciona o listener no `window` quando `isOpen === true`; remove no cleanup.
-- Só dispara `onClose()` se `event.key === 'Escape'`.
-- Dependências: `[isOpen, onClose]`.
+## Notas
 
-## Observações
-
-- Usado pelo `CartModalShell` (casca compartilhada dos modais de carrinho). No futuro pode ser reutilizado por outros modais (se desejado), mantendo o comportamento idêntico.
-- Não bloqueia outros listeners de ESC na página (o callback simplesmente verifica a condição).
+- Não bloqueia outros listeners de ESC na página; verifica apenas se `isOpen`.

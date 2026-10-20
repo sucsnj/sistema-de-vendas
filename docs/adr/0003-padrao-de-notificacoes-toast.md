@@ -49,5 +49,5 @@ Um **store singleton** como fonte única de estado, consumido por `useSyncExtern
 ## Referências
 
 - `docs/ALIGNMENT.md` §4.5 (fonte única e descobrível).
-- `docs/components/Toast.md`, `docs/utils/Utils.md`, `docs/hooks/Hooks.md` (implementação).
+- `docs/src/components/common/Toast.md`, `docs/src/components/common/Toaster.md`, `docs/src/utils/toast.md`, `docs/src/hooks/useToast.md` (implementação).
 - `docs/adr/0002-padrao-de-validacao-de-campos.md` (precedente de contrato/fonte única na camada de utils).

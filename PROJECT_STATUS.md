@@ -19,18 +19,28 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Docs espelhando `src/` em `docs/src/` + template único (ADR 0006) — 08/10/2026
+
+- **Espelho**: os docs de código passaram a viver em `docs/src/`, com o **mesmo caminho e nome** de `src/` (`.ts`/`.tsx` → `.md`). Componentes ganharam as subpastas de domínio (`cart/`, `sales/`, `catalog/`, `payables/`, …); `Pix.md` → `pix/PixModal.md`; `contas-backup/import.md` → `pages/api/contas/backup.md` e `.../import.md`. Meta-docs (CONTEXT/DOCS/ALIGNMENT/README/ADRs/glossário) permanecem na raiz de `docs/`.
+- **Cobertura completa**: criados os 42 docs que faltavam (8 modais de `catalog/`, `ProductDeleteModal`, `Toaster`, 12 hooks, 2 tipos, 19 utils) — cada arquivo de `src/` tem agora seu `.md`.
+- **Template único** (4 seções: resumo em citação, `## O que faz`, `## Relações`, `## Notas`), alvo ≤ 30 linhas; aplicado a **todos** os docs de código (`docs/src/` tem 120 `.md`, nenhum acima de 35 linhas). Índices por pasta: `docs/src/hooks/README.md`, `docs/src/utils/README.md`, `docs/src/types/README.md`.
+- **Agregados dissolvidos**: `ModaisCadastro.md`/`ModaisDeProdutos.md` removidos (conteúdo migrado para os docs individuais); `Hooks.md`/`Utils.md`/`Types.md` viraram `README.md` de pasta.
+- **Validador**: `scripts/check-docs.mjs` (espelho + docs órfãos + links internos quebrados, em todo `docs/`).
+- Cross-refs atualizadas: `README.md` (índice reescrito), `CONTEXT.md`, `AGENTS.md`, `documentation-guidelines.md`, ADRs 0003/0005 (e **novo ADR 0006**).
+- Verificação: `node scripts/check-docs.mjs` e `node scripts/check-encoding.mjs` verdes.
+
 ### Hooks: nomes de arquivo padronizados em inglês (flat) — 08/10/2026
 
 - 8 de 13 arquivos de `src/hooks/` renomeados com `git mv`: `useCategoria.ts`→`useCategory.ts`, `useFiltro.ts`→`useFilter.ts`, `useFornecedor.ts`→`useSupplier.ts`, `useImportItens.ts`→`useImportItems.ts`, `useMarca.ts`→`useBrand.ts`, `useMensais.ts`→`useMonthlyData.ts` (nome escolhido pelo dono), `useUnidadeMedida.ts`→`useUnitOfMeasure.ts`, `useVendas.ts`→`useSales.ts`. Os 5 restantes já estavam em inglês (`useCart`, `useConfirmDialog`, `useDailySaleForm`, `useEscClose`, `useToast`).
 - **Estrutura mantida flat** (decisão do dono): 13 arquivos não justificam subpastas — mesmo racional de não aninhar em `src/components/`.
 - Imports corrigidos em `cadastro.tsx`, `historico.tsx`, `index.tsx`, `resumo.tsx`, `import/ImportItemsModal.tsx`, `import/ItemNameDropdown.tsx`; **identificadores exportados seguem em pt-BR** (`useVendas`, `useCategoria`...) — renomeio pendente conforme ADR 0004.
-- Docs: `docs/hooks/Hooks.md` (cabeçalhos com `identificador — arquivo.ts` + nota sobre a divergência), `docs/README.md`, `docs/components/ImportItemsModal.md`, `docs/components/ItemNameDropdown.md`.
+- Docs: `docs/src/hooks/README.md` (cabeçalhos com `identificador — arquivo.ts` + nota sobre a divergência), `docs/README.md`, `docs/src/components/import/ImportItemsModal.md`, `docs/src/components/import/ItemNameDropdown.md`.
 - Verificação: `npm run lint`, `npx tsc --noEmit`, `npm run build` e `node scripts/check-encoding.mjs` verdes.
 
 ### Componentes: conclusão da padronização em inglês (pastas e arquivos) — 08/10/2026
 
 - Pastas restantes em pt-BR renomeadas com `git mv`: `contas/` → **`payables/`**, `cadastro/` → **`catalog/`** (decisão do dono via questionário).
-- Arquivos `ContasAPagar*` renomeados: `PayablesForm.tsx`, `PayablesFilterPanel.tsx`, `PayablesHeader.tsx`, `PayablesLastTen.tsx`, `PayablesModals.tsx` (5 `docs/components/*.md` correspondentes renomeados).
+- Arquivos `ContasAPagar*` renomeados: `PayablesForm.tsx`, `PayablesFilterPanel.tsx`, `PayablesHeader.tsx`, `PayablesLastTen.tsx`, `PayablesModals.tsx` (5 `docs/src/components/**/*.md` correspondentes renomeados).
 - **Imports corrigidos** (`contas-a-pagar.tsx`, `cadastro.tsx`, `useBrand.ts`, `useSupplier.ts`) e referências/docs atualizados (`README`, `CONTEXT`, `DOCS`, `ModaisCadastro.md`, ADR 0005).
 - **Corrigido bug da rodada anterior**: caminhos duplicados em docs (`src/components/sales/sales/...`, `common/common/`, `import/import/`, `contas/contas/`) — 18 ocorrências em 17 arquivos geradas por substituição de caminho sobre caminho.
 - **Sem subpastas aninhadas**: cada pasta tem 5–8 arquivos; aninhar (`products/`, `products/master-data/` etc.) não ganha organização.
@@ -43,7 +53,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - **Imports corrigidos em todo `src/`** (páginas, hooks, componentes): cross-pasta via `@/components/<pasta>/<Arquivo>`; profundidade de `../utils|services|hooks` ajustada nos arquivos movidos.
 - **Excluídos** (sem uso ativo, confirmado por busca de imports): `ModalServicos.tsx`, `FloatingPixWindow.tsx` e as duplicatas antigas em pt-BR (`ModalCarrinho`, `ModalSelecionarItens`, `CartModalShell`, `FormularioProduto`, `ItemNomeDropdown`, `ModalImportItens` na raiz) — completando a migração parcial anterior.
 - **Identificadores internos mantidos em pt-BR** nesta rodada (decisão do dono): `const ModalCarrinho` continua dentro de `CartModal.tsx`; renomeio segue o ADR 0004, ao tocar nos módulos.
-- Docs: 14 `docs/components/*.md` renomeados para inglês (`CartModal.md`, `SelectItemsModal.md`, `ImportItemsModal.md`, `ProductForm.md`, `ItemForm.md`, `ServiceForm.md`, `ItemNameDropdown.md`, `ProductList.md`, `ProductFilters.md`, `Summary.md`, `MonthlyConsolidation.md`, `MonthNotes.md`, `TotalsByDistributor.md`, `StockAdjustModal.md`); referências em `docs/README.md`, `docs/CONTEXT.md`, `docs/DOCS.md` e docs de páginas/serviços atualizadas; seções de `ModalServicos`/`FloatingPixWindow` removidas de `ModaisCadastro.md`, `ModaisDeProdutos.md` e `Pix.md`.
+- Docs: 14 `docs/src/components/**/*.md` renomeados para inglês (`CartModal.md`, `SelectItemsModal.md`, `ImportItemsModal.md`, `ProductForm.md`, `ItemForm.md`, `ServiceForm.md`, `ItemNameDropdown.md`, `ProductList.md`, `ProductFilters.md`, `Summary.md`, `MonthlyConsolidation.md`, `MonthNotes.md`, `TotalsByDistributor.md`, `StockAdjustModal.md`); referências em `docs/README.md`, `docs/CONTEXT.md`, `docs/DOCS.md` e docs de páginas/serviços atualizadas; seções de `ModalServicos`/`FloatingPixWindow` removidas de `ModaisCadastro.md`, `ModaisDeProdutos.md` e `Pix.md`.
 - **Novo ADR** `docs/adr/0005-agrupamento-de-componentes-por-dominio.md` (índice `docs/README.md` atualizado).
 - Verificação: `npm run lint`, `npx tsc --noEmit`, `npm run build` e `node scripts/check-encoding.mjs` verdes.
 
@@ -72,7 +82,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ### Documentação
 
-- `docs/components/BarcodeManager.md`, `docs/components/PayablesModals.md`, `docs/pages/api/vendas.md`, `docs/database/produtosDb.md` atualizados.
+- `docs/src/components/common/BarcodeManager.md`, `docs/src/components/payables/PayablesModals.md`, `docs/src/pages/api/vendas.md`, `docs/src/database/produtosDb.md` atualizados.
 - `AGENTS.md` com novas regras para agentes (documentação de mudanças, framework/boas práticas, conflito com regras).
 - Criado este arquivo (`PROJECT_STATUS.md`).
 
@@ -81,7 +91,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Removidas do `package.json` (e `package-lock.json`/`node_modules` via `npm uninstall`): `date-fns-tz`, `lucide`, `lucide-react`, `papaparse`, `pdf-parse`, `pdf-poppler`; e `@types/papaparse` (dev).
 - `@emotion/react` e `@emotion/styled` **mantidos**: são peer dependencies obrigatórias do `@mui/material` (usado via `Tooltip` e ícones).
 - Removida a declaração órfã `src/types/pdf-poppler.d.ts` (o `pdfService.ts` usa `pdf2pic`, não `pdf-poppler`).
-- Docs sincronizados: `docs/CONTEXT.md` (pilha principal), `docs/types/Types.md` e `docs/README.md`.
+- Docs sincronizados: `docs/CONTEXT.md` (pilha principal), `docs/src/types/README.md` e `docs/README.md`.
 
 ### Padronização de validação de campos (entrevista `grill-with-docs`, ADR 0002)
 
@@ -96,7 +106,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Migração de call sites para normalizadores: `utils/date.ts`/`toDate` para datas e `parseCurrency` para valores em `src/pages/api/vendas.ts`, `src/pages/api/contas/import.ts` e `src/components/DailySaleForm.tsx`.
 - Regra de 2 dias unificada: `isEditableDate` (validation.ts) substituída por `canEdit` (`utils/edit.ts`) na API de vendas — eliminada duplicidade.
 - Verificação: `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
-- Docs sincronizados: `docs/utils/Utils.md` (módulos e observações) e `docs/CONTEXT.md` (regra 6 de validação).
+- Docs sincronizados: `docs/src/utils/README.md` (módulos e observações) e `docs/CONTEXT.md` (regra 6 de validação).
 
 ### Ícones PIX migrados para `@mui/icons-material`
 
@@ -132,7 +142,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Importadores atualizados: `ModalPix.tsx` e `FloatingPixWindow.tsx` (`@/utils/qrPix`, `@/utils/pixActions`, `@/utils/clipboard`).
 - **Achados (registrados para a próxima fase)**: `#toast-root` não é renderizado por nenhuma página → `pixActions.showToast` não exibe nada (bug latente; unificação de toasts é o próximo alvo); `FormPix.tsx` (`src/components/`) é módulo legado (DOM, `.tsx` sem JSX) **sem chamadas ativas** — candidato a remoção.
 - Verificação: `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
-- Docs sincronizados: `docs/utils/Utils.md` (5 módulos novos + observações), `docs/components/Pix.md` (caminhos/assinaturas) e `docs/README.md` (índice).
+- Docs sincronizados: `docs/src/utils/README.md` (5 módulos novos + observações), `docs/src/components/pix/PixModal.md` (caminhos/assinaturas) e `docs/README.md` (índice).
 
 ### Unificação de toasts (ADR 0003)
 
@@ -143,7 +153,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - `pixActions.showToast` (DOM) **removido**; `ModalPix`/`FloatingPixWindow` usam `showToast` do store — **corrige o bug** do toast PIX (`#toast-root` nunca era renderizado, toasts eram silenciosamente inexistentes).
 - Decisão de UX (aprovada): toast da venda passa de `local-top-right` para `top-right` global.
 - SSR: `getServerSnapshot` retornando estado inicial (nenhum toast no servidor; build de produção OK).
-- Docs: `docs/components/Toast.md` (reescrito), `docs/hooks/Hooks.md`, `docs/utils/Utils.md`, `docs/components/Pix.md`, `docs/pages/_app.md`, `docs/README.md`, `docs/CONTEXT.md`, **novo ADR** `docs/adr/0003-padrao-de-notificacoes-toast.md`.
+- Docs: `docs/src/components/common/Toast.md` (reescrito), `docs/src/hooks/README.md`, `docs/src/utils/README.md`, `docs/src/components/pix/PixModal.md`, `docs/src/pages/_app.md`, `docs/README.md`, `docs/CONTEXT.md`, **novo ADR** `docs/adr/0003-padrao-de-notificacoes-toast.md`.
 - **Novos padrões**: `docs/documentation-guidelines.md` (padrão de documentação, referenciado no `AGENTS.md`).
 - Verificação: lint, tsc e build verdes.
 
@@ -151,7 +161,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 - Decisão do dono: identificadores, funções e nomes de arquivo em **inglês**; pt-BR apenas em strings visíveis ao usuário. Regra no `AGENTS.md` (boas práticas) + **novo ADR** `docs/adr/0004-padrao-de-nomenclatura-dos-identificadores.md`. Aplicação: gradual — código novo/refatorado em inglês; a renomeação do restante ocorre ao tocar nos módulos.
 - `src/utils/productPrice.ts` renomeado para o novo padrão (antes `produtoPreco.ts`; ver acima).
-- **`FormPix.tsx` removido** (legado sem chamadas ativas, decisão do dono); docs atualizados em `docs/components/Pix.md` e `docs/README.md`.
+- **`FormPix.tsx` removido** (legado sem chamadas ativas, decisão do dono); docs atualizados em `docs/src/components/pix/PixModal.md` e `docs/README.md`.
 
 ### Refatoração de `DailySaleForm` (primeiro componente grande)
 
@@ -160,7 +170,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - **`src/hooks/useDailySaleForm.ts` criado** — concentra estado/validação/ações/efeitos do formulário: filtro de teclas, sanitização do valor, sincronização com o total do carrinho, ESC/limpar, PIX, `handleSubmit` (cadeia de validação ADR 0002 → `registrarVenda` → limpeza/foco), auto-foco (1min/3min); usa `useCart(showToast)` e `evaluateExpression`.
 - **`DailySaleForm.tsx` reescrito fino** (691 → ~417 linhas): apresentacional, apenas JSX + `<style jsx>` + ligação ao hook. **Comportamento preservado** (nenhuma regra alterada).
 - **ADR 0004 aplicado no módulo**: `valor`→`value`, `observacoes`→`observations`, `limpando`→`clearing`, `estaVisivel`→`isVisible`, comentários/regra do `expr-eval` extraída.
-- Docs: `docs/components/DailySaleForm.md` (reescrito), `docs/hooks/Hooks.md` (nova seção `useDailySaleForm` + nota do `CartItem`), `docs/types/Types.md` (nova seção `sale.ts`), `docs/components/ModalCarrinho.md` (origem do tipo), `docs/utils/Utils.md` (`calculator.ts`), `docs/README.md` (índice).
+- Docs: `docs/src/components/sales/DailySaleForm.md` (reescrito), `docs/src/hooks/README.md` (nova seção `useDailySaleForm` + nota do `CartItem`), `docs/src/types/README.md` (nova seção `sale.ts`), `docs/src/components/cart/CartModal.md` (origem do tipo), `docs/src/utils/README.md` (`calculator.ts`), `docs/README.md` (índice).
 - Verificação: lint, tsc e build de produção verdes.
 
 ## Gravação de arquivos: nunca usar PowerShell

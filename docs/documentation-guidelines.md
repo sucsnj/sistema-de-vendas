@@ -11,17 +11,49 @@
 
 ## O que documentar onde
 
+> **Espelho de `src/`**: a documentação de código fica em **`docs/src/`**, replicando exatamente a estrutura de `src/` (mesmos nomes e subpastas; um `.md` por arquivo `.ts`/`.tsx`). Ex.: `src/hooks/useCart.ts` → `docs/src/hooks/useCart.md`; `src/components/cart/CartModal.tsx` → `docs/src/components/cart/CartModal.md`. Validado por `node scripts/check-docs.mjs`.
+
 | Mudança | Onde registrar |
 | --- | --- |
-| Arquivo/componente/hook/utilitário **novo** em `src/` | Doc em `docs/` correspondente (`components/`, `hooks/`, `utils/`, `pages/…`) + índice `docs/README.md` |
-| Comportamento/assinatura alterado de algo existente | Atualizar o doc dono em `docs/` |
+| Arquivo/componente/hook/utilitário **novo** em `src/` | Doc espelhado em `docs/src/` no mesmo caminho relativo (mesmo nome, `.md`) + índice `docs/README.md` |
+| Comportamento/assinatura alterado de algo existente | Atualizar o doc espelhado dono em `docs/src/` |
 | Regra de negócio nova ou alterada | `docs/ALIGNMENT.md` §3 (regras de domínio) ou seção de regras do doc dono |
 | Decisão de **arquitetura** (impacta várias camadas / cria padrão) | **ADR** em `docs/adr/` + índice `docs/README.md` |
 | Estado do projeto (o que foi feito/pendente/futuro) | `PROJECT_STATUS.md` (sempre; com a data no topo) |
 | Contexto geral (camadas, bancos, páginas, regras de agente) | `docs/CONTEXT.md` |
 | Convenções/regras para agentes | `AGENTS.md` (agentes leem isso antes de tudo) |
+## Estilo
 
-### Checklist ao concluir uma mudança significativa
+- Idioma: **pt-BR** (domínio do negócio e das mensagens da UI).
+- Nomeie cada doc pelo **caminho espelhado do arquivo-fonte** (ex.: `docs/src/hooks/useCart.md`), com o título `# \`src/hooks/useCart.ts\``.
+- Índices de pasta: quando houver, use `README.md` dentro da pasta espelhada (ex.: `docs/src/hooks/README.md`).
+- Guia rápido para agentes: `docs/CONTEXT.md`. Índice central: `docs/README.md`.
+
+## Template único de doc de código
+
+Todo `.md` em `docs/src/` usa **exatamente** este formato (alvo: ≤ 30 linhas; leitura em menos de 1 minuto):
+
+````markdown
+# `src/<caminho>/<arquivo>.<ext>`
+
+> Uma frase: o que é e para que serve.
+
+## O que faz
+
+- 2 a 4 bullets objetivos (responsabilidade, regras principais).
+- Assinatura/props/retorno em bloco ```ts``` curto **apenas quando não óbvio**.
+
+## Relações
+
+- **Usa:** arquivos/serviços/utils de que depende.
+- **Usado por:** quem consome (páginas/componentes/hooks).
+
+## Notas
+
+- Só quando houver algo não óbvio: padrões, armadilhas, histórico de refatoração.
+````
+
+## Checklist ao concluir uma mudança significativa
 
 1. `PROJECT_STATUS.md` — mover para "Últimas mudanças", ajustar "Pendentes"/"Futuras" e atualizar a data.
 2. Doc dono em `docs/` atualizado (assinaturas, comportamento, caminhos).
@@ -39,10 +71,3 @@ Crie um ADR quando a decisão:
 - precisar de contexto para não ser revertida por engano no futuro.
 
 Use o mesmo formato dos ADRs existentes (`docs/adr/XXXX-*.md`): `# ADR NNNN — Título`, `- Status`, `- Contexto`, `- Decisão`, `- Consequências`, `- Alternativas consideradas`, `- Referências`.
-
-## Estilo
-
-- Idioma: **pt-BR** (domínio do negócio e das mensagens da UI).
-- Títulos `#` nas seções; assinaturas em blocos de código ```ts```;
-- Nomeie arquivos de doc pelo **nome do componente/arquivo-fonte** que documentam (ex.: `Toast.md`, `DailySaleForm.md`).
-- Guia rápido para agentes: `docs/CONTEXT.md`. Índice central: `docs/README.md`.

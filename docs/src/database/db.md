@@ -1,91 +1,23 @@
 # `src/database/db.ts`
 
-## Descrição
+> Módulo de persistência de vendas (SQLite via `better-sqlite3`). Gerencia conexão, schema de vendas diárias, itens e consolidação mensal, além de operações CRUD e backup.
 
-Módulo principal de persistência de vendas. Abre a conexão SQLite com `better-sqlite3` no arquivo `db/vendas.db` e expõe operações de vendas diárias, itens de venda e consolidação mensal.
+## O que faz
 
-## Conexão e configuração
+- Abre conexão com `db/vendas.db` (via `process.cwd()`), aplica pragmas `journal_mode=WAL`, `synchronous=FULL`, `foreign_keys=ON`.
+- Cria tabelas `vendas_diarias`, `venda_itens`, `vendas_mensais` (com migração para adicionar `carrinho_id` em `vendas_diarias`).
+- Fornece operações para vendas diárias, itens de venda, consolidação mensal e backup.
+- Usa timestamp local via `now()` (`src/utils/date`) para `criado_em` quando não informado.
 
-- Caminho: `db/vendas.db` (via `process.cwd()`).
-- Pragmas: `journal_mode = WAL`, `synchronous = FULL`, `foreign_keys = ON`.
+## Relações
 
-## Tabelas
+- **Usa:** [`better-sqlite3`](https://github.com/WiseLibs/better-sqlite3), [`src/utils/date.ts`](../utils/date.md) (`now`, `getLastDayOfMonth`)
+- **Usado por:** [`src/pages/api/vendas.ts`](../pages/api/vendas.md), [`src/pages/api/venda-itens.ts`](../pages/api/venda-itens.md), [`src/pages/api/mensais.ts`](../pages/api/mensais.md), [`src/pages/api/backup.ts`](../pages/api/backup.md)
 
-### `vendas_diarias`
+## Notas
 
-| Coluna | Tipo | Observação |
-| --- | --- | --- |
-| `id` | INTEGER PK AUTOINCREMENT | |
-| `data` | TEXT | data da venda (`YYYY-MM-DD`) |
-| `valor` | REAL | valor registrado (positivo ou negativo) |
-| `observacoes` | TEXT | nullable |
-| `carrinho_id` | INTEGER | nullable, adicionado via migração |
-| `criado_em` | DATETIME | default `CURRENT_TIMESTAMP` |
-
-### `venda_itens`
-
-| Coluna | Tipo | Observação |
-| --- | --- | --- |
-| `id` | INTEGER PK AUTOINCREMENT | |
-| `venda_id` | INTEGER | FK → `vendas_diarias(id)` ON DELETE CASCADE |
-| `item_id` | INTEGER | id do produto/serviço no catálogo; nullable |
-| `tipo` | TEXT | `'PRODUTO'` ou `'SERVICO'` |
-| `nome` | TEXT | |
-| `quantidade` | REAL | default 1 |
-| `preco_unitario` | REAL | default 0 |
-| `subtotal` | REAL | default 0 |
-| `codigo_interno` | TEXT | nullable |
-| `referencia` | TEXT | nullable |
-| `criado_em` | DATETIME | default `CURRENT_TIMESTAMP` |
-
-### `vendas_mensais`
-
-| Coluna | Tipo | Observação |
-| --- | --- | --- |
-| `id` | INTEGER PK AUTOINCREMENT | |
-| `mes` / `ano` | INTEGER | `UNIQUE(mes, ano)` |
-| `ticketMedio` | REAL | default 0 |
-| `mediaClientes` / `mediaClientesEsp` | INTEGER | default 0 |
-| `melhorDia` | TEXT | default `'N/A'` |
-| `melhorDiaValor` | REAL | default 0 |
-| `maiorVenda` | REAL | default 0 |
-| `qtdVendas` / `qtdVendasEsp` | INTEGER | default 0 |
-| `total` / `totalEsp` | REAL | obrigatório |
-
-## Funções Principais
-
-### Vendas diárias
-
-- `insertDailySale(data: string, valor: number, observacoes?: string, criado_em?: string, carrinho_id?: number | null)` → insere em `vendas_diarias`; usa timestamp local se `criado_em` não for informado.
-- `getDailySales(mes: number, ano: number, filtro?: 'positivas' | 'negativas' | 'todas')` → vendas do mês ordenadas por `data DESC`; `positivas` filtra `valor > 0`, `negativas` filtra `valor <= 0`.
-- `getDailySaleById(id: number)` → venda por id.
-- `updateDailySale(id, data, valor, observacoes?)` → atualiza data/valor/observações (não altera `carrinho_id`).
-- `deleteDailySale(id)` → exclui os itens da venda e depois a venda.
-
-### Itens de venda
-
-- `insertVendaItens(vendaId: number, itens: VendaItemInput[])` → insere em lote (transação); `subtotal` calculado como `preco_unitario * quantidade` quando não informado.
-- `getVendaItens(vendaId: number): VendaItemData[]` → itens da venda por `id ASC`.
-- `deleteVendaItens(vendaId: number)` → remove os itens da venda.
-
-### Mensal
-
-- `getMonthlyTotal(mes, ano)` → linha de `vendas_mensais` do mês (ou `undefined`).
-- `consolidateMonthly(mes, ano)` → calcula métricas (`ticketMedio`, `mediaClientes`, `melhorDia`, `maiorVenda`, `qtdVendas`, totais etc.) a partir das vendas diárias e grava com `INSERT OR REPLACE`.
-- `getAllMonthly()` → todos os mensais, `ano DESC, mes DESC`.
-- `deleteMonthly(id)` → exclui registro mensal.
-
-### Backup
-
-- `backupDatabase()` → gera `backup-<YYYY-MM-DD>.db` na raiz do projeto via `db.backup()`.
-
-## Interfaces
-
-- `VendaItemInput` — `{ item_id?, tipo: 'PRODUTO'|'SERVICO', nome, quantidade, preco_unitario, subtotal?, codigo_interno?, referencia? }`.
-- `VendaItemData` — `VendaItemInput` + `id`, `venda_id`, `subtotal`, `criado_em`.
-
-## Observações
-
-- O timestamp local (`criado_em`) usa `now()` de `src/utils/date` (timezone `America/Recife`).
-- Existe **divergência de documentação**: `docs/CONTEXT.md` e `AGENTS.md` citavam o banco como `db.db`; o arquivo real é `db/vendas.db`. Corrigido nesta revisão.
-- O backup é gravado na raiz do projeto (`backup-YYYY-MM-DD.db`), não dentro de `db/`.
+- `insertDailySale` aceita `criado_em` opcional e `carrinho_id` nullable.
+- `insertVendaItens` insere em lote com transação; calcula `subtotal = preco_unitario*quantidade` se ausente.
+- `consolidateMonthly` calcula métricas (ticket médio, médias, melhor dia, maior venda, quantidades/totais) com base em vendas diárias e grava via `INSERT OR REPLACE`.
+- `backupDatabase()` gera `backup-<YYYY-MM-DD>.db` na raiz do projeto (não em `db/`).
+- Divergência histórica: documentação citava `db.db`, arquivo real é `db/vendas.db`.

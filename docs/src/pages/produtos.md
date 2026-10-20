@@ -1,50 +1,20 @@
 # `src/pages/produtos.tsx`
 
-## Descrição
+> Listagem de produtos e serviços (`/produtos`) com filtros, busca, paginação e controle de status.
 
-Página de **listagem** de produtos e serviços do catálogo, com filtros, busca, paginação e controle de status ativo/inativo. Navega para `/cadastro` para criar/editar itens.
+## O que faz
 
-## Contexto
+- Busca `buscarProdutos` e `buscarServicos` (`pageSize: 10000`), mescla, ordena por nome e pagina localmente (10/página).
+- Filtros: texto, tipo (`PRODUTO`/`SERVICO`/`TODOS`), categoria, marca, fornecedor e status (`ATIVO`/`INATIVO`/`TODOS`).
+- Alterna status de produtos (`toggleStatusProduto`) e exclui com confirmação (`excluirProduto`/`excluirServico`).
+- Navega para `/cadastro?id=X` ao editar; FAB "+" leva a `/cadastro`.
 
-Rota `/produtos`. É a porta de entrada do domínio Produtos/Estoque: exibe o catálogo combinado (produtos + serviços), permite pré-filtrar (`/produtos?search=1`) e leva ao cadastro/edição via FAB "+".
+## Relações
 
-## Responsabilidades
+- **Usa:** `produtosService`; componentes `ProductList`, `ProductFilters`, `ProductDeleteModal`.
+- **Usado por:** consome `./api/produtos.md` e `./api/produtos/servicos.md`.
 
-- Exibir galeria/tabela de produtos e serviços combinados (ordenados por nome).
-- Filtros (Filtros): busca por texto, tipo (PRODUTO/SERVICO/TODOS), categoria, marca, fornecedor e status (ATIVO/INATIVO/TODOS).
-- Paginação (local: `pageSizeSafe` = 10 por página sobre o total carregado).
-- Alternar status Ativo/Inativo de produtos (`toggleStatusProduto`).
-- Excluir item com confirmação (`ModalProdExclusao`), tratando serviço vs. produto.
-- Redirecionar para `/cadastro?id=X` quando editar.
-- Notificações via `Toast`.
+## Notas
 
-## Funções principais
-
-- `carregarAuxiliares()` — carrega categorias, marcas, fornecedores e unidades de medida (para os dropdowns de filtro).
-- `carregarItens()` — busca `buscarProdutos` e `buscarServicos` (com `pageSize: 10000`), mescla, ordena e pagina localmente (<10 páginas).
-- `handleSearchSubmit(e)` / `handleLimparFiltros()` — aplica/limpa a busca.
-- `handleEditarClick(item)` — `router.push('/cadastro?id=' + item.id)`.
-- `handleToggleStatus(item)` — alterna `ativo` 0/1 e recarrega.
-- `handleConfirmExcluir()` — exclui serviço/produto e ajusta página se vazia.
-
-## Serviços/Componentes/Hooks
-
-- `produtosService`: `buscarProdutos`, `buscarServicos`, `excluirProduto`, `excluirServico`, `toggleStatusProduto`, `buscarCategorias`, `buscarMarcas`, `buscarFornecedores`, `buscarUnidadesMedida`.
-- Componentes: `ProdutosList`, `Filtros`, `ModalProdExclusao`, `Toast`.
-- Não usa hooks de catálogo (`useCategoria` etc. são da página `/cadastro`).
-
-## Estado
-
-- `items`, `total`, `page`, `totalPages`, `loading` — listagem/paginação.
-- `searchQuery`, `state` (`FiltrosState`) — busca/filtros.
-- `options` (`ProdutoOptions`) — dados auxiliares dos dropdowns.
-- `deleteConfirmOpen`, `itemParaExcluir` — modal de exclusão.
-- Toast: `toastOpen`, `toastMessage`, `toastType`.
-
-## Observações
-
-- Serviços não têm marca/fornecedor/unidade: ao mesclar, a página usa defaults (`marca_id: 1`, `fornecedor_id: 1`, `unidade_medida_id: 21`, `estoque: 0`).
-- A paginação real acontece no cliente — a API devolve até 10.000 itens (desempenho pode degradar com catálogo grande).
-- `toggleStatus` só é aplicado para produtos (serviços não têm coluna `ativo`).
-- Após excluir o único item da última página, volta uma página.
-- FAB "+" (`.fab`) aponta para `/cadastro`.
+- Serviços não têm marca/fornecedor/estoque: usam defaults (`marca_id: 1`, `fornecedor_id: 1`, `unidade_medida_id: 21`).
+- Paginação ocorre no cliente; `toggleStatus` só se aplica a produtos.

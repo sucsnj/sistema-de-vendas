@@ -1,45 +1,24 @@
 # `src/pages/api/produtos/servicos.ts`
 
-## Descrição
+> REST de serviços do catálogo (`servicos` em `db/produtos.db`).
 
-Endpoint REST de **serviços** do catálogo (tabela `servicos` em `db/produtos.db`). É a rota separada do catálogo de produtos.
+## O que faz
 
-## Métodos
+- `GET`: sem `id`, listagem paginada (`search`, `categoria_id`, `page`, `pageSize`); com `?id=`, retorna o serviço ou `null`.
+- `POST`: cria serviço (nome e categoria obrigatórios); responde `201` com o serviço.
+- `PUT ?id=` / `DELETE ?id=`: atualiza/exclui (`404` se não existir).
+- Demais métodos → `405 { error: 'Método não permitido.' }`.
 
-### `GET /api/produtos/servicos`
-
-- Sem `id` — listagem paginada:
-  - **Query params:** `search` (nome/código interno/referência), `categoria_id`, `page` (default 1), `pageSize` (default 10).
-  - **Resposta 200:** `{ "items": ServicoData[], "total", "page", "pageSize", "totalPages" }`.
-- Com `?id=` — retorna `ServicoData` ou `null` (204 sem corpo não é usado; sempre 200).
-
-### `POST /api/produtos/servicos`
-
-**Body:**
-
-```json
-{
-  "nome": "...", "descricao": "...", "categoria_id": 1,
-  "preco_venda": 0, "codigo_interno": "...", "referencia": "...", "duracao_minutos": 0
-}
+```ts
+{ nome, descricao?, categoria_id, preco_venda?, codigo_interno?, referencia?, duracao_minutos? }
 ```
 
-**Validações (400):** nome e categoria obrigatórios (payload normalizado com `normalizeServicoPayload`).
+## Relações
 
-**Respostas:** `201` com o serviço criado (`getServicoById(id)`); `500 {"error": ...}` em falha.
+- **Usa:** `src/database/produtosDb.ts` (`getServicos`, `insertServico`, `updateServico`, `deleteServico`).
+- **Usado por:** `produtosService`; `../../produtos.md` e `../../cadastro.md`.
 
-### `PUT /api/produtos/servicos?id=`
+## Notas
 
-**Body** igual ao POST (id na query).
-
-**Respostas:** `200` com o serviço atualizado; `400` sem id ou sem nome/categoria; `404` serviço não encontrado.
-
-### `DELETE /api/produtos/servicos?id=`
-
-**Respostas:** `200 {"message": "Serviço excluído com sucesso."}`; `400` sem id; `404` não encontrado.
-
-## Observações
-
-- `normalizeServicoPayload` trata body ausente/`non-object`, trima strings e converte `categoria_id`/`preco_venda`/`duracao_minutos` para números (fallback 0).
-- Código interno/auto-geração: `insertServico` grava o próprio ID como `codigo_interno` quando vazio (ver `produtosDb.md`).
-- `405 {"error": "Método não permitido."}` para métodos fora de GET/POST/PUT/DELETE.
+- `normalizeServicoPayload` trima strings e converte números (fallback 0).
+- `insertServico` grava o próprio ID como `codigo_interno` quando vazio.

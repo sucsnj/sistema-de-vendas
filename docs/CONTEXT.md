@@ -26,10 +26,11 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 - `src/database/*.ts` — abstrações `better-sqlite3` (vendas, contas, notas, tabela, produtos).
 - `src/utils/*.ts(x)` — formatação, validação, datas, números, cores.
 - `src/types/*.ts` — tipos compartilhados.
+- `docs/src/**/*.md` — documentação espelhando `src/` (mesmo caminho e nome, `.ts`/`.tsx` → `.md`; template único em `docs/documentation-guidelines.md`, validado por `node scripts/check-docs.mjs`).
 
 ## Bancos de dados
 
-Bancos em `db/` (SQLite). Documentação em `docs/database/`.
+Bancos em `db/` (SQLite). Documentação em `docs/src/database/`.
 
 - `vendas.db` — vendas diárias, itens de venda e consolidação mensal.
 - `contas.db` — contas a pagar.
@@ -53,21 +54,21 @@ Bancos em `db/` (SQLite). Documentação em `docs/database/`.
 | --- | --- |
 | Alinhamento / domínio / refatoração | `docs/ALIGNMENT.md` (domínio, usuários, fluxos, pontos de atenção) |
 | Arquitetura geral / fluxo de dados | `docs/DOCS.md` |
-| Dashboard / vendas do dia | `docs/pages/index.md`, `docs/pages/api/vendas.md`, `docs/pages/api/venda-itens.md`, `docs/services/vendasService.md` |
-| Histórico / relatórios | `docs/pages/historico.md`, `docs/pages/resumo.md`, `docs/pages/api/mensais.md` |
-| Contas a pagar | `docs/pages/contas-a-pagar.md`, `docs/database/contasDb.md`, `docs/services/contasService.md`, `docs/pages/api/contas.md`, `docs/pages/api/contas-import.md`, `docs/pages/api/contas-backup.md` |
-| Produtos / estoque | `docs/pages/produtos.md`, `docs/database/produtosDb.md`, `docs/pages/api/produtos*.md`, `docs/services/produtosService.md` |
-| Cadastros auxiliares | `docs/pages/cadastro.md`, `docs/components/ModaisCadastro.md` |
-| PIX / pagamento | `docs/components/Pix.md` |
-| Carrinho de compras | `docs/components/CartModal.md`, `docs/hooks/Hooks.md` (useCart) |
-| Formulários de venda (dia/item) | `docs/components/DailySaleForm.md`, `docs/components/ItemForm.md`, `docs/components/EditSaleForm.md` |
-| OCR / importação | `docs/pages/api/ocr.md`, `docs/services/ocrService.md`, `docs/services/pdfService.md`, `docs/components/OcrUpload.md` |
-| Tabela de medicamentos | `docs/pages/tabela.md`, `docs/database/tabelaDb.md` |
-| Notas fiscais | `docs/pages/api/notas.md`, `docs/database/notasDb.md` |
-| Backup | `docs/pages/api/backup.md`, `docs/pages/api/contas-backup.md` |
-| Componente/hook/util específico | procurar em `docs/components/`, `docs/hooks/`, `docs/utils/` |
-| Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/utils/Utils.md` (`validation.ts`, `forms.tsx`) |
-| Notificações / toast | `docs/components/Toast.md`, `docs/utils/Utils.md` (`toast.ts`), `docs/adr/0003-padrao-de-notificacoes-toast.md` |
+| Dashboard / vendas do dia | `docs/src/pages/index.md`, `docs/src/pages/api/vendas.md`, `docs/src/pages/api/venda-itens.md`, `docs/src/services/vendasService.md` |
+| Histórico / relatórios | `docs/src/pages/historico.md`, `docs/src/pages/resumo.md`, `docs/src/pages/api/mensais.md` |
+| Contas a pagar | `docs/src/pages/contas-a-pagar.md`, `docs/src/database/contasDb.md`, `docs/src/services/contasService.md`, `docs/src/pages/api/contas.md`, `docs/src/pages/api/contas/import.md`, `docs/src/pages/api/contas/backup.md` |
+| Produtos / estoque | `docs/src/pages/produtos.md`, `docs/src/database/produtosDb.md`, `docs/src/pages/api/produtos.md`, `docs/src/pages/api/produtos/*.md`, `docs/src/services/produtosService.md` |
+| Cadastros auxiliares | `docs/src/pages/cadastro.md`, `docs/src/components/catalog/*.md` |
+| PIX / pagamento | `docs/src/components/pix/PixModal.md`, `docs/src/utils/pix.md` |
+| Carrinho de compras | `docs/src/components/cart/CartModal.md`, `docs/src/hooks/useCart.md` |
+| Formulários de venda (dia/item) | `docs/src/components/sales/DailySaleForm.md`, `docs/src/components/products/ItemForm.md`, `docs/src/components/sales/EditSaleForm.md` |
+| OCR / importação | `docs/src/pages/api/ocr.md`, `docs/src/services/ocrService.md`, `docs/src/services/pdfService.md`, `docs/src/components/import/OcrUpload.md` |
+| Tabela de medicamentos | `docs/src/pages/tabela.md`, `docs/src/database/tabelaDb.md` |
+| Notas fiscais | `docs/src/pages/api/notas.md`, `docs/src/database/notasDb.md` |
+| Backup | `docs/src/pages/api/backup.md`, `docs/src/pages/api/contas/backup.md` |
+| Componente/hook/util específico | navegar em `docs/src/` pelo mesmo caminho do arquivo em `src/` |
+| Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/src/utils/validation.md` e `docs/src/utils/forms.md` |
+| Notificações / toast | `docs/src/components/common/Toast.md` (+ `Toaster.md`), `docs/src/utils/toast.md`, `docs/adr/0003-padrao-de-notificacoes-toast.md` |
 
 ## Regras para o agente
 

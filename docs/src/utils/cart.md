@@ -1,28 +1,22 @@
 # `src/utils/cart.ts`
 
-## Descrição
+> Fonte única do resumo do carrinho de vendas.
 
-Funções puras para **resumo do carrinho de vendas**. Centralizam o cálculo de `totalItems` (soma de quantidades) e `totalValue` (soma de `preco_venda × quantidade`). Extraídas da refatoração dos modais de carrinho para eliminar duplicação (antes feita com `.reduce` em `useCart`, `ModalCarrinho` e `ModalSelecionarItens`).
+## O que faz
 
-## Assinatura
+- `getCartSummary(cartItems)` retorna `{ totalItems, totalValue }`.
+- `totalItems` = soma de `quantidade`; `totalValue` = soma de `preco_venda × quantidade`.
+- Trata `preco_venda` nulo/indefinido com fallback `0`.
 
 ```ts
-export interface CartSummary {
-  totalItems: number;
-  totalValue: number;
-}
-
-export function getCartSummary(cartItems: CartItem[]): CartSummary;
+getCartSummary(cartItems: CartItem[]): CartSummary
 ```
 
-- `CartItem` vem de `src/types/sale.ts` (`{ id, tipo, nome, preco_venda?: number|null, quantidade, ... }`).
+## Relações
 
-## Comportamento
+- **Usa:** tipo `CartItem` (`../types/sale.ts`).
+- **Usado por:** `useCart` e modais de carrinho (`CartModal`, `SelectItemsModal`, `CartModalShell`).
 
-- Itera o array e acumula: `totalItems += item.quantidade`, `totalValue += (item.preco_venda ?? 0) * item.quantidade`.
-- Puro, sem efeitos colaterais, determinístico.
+## Notas
 
-## Observações
-
-- Fonte única usada por `useCart` (para expor `totalCartCount`/`totalCartValue`) e por `ModalCarrinho`/`ModalSelecionarItens` (para badge + total do rodapé).
-- `preco_venda` pode ser `null`/`undefined` — trata com fallback `0` (protege contra dados inconsistentes).
+- Puro e determinístico; extraído de `.reduce` duplicados nos modais.
