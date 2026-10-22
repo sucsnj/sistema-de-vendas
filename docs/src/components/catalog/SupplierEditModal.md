@@ -4,15 +4,15 @@
 
 ## O que faz
 
-- Edita **Nome**; "Atualizar" chama `options.salvarFornecedor`.
+- Edita **Nome**; "Atualizar" chama `options.saveSupplier`.
 - "Excluir" abre `SupplierDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
-interface ModalFornecedorEditProps {
-  fornecedorForm: FornecedorFormData; // { nome }
-  setFornecedorForm: React.Dispatch<React.SetStateAction<FornecedorFormData>>;
+interface SupplierEditModalProps {
+  supplierForm: SupplierFormData; // { name }
+  setSupplierForm: React.Dispatch<React.SetStateAction<SupplierFormData>>;
   onDelete: () => void;
-  options: FornecedorOptions; // { abrirModalFornecedor, salvarFornecedor }
+  options: SupplierOptions; // { openSupplierModal, saveSupplier }
 }
 ```
 
@@ -23,4 +23,4 @@ interface ModalFornecedorEditProps {
 
 ## Notas
 
-- Exporta `FornecedorFormData` e `FornecedorOptions`.
+- Exporta `SupplierFormData` e `SupplierOptions`.

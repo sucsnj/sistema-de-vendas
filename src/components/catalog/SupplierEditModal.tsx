@@ -3,25 +3,25 @@ import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 import { SupplierDeleteModal } from '@/components/products/ProductDeleteModal';
 
-export interface FornecedorFormData {
-    nome: string;
+export interface SupplierFormData {
+    name: string;
 }
 
-export interface FornecedorOptions {
-    abrirModalFornecedor: () => void;
-    salvarFornecedor: React.FormEventHandler<HTMLFormElement>;
+export interface SupplierOptions {
+    openSupplierModal: () => void;
+    saveSupplier: React.FormEventHandler<HTMLFormElement>;
 }
 
-interface ModalFornecedorEditProps {
-    fornecedorForm: FornecedorFormData;
-    setFornecedorForm: React.Dispatch<React.SetStateAction<FornecedorFormData>>;
+interface SupplierEditModalProps {
+    supplierForm: SupplierFormData;
+    setSupplierForm: React.Dispatch<React.SetStateAction<SupplierFormData>>;
     onDelete: () => void;
-    options: FornecedorOptions;
+    options: SupplierOptions;
 }
 
-const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
-    fornecedorForm,
-    setFornecedorForm,
+const SupplierEditModal: React.FC<SupplierEditModalProps> = ({
+    supplierForm,
+    setSupplierForm,
     onDelete,
     options,
 }) => {
@@ -32,7 +32,7 @@ const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-fornecedor-edit-title" tabIndex={-1}>
                 <h3 id="modal-fornecedor-edit-title" className={styles.modalTitle}>Editar Fornecedor</h3>
-                <form onSubmit={options.salvarFornecedor} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveSupplier} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="edit-fornecedor-nome">
                             Nome:*
@@ -42,8 +42,8 @@ const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome do fornecedor"
-                            value={fornecedorForm.nome}
-                            onChange={(e) => setFornecedorForm({ ...fornecedorForm, nome: e.target.value })}
+                            value={supplierForm.name}
+                            onChange={(e) => setSupplierForm({ ...supplierForm, name: e.target.value })}
                             required
                             autoFocus
                         />
@@ -66,8 +66,8 @@ const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalFornecedor();
-                                setFornecedorForm({ nome: '' });
+                                options.openSupplierModal();
+                                setSupplierForm({ name: '' });
                             }}
                             id="cancel-edit-fornecedor-btn"
                         >
@@ -79,12 +79,12 @@ const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
             {deleteConfirmOpen && (
                 <SupplierDeleteModal
                     open={deleteConfirmOpen}
-                    fornecedor={fornecedorForm}
+                    supplier={supplierForm}
                     onConfirm={() => {
                         onDelete();
                         setDeleteConfirmOpen(false);
-                        options.abrirModalFornecedor(); // fecha modal de edição
-                        setFornecedorForm({ nome: '' }); // limpa formulário
+                        options.openSupplierModal(); // fecha modal de edição
+                        setSupplierForm({ name: '' }); // limpa formulário
                     }}
                     onClose={() => setDeleteConfirmOpen(false)}
                 />

@@ -9,29 +9,29 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent } from 'react';
 import { importInvoiceItem, previewInvoiceItems } from '../services/produtosService';
-import type { ProdutoImportado } from '../services/produtosService';
-import type { SugestaoItem } from '../components/import/ItemNameDropdown';
+import type { ImportedProduct } from '../services/produtosService';
+import type { SuggestionItem } from '../components/import/ItemNameDropdown';
 
-export type StatusItem = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
+export type ItemStatus = 'idle' | 'ok' | 'duplicado' | 'estoque_atualizado' | 'erro';
 
-export interface ItemComStatus extends ProdutoImportado {
-  status: StatusItem;
+export interface ItemWithStatus extends ImportedProduct {
+  status: ItemStatus;
   mensagem?: string;
 }
 
-interface UseImportItensOptions {
+interface UseImportItemsOptions {
   onImportSuccess: () => void;
   /** Arquivo recebido imediatamente ao abrir o modal (drop externo). */
   initialFile?: File | null;
 }
 
-export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensOptions) => {
+export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItemsOptions) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
-  const [products, setProducts] = useState<ItemComStatus[]>([]);
+  const [products, setProducts] = useState<ItemWithStatus[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
 
@@ -56,7 +56,7 @@ export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensO
         return;
       }
 
-      const itemsWithStatus: ItemComStatus[] = result.produtos.map((p) => ({
+      const itemsWithStatus: ItemWithStatus[] = result.produtos.map((p) => ({
         ...p,
         descricaoOriginal: p.descricaoOriginal || p.descricao,
         status: 'idle',
@@ -101,7 +101,7 @@ export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensO
     setImporting(true);
     setError(null);
 
-    const results: ItemComStatus[] = [...products];
+    const results: ItemWithStatus[] = [...products];
 
     for (let i = 0; i < results.length; i++) {
       const produto = results[i];
@@ -144,13 +144,13 @@ export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensO
     });
   };
 
-  const handleSelectSuggestion = (index: number, suggestion: SugestaoItem) => {
+  const handleSelectSuggestion = (index: number, suggestion: SuggestionItem) => {
     setProducts((prev) => {
       const copy = [...prev];
       const item = copy[index];
       copy[index] = {
         ...item,
-        descricao: suggestion.nome,
+        descricao: suggestion.name,
         existe: true,
         itemIdExistente: suggestion.id,
         ean: item.ean || suggestion.ean || '',
@@ -159,20 +159,20 @@ export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensO
     });
   };
 
-  const handleEditItem = (item: ProdutoImportado) => {
+  const handleEditItem = (item: ImportedProduct) => {
     if (!item.itemIdExistente) return;
     window.open(`/cadastro?id=${item.itemIdExistente}`, '_blank');
   };
 
-  const handleQuickRegister = (item: ProdutoImportado) => {
+  const handleQuickRegister = (item: ImportedProduct) => {
     const params = new URLSearchParams();
     params.append('novoImport', '1');
     if (item.descricao) params.append('nome', item.descricao);
-    if (item.valorUnitario) params.append('precoCompra', String(item.valorUnitario));
+    if (item.valorUnitario) params.append('purchasePrice', String(item.valorUnitario));
     if (item.quantidade) params.append('estoque', String(item.quantidade));
     if (item.unidadeMedida) params.append('unidade', item.unidadeMedida);
     if (item.ean) params.append('ean', item.ean);
-    if (item.cProd) params.append('codigoInterno', item.cProd);
+    if (item.cProd) params.append('internalCode', item.cProd);
 
     window.open(`/cadastro?${params.toString()}`, '_blank');
   };

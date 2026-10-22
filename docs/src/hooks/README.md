@@ -22,4 +22,4 @@
 
 ## Notas
 
-- Arquivos e identificadores exportados em inglês (ADR 0004); propriedades de tipos/contratos de domínio permanecem em pt-BR (ex.: `FiltroVendas`, `UnidadeMedidaRow`).
+- Arquivos e identificadores exportados em inglês (ADR 0004); propriedades de tipos/contratos de domínio permanecem em pt-BR (ex.: `SalesFilter`, `UnitOfMeasureRow`).

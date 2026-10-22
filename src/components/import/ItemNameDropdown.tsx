@@ -11,23 +11,23 @@ import { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import importStyles from '../../styles/modalImport.module.css';
 import { fetchProducts, fetchServices } from '../../services/produtosService';
-import type { ItemComStatus } from '../../hooks/useImportItems';
+import type { ItemWithStatus } from '../../hooks/useImportItems';
 
-export interface SugestaoItem {
+export interface SuggestionItem {
   id: number;
-  tipo: 'PRODUTO' | 'SERVICO';
-  nome: string;
-  precoVenda: number;
-  estoque?: number;
-  codigoInterno?: string;
+  type: 'PRODUTO' | 'SERVICO';
+  name: string;
+  salePrice: number;
+  stock?: number;
+  internalCode?: string;
   ean?: string;
-  categoriaNome?: string;
+  categoryName?: string;
 }
 
 interface ItemNameDropdownProps {
-  item: ItemComStatus;
-  onSelectSuggestion: (sugestao: SugestaoItem) => void;
-  onTextChange: (novoTexto: string) => void;
+  item: ItemWithStatus;
+  onSelectSuggestion: (suggestion: SuggestionItem) => void;
+  onTextChange: (newText: string) => void;
   disabled?: boolean;
 }
 
@@ -39,7 +39,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
 }) => {
   const [term, setTerm] = useState(item.descricao || '');
   const [prevDescription, setPrevDescription] = useState(item.descricao || '');
-  const [suggestions, setSuggestions] = useState<SugestaoItem[]>([]);
+  const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -79,27 +79,27 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
         fetchServices({ search: query, page: 1, pageSize: 8 }),
       ]);
 
-      const produtos: SugestaoItem[] = (prodRes.items || []).map((p) => ({
+      const produtos: SuggestionItem[] = (prodRes.items || []).map((p) => ({
         id: p.id,
-        tipo: 'PRODUTO',
-        nome: p.nome,
-        precoVenda: p.preco_venda,
-        estoque: p.estoque,
-        codigoInterno: p.codigo_interno,
+        type: 'PRODUTO',
+        name: p.nome,
+        salePrice: p.preco_venda,
+        stock: p.estoque,
+        internalCode: p.codigo_interno,
         ean:
           p.codigos_barras?.find((b) => b.principal === 1)?.codigo_barras ||
           p.codigos_barras?.[0]?.codigo_barras ||
           '',
-        categoriaNome: p.categoria_nome,
+        categoryName: p.categoria_nome,
       }));
 
-      const servicos: SugestaoItem[] = (servRes.items || []).map((s) => ({
+      const servicos: SuggestionItem[] = (servRes.items || []).map((s) => ({
         id: s.id,
-        tipo: 'SERVICO',
-        nome: s.nome,
-        precoVenda: s.preco_venda,
-        codigoInterno: s.codigo_interno,
-        categoriaNome: s.categoria_nome,
+        type: 'SERVICO',
+        name: s.nome,
+        salePrice: s.preco_venda,
+        internalCode: s.codigo_interno,
+        categoryName: s.categoria_nome,
       }));
 
       setSuggestions([...produtos, ...servicos]);
@@ -133,8 +133,8 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
     }
   };
 
-  const handleSelect = (s: SugestaoItem) => {
-    setTerm(s.nome);
+  const handleSelect = (s: SuggestionItem) => {
+    setTerm(s.name);
     onSelectSuggestion(s);
     setIsOpen(false);
   };
@@ -172,33 +172,33 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
               <ul className={importStyles.dropdownList}>
                 {suggestions.map((s) => (
                   <li
-                    key={`${s.tipo}-${s.id}`}
+                    key={`${s.type}-${s.id}`}
                     className={importStyles.dropdownItem}
                     onClick={() => handleSelect(s)}
                   >
                     <div className={importStyles.dropdownItemHeader}>
-                      <span className={importStyles.dropdownItemNome}>{s.nome}</span>
+                      <span className={importStyles.dropdownItemNome}>{s.name}</span>
                       <span
                         className={
-                          s.tipo === 'PRODUTO'
+                          s.type === 'PRODUTO'
                             ? importStyles.typeBadgeProd
                             : importStyles.typeBadgeServ
                         }
                       >
-                        {s.tipo === 'PRODUTO' ? 'PRODUTO' : 'SERVIÇO'}
+                        {s.type === 'PRODUTO' ? 'PRODUTO' : 'SERVIÇO'}
                       </span>
                     </div>
                     <div className={importStyles.dropdownItemMeta}>
                       <span>
                         R${' '}
-                        {s.precoVenda.toLocaleString('pt-BR', {
+                        {s.salePrice.toLocaleString('pt-BR', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </span>
-                      {s.tipo === 'PRODUTO' && <span>Estoque: {s.estoque ?? 0}</span>}
+                      {s.type === 'PRODUTO' && <span>Estoque: {s.stock ?? 0}</span>}
                       {s.ean && <span>EAN: {s.ean}</span>}
-                      {s.codigoInterno && <span>Cód: {s.codigoInterno}</span>}
+                      {s.internalCode && <span>Cód: {s.internalCode}</span>}
                     </div>
                   </li>
                 ))}

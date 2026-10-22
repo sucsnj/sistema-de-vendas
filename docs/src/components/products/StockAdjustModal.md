@@ -8,19 +8,19 @@
 - Lista as últimas 10 movimentações; botões "Registrar Ajuste" (`onSave`) e Cancelar.
 
 ```ts
-interface ModalAjusteEstoqueProps {
-  open: boolean; itemName: string; itemEstoque: number;
-  quantidade: string; descricao: string;
-  setQuantidade: React.Dispatch<React.SetStateAction<string>>;
-  setDescricao: React.Dispatch<React.SetStateAction<string>>;
-  movimentacoes: MovimentacaoEstoqueData[]; movimentacoesLoading: boolean;
+interface StockAdjustModalProps {
+  open: boolean; itemName: string; itemStock: number;
+  quantity: string; description: string;
+  setQuantity: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  movements: StockMovementData[]; movementsLoading: boolean;
   onSave: () => void; onClose: () => void;
 }
 ```
 
 ## Relações
 
-- **Usa:** `MovimentacaoEstoqueData` (`src/services/produtosService.ts`), `useFocusTrap`, `produtos.module.css`.
+- **Usa:** `StockMovementData` (`src/services/produtosService.ts`), `useFocusTrap`, `produtos.module.css`.
 - **Usado por:** [ProductForm](./ProductForm.md) (botão "Ajustar" em edição).
 
 ## Notas

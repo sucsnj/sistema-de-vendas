@@ -1,5 +1,5 @@
 import { FormEvent, useState, useEffect, useRef } from "react";
-import { fetchSaleItems, updateSale, VendaDiaria, VendaItemData } from "../../services/vendasService";
+import { fetchSaleItems, updateSale, DailySale, SaleItemData } from "../../services/vendasService";
 import CartModal from "@/components/cart/CartModal";
 import SelectItemsModal from "@/components/cart/SelectItemsModal";
 import { useCart } from "../../hooks/useCart";
@@ -8,7 +8,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 interface EditSaleFormProps {
-  sale: VendaDiaria;
+  sale: DailySale;
   onSaved: () => void;
   onCancel: () => void;
   onToast: (message: string, type?: "success" | "error" | "info") => void;
@@ -49,7 +49,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
   useEffect(() => {
     const load = async () => {
       setLoadingItens(true);
-      const itens: VendaItemData[] = await fetchSaleItems(sale.id);
+      const itens: SaleItemData[] = await fetchSaleItems(sale.id);
       setCartItems(
         itens.map((item) => ({
           id: item.item_id ?? item.id,

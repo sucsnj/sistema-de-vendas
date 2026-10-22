@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Define interfaces: `BarcodeData`, `ItemData`, `ServicoData`, `ServicoInput`, `MovimentacaoEstoqueData`, `MovimentacaoEstoqueInput`, `PagedResult<T>`, `CategoriaData`, `MarcaData`, `FornecedorData`, `UnidadeMedidaData`, `ProdutoImportado`, `InvoiceItemsPreviewResult`, `InvoiceItemImportResult`.
+- Define interfaces: `BarcodeData`, `ItemData`, `ServiceData`, `ServiceInput`, `StockMovementData`, `StockMovementInput`, `PagedResult<T>`, `CategoryData`, `BrandData`, `SupplierData`, `UnitOfMeasureData`, `ImportedProduct`, `InvoiceItemsPreviewResult`, `InvoiceItemImportResult`.
 - Produtos: `fetchProducts`, `registerProduct`, `updateProduct`, `deleteProduct`, `toggleProductStatus` (chama `/api/produtos`, com tratamento de erro via `response.json()`).
 - Serviços: `fetchServices`, `fetchServiceById`, `registerService`, `updateService`, `deleteService` (chama `/api/produtos/servicos`).
 - Movimentações de estoque: `fetchStockMovements`, `registerStockMovement` (chama `/api/produtos/movimentacoes`).

@@ -3,11 +3,11 @@ import { formatCurrency } from '../../utils/formatter';
 import { formatMonthName } from '../../utils/date';
 import { capitalize } from '../../utils/captalize';
 
-interface ConsolidacaoMensalProps {
-    meses: { mes: number; pago: number; pendente: number }[];
+interface MonthlyConsolidationProps {
+    months: { month: number; paid: number; pending: number }[];
 }
 
-const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps> = ({ meses }) => {
+const MonthlyConsolidation: React.FC<MonthlyConsolidationProps> = ({ months }) => {
     return (
         <div>
             <div className="summary-card small">
@@ -21,11 +21,11 @@ const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps> = ({ meses }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {meses.map((m) => (
-                            <tr key={m.mes}>
-                                <td>{capitalize(formatMonthName(m.mes))}</td>
-                                <td>R$ {formatCurrency(m.pago, 2)}</td>
-                                <td>R$ {formatCurrency(m.pendente, 2)}</td>
+                        {months.map((m) => (
+                            <tr key={m.month}>
+                                <td>{capitalize(formatMonthName(m.month))}</td>
+                                <td>R$ {formatCurrency(m.paid, 2)}</td>
+                                <td>R$ {formatCurrency(m.pending, 2)}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -67,4 +67,4 @@ const ConsolidacaoMensal: React.FC<ConsolidacaoMensalProps> = ({ meses }) => {
     );
 };
 
-export default ConsolidacaoMensal;
+export default MonthlyConsolidation;

@@ -1,20 +1,20 @@
 import React from 'react';
 import { formatCurrency } from '../../utils/formatter';
 
-interface TotaisPorDistribuidoraProps {
-    totaisPorDistribuidora: Record<string, number>;
+interface TotalsByDistributorProps {
+    totalsByDistributor: Record<string, number>;
 }
 
-const TotalsByDistributor: React.FC<TotaisPorDistribuidoraProps> = ({ totaisPorDistribuidora }) => {
+const TotalsByDistributor: React.FC<TotalsByDistributorProps> = ({ totalsByDistributor }) => {
     return (
         <div>
             <div className="summary-card small">
                 <h3>Totais por distribuidora</h3>
-                {Object.keys(totaisPorDistribuidora).length === 0 ? (
+                {Object.keys(totalsByDistributor).length === 0 ? (
                     <p>Sem pendências por distribuidora.</p>
                 ) : (
                     <ul>
-                        {Object.entries(totaisPorDistribuidora).map(([nome, valor]) => (
+                        {Object.entries(totalsByDistributor).map(([nome, valor]) => (
                             <li key={nome}>
                                 {nome}: R$ {formatCurrency(valor, 2)}
                             </li>

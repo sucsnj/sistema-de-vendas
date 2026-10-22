@@ -15,13 +15,13 @@ import {
   fetchUnitsOfMeasure,
   deleteService,
   ItemData,
-  ServicoData,
+  ServiceData,
 } from '../services/produtosService';
-import { ProdutoOptions } from '@/components/products/ProductForm';
+import { ProductOptions } from '@/components/products/ProductForm';
 import ProdutosList from '@/components/products/ProductList';
 import ProductFilters from '@/components/products/ProductFilters';
 import ProductDeleteModal from '@/components/products/ProductDeleteModal';
-import { FiltrosState } from '@/components/products/ProductFilters';
+import { ProductFiltersState } from '@/components/products/ProductFilters';
 
 const ProductsPage: React.FC = () => {
 
@@ -36,26 +36,26 @@ const ProductsPage: React.FC = () => {
 
   // Filtros de busca
   const [searchQuery, setSearchQuery] = useState('');
-  const [state, setState] = useState<FiltrosState>({
+  const [state, setState] = useState<ProductFiltersState>({
     search: '',
-    tipo: 'TODOS',
-    categoriaId: '',
-    marcaId: '',
-    fornecedorId: '',
+    type: 'TODOS',
+    categoryId: '',
+    brandId: '',
+    supplierId: '',
     status: 'TODOS',
   });
 
   // Listas auxiliares para os dropdowns de filtro
-  const [options, setOptions] = useState<ProdutoOptions>({
-    categorias: [],
-    marcas: [],
-    fornecedores: [],
-    unidadesMedida: [],
+  const [options, setOptions] = useState<ProductOptions>({
+        categories: [],
+        brands: [],
+        suppliers: [],
+    unitsOfMeasure: [],
   });
 
   // Modal de confirmação de exclusão
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [itemParaExcluir, setItemParaExcluir] = useState<ItemData | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<ItemData | null>(null);
 
   // Notificações (toast) do store global
   const { showToast } = useToast();
@@ -70,10 +70,10 @@ const ProductsPage: React.FC = () => {
         fetchUnitsOfMeasure(),
       ]);
       setOptions({
-        categorias: cats,
-        marcas: brands,
-        fornecedores: forns,
-        unidadesMedida: uoms,
+        categories: cats,
+        brands: brands,
+        suppliers: forns,
+        unitsOfMeasure: uoms,
       });
     } catch (error) {
       console.error(error);
@@ -86,25 +86,25 @@ const ProductsPage: React.FC = () => {
     setLoading(true);
     try {
       const [produtosData, servicosData] = await Promise.all([
-        state.tipo === 'SERVICO' ? Promise.resolve(null) : fetchProducts({
+        state.type === 'SERVICO' ? Promise.resolve(null) : fetchProducts({
           search: searchQuery || undefined,
-          categoria_id: state.categoriaId || undefined,
-          marca_id: state.marcaId || undefined,
-          fornecedor_id: state.fornecedorId || undefined,
+          categoria_id: state.categoryId || undefined,
+          marca_id: state.brandId || undefined,
+          fornecedor_id: state.supplierId || undefined,
           ativo: state.status,
           page: 1,
           pageSize: 10000,
         }),
-        state.tipo === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : fetchServices({
+        state.type === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : fetchServices({
           search: searchQuery || undefined,
-          categoria_id: state.categoriaId || undefined,
+          categoria_id: state.categoryId || undefined,
           page: 1,
           pageSize: 10000,
         }),
       ]);
 
       const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
+      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServiceData) => ({
         id: servico.id,
         tipo: 'SERVICO',
         nome: servico.nome,
@@ -138,7 +138,7 @@ const ProductsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, searchQuery, state.tipo, state.categoriaId, state.marcaId, state.fornecedorId, state.status, showToast]);
+  }, [page, searchQuery, state.type, state.categoryId, state.brandId, state.supplierId, state.status, showToast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -163,10 +163,10 @@ const ProductsPage: React.FC = () => {
     setSearchQuery('');
     setState({
       search: '',
-      tipo: 'TODOS',
-      categoriaId: '',
-      marcaId: '',
-      fornecedorId: '',
+      type: 'TODOS',
+      categoryId: '',
+      brandId: '',
+      supplierId: '',
       status: 'TODOS',
     });
     setPage(1);
@@ -199,22 +199,22 @@ const ProductsPage: React.FC = () => {
 
   // Abre confirmação de exclusão
   const handleDeleteClick = (item: ItemData) => {
-    setItemParaExcluir(item);
+    setItemToDelete(item);
     setDeleteConfirmOpen(true);
   };
 
   // Confirma exclusão
   const handleConfirmDelete = async () => {
-    if (!itemParaExcluir) return;
+    if (!itemToDelete) return;
     try {
-      if (itemParaExcluir.tipo === 'SERVICO') {
-        await deleteService(itemParaExcluir.id);
+      if (itemToDelete.tipo === 'SERVICO') {
+        await deleteService(itemToDelete.id);
       } else {
-        await deleteProduct(itemParaExcluir.id);
+        await deleteProduct(itemToDelete.id);
       }
       showToast('Item excluído com sucesso.', 'success');
       setDeleteConfirmOpen(false);
-      setItemParaExcluir(null);
+      setItemToDelete(null);
       if (items.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
@@ -249,11 +249,11 @@ const ProductsPage: React.FC = () => {
             <ProductFilters
               state={state}
               data={options}
-              setFiltros={setState}
+              setFilters={setState}
               actions={{
-                buscar: handleSearchSubmit,
-                limpar: handleClearFilters,
-                mudarPagina: setPage,
+                search: handleSearchSubmit,
+                clear: handleClearFilters,
+                changePage: setPage,
               }}
             />
 
@@ -273,14 +273,14 @@ const ProductsPage: React.FC = () => {
         </div>
 
         {/* Modal: Confirmação de Exclusão */}
-        {deleteConfirmOpen && itemParaExcluir && (
+        {deleteConfirmOpen && itemToDelete && (
           <ProductDeleteModal
             open={deleteConfirmOpen}
-            item={itemParaExcluir}
+            item={itemToDelete}
             onConfirm={handleConfirmDelete}
             onClose={() => {
               setDeleteConfirmOpen(false);
-              setItemParaExcluir(null);
+              setItemToDelete(null);
             }}
           />
         )}

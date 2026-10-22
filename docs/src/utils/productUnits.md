@@ -5,7 +5,7 @@
 ## O que faz
 
 - Operações imutáveis sobre `UnitOfMeasureRow[]`: `setUnitAsPrincipal`, `updateUnitId`, `updateUnitMultiplier`, `removeUnit`, `addUnit`.
-- Sincroniza os campos "resumo" `unidadeMedidaId`/`multiplicadorUnidade` quando a unidade afetada é a principal.
+- Sincroniza os campos "resumo" `unitOfMeasureId`/`unitMultiplier` quando a unidade afetada é a principal.
 - `removeUnit` promove a primeira restante quando a principal é removida.
 
 ## Relações

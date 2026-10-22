@@ -10,9 +10,9 @@
 
 ```ts
 interface DailySaleFormProps {
-  sales?: VendaDiaria[]; selectedDate: string;
+  sales?: DailySale[]; selectedDate: string;
   onDateChange: (date: string) => void; onSaleAdded?: () => void;
-  onEditSale?: (sale: VendaDiaria) => void; onDeleteSale?: (id: number) => void;
+  onEditSale?: (sale: DailySale) => void; onDeleteSale?: (id: number) => void;
   showHistory?: boolean; // sales/onEditSale/onDeleteSale/showHistory hoje não são usados
 }
 ```

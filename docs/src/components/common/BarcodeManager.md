@@ -9,10 +9,10 @@
 
 ```ts
 interface BarcodeManagerProps {
-  data: { codigosBarras: BarcodeData[]; novoCodigoBarras: string };
+  data: { barcodes: BarcodeData[]; newBarcode: string };
   actions: {
-    adicionar: () => void; definirPrincipal: (barcode: string) => void;
-    alterar: (barcode: string) => void; remover: (barcode: string) => void;
+    add: () => void; setAsPrincipal: (barcode: string) => void;
+    change: (barcode: string) => void; remove: (barcode: string) => void;
   };
   inputRef: React.RefObject<HTMLInputElement | null>;
 }

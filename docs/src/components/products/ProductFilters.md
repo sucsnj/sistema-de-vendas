@@ -5,24 +5,24 @@
 ## O que faz
 
 - Filtros: Buscar, Tipo, Categoria, Marca, Fornecedor e Status.
-- Trocar um select reseta a página (`actions.mudarPagina(1)`); "Filtrar" submete e "Limpar" limpa.
+- Trocar um select reseta a página (`actions.changePage(1)`); "Filtrar" submete e "Limpar" limpa.
 
 ```ts
-export interface FiltrosState {
-  search: string; tipo: 'PRODUTO' | 'SERVICO' | 'TODOS';
-  categoriaId: number | ''; marcaId: number | ''; fornecedorId: number | '';
+export interface ProductFiltersState {
+  search: string; type: 'PRODUTO' | 'SERVICO' | 'TODOS';
+  categoryId: number | ''; brandId: number | ''; supplierId: number | '';
   status: 'ATIVO' | 'INATIVO' | 'TODOS';
 }
-interface FiltrosProps {
-  state: FiltrosState; data: FiltrosData;
-  setFiltros: React.Dispatch<React.SetStateAction<FiltrosState>>;
-  actions: FiltrosActions; // { buscar, limpar, mudarPagina }
+interface ProductFiltersProps {
+  state: ProductFiltersState; data: ProductFiltersData;
+  setFilters: React.Dispatch<React.SetStateAction<ProductFiltersState>>;
+  actions: ProductFiltersActions; // { search, clear, changePage }
 }
 ```
 
 ## Relações
 
-- **Usa:** `CategoriaData`/`MarcaData`/`FornecedorData` (`src/services/produtosService.ts`), `produtos.module.css`.
+- **Usa:** `CategoryData`/`BrandData`/`SupplierData` (`src/services/produtosService.ts`), `produtos.module.css`.
 - **Usado por:** `../../pages/produtos.md`.
 
 ## Notas

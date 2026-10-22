@@ -30,7 +30,7 @@ try {
 }
 
 // Constante exportada com função.
-export interface NotaRow {
+export interface InvoiceRow {
   id: number;
   distribuidora: string;
   chave: string;
@@ -88,13 +88,13 @@ export const getInvoicesByPeriod = (year: number, month?: number) => {
     'SELECT * FROM notas_detalhes WHERE substr(data_emissao, 1, 10) >= ? AND substr(data_emissao, 1, 10) <= ? ORDER BY data_emissao DESC, id DESC'
   );
 
-  return stmt.all(startDate, endDate) as unknown as NotaRow[];
+  return stmt.all(startDate, endDate) as unknown as InvoiceRow[];
 };
 
 // Constante exportada com função.
 export const getAllInvoices = () => {
   const stmt = db.prepare('SELECT * FROM notas_detalhes ORDER BY data_emissao DESC, id DESC');
-  return stmt.all() as unknown as NotaRow[];
+  return stmt.all() as unknown as InvoiceRow[];
 };
 
 // Constante exportada com função.

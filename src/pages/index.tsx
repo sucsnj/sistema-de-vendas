@@ -96,8 +96,8 @@ const Home: React.FC = () => {
         {/* <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} /> */}
         <ExportButtons
           sales={sales}
-          mes={mes}
-          ano={ano}
+          month={mes}
+          year={ano}
           selectedDate={selectedDate}
           onMessage={showToast}
           onImportCompleted={loadSales}

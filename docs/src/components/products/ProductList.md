@@ -9,7 +9,7 @@
 - Paginação visível quando `totalPages > 1`; estados loading/vazio.
 
 ```ts
-interface ListagemProps {
+interface ProductListProps {
   items: ItemData[]; loading: boolean;
   onEdit(item: ItemData): void; onDelete(item: ItemData): void;
   onToggleStatus(item: ItemData): void;

@@ -9,15 +9,15 @@
 - Excluir passa pelo [ConfirmDialog](../common/ConfirmDialog.md) e invalida a query.
 
 ```ts
-interface NotasDoMesProps {
-  ano: number; mes: number;
-  setAno: (ano: number) => void; setMes: (mes: number) => void;
+interface MonthNotesProps {
+  year: number; month: number;
+  setYear: (year: number) => void; setMonth: (month: number) => void;
 }
 ```
 
 ## Relações
 
-- **Usa:** React Query, `fetchInvoicesByPeriod`/`deleteInvoice`/`NotaDetalhe` (`src/services/notasService.ts`), [ConfirmDialog](../common/ConfirmDialog.md), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString`/`getCurrentYear` (`src/utils/date.ts`).
+- **Usa:** React Query, `fetchInvoicesByPeriod`/`deleteInvoice`/`InvoiceDetails` (`src/services/notasService.ts`), [ConfirmDialog](../common/ConfirmDialog.md), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString`/`getCurrentYear` (`src/utils/date.ts`).
 - **Usado por:** [Summary](./Summary.md).
 
 ## Notas

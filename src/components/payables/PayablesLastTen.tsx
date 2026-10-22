@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { ContaDetalhe } from '../../services/contasService';
+import { AccountDetails } from '../../services/contasService';
 import { formatDateString } from '../../utils/date';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
@@ -9,15 +9,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-interface ContasAPagarLastTenProps {
-  ultimasContas: ContaDetalhe[];
-  handleView: (conta: ContaDetalhe) => void;
+interface PayablesLastTenProps {
+  latestAccounts: AccountDetails[];
+  handleView: (account: AccountDetails) => void;
   handleDelete: (id: number) => void;
-  handleEdit: (conta: ContaDetalhe) => void;
+  handleEdit: (account: AccountDetails) => void;
 }
 
-const PayablesLastTen: React.FC<ContasAPagarLastTenProps> = ({
-  ultimasContas,
+const PayablesLastTen: React.FC<PayablesLastTenProps> = ({
+  latestAccounts,
   handleView,
   handleDelete,
   handleEdit,
@@ -45,7 +45,7 @@ const PayablesLastTen: React.FC<ContasAPagarLastTenProps> = ({
           </tr>
         </thead>
         <tbody>
-          {ultimasContas.map((account) => (
+          {latestAccounts.map((account) => (
             <tr key={account.id}>
               <td>{formatDateString(account.vencimento, 'DD/MM/YYYY')}</td>
               <td>{account.distribuidora}</td>
@@ -72,7 +72,7 @@ const PayablesLastTen: React.FC<ContasAPagarLastTenProps> = ({
               </td>
             </tr>
           ))}
-          {ultimasContas.length === 0 ? (
+          {latestAccounts.length === 0 ? (
             <tr>
               <td colSpan={4} className={styles.emptyRow}>
                 Nenhuma conta registrada ainda.

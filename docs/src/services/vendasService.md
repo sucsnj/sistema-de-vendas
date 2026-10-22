@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Define interfaces: `VendaDiaria`, `VendaItemData`, `VendaItemInput`, `VendaMensal`.
+- Define interfaces: `DailySale`, `SaleItemData`, `SaleItemInput`, `MonthlySale`.
 - Vendas diárias: `registerSale(data, amount, notes?, items?)`, `registerSaleWithCreatedAt` (uso exclusivo na importação XLSX), `fetchDailySales(month, year, filter)`, `updateSale`, `deleteSale`.
 - Itens de venda: `fetchSaleItems(saleId)` retorna array vazio se `!response.ok`.
 - Mensais: `fetchMonthlyTotal`, `fetchAllMonthly`, `consolidateMonthly`, `isConsolidated`, `autoConsolidate`, `deleteMonthly`.

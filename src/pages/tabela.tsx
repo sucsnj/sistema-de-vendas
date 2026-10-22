@@ -7,8 +7,8 @@ import {
   fetchTableHistory,
   clearTableHistory,
   fetchTableStatus,
-  TabelaRow,
-  TabelaSearchHistoryItem,
+  TableRow,
+  TableSearchHistoryItem,
 } from '../services/tabelaService';
 import { useShortcuts } from '../utils/shortcuts';
 import { parseDate } from '../utils/date';
@@ -20,8 +20,8 @@ const Tabela: React.FC = () => {
   const [rowCount, setRowCount] = useState<number | null>(null);
   const [tabelaLoaded, setTabelaLoaded] = useState(false);
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<TabelaRow[]>([]);
-  const [history, setHistory] = useState<TabelaSearchHistoryItem[]>([]);
+  const [results, setResults] = useState<TableRow[]>([]);
+  const [history, setHistory] = useState<TableSearchHistoryItem[]>([]);
   const [source, setSource] = useState<'history' | 'table' | ''>('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -115,7 +115,7 @@ const Tabela: React.FC = () => {
     await performSearch(query);
   };
 
-  const handleHistoryClick = async (item: TabelaSearchHistoryItem) => {
+  const handleHistoryClick = async (item: TableSearchHistoryItem) => {
     setQuery(item.query);
     await performSearch(item.query);
   };

@@ -1,6 +1,6 @@
 # ADR 0004 — Padrão de nomenclatura dos identificadores de código
 
-- **Status:** aceito e em vigor (07/10/2026); varredura completa aplicada em 22/10/2026.
+- **Status:** aceito e em vigor (07/10/2026); varredura completa de funções/parâmetros, tipos e props de UI aplicada em 22/10/2026.
 - **Decisores:** dono do projeto (opção "Inglês (recomendado)") + agente de IA.
 - **Data:** 07/10/2026.
 
@@ -38,8 +38,15 @@ A mistura prejudica a legibilidade, a busca e a manutenção — e dificulta a r
 
 - O dono solicitou **varredura completa** de funções e parâmetros para inglês, substituindo nesta rodada a aplicação apenas incremental prevista acima.
 - Renomeados exports, hooks, componentes, handlers e funções auxiliares em todas as camadas, além dos parâmetros de função (`mes`→`month`, `ano`→`year`, `valor`→`amount`, `nome`→`name`, `descricao`→`description`, `itens`→`items`, …).
-- **Fora do escopo**: nomes de tipos/interfaces e propriedades de contrato (JSON/SQL/query params como `distribuidora`, `valor`, `vencimento`, `documento`, `banco_observacoes`, `mes`, `ano`, `filtro`, `itens`) permanecem em pt-BR para não quebrar API/banco.
+- **Fora do escopo**: propriedades de contrato de dados (JSON/SQL/query params como `distribuidora`, `valor`, `vencimento`, `documento`, `banco_observacoes`, `mes`, `ano`, `filtro`, `itens`) permanecem em pt-BR para não quebrar API/banco.
 - A regra de aplicação gradual continua valendo para o futuro; a varredura cobre o legado restante identificado por AST.
+
+## Atualização (22/10/2026, segunda rodada)
+
+- **Tipos/interfaces e props de UI** agora seguem o mesmo padrão: `ContaDetalhe`→`AccountDetails`, `VendaDiaria`→`DailySale`, `ProdutoFormData`→`ProductFormData`, `FiltrosState`→`ProductFiltersState`, `SugestaoItem`→`SuggestionItem`, entre outros.
+- Props de componentes, parâmetros de hooks, modelos de formulário/options/actions e campos de view-model passaram para inglês (ex.: `contasAno`→`accountsYear`, `filtroDistribuidora`→`distributorFilter`, `precoVenda`→`salePrice`, `quantidade`→`quantity`).
+- **Preservado** apenas o contrato de dados exposto por API/SQL/JSON (`ItemData.nome`/`tipo`/`estoque`, `AccountDetails.distribuidora`/`valor`/`vencimento`, `DailySale.valor`, …), além de textos/IDs visíveis ao usuário.
+- Verificação: `npx tsc --noEmit` verde; docs espelhados atualizados.
 
 ## Referências
 

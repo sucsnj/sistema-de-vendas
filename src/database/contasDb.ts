@@ -33,7 +33,7 @@ try {
 }
 
 // Constante exportada com função.
-export interface ContaRow {
+export interface AccountRow {
   id: number;
   distribuidora: string;
   valor: number;
@@ -67,7 +67,7 @@ export const getAccountsByPeriod = (year: number, month?: number) => {
     ? db.prepare('SELECT * FROM contas_detalhes WHERE vencimento >= ? AND vencimento <= ? ORDER BY vencimento DESC, id DESC')
     : db.prepare('SELECT * FROM contas_detalhes WHERE vencimento >= ? AND vencimento <= ? ORDER BY vencimento DESC, id DESC');
 
-  return stmt.all(startDate, endDate) as unknown as ContaRow[];
+  return stmt.all(startDate, endDate) as unknown as AccountRow[];
 };
 
 // Constante exportada com função.
@@ -79,7 +79,7 @@ export const getAccountById = (id: number) => {
 // Constante exportada com função.
 export const getAllAccounts = () => {
   const stmt = db.prepare('SELECT * FROM contas_detalhes ORDER BY vencimento DESC, id DESC');
-  return stmt.all() as unknown as ContaRow[];
+  return stmt.all() as unknown as AccountRow[];
 };
 
 // Constante exportada com função.

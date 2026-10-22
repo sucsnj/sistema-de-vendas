@@ -4,13 +4,13 @@
 
 ## O que faz
 
-- **Detalhes**: mostra os campos; quando `editingConta.id === selectedConta.id` vira edição inline com Salvar/Cancelar.
+- **Detalhes**: mostra os campos; quando `editingAccount.id === selectedAccount.id` vira edição inline com Salvar/Cancelar.
 - Ações inferiores: "Pagar conta" (pendente) ou "Cancelar pagamento"; botão Fechar.
 - **Pagamento**: textarea de observações (`autoFocus`) + Confirmar/Cancelar.
 
 ## Relações
 
-- **Usa:** `useShortcuts` (`src/utils/shortcuts.tsx`), `useFocusTrap` (`src/utils/focus.tsx`), `formatCurrency` (`src/utils/formatter.tsx`), `ContaDetalhe`, `contas.module.css`.
+- **Usa:** `useShortcuts` (`src/utils/shortcuts.tsx`), `useFocusTrap` (`src/utils/focus.tsx`), `formatCurrency` (`src/utils/formatter.tsx`), `AccountDetails`, `contas.module.css`.
 - **Usado por:** `../../pages/contas-a-pagar.md`.
 
 ## Notas

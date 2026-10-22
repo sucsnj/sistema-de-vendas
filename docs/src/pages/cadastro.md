@@ -4,8 +4,8 @@
 
 ## O que faz
 
-- Dois fluxos: novo (direto ou `?novoImport=1&nome=&precoCompra=&estoque=&unidade=&ean=&codigoInterno=`) e edição (`?id=X`).
-- Salva produto (`registerProduct`/`updateProduct`) ou serviço (`registerService`/`updateService`) conforme `form.tipo`; redireciona para `/produtos` após 2s.
+- Dois fluxos: novo (direto ou `?novoImport=1&nome=&purchasePrice=&estoque=&unidade=&ean=&internalCode=`) e edição (`?id=X`).
+- Salva produto (`registerProduct`/`updateProduct`) ou serviço (`registerService`/`updateService`) conforme `form.type`; redireciona para `/produtos` após 2s.
 - Gerencia múltiplos códigos de barras (`BarcodeManager`) e CRUD auxiliar (categoria, marca, fornecedor, unidade) via hooks.
 - Guarda alterações não salvas (`beforeunload` + guard do router + `ConfirmDialog`).
 

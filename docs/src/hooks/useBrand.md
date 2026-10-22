@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`modalMarcaOpen`, `novaMarcaNome`) e edição (`modalMarcaEditOpen`, `marcaForm`) de marca.
+- Controla modais de cadastro (`brandModalOpen`, `newBrandName`) e edição (`brandEditModalOpen`, `brandForm`) de marca.
 - Cria marca via `createBrand`, atualiza opções e seleciona a marca criada.
 - Atualiza/exclui marca e sincroniza lista de opções do formulário.
 

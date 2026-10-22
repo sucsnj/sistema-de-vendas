@@ -8,11 +8,11 @@
 - Preço formatado no `onChange` (`parseNumber`/`formatCurrencyNumber`); Código Interno `disabled` em edição.
 
 ```ts
-interface FormularioServicoProps {
-  editarProdutoId: number | null;
-  form: ProdutoFormData;
-  setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
-  options: ProdutoOptions; actions: ProdutoActions;
+interface ServiceFormProps {
+  editingProductId: number | null;
+  form: ProductFormData;
+  setForm: React.Dispatch<React.SetStateAction<ProductFormData>>;
+  options: ProductOptions; actions: ProductActions;
   inputRef: React.RefObject<HTMLInputElement | null>;
 }
 ```
@@ -20,8 +20,8 @@ interface FormularioServicoProps {
 ## Relações
 
 - **Usa:** tipos de [ProductForm](./ProductForm.md), `number.ts`, `formatter.tsx`, `produtos.module.css`.
-- **Usado por:** [ItemForm](./ItemForm.md) quando `form.tipo === 'SERVICO'`.
+- **Usado por:** [ItemForm](./ItemForm.md) quando `form.type === 'SERVICO'`.
 
 ## Notas
 
-- Análogo ao `ProductForm`, mas com preço único e duração; `categoriaId` cai para `1` se vazio.
+- Análogo ao `ProductForm`, mas com preço único e duração; `categoryId` cai para `1` se vazio.

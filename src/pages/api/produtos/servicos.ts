@@ -10,15 +10,15 @@ import {
 const normalizeServicePayload = (body: Record<string, unknown>) => {
   const payload = body && typeof body === 'object' ? body : {};
 
-  const categoriaId = Number(payload.categoria_id);
-  const precoVenda = Number(payload.preco_venda ?? 0);
+  const categoryId = Number(payload.categoria_id);
+  const salePrice = Number(payload.preco_venda ?? 0);
   const duracaoMinutos = Number(payload.duracao_minutos ?? 0);
 
   return {
     nome: typeof payload.nome === 'string' ? payload.nome.trim() : '',
     descricao: typeof payload.descricao === 'string' ? payload.descricao.trim() || undefined : undefined,
-    categoria_id: Number.isFinite(categoriaId) && categoriaId > 0 ? categoriaId : 0,
-    preco_venda: Number.isFinite(precoVenda) ? precoVenda : 0,
+    categoria_id: Number.isFinite(categoryId) && categoryId > 0 ? categoryId : 0,
+    preco_venda: Number.isFinite(salePrice) ? salePrice : 0,
     codigo_interno: typeof payload.codigo_interno === 'string' ? payload.codigo_interno.trim() || undefined : undefined,
     referencia: typeof payload.referencia === 'string' ? payload.referencia.trim() || undefined : undefined,
     duracao_minutos: Number.isFinite(duracaoMinutos) ? duracaoMinutos : 0,

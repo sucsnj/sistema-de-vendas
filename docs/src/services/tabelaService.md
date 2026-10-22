@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Expõe interfaces: `TabelaRow`, `TabelaSearchHistoryItem`, `TabelaSearchResponse`, `TabelaStatusResponse`.
+- Expõe interfaces: `TableRow`, `TableSearchHistoryItem`, `TabelaSearchResponse`, `TabelaStatusResponse`.
 - Centraliza tratamento de resposta com `handleJsonResponse(response)` (lança `Error` com `json.error` se `!response.ok`).
 - Realiza upload de arquivo (`uploadTable` via `FormData` POST), busca (`searchTable` com `query` codificada), histórico (`fetchTableHistory`), limpa histórico (`clearTableHistory` DELETE) e consulta status (`fetchTableStatus`).
 

@@ -18,16 +18,16 @@ import { getCartSummary } from '../../utils/cart';
 import { CartModalShell } from './CartModalShell';
 import type { CartItem } from '../../types/sale';
 
-interface ModalCarrinhoProps {
+interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (id: number, tipo: 'PRODUTO' | 'SERVICO', newQty: number) => void;
-  onRemoveItem: (id: number, tipo: 'PRODUTO' | 'SERVICO') => void;
+  onUpdateQuantity: (id: number, type: 'PRODUTO' | 'SERVICO', newQty: number) => void;
+  onRemoveItem: (id: number, type: 'PRODUTO' | 'SERVICO') => void;
   onClearCart: () => void;
 }
 
-const CartModal: React.FC<ModalCarrinhoProps> = ({
+const CartModal: React.FC<CartModalProps> = ({
   isOpen,
   onClose,
   cartItems,

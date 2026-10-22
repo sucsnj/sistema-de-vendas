@@ -1,4 +1,4 @@
-export interface ContaDetalhe {
+export interface AccountDetails {
   id: number;
   distribuidora: string;
   valor: number;
@@ -42,7 +42,7 @@ export const importAccountsFromXml = async (xml: string) => {
 };
 
 // Função assíncrona exportada.
-export const fetchAccounts = async (year: number, month?: number): Promise<ContaDetalhe[]> => {
+export const fetchAccounts = async (year: number, month?: number): Promise<AccountDetails[]> => {
   const params = new URLSearchParams({ ano: String(year) });
   if (month !== undefined) {
     params.append('mes', String(month));

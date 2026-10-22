@@ -4,13 +4,13 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`modalFornecedorOpen`, `fornecedorForm`, `novoFornecedorNome`) e edição (`modalFornecedorEditOpen`).
-- Cria fornecedor via `createSupplier`, atualiza `setOptions.fornecedores` e seleciona criado.
+- Controla modais de cadastro (`supplierModalOpen`, `supplierForm`, `newSupplierName`) e edição (`supplierEditModalOpen`).
+- Cria fornecedor via `createSupplier`, atualiza `setOptions.suppliers` e seleciona criado.
 - Atualiza/exclui fornecedor, sincroniza opções, ajusta paginação/listagem e fecha modais.
 
 ## Relações
 
-- **Usa:** `fetchSuppliers`, `createSupplier`, `deleteSupplier`, `updateSupplier` (`src/services/produtosService.ts`), `FornecedorFormData` (`src/components/catalog/SupplierEditModal`), `validateRequired` (`src/utils/validation.ts`).
+- **Usa:** `fetchSuppliers`, `createSupplier`, `deleteSupplier`, `updateSupplier` (`src/services/produtosService.ts`), `SupplierFormData` (`src/components/catalog/SupplierEditModal`), `validateRequired` (`src/utils/validation.ts`).
 - **Usado por:** componentes de cadastro de produtos.
 
 ## Notas

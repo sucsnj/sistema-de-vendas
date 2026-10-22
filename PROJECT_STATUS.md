@@ -27,6 +27,14 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Docs de código (`docs/src/**`) atualizados para os novos identificadores; `docs/CONTEXT.md`, `docs/src/hooks/README.md` e ADR 0004 revisados.
 - Verificação: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `node scripts/check-encoding.mjs` e `node scripts/check-docs.mjs` verdes.
 
+### Nomenclatura: tipos/interfaces e props de UI para inglês (ADR 0004) — 22/10/2026
+
+- Renomeados tipos/interfaces de todo o projeto (ex.: `ContaDetalhe`→`AccountDetails`, `VendaDiaria`→`DailySale`, `ProdutoImportado`→`ImportedProduct`, `CategoriaData`→`CategoryData`, `FiltrosState`→`ProductFiltersState`, `SugestaoItem`→`SuggestionItem`), mantendo **apenas propriedades de contrato de dados** em pt-BR (JSON/SQL/query params).
+- Renomeados props de componentes, parâmetros de hooks e modelos de UI em catálogo, produtos, payables, summary, vendas, carrinho e importação (ex.: `contasAno`→`accountsYear`, `filtroStatus`→`statusFilter`, `distribuidora`→`distributor`, `precoCompra`→`purchasePrice`, `unidadesMedida`→`unitsOfMeasure`, `movimentacoes`→`movements`, `codigosBarras`→`barcodes`).
+- Wiring atualizado em `pages/{cadastro,produtos,contas-a-pagar,index,historico}.tsx`; `Option`/`Actions`/`FormData` seguem os novos nomes; payloads e chaves de API/banco permanecem intactos.
+- `MonthlyConsolidation` passou a ser o nome exportado; `Summary` e `ExportButtons` recebem `year`/`month`; `useFilter` expõe `filter`; `UseSalesOptions.filter`.
+- Docs espelhados e ADR 0004 atualizados. Verificação: `npx tsc --noEmit` verde (lint/build/encoding/docs no fechamento).
+
 ### Docs espelhando `src/` em `docs/src/` + template único (ADR 0006) — 08/10/2026
 
 - **Espelho**: os docs de código passaram a viver em `docs/src/`, com o **mesmo caminho e nome** de `src/` (`.ts`/`.tsx` → `.md`). Componentes ganharam as subpastas de domínio (`cart/`, `sales/`, `catalog/`, `payables/`, …); `Pix.md` → `pix/PixModal.md`; `contas-backup/import.md` → `pages/api/contas/backup.md` e `.../import.md`. Meta-docs (CONTEXT/DOCS/ALIGNMENT/README/ADRs/glossário) permanecem na raiz de `docs/`.

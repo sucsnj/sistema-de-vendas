@@ -73,7 +73,7 @@ try {
 }
 
 // Interfaces para itens da venda
-export interface VendaItemInput {
+export interface SaleItemInput {
   item_id?: number;
   tipo: 'PRODUTO' | 'SERVICO';
   nome: string;
@@ -84,7 +84,7 @@ export interface VendaItemInput {
   referencia?: string;
 }
 
-export interface VendaItemData extends VendaItemInput {
+export interface SaleItemData extends SaleItemInput {
   id: number;
   venda_id: number;
   subtotal: number;
@@ -127,7 +127,7 @@ export const insertDailySale = (
 };
 
 // Inserção em lote dos itens associados a uma venda
-export const insertSaleItems = (saleId: number, items: VendaItemInput[]) => {
+export const insertSaleItems = (saleId: number, items: SaleItemInput[]) => {
   try {
     if (!items || items.length === 0) return;
 
@@ -147,7 +147,7 @@ export const insertSaleItems = (saleId: number, items: VendaItemInput[]) => {
     `);
 
     const createdAt = getLocalTimestamp();
-    const insertMany = db.transaction((saleItems: VendaItemInput[]) => {
+    const insertMany = db.transaction((saleItems: SaleItemInput[]) => {
       for (const item of saleItems) {
         const subtotal = item.subtotal ?? Number((item.preco_unitario * item.quantidade).toFixed(2));
         stmt.run(
@@ -173,10 +173,10 @@ export const insertSaleItems = (saleId: number, items: VendaItemInput[]) => {
 };
 
 // Busca todos os itens associados a uma venda específica
-export const getSaleItems = (saleId: number): VendaItemData[] => {
+export const getSaleItems = (saleId: number): SaleItemData[] => {
   try {
     const stmt = db.prepare('SELECT * FROM venda_itens WHERE venda_id = ? ORDER BY id ASC');
-    return stmt.all(saleId) as VendaItemData[];
+    return stmt.all(saleId) as SaleItemData[];
   } catch (error) {
     console.error('Erro ao buscar itens da venda:', error);
     throw error;

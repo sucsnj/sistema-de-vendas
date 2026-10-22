@@ -4,24 +4,24 @@
 
 ## O que faz
 
-- Edita **Nome**/**Descrição**; "Atualizar" chama `options.salvarCategoria`.
+- Edita **Nome**/**Descrição**; "Atualizar" chama `options.saveCategory`.
 - "Excluir" abre `CategoryDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
-interface ModalCategoriaEditProps {
-  catForm: CategoriaFormData;
-  setCatForm: React.Dispatch<React.SetStateAction<CategoriaFormData>>;
+interface CategoryEditModalProps {
+  categoryForm: CategoryFormData;
+  setCategoryForm: React.Dispatch<React.SetStateAction<CategoryFormData>>;
   onDelete: () => void;
-  options: CategoriaOptions;
+  options: CategoryOptions;
 }
 ```
 
 ## Relações
 
-- **Usa:** `CategoriaFormData`/`CategoriaOptions` (`src/types/categoria.ts`), [ProductDeleteModal](../products/ProductDeleteModal.md), `useFocusTrap`.
+- **Usa:** `CategoryFormData`/`CategoryOptions` (`src/types/categoria.ts`), [ProductDeleteModal](../products/ProductDeleteModal.md), `useFocusTrap`.
 - **Usado por:** hook `useCategory`, acionado pela marcação "⋮" do [ProductForm](../products/ProductForm.md)/[ServiceForm](../products/ServiceForm.md).
 
 ## Notas
 
-- O botão "Fechar" também chama `abrirModalCategoria()` (inverte a abertura).
-- Fechar limpa o `catForm`.
+- O botão "Fechar" também chama `openCategoryModal()` (inverte a abertura).
+- Fechar limpa o `categoryForm`.

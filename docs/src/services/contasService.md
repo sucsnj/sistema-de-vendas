@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Expõe `ContaDetalhe` com campos de conta a pagar (vencimento `YYYY-MM-DD`, status `Pendente`/`Pago`).
+- Expõe `AccountDetails` com campos de conta a pagar (vencimento `YYYY-MM-DD`, status `Pendente`/`Pago`).
 - Faz chamadas REST/ação para listar, criar, importar XML, pagar/cancelar, atualizar, excluir e gerar backup.
 - Retorna `response.json()` sem lançar erro (a página valida `error`/`message`).
 

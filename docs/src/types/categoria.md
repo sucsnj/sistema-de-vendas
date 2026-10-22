@@ -4,8 +4,8 @@
 
 ## O que faz
 
-- `CategoriaFormData`: estrutura do formulário de categoria (`nome`, `descricao`).
-- `CategoriaOptions`: opções/ações para modal de categoria rápida (`abrirModalCategoria`, `salvarCategoria`).
+- `CategoryFormData`: estrutura do formulário de categoria (`name`, `description`).
+- `CategoryOptions`: opções/ações para modal de categoria rápida (`openCategoryModal`, `saveCategory`).
 
 ## Relações
 

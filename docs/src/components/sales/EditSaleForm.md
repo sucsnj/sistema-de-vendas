@@ -10,7 +10,7 @@
 
 ```ts
 interface EditSaleFormProps {
-  sale: VendaDiaria; onSaved: () => void; onCancel: () => void;
+  sale: DailySale; onSaved: () => void; onCancel: () => void;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 ```

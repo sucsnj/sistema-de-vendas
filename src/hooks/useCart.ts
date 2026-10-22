@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchProducts, fetchServices, ItemData, ServicoData } from '../services/produtosService';
+import { fetchProducts, fetchServices, ItemData, ServiceData } from '../services/produtosService';
 import { getCartSummary } from '../utils/cart';
 import type { CartItem } from '../types/sale';
 
@@ -32,7 +32,7 @@ export const useCart = (onToast?: CartToast) => {
       ]);
 
       const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
+      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServiceData) => ({
         id: servico.id,
         tipo: 'SERVICO',
         nome: servico.nome,

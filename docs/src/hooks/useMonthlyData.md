@@ -4,13 +4,13 @@
 
 ## O que faz
 
-- Estado `mensais` (`VendaMensal[]`).
+- Estado `mensais` (`MonthlySale[]`).
 - `loadMensais()`: busca todas via `fetchAllMonthly` (estável via `useCallback`).
 - `handleDelete(id)`: exclui via `deleteMonthly` e recarrega, com toasts de sucesso/erro.
 
 ## Relações
 
-- **Usa:** `fetchAllMonthly`, `deleteMonthly`, `VendaMensal` (`src/services/vendasService.ts`).
+- **Usa:** `fetchAllMonthly`, `deleteMonthly`, `MonthlySale` (`src/services/vendasService.ts`).
 - **Usado por:** páginas/componentes de consolidações mensais.
 
 ## Notas

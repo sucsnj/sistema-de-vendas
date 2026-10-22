@@ -4,15 +4,15 @@
 
 ## O que faz
 
-- Edita **Nome**; "Atualizar" chama `options.salvarMarca`.
+- Edita **Nome**; "Atualizar" chama `options.saveBrand`.
 - "Excluir" abre `BrandDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
-interface ModalMarcaEditProps {
-  marcaForm: MarcaFormData; // { nome }
-  setMarcaForm: React.Dispatch<React.SetStateAction<MarcaFormData>>;
+interface BrandEditModalProps {
+  brandForm: BrandFormData; // { name }
+  setBrandForm: React.Dispatch<React.SetStateAction<BrandFormData>>;
   onDelete: () => void;
-  options: MarcaOptions; // { abrirModalMarca, salvarMarca }
+  options: BrandOptions; // { openBrandModal, saveBrand }
 }
 ```
 
@@ -23,4 +23,4 @@ interface ModalMarcaEditProps {
 
 ## Notas
 
-- Exporta `MarcaFormData` e `MarcaOptions`; fechar limpa o formulário.
+- Exporta `BrandFormData` e `BrandOptions`; fechar limpa o formulário.

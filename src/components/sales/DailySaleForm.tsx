@@ -2,17 +2,17 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import { formatCurrency } from '../../utils/formatter';
 import { useDailySaleForm } from '../../hooks/useDailySaleForm';
-import type { VendaDiaria } from '../../services/vendasService';
+import type { DailySale } from '../../services/vendasService';
 import CartModal from '@/components/cart/CartModal';
 import PixModal from '@/components/pix/PixModal';
 import SelectItemsModal from '@/components/cart/SelectItemsModal';
 
 interface DailySaleFormProps {
-  sales?: VendaDiaria[];
+  sales?: DailySale[];
   selectedDate: string;
   onDateChange: (date: string) => void;
   onSaleAdded?: () => void;
-  onEditSale?: (sale: VendaDiaria) => void;
+  onEditSale?: (sale: DailySale) => void;
   onDeleteSale?: (id: number) => void;
   showHistory?: boolean;
 }

@@ -86,7 +86,7 @@ const parseTableWorksheet = (filePath: string) => {
   }
 };
 
-interface TabelaRow {
+interface TableRow {
   substancia: string;
   laboratorio: string;
   ean: string;
@@ -182,7 +182,7 @@ const searchTableData = (query: string, table: Record<string, unknown>[]) => {
         score,
       };
     })
-    .filter(Boolean) as Array<{ row: TabelaRow; score: number }>;
+    .filter(Boolean) as Array<{ row: TableRow; score: number }>;
 
   return results
     .sort((a, b) => b.score - a.score)

@@ -8,17 +8,17 @@
 - Exclusão passa por [ConfirmDialog](../common/ConfirmDialog.md); estado vazio tratado.
 
 ```ts
-interface ContasAPagarLastTenProps {
-  ultimasContas: ContaDetalhe[];
-  handleView: (conta: ContaDetalhe) => void;
+interface PayablesLastTenProps {
+  latestAccounts: AccountDetails[];
+  handleView: (account: AccountDetails) => void;
   handleDelete: (id: number) => void;
-  handleEdit: (conta: ContaDetalhe) => void;
+  handleEdit: (account: AccountDetails) => void;
 }
 ```
 
 ## Relações
 
-- **Usa:** [ConfirmDialog](../common/ConfirmDialog.md), `ContaDetalhe`, `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString` (`src/utils/date.ts`), `contas.module.css`.
+- **Usa:** [ConfirmDialog](../common/ConfirmDialog.md), `AccountDetails`, `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString` (`src/utils/date.ts`), `contas.module.css`.
 - **Usado por:** `../../pages/contas-a-pagar.md`.
 
 ## Notas

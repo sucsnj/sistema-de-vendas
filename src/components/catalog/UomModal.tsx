@@ -2,23 +2,23 @@ import { useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 
-export interface UnidadeMedidaFormData {
-    sigla: string;
-    descricao: string;
+export interface UnitOfMeasureFormData {
+    abbreviation: string;
+    description: string;
 }
 
-export interface UnidadeMedidaOptions {
-    abrirModalUnidadeMedida: () => void;
-    salvarUnidadeMedida: React.FormEventHandler<HTMLFormElement>;
+export interface UnitOfMeasureOptions {
+    openUnitOfMeasureModal: () => void;
+    saveUnitOfMeasure: React.FormEventHandler<HTMLFormElement>;
 }
 
-interface ModalAddUnidadeMedidaProps {
-    uomForm: UnidadeMedidaFormData;
-    setUomForm: React.Dispatch<React.SetStateAction<UnidadeMedidaFormData>>;
-    options: UnidadeMedidaOptions;
+interface UnitOfMeasureModalProps {
+    uomForm: UnitOfMeasureFormData;
+    setUomForm: React.Dispatch<React.SetStateAction<UnitOfMeasureFormData>>;
+    options: UnitOfMeasureOptions;
 }
 
-const UnitOfMeasureModal: React.FC<ModalAddUnidadeMedidaProps> = ({
+const UnitOfMeasureModal: React.FC<UnitOfMeasureModalProps> = ({
     uomForm,
     setUomForm,
     options,
@@ -29,18 +29,18 @@ const UnitOfMeasureModal: React.FC<ModalAddUnidadeMedidaProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-title" tabIndex={-1}>
                 <h3 id="modal-uom-title" className={styles.modalTitle}>Adicionar Unidade medida</h3>
-                <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveUnitOfMeasure} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="new-uom-sigla">
-                            sigla:*
+                            abbreviation:*
                         </label>
                         <input
                             id="new-uom-sigla"
                             type="text"
                             className={styles.inputField}
                             placeholder="Sigla da Unidade de Medida"
-                            value={uomForm.sigla}
-                            onChange={(e) => setUomForm(prev => ({ ...prev, sigla: e.target.value }))}
+                            value={uomForm.abbreviation}
+                            onChange={(e) => setUomForm(prev => ({ ...prev, abbreviation: e.target.value }))}
                             required
                             autoFocus
                         />
@@ -54,8 +54,8 @@ const UnitOfMeasureModal: React.FC<ModalAddUnidadeMedidaProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Descrição opcional"
-                            value={uomForm.descricao}
-                            onChange={(e) => setUomForm(prev => ({ ...prev, descricao: e.target.value }))}
+                            value={uomForm.description}
+                            onChange={(e) => setUomForm(prev => ({ ...prev, description: e.target.value }))}
                         />
                     </div>
                     <div className={styles.modalActions}>
@@ -66,8 +66,8 @@ const UnitOfMeasureModal: React.FC<ModalAddUnidadeMedidaProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalUnidadeMedida();
-                                setUomForm({ sigla: '', descricao: '' });
+                                options.openUnitOfMeasureModal();
+                                setUomForm({ abbreviation: '', description: '' });
                             }}
                             id="cancel-new-uom-btn"
                         >

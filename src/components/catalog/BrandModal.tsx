@@ -2,17 +2,17 @@ import { useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 
-interface ModalMarcaProps {
-    setModalMarcaOpen: (value: boolean) => void;
-    novaMarcaNome: string;
-    setNovaMarcaNome: (value: string) => void;
+interface BrandModalProps {
+    setBrandModalOpen: (value: boolean) => void;
+    newBrandName: string;
+    setNewBrandName: (value: string) => void;
     handleSaveBrand: (e: React.FormEvent) => void;
 }
 
-const BrandModal: React.FC<ModalMarcaProps> = ({
-    setModalMarcaOpen,
-    novaMarcaNome,
-    setNovaMarcaNome,
+const BrandModal: React.FC<BrandModalProps> = ({
+    setBrandModalOpen,
+    newBrandName,
+    setNewBrandName,
     handleSaveBrand,
 }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
@@ -31,8 +31,8 @@ const BrandModal: React.FC<ModalMarcaProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da marca"
-                            value={novaMarcaNome}
-                            onChange={(e) => setNovaMarcaNome(e.target.value)}
+                            value={newBrandName}
+                            onChange={(e) => setNewBrandName(e.target.value)}
                             required
                             autoFocus
                         />
@@ -45,8 +45,8 @@ const BrandModal: React.FC<ModalMarcaProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                setModalMarcaOpen(false);
-                                setNovaMarcaNome('');
+                                setBrandModalOpen(false);
+                                setNewBrandName('');
                             }}
                             id="cancel-new-marca-btn"
                         >

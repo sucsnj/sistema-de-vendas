@@ -4,14 +4,14 @@
 
 ## O que faz
 
-- Campos **Sigla** (obrigatório) e **Descrição**; submit chama `options.salvarUnidadeMedida`.
-- Fechar reseta o formulário e chama `options.abrirModalUnidadeMedida()`.
+- Campos **Sigla** (obrigatório) e **Descrição**; submit chama `options.saveUnitOfMeasure`.
+- Fechar reseta o formulário e chama `options.openUnitOfMeasureModal()`.
 
 ```ts
-interface ModalAddUnidadeMedidaProps {
-  uomForm: UnidadeMedidaFormData; // { sigla, descricao }
-  setUomForm: React.Dispatch<React.SetStateAction<UnidadeMedidaFormData>>;
-  options: UnidadeMedidaOptions; // { abrirModalUnidadeMedida, salvarUnidadeMedida }
+interface UnitOfMeasureModalProps {
+  uomForm: UnitOfMeasureFormData; // { abbreviation, description }
+  setUomForm: React.Dispatch<React.SetStateAction<UnitOfMeasureFormData>>;
+  options: UnitOfMeasureOptions; // { openUnitOfMeasureModal, saveUnitOfMeasure }
 }
 ```
 
@@ -22,5 +22,5 @@ interface ModalAddUnidadeMedidaProps {
 
 ## Notas
 
-- Botão "Fechar" inverte a abertura via `abrirModalUnidadeMedida()`.
-- Exporta `UnidadeMedidaFormData` e `UnidadeMedidaOptions`.
+- Botão "Fechar" inverte a abertura via `openUnitOfMeasureModal()`.
+- Exporta `UnitOfMeasureFormData` e `UnitOfMeasureOptions`.

@@ -4,7 +4,7 @@ import { parseCurrency } from '../../utils/number';
 import { toDate } from '../../utils/date';
 import { canEdit } from '../../utils/edit';
 
-interface ItemVendaApi {
+interface SaleItemApi {
   id?: number;
   item_id?: number;
   tipo: 'PRODUTO' | 'SERVICO';
@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (itens && Array.isArray(itens) && itens.length > 0 && result.lastInsertRowid) {
         insertSaleItems(
           Number(result.lastInsertRowid),
-          itens.map((item: ItemVendaApi) => ({
+          itens.map((item: SaleItemApi) => ({
             item_id: item.id,
             tipo: item.tipo,
             nome: item.nome,
@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (itens && Array.isArray(itens) && itens.length > 0) {
         insertSaleItems(
           Number(id),
-          itens.map((item: ItemVendaApi) => ({
+          itens.map((item: SaleItemApi) => ({
             item_id: item.item_id ?? item.id ?? undefined,
             tipo: item.tipo,
             nome: item.nome,

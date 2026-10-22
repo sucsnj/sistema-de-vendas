@@ -9,15 +9,16 @@
 - Em edição, Estoque vira botão "Ajustar" ([StockAdjustModal](./StockAdjustModal.md)); Código Interno fica `disabled`.
 
 ```ts
-export interface ProdutoFormData {
-  tipo: 'PRODUTO' | 'SERVICO'; nome: string; descricao: string;
-  categoriaId: number; marcaId: number; fornecedorId: number;
-  precoCompra: string; margemLucro: string; precoVenda: string;
-  estoque: string; multiplicadorUnidade: string; unidadeMedidaId: number;
-  codigoInterno: string; referencia: string; duracaoMinutos: string; ativo: number;
-  unidadesMedida: { unidadeMedidaId: number; multiplicadorUnidade: string; principal: boolean }[];
+export interface ProductFormData {
+  type: 'PRODUTO' | 'SERVICO'; name: string; description: string;
+  categoryId: number; brandId: number; supplierId: number;
+  purchasePrice: string; profitMargin: string; salePrice: string;
+  stock: string; unitMultiplier: string; unitOfMeasureId: number;
+  internalCode: string; reference: string; durationMinutes: string; active: number;
+  unitsOfMeasure: { unitOfMeasureId: number; unitMultiplier: string; isPrincipal: boolean }[];
 }
-// ProdutoOptions { categorias, marcas, fornecedores, unidadesMedida }; ProdutoActions: abrirModal*/editar*
+// ProductOptions { categories, brands, suppliers, unitsOfMeasure }
+// ProductActions: openCategoryModal/openBrandModal/openSupplierModal/openUnitOfMeasureModal/openStockAdjustModal; editCategory/editBrand/editSupplier/editUnitOfMeasure
 ```
 
 ## Relações

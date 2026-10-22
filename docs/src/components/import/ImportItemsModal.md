@@ -9,7 +9,7 @@
 - "Importar N produto(s)" executa o lote, mostra o resumo final e chama `onImportSuccess()`.
 
 ```ts
-interface ModalImportItensProps {
+interface ImportItemsModalProps {
   onClose: () => void;
   onImportSuccess: () => void;
   initialFile?: File | null;
@@ -23,5 +23,5 @@ interface ModalImportItensProps {
 
 ## Notas
 
-- Refatorado de um módulo misto (~587 linhas): hook, dropdown e serviços foram extraídos; `ProdutoImportado` foi para `produtosService.ts`.
+- Refatorado de um módulo misto (~587 linhas): hook, dropdown e serviços foram extraídos; `ImportedProduct` foi para `produtosService.ts`.
 - Identificadores internos migrados para inglês (ADR 0004).

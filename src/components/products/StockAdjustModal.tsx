@@ -1,32 +1,32 @@
 import { useRef } from 'react';
 import styles from '../../styles/produtos.module.css';
-import type { MovimentacaoEstoqueData } from '../../services/produtosService';
+import type { StockMovementData } from '../../services/produtosService';
 import { useFocusTrap } from '../../utils/focus';
 
-interface ModalAjusteEstoqueProps {
+interface StockAdjustModalProps {
   open: boolean;
   itemName: string;
-  itemEstoque: number;
-  quantidade: string;
-  descricao: string;
-  setQuantidade: React.Dispatch<React.SetStateAction<string>>;
-  setDescricao: React.Dispatch<React.SetStateAction<string>>;
-  movimentacoes: MovimentacaoEstoqueData[];
-  movimentacoesLoading: boolean;
+  itemStock: number;
+  quantity: string;
+  description: string;
+  setQuantity: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  movements: StockMovementData[];
+  movementsLoading: boolean;
   onSave: () => void;
   onClose: () => void;
 }
 
-const StockAdjustModal: React.FC<ModalAjusteEstoqueProps> = ({
+const StockAdjustModal: React.FC<StockAdjustModalProps> = ({
   open,
   itemName,
-  itemEstoque,
-  quantidade,
-  descricao,
-  setQuantidade,
-  setDescricao,
-  movimentacoes,
-  movimentacoesLoading,
+  itemStock,
+  quantity,
+  description,
+  setQuantity,
+  setDescription,
+  movements,
+  movementsLoading,
   onSave,
   onClose,
 }) => {
@@ -43,49 +43,49 @@ const StockAdjustModal: React.FC<ModalAjusteEstoqueProps> = ({
           Produto: <strong>{itemName}</strong>
         </p>
         <p style={{ margin: '0 0 1rem', color: 'var(--muted)', fontSize: '0.9rem' }}>
-          Estoque atual: <strong>{itemEstoque}</strong>
+          Estoque atual: <strong>{itemStock}</strong>
         </p>
 
 
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="ajuste-quantidade">
+          <label className={styles.formLabel} htmlFor="ajuste-quantity">
             Quantidade:
           </label>
           <input
-            id="ajuste-quantidade"
+            id="ajuste-quantity"
             type="text"
             inputMode="decimal"
             className={styles.inputField}
             placeholder="Use valor positivo ou negativo"
-            value={quantidade}
-            onChange={(e) => setQuantidade(e.target.value)}
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
             autoFocus
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="ajuste-descricao">
+          <label className={styles.formLabel} htmlFor="ajuste-description">
             Descrição:
           </label>
           <textarea
-            id="ajuste-descricao"
+            id="ajuste-description"
             className={styles.textareaField}
             placeholder="Motivo do ajuste"
             rows={4}
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
                 <div className={styles.historySection}>
           <div className={styles.historyHeader}>
             <span>Últimas 10 movimentações</span>
-            {movimentacoesLoading && <span className={styles.historyLoading}>Carregando...</span>}
+            {movementsLoading && <span className={styles.historyLoading}>Carregando...</span>}
           </div>
-          {movimentacoes.length === 0 ? (
+          {movements.length === 0 ? (
             <div className={styles.emptyState}>
-              {movimentacoesLoading ? 'Carregando histórico...' : 'Nenhuma movimentação encontrada para este item.'}
+              {movementsLoading ? 'Carregando histórico...' : 'Nenhuma movimentação encontrada para este item.'}
             </div>
           ) : (
             <div className={styles.historyTableWrapper}>
@@ -100,7 +100,7 @@ const StockAdjustModal: React.FC<ModalAjusteEstoqueProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {movimentacoes.map((mov) => (
+                  {movements.map((mov) => (
                     <tr key={mov.id}>
                       <td>{mov.data_movimentacao}</td>
                       <td>{mov.tipo}</td>

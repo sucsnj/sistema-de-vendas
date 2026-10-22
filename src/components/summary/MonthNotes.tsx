@@ -1,25 +1,25 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react';
-import { fetchInvoicesByPeriod, deleteInvoice, NotaDetalhe } from '../../services/notasService';
+import { fetchInvoicesByPeriod, deleteInvoice, InvoiceDetails } from '../../services/notasService';
 import { formatCurrency } from '../../utils/formatter';
 import { formatDateString, getCurrentYear } from '../../utils/date';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-// Array com os meses
-const meses = [
+// Array com os months
+const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
-interface NotasDoMesProps {
-    ano: number;
-    mes: number;
-    setAno: (ano: number) => void;
-    setMes: (mes: number) => void;
+interface MonthNotesProps {
+    year: number;
+    month: number;
+    setYear: (year: number) => void;
+    setMonth: (month: number) => void;
 }
 
-const MonthNotes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => {
+const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth }) => {
     const queryClient = useQueryClient();
 
     // estado para o diálogo
@@ -27,9 +27,9 @@ const MonthNotes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
     // Hook que busca notas automaticamente
-    const { data: notas = [], isLoading } = useQuery<NotaDetalhe[]>({
-        queryKey: ['notas', ano, mes],
-        queryFn: () => fetchInvoicesByPeriod(ano, mes).then((data) =>
+    const { data: notas = [], isLoading } = useQuery<InvoiceDetails[]>({
+        queryKey: ['notas', year, month],
+        queryFn: () => fetchInvoicesByPeriod(year, month).then((data) =>
             Array.isArray(data) ? data : [data]
         ),
     });
@@ -41,7 +41,7 @@ const MonthNotes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
         try {
             await deleteInvoice(id);
             // invalida cache e força refetch
-            queryClient.invalidateQueries({ queryKey: ['notas', ano, mes] });
+            queryClient.invalidateQueries({ queryKey: ['notas', year, month] });
         } catch (error) {
             console.error('Erro ao excluir nota:', error);
         }
@@ -58,15 +58,15 @@ const MonthNotes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
 
             {/* Seletor de período */}
             <div className="selectors">
-                <select value={mes} onChange={(e) => setMes(Number(e.target.value))}>
-                    {meses.map((name, index) => (
+                <select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                    {months.map((name, index) => (
                         <option key={index} value={index + 1}>
                             {name}
                         </option>
                     ))}
                 </select>
 
-                <select value={ano} onChange={(e) => setAno(Number(e.target.value))}>
+                <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
                     {Array.from({ length: 5 }, (_, i) => getCurrentYear() - i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}

@@ -3,7 +3,7 @@ import { getDateArray } from '../utils/date';
 import dayjs from 'dayjs';
 dayjs.locale('pt-br');
 
-export interface VendaDiaria {
+export interface DailySale {
   id: number;
   data: string;
   valor: number;
@@ -11,7 +11,7 @@ export interface VendaDiaria {
   criado_em: string;
 }
 
-export interface VendaItemData {
+export interface SaleItemData {
   id: number;
   venda_id: number;
   item_id?: number | null;
@@ -25,7 +25,7 @@ export interface VendaItemData {
   criado_em: string;
 }
 
-export interface VendaItemInput {
+export interface SaleItemInput {
   id?: number;
   item_id?: number | null;
   tipo: 'PRODUTO' | 'SERVICO';
@@ -38,7 +38,7 @@ export interface VendaItemInput {
   estoque?: number;
 }
 
-export interface VendaMensal {
+export interface MonthlySale {
   id: number;
   mes: number;
   ano: number;
@@ -59,7 +59,7 @@ export const registerSale = async (
   data: string,
   amount: number,
   notes?: string,
-  items?: VendaItemInput[]
+  items?: SaleItemInput[]
 ) => {
   const response = await fetch('/api/vendas', {
     method: 'POST',
@@ -89,13 +89,13 @@ export const fetchDailySales = async (
   month: number,
   year: number,
   filter: 'positivas' | 'negativas' | 'todas' = 'todas'
-): Promise<VendaDiaria[]> => {
+): Promise<DailySale[]> => {
   const response = await fetch(`/api/vendas?mes=${month}&ano=${year}&filtro=${filter}`);
   return response.json();
 };
 
 // Função assíncrona exportada.
-export const updateSale = async (id: number, data: string, amount: number, notes?: string, items?: VendaItemInput[]) => {
+export const updateSale = async (id: number, data: string, amount: number, notes?: string, items?: SaleItemInput[]) => {
   const response = await fetch('/api/vendas', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -105,7 +105,7 @@ export const updateSale = async (id: number, data: string, amount: number, notes
 };
 
 // Busca os itens associados a uma venda específica.
-export const fetchSaleItems = async (saleId: number): Promise<VendaItemData[]> => {
+export const fetchSaleItems = async (saleId: number): Promise<SaleItemData[]> => {
   const response = await fetch(`/api/venda-itens?vendaId=${saleId}`);
   if (!response.ok) return [];
   return response.json();
@@ -122,13 +122,13 @@ export const deleteSale = async (id: number) => {
 };
 
 // Função assíncrona exportada.
-export const fetchMonthlyTotal = async (month: number, year: number): Promise<VendaMensal | null> => {
+export const fetchMonthlyTotal = async (month: number, year: number): Promise<MonthlySale | null> => {
   const response = await fetch(`/api/mensais?mes=${month}&ano=${year}`);
   return response.json();
 };
 
 // Função assíncrona exportada.
-export const fetchAllMonthly = async (): Promise<VendaMensal[]> => {
+export const fetchAllMonthly = async (): Promise<MonthlySale[]> => {
   const response = await fetch('/api/mensais');
   return response.json();
 };

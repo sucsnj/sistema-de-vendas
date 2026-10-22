@@ -32,7 +32,7 @@ export interface ItemData {
   unidades_medida?: { unidade_medida_id: number; multiplicador_unidade: number; principal: number }[];
 }
 
-export interface ServicoData {
+export interface ServiceData {
   id: number;
   nome: string;
   descricao?: string;
@@ -46,7 +46,7 @@ export interface ServicoData {
   categoria_nome?: string;
 }
 
-export interface ServicoInput {
+export interface ServiceInput {
   nome: string;
   descricao?: string;
   categoria_id: number;
@@ -56,7 +56,7 @@ export interface ServicoInput {
   duracao_minutos?: number;
 }
 
-export interface MovimentacaoEstoqueData {
+export interface StockMovementData {
   id: number;
   item_id: number;
   item: string;
@@ -67,7 +67,7 @@ export interface MovimentacaoEstoqueData {
   data_movimentacao: string;
 }
 
-export interface MovimentacaoEstoqueInput {
+export interface StockMovementInput {
   item_id: number;
   tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
   quantidade: number;
@@ -82,23 +82,23 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
-export interface CategoriaData {
+export interface CategoryData {
   id: number;
   nome: string;
   descricao?: string;
 }
 
-export interface MarcaData {
+export interface BrandData {
   id: number;
   nome: string;
 }
 
-export interface FornecedorData {
+export interface SupplierData {
   id: number;
   nome: string;
 }
 
-export interface UnidadeMedidaData {
+export interface UnitOfMeasureData {
   id: number;
   sigla: string;
   descricao?: string;
@@ -190,7 +190,7 @@ export const fetchServices = async (options: {
   categoria_id?: number;
   page?: number;
   pageSize?: number;
-}): Promise<PagedResult<ServicoData>> => {
+}): Promise<PagedResult<ServiceData>> => {
   const params = new URLSearchParams();
   if (options.search) params.append('search', options.search);
   if (options.categoria_id) params.append('categoria_id', String(options.categoria_id));
@@ -205,7 +205,7 @@ export const fetchServices = async (options: {
   return response.json();
 };
 
-export const fetchServiceById = async (id: number): Promise<ServicoData | null> => {
+export const fetchServiceById = async (id: number): Promise<ServiceData | null> => {
   const response = await fetch(`/api/produtos/servicos?id=${id}`);
   if (!response.ok) {
     const errorData = await response.json();
@@ -214,7 +214,7 @@ export const fetchServiceById = async (id: number): Promise<ServicoData | null> 
   return response.json();
 };
 
-export const registerService = async (data: ServicoInput) => {
+export const registerService = async (data: ServiceInput) => {
   const response = await fetch('/api/produtos/servicos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -227,7 +227,7 @@ export const registerService = async (data: ServicoInput) => {
   return response.json();
 };
 
-export const updateService = async (id: number, data: ServicoInput) => {
+export const updateService = async (id: number, data: ServiceInput) => {
   const response = await fetch(`/api/produtos/servicos?id=${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -252,7 +252,7 @@ export const deleteService = async (id: number) => {
 };
 
 // Chamadas de API para Movimentações de Estoque
-export const fetchStockMovements = async (itemId: number): Promise<MovimentacaoEstoqueData[]> => {
+export const fetchStockMovements = async (itemId: number): Promise<StockMovementData[]> => {
   const response = await fetch(`/api/produtos/movimentacoes?item_id=${itemId}`);
   if (!response.ok) {
     const errorData = await response.json();
@@ -261,7 +261,7 @@ export const fetchStockMovements = async (itemId: number): Promise<MovimentacaoE
   return response.json();
 };
 
-export const registerStockMovement = async (data: MovimentacaoEstoqueInput) => {
+export const registerStockMovement = async (data: StockMovementInput) => {
   const response = await fetch('/api/produtos/movimentacoes', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -275,7 +275,7 @@ export const registerStockMovement = async (data: MovimentacaoEstoqueInput) => {
 };
 
 // Chamadas de API para Categorias
-export const fetchCategories = async (): Promise<CategoriaData[]> => {
+export const fetchCategories = async (): Promise<CategoryData[]> => {
   const response = await fetch('/api/produtos/categorias');
   if (!response.ok) throw new Error('Erro ao buscar categorias.');
   return response.json();
@@ -319,7 +319,7 @@ export const updateCategory = async (id: number, name: string, description?: str
 };
 
 // Chamadas de API para Marcas
-export const fetchBrands = async (): Promise<MarcaData[]> => {
+export const fetchBrands = async (): Promise<BrandData[]> => {
   const response = await fetch('/api/produtos/marcas');
   if (!response.ok) throw new Error('Erro ao buscar marcas.');
   return response.json();
@@ -363,7 +363,7 @@ export const updateBrand = async (id: number, name: string): Promise<{ message: 
 };
 
 // Chamadas de API para Fornecedores
-export const fetchSuppliers = async (): Promise<FornecedorData[]> => {
+export const fetchSuppliers = async (): Promise<SupplierData[]> => {
   const response = await fetch('/api/produtos/fornecedores');
   if (!response.ok) throw new Error('Erro ao buscar fornecedores.');
   return response.json();
@@ -407,7 +407,7 @@ export const updateSupplier = async (id: number, name: string): Promise<{ messag
 };
 
 // Chamadas de API para Unidade de Medida
-export const fetchUnitsOfMeasure = async (): Promise<UnidadeMedidaData[]> => {
+export const fetchUnitsOfMeasure = async (): Promise<UnitOfMeasureData[]> => {
   const response = await fetch('/api/produtos/unidades-medida');
   if (!response.ok) throw new Error('Erro ao buscar unidades de medida.');
   return response.json();
@@ -451,7 +451,7 @@ export const updateUnitOfMeasure = async (id: number, abbreviation: string, desc
 };
 
 // Importação de itens via XML de NF-e (/api/produtos/itens)
-export interface ProdutoImportado {
+export interface ImportedProduct {
   cProd?: string;
   ean: string;
   descricao: string;
@@ -467,7 +467,7 @@ export interface ProdutoImportado {
 
 export interface InvoiceItemsPreviewResult {
   ok: boolean;
-  produtos?: ProdutoImportado[];
+  produtos?: ImportedProduct[];
   error?: string;
 }
 
@@ -482,7 +482,7 @@ export async function previewInvoiceItems(xml: string): Promise<InvoiceItemsPrev
   if (!response.ok || result.error) {
     return { ok: false, error: result.error || 'Erro ao processar o arquivo XML.' };
   }
-  return { ok: true, produtos: result.produtos as ProdutoImportado[] };
+  return { ok: true, produtos: result.produtos as ImportedProduct[] };
 }
 
 export interface InvoiceItemImportResult {
@@ -493,7 +493,7 @@ export interface InvoiceItemImportResult {
 }
 
 /** Importa (ou apenas atualiza o estoque de) um item extraído da nota fiscal. */
-export async function importInvoiceItem(product: ProdutoImportado): Promise<InvoiceItemImportResult> {
+export async function importInvoiceItem(product: ImportedProduct): Promise<InvoiceItemImportResult> {
   const response = await fetch('/api/produtos/itens', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

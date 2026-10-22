@@ -1,21 +1,21 @@
 import React, { useMemo } from 'react';
 import OcrUpload from '@/components/import/OcrUpload';
-import { ContaDetalhe, } from '../../services/contasService';
+import { AccountDetails, } from '../../services/contasService';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
 import { formatDateString } from '../../utils/date';
 import { toTimestamp } from '../../utils/date';
 
 interface AgendaProps {
-    contasMes: ContaDetalhe[];
-    contasAno: ContaDetalhe[];
+    accountsMonth: AccountDetails[];
+    accountsYear: AccountDetails[];
 }
 
-const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
+const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
     // Mapeamento de contas por data de vencimento
     const agenda = useMemo(() => {
         const map = new Map<string, { data: string; totalPendente: number }>();
-        contasAno.forEach((account) => {
+        accountsYear.forEach((account) => {
             const current = map.get(account.vencimento) ?? { data: account.vencimento, totalPendente: 0 };
             if (account.status === 'Pendente') {
                 current.totalPendente += account.valor;
@@ -26,15 +26,15 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
             .filter((item) => item.totalPendente > 0)
             .sort((a, b) => toTimestamp(a.data) - toTimestamp(b.data))
             .slice(0, 8);
-    }, [contasAno]);
+    }, [accountsYear]);
 
     // Lista de contas pendentes que serão pagas na próxima semana
-    const proximasContas = useMemo(() => {
-        return contasAno
+    const upcomingAccounts = useMemo(() => {
+        return accountsYear
             .filter((account) => account.status === 'Pendente')
             .sort((a, b) => toTimestamp(a.vencimento) - toTimestamp(b.vencimento))
             .slice(0, 12); // Quantidade de contas a serem exibidas (12)
-    }, [contasAno]);
+    }, [accountsYear]);
 
     return (
         <div>
@@ -64,10 +64,10 @@ const Agenda: React.FC<AgendaProps> = ({ contasAno }) => {
                         <h3>Próximas contas</h3>
                     </div>
                     <div className="proximas-list">
-                        {proximasContas.length === 0 ? (
+                        {upcomingAccounts.length === 0 ? (
                             <p>Nenhuma conta pendente encontrada.</p>
                         ) : (
-                            proximasContas.map((account) => (
+                            upcomingAccounts.map((account) => (
                                 <div key={account.id} className="proxima-row">
                                     <strong>{formatDateString(account.vencimento, 'DD-MM-YYYY')}</strong> - {account.distribuidora} - <span>R$ {formatCurrency(account.valor, 2)}</span>
                                 </div>

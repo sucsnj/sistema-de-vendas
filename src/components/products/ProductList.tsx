@@ -8,7 +8,7 @@ import {
     ItemData,
 } from '../../services/produtosService';
 
-interface ListagemProps {
+interface ProductListProps {
     items: ItemData[];
     loading: boolean;
 
@@ -23,7 +23,7 @@ interface ListagemProps {
     onPageChange(page: number): void;
 }
 
-const Listagem: React.FC<ListagemProps> = ({ items, total, page, totalPages, loading, onEdit, onDelete, onPageChange, onToggleStatus }) => {
+const Listagem: React.FC<ProductListProps> = ({ items, total, page, totalPages, loading, onEdit, onDelete, onPageChange, onToggleStatus }) => {
 
     return (
         <div>

@@ -4,10 +4,10 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`modalUnidadeMedidaOpen`, `uomForm`) e edição (`modalUnidadeMedidaEditOpen`).
-- Cria unidade via `createUnitOfMeasure` (valida `sigla` obrigatória), atualiza `setOptions.unidadesMedida` e seleciona criada.
+- Controla modais de cadastro (`unitOfMeasureModalOpen`, `uomForm`) e edição (`unitOfMeasureEditModalOpen`).
+- Cria unidade via `createUnitOfMeasure` (valida `abbreviation` obrigatória), atualiza `setOptions.unitsOfMeasure` e seleciona criada.
 - Atualiza/exclui unidade, sincroniza opções, ajusta paginação/listagem e fecha modais.
-- Exporta tipos auxiliares `UnidadeMedidaFormData`, `UnidadeMedidaOptions`.
+- Exporta tipos auxiliares `UnitOfMeasureFormData`, `UnitOfMeasureOptions`.
 
 ## Relações
 
@@ -17,4 +17,4 @@
 ## Notas
 
 - Arquivo `useUnitOfMeasure.ts`; identificador exportado é `useUnitOfMeasure`.
-- Validação: exige `sigla` não vazia na edição.
+- Validação: exige `abbreviation` não vazia na edição.

@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Expõe `NotaDetalhe` (distribuidora, chave, data_emissao `YYYY-MM-DD`, valor_nota).
+- Expõe `InvoiceDetails` (distribuidora, chave, data_emissao `YYYY-MM-DD`, valor_nota).
 - Lista notas por período (`fetchInvoicesByPeriod`), busca por valor (`fetchInvoiceByAmount`), lista todas (`fetchAllInvoices`) e exclui (`deleteInvoice`).
 - Retorna `null` em `fetchInvoiceByAmount` quando a API responde com status 404.
 

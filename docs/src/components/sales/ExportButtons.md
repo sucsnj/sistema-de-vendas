@@ -10,7 +10,7 @@
 
 ```ts
 interface ExportButtonsProps {
-  sales: VendaDiaria[]; mes: number; ano: number; selectedDate?: string;
+  sales: DailySale[]; month: number; year: number; selectedDate?: string;
   onMessage?: (message: string, type: 'success' | 'error' | 'info') => void;
   onImportCompleted?: () => void;
 }

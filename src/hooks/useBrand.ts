@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { fetchBrands, createBrand, deleteBrand, updateBrand } from "../services/produtosService";
-import { MarcaFormData } from "@/components/catalog/BrandEditModal";
-import { ProdutoFormData } from "@/components/products/ProductForm";
-import { ProdutoOptions } from "@/components/products/ProductForm";
+import { BrandFormData } from "@/components/catalog/BrandEditModal";
+import { ProductFormData } from "@/components/products/ProductForm";
+import { ProductOptions } from "@/components/products/ProductForm";
 import { validateRequired } from "../utils/validation";
 
-interface UseMarcaParams {
-    form: ProdutoFormData;
-    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
-    setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
+interface UseBrandParams {
+    form: ProductFormData;
+    setForm: React.Dispatch<React.SetStateAction<ProductFormData>>;
+    setOptions: React.Dispatch<React.SetStateAction<ProductOptions>>;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
     loadItems: () => void;
     items: unknown[];
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setItemParaExcluir: (value: null) => void;
+    setItemToDelete: (value: null) => void;
 }
 
 export const useBrand = ({
@@ -28,36 +28,36 @@ export const useBrand = ({
     page,
     setPage,
     setDeleteConfirmOpen,
-    setItemParaExcluir,
-}: UseMarcaParams) => {
+    setItemToDelete,
+}: UseBrandParams) => {
     // Modais de cadastro rápido
-    const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
-    const [marcaForm, setMarcaForm] = useState<MarcaFormData>({ nome: '' });
-    const [novaMarcaNome, setNovaMarcaNome] = useState('');
+    const [brandModalOpen, setBrandModalOpen] = useState(false);
+    const [brandForm, setBrandForm] = useState<BrandFormData>({ name: '' });
+    const [newBrandName, setNewBrandName] = useState('');
 
     // Modais de Edição
-    const [modalMarcaEditOpen, setModalMarcaEditOpen] = useState(false);
+    const [brandEditModalOpen, setBrandEditModalOpen] = useState(false);
 
     // Cadastro de Marca Inline
     const handleSaveBrand = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeMarca = validateRequired(novaMarcaNome, "O nome da marca");
+        const nomeMarca = validateRequired(newBrandName, "O nome da marca");
         if (!nomeMarca.ok) {
             showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {
-            const response = await createBrand(novaMarcaNome.trim());
+            const response = await createBrand(newBrandName.trim());
             showToast(response.message || 'Marca criada com sucesso.', 'success');
 
-            // Re-carrega lista de marcas e seleciona a criada
+            // Re-carrega lista de brands e seleciona a criada
             const brands = await fetchBrands();
-            setOptions(prev => ({ ...prev, marcas: brands }));
-            setForm(prev => ({ ...prev, marcaId: response.id }));
+            setOptions(prev => ({ ...prev, brands: brands }));
+            setForm(prev => ({ ...prev, brandId: response.id }));
 
             // Fecha modal
-            setModalMarcaOpen(false);
-            setNovaMarcaNome('');
+            setBrandModalOpen(false);
+            setNewBrandName('');
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao criar marca.', 'error');
         }
@@ -65,33 +65,33 @@ export const useBrand = ({
 
     // Handler para abrir modal de edição de marca
     const handleOpenEditBrandModal = (brand: { id: number; nome: string }) => {
-        setForm(prev => ({ ...prev, marcaId: brand.id }));
-        setMarcaForm({ nome: brand.nome });
-        setModalMarcaEditOpen(true);
+        setForm(prev => ({ ...prev, brandId: brand.id }));
+        setBrandForm({ name: brand.nome });
+        setBrandEditModalOpen(true);
     };
 
     // Edição de marca
     const handleUpdateBrand = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeMarca = validateRequired(marcaForm.nome, "O nome da marca");
+        const nomeMarca = validateRequired(brandForm.name, "O nome da marca");
         if (!nomeMarca.ok) {
             showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {
-            const response = await updateBrand(form.marcaId, marcaForm.nome.trim());
+            const response = await updateBrand(form.brandId, brandForm.name.trim());
 
             // Atualiza na interface após confirmação da API
             setOptions(prev => ({
-                ...prev, marcas: prev.marcas.map(brand =>
-                    brand.id === form.marcaId ?
-                        { ...brand, nome: marcaForm.nome.trim() } : brand
+                ...prev, brands: prev.brands.map(brand =>
+                    brand.id === form.brandId ?
+                        { ...brand, nome: brandForm.name.trim() } : brand
                 )
             }));
 
             showToast(response.message || 'Marca atualizada com sucesso.', 'success');
-            setModalMarcaEditOpen(false);
-            setMarcaForm({ nome: '' });
+            setBrandEditModalOpen(false);
+            setBrandForm({ name: '' });
             loadItems();
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao atualizar marca.', 'error');
@@ -101,23 +101,23 @@ export const useBrand = ({
     // Handle para deletar marca
     const handleDeleteBrand = async () => {
         try {
-            await deleteBrand(form.marcaId);
+            await deleteBrand(form.brandId);
             showToast('Marca deletada com sucesso.', 'success');
             setDeleteConfirmOpen(false);
-            setItemParaExcluir(null);
+            setItemToDelete(null);
 
             // Atualiza a interface após confirmação da API
             setOptions(prev => ({
                 ...prev,
-                marcas: prev.marcas.filter(brand => brand.id !== form.marcaId)
+                brands: prev.brands.filter(brand => brand.id !== form.brandId)
             }));
 
             // Fecha o modal após a exclusão
-            setModalMarcaOpen(false);
-            setMarcaForm({ nome: '' });
+            setBrandModalOpen(false);
+            setBrandForm({ name: '' });
 
             // Coloca o Id para 1
-            setForm(prev => ({ ...prev, marcaId: 1 }));
+            setForm(prev => ({ ...prev, brandId: 1 }));
 
             if (items.length === 1 && page > 1) {
                 setPage(page - 1);
@@ -131,14 +131,14 @@ export const useBrand = ({
 
     return {
         // Estados
-        modalMarcaOpen,
-        setModalMarcaOpen,
-        marcaForm,
-        setMarcaForm,
-        modalMarcaEditOpen,
-        setModalMarcaEditOpen,
-        novaMarcaNome,
-        setNovaMarcaNome,
+        brandModalOpen,
+        setBrandModalOpen,
+        brandForm,
+        setBrandForm,
+        brandEditModalOpen,
+        setBrandEditModalOpen,
+        newBrandName,
+        setNewBrandName,
 
         // Handlers
         handleSaveBrand,

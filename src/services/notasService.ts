@@ -1,4 +1,4 @@
-export interface NotaDetalhe {
+export interface InvoiceDetails {
   id: number;
   distribuidora: string;
   chave: string;
@@ -7,7 +7,7 @@ export interface NotaDetalhe {
 }
 
 // Função assíncrona exportada.
-export const fetchInvoicesByPeriod = async (year: number, month?: number): Promise<NotaDetalhe[]> => {
+export const fetchInvoicesByPeriod = async (year: number, month?: number): Promise<InvoiceDetails[]> => {
   const params = new URLSearchParams({ ano: String(year) });
   if (month !== undefined) {
     params.append('mes', String(month));
@@ -18,7 +18,7 @@ export const fetchInvoicesByPeriod = async (year: number, month?: number): Promi
 };
 
 // Função assíncrona exportada.
-export const fetchInvoiceByAmount = async (amount: number): Promise<NotaDetalhe | null> => {
+export const fetchInvoiceByAmount = async (amount: number): Promise<InvoiceDetails | null> => {
   const params = new URLSearchParams({ valor: String(amount) });
   const response = await fetch(`/api/notas?${params.toString()}`);
   if (response.status === 404) {
@@ -28,7 +28,7 @@ export const fetchInvoiceByAmount = async (amount: number): Promise<NotaDetalhe 
 };
 
 // Função assíncrona exportada.
-export const fetchAllInvoices = async (): Promise<NotaDetalhe[]> => {
+export const fetchAllInvoices = async (): Promise<InvoiceDetails[]> => {
   const response = await fetch('/api/notas');
   return response.json();
 };

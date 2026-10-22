@@ -1,52 +1,52 @@
 import React from 'react';
 import styles from '../../styles/contas.module.css';
-import { ContaDetalhe } from '../../services/contasService';
+import { AccountDetails } from '../../services/contasService';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 
-interface ContasAPagarFormProps {
-  distribuidora: string;
-  setDistribuidora: (value: string) => void;
-  valor: string;
-  setValor: (value: string) => void;
-  vencimento: string;
-  setVencimento: (value: string) => void;
-  documento: string;
-  setDocumento: (value: string) => void;
-  bancoObservacoes: string;
-  setBancoObservacoes: (value: string) => void;
-  editingConta: ContaDetalhe | null;
+interface PayablesFormProps {
+  distributor: string;
+  setDistributor: (value: string) => void;
+  amount: string;
+  setAmount: (value: string) => void;
+  dueDate: string;
+  setDueDate: (value: string) => void;
+  document: string;
+  setDocument: (value: string) => void;
+  bankNotes: string;
+  setBankNotes: (value: string) => void;
+  editingAccount: AccountDetails | null;
   onSubmit: (event: React.FormEvent) => Promise<void>;
   onReset: () => void;
   onImportXML: () => Promise<void>;
-  onCancelarEdicao: () => void;
-  distribuidoraInputRef: React.RefObject<HTMLInputElement | null>;
-  valorInputRef: React.RefObject<HTMLInputElement | null>;
+  onCancelEdit: () => void;
+  distributorInputRef: React.RefObject<HTMLInputElement | null>;
+  amountInputRef: React.RefObject<HTMLInputElement | null>;
   dataInputRef: React.RefObject<HTMLInputElement | null>;
-  documentoInputRef: React.RefObject<HTMLInputElement | null>;
+  documentInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const PayablesForm: React.FC<ContasAPagarFormProps> = ({
-  distribuidora,
-  setDistribuidora,
-  valor,
-  setValor,
-  vencimento,
-  setVencimento,
-  documento,
-  setDocumento,
-  bancoObservacoes,
-  setBancoObservacoes,
-  editingConta,
+const PayablesForm: React.FC<PayablesFormProps> = ({
+  distributor,
+  setDistributor,
+  amount,
+  setAmount,
+  dueDate,
+  setDueDate,
+  document,
+  setDocument,
+  bankNotes,
+  setBankNotes,
+  editingAccount,
   onSubmit,
   onReset,
   onImportXML,
-  onCancelarEdicao,
-  distribuidoraInputRef,
-  valorInputRef,
+  onCancelEdit,
+  distributorInputRef,
+  amountInputRef,
   dataInputRef,
-  documentoInputRef,
+  documentInputRef,
 }) => {
   return (
     <form onSubmit={onSubmit} className={styles.contasForm}>
@@ -54,19 +54,19 @@ const PayablesForm: React.FC<ContasAPagarFormProps> = ({
         <label>
           Distribuidora
           <input
-            ref={distribuidoraInputRef}
+            ref={distributorInputRef}
             type="text"
-            value={distribuidora}
-            onChange={(e) => setDistribuidora(e.target.value)}
+            value={distributor}
+            onChange={(e) => setDistributor(e.target.value)}
           />
         </label>
         <label>
           Valor
           <input
-            ref={valorInputRef}
+            ref={amountInputRef}
             step="0.01"
-            value={valor}
-            onChange={(e) => setValor(e.target.value)}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
           />
         </label>
         <label>
@@ -74,17 +74,17 @@ const PayablesForm: React.FC<ContasAPagarFormProps> = ({
           <input
             ref={dataInputRef}
             type="date"
-            value={vencimento}
-            onChange={(e) => setVencimento(e.target.value)}
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
           />
         </label>
         <label>
           Documento
           <input
-            ref={documentoInputRef}
+            ref={documentInputRef}
             type="text"
-            value={documento}
-            onChange={(e) => setDocumento(e.target.value)}
+            value={document}
+            onChange={(e) => setDocument(e.target.value)}
           />
         </label>
       </div>
@@ -92,14 +92,14 @@ const PayablesForm: React.FC<ContasAPagarFormProps> = ({
         Banco / Observações
         <textarea
           rows={4}
-          value={bancoObservacoes}
-          onChange={(e) => setBancoObservacoes(e.target.value)}
+          value={bankNotes}
+          onChange={(e) => setBankNotes(e.target.value)}
         />
       </label>
       <div className={styles.formActions}>
         <button type="submit">
           <NoteAddIcon className="material-icon" />
-          {editingConta ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
+          {editingAccount ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
         <button type="button" className={styles.secondary} onClick={onReset}>
           <ClearAllIcon className="material-icon" />
           Limpar Campos
@@ -108,8 +108,8 @@ const PayablesForm: React.FC<ContasAPagarFormProps> = ({
           <ImportExportIcon className="material-icon" />
           Importar XML
         </button>
-        {editingConta ? (
-            <button type="button" className={styles.secondary} onClick={onCancelarEdicao}>
+        {editingAccount ? (
+            <button type="button" className={styles.secondary} onClick={onCancelEdit}>
             Cancelar
           </button>
         ) : null}

@@ -9,13 +9,13 @@
 - Delega para [ProductForm](./ProductForm.md) ou [ServiceForm](./ServiceForm.md).
 
 ```ts
-interface FormularioItemProps {
+interface ItemFormProps {
   onImportXML: (file?: File) => void;
-  editarProdutoId: number | null;
-  form: ProdutoFormData;
-  setForm: Dispatch<SetStateAction<ProdutoFormData>>;
-  options: ProdutoOptions;
-  actions: ProdutoActions;
+  editingProductId: number | null;
+  form: ProductFormData;
+  setForm: Dispatch<SetStateAction<ProductFormData>>;
+  options: ProductOptions;
+  actions: ProductActions;
   inputRef: RefObject<HTMLInputElement | null>;
 }
 ```

@@ -1,19 +1,19 @@
 import { useState, useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
-import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
+import { CategoryFormData, CategoryOptions } from '@/types/categoria';
 import { CategoryDeleteModal } from '@/components/products/ProductDeleteModal';
 
-interface ModalCategoriaEditProps {
-    catForm: CategoriaFormData;
-    setCatForm: React.Dispatch<React.SetStateAction<CategoriaFormData>>;
+interface CategoryEditModalProps {
+    categoryForm: CategoryFormData;
+    setCategoryForm: React.Dispatch<React.SetStateAction<CategoryFormData>>;
     onDelete: () => void;
-    options: CategoriaOptions;
+    options: CategoryOptions;
 }
 
-const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
-    catForm,
-    setCatForm,
+const CategoryEditModal: React.FC<CategoryEditModalProps> = ({
+    categoryForm,
+    setCategoryForm,
     onDelete,
     options,
 }) => {
@@ -24,7 +24,7 @@ const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-edit-title" tabIndex={-1}>
                 <h3 id="modal-cat-edit-title" className={styles.modalTitle}>Editar Categoria</h3>
-                <form onSubmit={options.salvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveCategory} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="edit-cat-nome">
                             Nome:*
@@ -34,8 +34,8 @@ const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da categoria"
-                            value={catForm.nome}
-                            onChange={(e) => setCatForm({ ...catForm, nome: e.target.value })}
+                            value={categoryForm.name}
+                            onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
                             required
                             autoFocus
                         />
@@ -49,8 +49,8 @@ const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Descrição opcional"
-                            value={catForm.descricao}
-                            onChange={(e) => setCatForm({ ...catForm, descricao: e.target.value })}
+                            value={categoryForm.description}
+                            onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                         />
                     </div>
                     <div className={styles.modalActions}>
@@ -71,8 +71,8 @@ const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalCategoria();
-                                setCatForm({ nome: '', descricao: '' });
+                                options.openCategoryModal();
+                                setCategoryForm({ name: '', description: '' });
                             }}
                             id="cancel-edit-cat-btn"
                         >
@@ -84,12 +84,12 @@ const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
             {deleteConfirmOpen && (
                 <CategoryDeleteModal
                     open={deleteConfirmOpen}
-                    categoria={catForm}
+                    category={categoryForm}
                     onConfirm={() => {
                         onDelete();
                         setDeleteConfirmOpen(false);
-                        options.abrirModalCategoria(); // fecha modal de edição
-                        setCatForm({ nome: '', descricao: '' }); // limpa formulário
+                        options.openCategoryModal(); // fecha modal de edição
+                        setCategoryForm({ name: '', description: '' }); // limpa formulário
                     }}
                     onClose={() => setDeleteConfirmOpen(false)}
                 />

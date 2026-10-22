@@ -4,22 +4,22 @@ import styles from '../../styles/produtos.module.css';
 import importStyles from '../../styles/modalImport.module.css';
 import ProductForm from './ProductForm';
 import ServiceForm from './ServiceForm';
-import type { ProdutoFormData, ProdutoOptions, ProdutoActions } from './ProductForm';
+import type { ProductFormData, ProductOptions, ProductActions } from './ProductForm';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 
-interface FormularioItemProps {
+interface ItemFormProps {
     onImportXML: (file?: File) => void;
-    editarProdutoId: number | null;
-    form: ProdutoFormData;
-    setForm: Dispatch<SetStateAction<ProdutoFormData>>;
-    options: ProdutoOptions;
-    actions: ProdutoActions;
+    editingProductId: number | null;
+    form: ProductFormData;
+    setForm: Dispatch<SetStateAction<ProductFormData>>;
+    options: ProductOptions;
+    actions: ProductActions;
     inputRef: RefObject<HTMLInputElement | null>;
 }
 
-const ItemForm: React.FC<FormularioItemProps> = ({
+const ItemForm: React.FC<ItemFormProps> = ({
     onImportXML,
-    editarProdutoId,
+    editingProductId,
     form,
     setForm,
     options,
@@ -52,8 +52,8 @@ const ItemForm: React.FC<FormularioItemProps> = ({
                         <select
                             id="form-tipo"
                             className={styles.selectField}
-                            value={form.tipo}
-                            onChange={(e) => setForm(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' }))}
+                            value={form.type}
+                            onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'PRODUTO' | 'SERVICO' }))}
                         >
                             <option value="PRODUTO">Produto</option>
                             <option value="SERVICO">Serviço</option>
@@ -86,9 +86,9 @@ const ItemForm: React.FC<FormularioItemProps> = ({
                 </div>
             </div>
 
-            {form.tipo === 'PRODUTO' ? (
+            {form.type === 'PRODUTO' ? (
                 <ProductForm
-                    editarProdutoId={editarProdutoId}
+                    editingProductId={editingProductId}
                     form={form}
                     setForm={setForm}
                     options={options}
@@ -97,7 +97,7 @@ const ItemForm: React.FC<FormularioItemProps> = ({
                 />
             ) : (
                 <ServiceForm
-                    editarProdutoId={editarProdutoId}
+                    editingProductId={editingProductId}
                     form={form}
                     setForm={setForm}
                     options={options}

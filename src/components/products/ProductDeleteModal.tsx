@@ -5,42 +5,42 @@ import {
     ItemData,
 } from '../../services/produtosService';
 
-interface ModalProdExclusaoProps {
+interface ProductDeleteModalProps {
     open: boolean;
     item: ItemData | null;
     onConfirm: () => void;
     onClose: () => void;
 }
 
-interface ModalCatExclusaoProps {
+interface CategoryDeleteModalProps {
     open: boolean;
-    categoria: { nome: string; descricao?: string };
+    category: { name: string; description?: string };
     onConfirm: () => void;
     onClose: () => void;
 }
 
-interface ModalMarcaExclusaoProps {
+interface BrandDeleteModalProps {
     open: boolean;
-    marca: { nome: string };
+    brand: { name: string };
     onConfirm: () => void;
     onClose: () => void;
 }
 
-interface ModalFornecedorExclusaoProps {
+interface SupplierDeleteModalProps {
     open: boolean;
-    fornecedor: { nome: string };
+    supplier: { name: string };
     onConfirm: () => void;
     onClose: () => void;
 }
 
-interface ModalUomExclusaoProps {
+interface UnitOfMeasureDeleteModalProps {
     open: boolean;
-    unidadeMedida: { sigla: string; descricao?: string };
+    unitOfMeasure: { abbreviation: string; description?: string };
     onConfirm: () => void;
     onClose: () => void;
 }
 
-const ProductDeleteModal: React.FC<ModalProdExclusaoProps> = ({
+const ProductDeleteModal: React.FC<ProductDeleteModalProps> = ({
     open,
     item,
     onConfirm,
@@ -86,7 +86,7 @@ const ProductDeleteModal: React.FC<ModalProdExclusaoProps> = ({
     )
 };
 
-export const CategoryDeleteModal: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
+export const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({ open, category, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -96,7 +96,7 @@ export const CategoryDeleteModal: React.FC<ModalCatExclusaoProps> = ({ open, cat
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-delete-title" tabIndex={-1}>
                 <h3 id="modal-cat-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-                <p>Tem certeza que deseja excluir a categoria <strong>{categoria.nome}</strong>?</p>
+                <p>Tem certeza que deseja excluir a categoria <strong>{category.name}</strong>?</p>
                 <div className={styles.modalActions}>
                     <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-cat-btn">
                         Excluir
@@ -110,7 +110,7 @@ export const CategoryDeleteModal: React.FC<ModalCatExclusaoProps> = ({ open, cat
     );
 };
 
-export const BrandDeleteModal: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
+export const BrandDeleteModal: React.FC<BrandDeleteModalProps> = ({ open, brand, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -120,7 +120,7 @@ export const BrandDeleteModal: React.FC<ModalMarcaExclusaoProps> = ({ open, marc
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-mar-delete-title" tabIndex={-1}>
                 <h3 id="modal-mar-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-                <p>Tem certeza que deseja excluir a marca <strong>{marca.nome}</strong>?</p>
+                <p>Tem certeza que deseja excluir a marca <strong>{brand.name}</strong>?</p>
                 <div className={styles.modalActions}>
                     <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-mar-btn">
                         Excluir
@@ -134,7 +134,7 @@ export const BrandDeleteModal: React.FC<ModalMarcaExclusaoProps> = ({ open, marc
     );
 };
 
-export const SupplierDeleteModal: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
+export const SupplierDeleteModal: React.FC<SupplierDeleteModalProps> = ({ open, supplier, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -144,7 +144,7 @@ export const SupplierDeleteModal: React.FC<ModalFornecedorExclusaoProps> = ({ op
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-fornecedor-delete-title" tabIndex={-1}>
                 <h3 id="modal-fornecedor-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-                <p>Tem certeza que deseja excluir o fornecedor <strong>{fornecedor.nome}</strong>?</p>
+                <p>Tem certeza que deseja excluir o fornecedor <strong>{supplier.name}</strong>?</p>
                 <div className={styles.modalActions}>
                     <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-fornecedor-btn">
                         Excluir
@@ -158,7 +158,7 @@ export const SupplierDeleteModal: React.FC<ModalFornecedorExclusaoProps> = ({ op
     );
 };
 
-export const UnitOfMeasureDeleteModal: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
+export const UnitOfMeasureDeleteModal: React.FC<UnitOfMeasureDeleteModalProps> = ({ open, unitOfMeasure, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -168,7 +168,7 @@ export const UnitOfMeasureDeleteModal: React.FC<ModalUomExclusaoProps> = ({ open
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-delete-title" tabIndex={-1}>
                 <h3 id="modal-uom-delete-title" className={styles.modalTitle}>Confirmar Exclusão</h3>
-                <p>Tem certeza que deseja excluir a unidade de medida <strong>{unidadeMedida.sigla}</strong>?</p>
+                <p>Tem certeza que deseja excluir a unidade de medida <strong>{unitOfMeasure.abbreviation}</strong>?</p>
                 <div className={styles.modalActions}>
                     <button className={styles.deleteButton} onClick={onConfirm} id="confirm-delete-uom-btn">
                         Excluir

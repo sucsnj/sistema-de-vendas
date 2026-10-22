@@ -12,63 +12,63 @@ import {
     updateUnitMultiplier,
 } from '../../utils/productUnits';
 import {
-    CategoriaData,
-    MarcaData,
-    UnidadeMedidaData,
-    FornecedorData
+    CategoryData,
+    BrandData,
+    UnitOfMeasureData,
+    SupplierData
 } from '../../services/produtosService';
 
-export interface ProdutoFormData {
-    tipo: 'PRODUTO' | 'SERVICO';
-    nome: string;
-    descricao: string;
-    categoriaId: number;
-    marcaId: number;
-    fornecedorId: number;
-    precoCompra: string;
-    margemLucro: string;
-    precoVenda: string;
-    estoque: string;
-    multiplicadorUnidade: string;
-    unidadeMedidaId: number;
-    codigoInterno: string;
-    referencia: string;
-    duracaoMinutos: string;
-    ativo: number;
-    unidadesMedida: { unidadeMedidaId: number; multiplicadorUnidade: string; principal: boolean }[];
+export interface ProductFormData {
+    type: 'PRODUTO' | 'SERVICO';
+    name: string;
+    description: string;
+    categoryId: number;
+    brandId: number;
+    supplierId: number;
+    purchasePrice: string;
+    profitMargin: string;
+    salePrice: string;
+    stock: string;
+    unitMultiplier: string;
+    unitOfMeasureId: number;
+    internalCode: string;
+    reference: string;
+    durationMinutes: string;
+    active: number;
+    unitsOfMeasure: { unitOfMeasureId: number; unitMultiplier: string; isPrincipal: boolean }[];
 }
 
-export interface ProdutoOptions {
-    categorias: CategoriaData[];
-    marcas: MarcaData[];
-    fornecedores: FornecedorData[];
-    unidadesMedida: UnidadeMedidaData[];
+export interface ProductOptions {
+    categories: CategoryData[];
+    brands: BrandData[];
+    suppliers: SupplierData[];
+    unitsOfMeasure: UnitOfMeasureData[];
 }
 
-export interface ProdutoActions {
-    abrirModalCategoria: () => void;
-    abrirModalMarca: () => void;
-    abrirModalFornecedor: () => void;
-    abrirModalUnidadeMedida: () => void;
-    abrirModalAjusteEstoque: () => void;
-    editarCategoria: (categoria: CategoriaData) => void;
-    editarMarca: (marca: MarcaData) => void;
-    editarFornecedor: (fornecedor: FornecedorData) => void;
-    editarUnidadeMedida: (unidadeMedida: UnidadeMedidaData) => void;
+export interface ProductActions {
+    openCategoryModal: () => void;
+    openBrandModal: () => void;
+    openSupplierModal: () => void;
+    openUnitOfMeasureModal: () => void;
+    openStockAdjustModal: () => void;
+    editCategory: (category: CategoryData) => void;
+    editBrand: (brand: BrandData) => void;
+    editSupplier: (supplier: SupplierData) => void;
+    editUnitOfMeasure: (unitOfMeasure: UnitOfMeasureData) => void;
 }
 
 // Props do Componente
-interface FormularioProdutoProps {
-    editarProdutoId: number | null;
-    form: ProdutoFormData;
-    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
-    options: ProdutoOptions;
-    actions: ProdutoActions;
+interface ProductFormProps {
+    editingProductId: number | null;
+    form: ProductFormData;
+    setForm: React.Dispatch<React.SetStateAction<ProductFormData>>;
+    options: ProductOptions;
+    actions: ProductActions;
     inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const ProductForm: React.FC<FormularioProdutoProps> = ({
-    editarProdutoId,
+const ProductForm: React.FC<ProductFormProps> = ({
+    editingProductId,
     form,
     setForm,
     options,
@@ -85,8 +85,8 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-ativo"
                         className={styles.selectField}
-                        value={form.ativo}
-                        onChange={(e) => setForm(prev => ({ ...prev, ativo: Number(e.target.value) }))}
+                        value={form.active}
+                        onChange={(e) => setForm(prev => ({ ...prev, active: Number(e.target.value) }))}
                     >
                         <option value={1}>Sim</option>
                         <option value={0}>Não</option>
@@ -104,8 +104,8 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     type="text"
                     className={styles.inputField}
                     placeholder="Nome do item"
-                    value={form.nome}
-                    onChange={(e) => setForm(prev => ({ ...prev, nome: e.target.value }))}
+                    value={form.name}
+                    onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
                 />
             </div>
 
@@ -118,8 +118,8 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     className={styles.textareaField}
                     placeholder="Detalhes ou especificações"
                     rows={3}
-                    value={form.descricao}
-                    onChange={(e) => setForm(prev => ({ ...prev, descricao: e.target.value }))}
+                    value={form.description}
+                    onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                 />
             </div>
 
@@ -131,12 +131,12 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-categoria"
                         className={styles.selectField}
-                        value={form.categoriaId}
+                        value={form.categoryId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))
+                            setForm(prev => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                     >
-                        {options.categorias.map((c) => (
+                        {options.categories.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.nome}
                             </option>
@@ -145,7 +145,7 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.addButton}
-                        onClick={actions.abrirModalCategoria}
+                        onClick={actions.openCategoryModal}
                         title="Adicionar Categoria"
                         id="add-categoria-btn"
                     >
@@ -156,11 +156,11 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const categoriaSelecionada = options.categorias.find(
-                                (c) => c.id === form.categoriaId
+                            const categoriaSelecionada = options.categories.find(
+                                (c) => c.id === form.categoryId
                             );
                             if (categoriaSelecionada) {
-                                actions.editarCategoria(categoriaSelecionada);
+                                actions.editCategory(categoriaSelecionada);
                             }
                         }}
                         title="Editar Categoria Selecionada"
@@ -179,12 +179,12 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-marca"
                         className={styles.selectField}
-                        value={form.marcaId}
+                        value={form.brandId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : 1 }))
+                            setForm(prev => ({ ...prev, brandId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                     >
-                        {options.marcas.map((m) => (
+                        {options.brands.map((m) => (
                             <option key={m.id} value={m.id}>
                                 {m.nome}
                             </option>
@@ -193,7 +193,7 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.addButton}
-                        onClick={() => actions.abrirModalMarca()}
+                        onClick={() => actions.openBrandModal()}
                         title="Adicionar Marca"
                         id="add-marca-btn"
                     >
@@ -204,11 +204,11 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const marcaSelecionada = options.marcas.find(
-                                (m) => m.id === form.marcaId
+                            const marcaSelecionada = options.brands.find(
+                                (m) => m.id === form.brandId
                             );
                             if (marcaSelecionada) {
-                                actions.editarMarca(marcaSelecionada);
+                                actions.editBrand(marcaSelecionada);
                             }
                         }}
                         title="Editar Marca Selecionada"
@@ -227,12 +227,12 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <select
                         id="form-fornecedor"
                         className={styles.selectField}
-                        value={form.fornecedorId}
+                        value={form.supplierId}
                         onChange={(e) =>
-                            setForm(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : 1 }))
+                            setForm(prev => ({ ...prev, supplierId: e.target.value ? Number(e.target.value) : 1 }))
                         }
                     >
-                        {options.fornecedores.map((f) => (
+                        {options.suppliers.map((f) => (
                             <option key={f.id} value={f.id}>
                                 {f.nome}
                             </option>
@@ -241,7 +241,7 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.addButton}
-                        onClick={actions.abrirModalFornecedor}
+                        onClick={actions.openSupplierModal}
                         title="Adicionar Fornecedor"
                         id="add-fornecedor-btn"
                     >
@@ -252,11 +252,11 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const fornecedorSelecionado = options.fornecedores.find(
-                                (f) => f.id === form.fornecedorId
+                            const fornecedorSelecionado = options.suppliers.find(
+                                (f) => f.id === form.supplierId
                             );
                             if (fornecedorSelecionado) {
-                                actions.editarFornecedor(fornecedorSelecionado);
+                                actions.editSupplier(fornecedorSelecionado);
                             }
                         }}
                         title="Editar Fornecedor Selecionado"
@@ -279,26 +279,26 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0,00"
-                        value={form.precoCompra}
+                        value={form.purchasePrice}
                         onChange={(e) => {
-                            const precoCompra = e.target.value;
-                            const compraValor = parseNumber(precoCompra);
-                            const vendaValor = parseNumber(form.precoVenda);
-                            const margemValor = parseNumber(form.margemLucro);
+                            const purchasePrice = e.target.value;
+                            const compraValor = parseNumber(purchasePrice);
+                            const vendaValor = parseNumber(form.salePrice);
+                            const margemValor = parseNumber(form.profitMargin);
 
                             if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
                                 const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
-                                setForm(prev => ({ ...prev, precoCompra, precoVenda: String(novoPrecoVenda) }));
+                                setForm(prev => ({ ...prev, purchasePrice, salePrice: String(novoPrecoVenda) }));
                                 return;
                             }
 
                             if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
                                 const novaMargem = calculateMargin(compraValor, vendaValor);
-                                setForm(prev => ({ ...prev, precoCompra, margemLucro: String(novaMargem) }));
+                                setForm(prev => ({ ...prev, purchasePrice, profitMargin: String(novaMargem) }));
                                 return;
                             }
 
-                            setForm(prev => ({ ...prev, precoCompra }));
+                            setForm(prev => ({ ...prev, purchasePrice }));
                         }}
                     />
                 </div>
@@ -313,19 +313,19 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0"
-                        value={form.margemLucro}
+                        value={form.profitMargin}
                         onChange={(e) => {
-                            const margemLucro = e.target.value;
-                            const compraValor = parseNumber(form.precoCompra);
-                            const margemValor = parseNumber(margemLucro);
+                            const profitMargin = e.target.value;
+                            const compraValor = parseNumber(form.purchasePrice);
+                            const margemValor = parseNumber(profitMargin);
 
                             if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
                                 const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
-                                setForm(prev => ({ ...prev, margemLucro, precoVenda: String(novoPrecoVenda) }));
+                                setForm(prev => ({ ...prev, profitMargin, salePrice: String(novoPrecoVenda) }));
                                 return;
                             }
 
-                            setForm(prev => ({ ...prev, margemLucro }));
+                            setForm(prev => ({ ...prev, profitMargin }));
                         }}
                     />
                 </div>
@@ -340,19 +340,19 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         inputMode="decimal"
                         className={styles.inputField}
                         placeholder="0,00"
-                        value={form.precoVenda}
+                        value={form.salePrice}
                         onChange={(e) => {
-                            const precoVenda = e.target.value;
-                            const compraValor = parseNumber(form.precoCompra);
-                            const vendaValor = parseNumber(precoVenda);
+                            const salePrice = e.target.value;
+                            const compraValor = parseNumber(form.purchasePrice);
+                            const vendaValor = parseNumber(salePrice);
 
                             if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
                                 const novaMargem = calculateMargin(compraValor, vendaValor);
-                                setForm(prev => ({ ...prev, precoVenda, margemLucro: String(novaMargem) }));
+                                setForm(prev => ({ ...prev, salePrice, profitMargin: String(novaMargem) }));
                                 return;
                             }
 
-                            setForm(prev => ({ ...prev, precoVenda }));
+                            setForm(prev => ({ ...prev, salePrice }));
                         }}
                     />
                 </div>
@@ -361,11 +361,11 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <label className={styles.formLabel} htmlFor="form-estoque">
                         Estoque:
                     </label>
-                    {editarProdutoId ? (
+                    {editingProductId ? (
                         <button
                             type="button"
                             className={styles.secondaryButton}
-                            onClick={actions.abrirModalAjusteEstoque}
+                            onClick={actions.openStockAdjustModal}
                             id="open-ajuste-estoque-btn"
                         >
                             Ajustar
@@ -377,8 +377,8 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                             inputMode="numeric"
                             className={styles.inputField}
                             placeholder="0"
-                            value={form.estoque}
-                            onChange={(e) => setForm(prev => ({ ...prev, estoque: e.target.value }))}
+                            value={form.stock}
+                            onChange={(e) => setForm(prev => ({ ...prev, stock: e.target.value }))}
                         />
                     )}
                 </div>
@@ -390,18 +390,18 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     Unidades de Medida:
                 </label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                    {form.unidadesMedida?.map((un, index) => (
+                    {form.unitsOfMeasure?.map((un, index) => (
                         <div key={index} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', background: 'rgba(255, 255, 255, 0.05)', padding: '0.5rem', borderRadius: '4px' }}>
                             <input
                                 type="radio"
                                 name="unidadePrincipal"
-                                checked={un.principal}
+                                checked={un.isPrincipal}
                                 onChange={() => {
-                                    const { units, unidadeMedidaId, multiplicadorUnidade } = setUnitAsPrincipal(
-                                        form.unidadesMedida,
+                                    const { units, unitOfMeasureId, unitMultiplier } = setUnitAsPrincipal(
+                                        form.unitsOfMeasure,
                                         index
                                     );
-                                    setForm(prev => ({ ...prev, unidadesMedida: units, unidadeMedidaId, multiplicadorUnidade }));
+                                    setForm(prev => ({ ...prev, unitsOfMeasure: units, unitOfMeasureId, unitMultiplier }));
                                 }}
                                 title="Definir como Principal"
                                 style={{ margin: '0 0.5rem' }}
@@ -410,21 +410,21 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                             <select
                                 className={styles.selectField}
                                 style={{ flex: 1 }}
-                                value={un.unidadeMedidaId}
+                                value={un.unitOfMeasureId}
                                 onChange={(e) => {
-                                    const { units, unidadeMedidaId } = updateUnitId(
-                                        form.unidadesMedida,
+                                    const { units, unitOfMeasureId } = updateUnitId(
+                                        form.unitsOfMeasure,
                                         index,
                                         Number(e.target.value)
                                     );
                                     setForm(prev => ({
                                         ...prev,
-                                        unidadesMedida: units,
-                                        ...(unidadeMedidaId !== undefined ? { unidadeMedidaId } : {}),
+                                        unitsOfMeasure: units,
+                                        ...(unitOfMeasureId !== undefined ? { unitOfMeasureId } : {}),
                                     }));
                                 }}
                             >
-                                {options.unidadesMedida.map((u) => (
+                                {options.unitsOfMeasure.map((u) => (
                                     <option key={u.id} value={u.id}>
                                         {u.sigla} - {u.descricao}
                                     </option>
@@ -437,17 +437,17 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                                 className={styles.inputField}
                                 style={{ width: '100px' }}
                                 placeholder="Fator"
-                                value={un.multiplicadorUnidade}
+                                value={un.unitMultiplier}
                                 onChange={(e) => {
-                                    const { units, multiplicadorUnidade } = updateUnitMultiplier(
-                                        form.unidadesMedida,
+                                    const { units, unitMultiplier } = updateUnitMultiplier(
+                                        form.unitsOfMeasure,
                                         index,
                                         e.target.value
                                     );
                                     setForm(prev => ({
                                         ...prev,
-                                        unidadesMedida: units,
-                                        ...(multiplicadorUnidade !== undefined ? { multiplicadorUnidade } : {}),
+                                        unitsOfMeasure: units,
+                                        ...(unitMultiplier !== undefined ? { unitMultiplier } : {}),
                                     }));
                                 }}
                             />
@@ -456,15 +456,15 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                                 type="button"
                                 className={styles.removeBtn}
                                 onClick={() => {
-                                    const { units, unidadeMedidaId, multiplicadorUnidade } = removeUnit(
-                                        form.unidadesMedida,
+                                    const { units, unitOfMeasureId, unitMultiplier } = removeUnit(
+                                        form.unitsOfMeasure,
                                         index
                                     );
                                     setForm(prev => ({
                                         ...prev,
-                                        unidadesMedida: units,
-                                        ...(unidadeMedidaId !== undefined ? { unidadeMedidaId } : {}),
-                                        ...(multiplicadorUnidade !== undefined ? { multiplicadorUnidade } : {}),
+                                        unitsOfMeasure: units,
+                                        ...(unitOfMeasureId !== undefined ? { unitOfMeasureId } : {}),
+                                        ...(unitMultiplier !== undefined ? { unitMultiplier } : {}),
                                     }));
                                 }}
                                 title="Remover"
@@ -481,7 +481,7 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                         onClick={() => {
                             setForm(p => ({
                                 ...p,
-                                unidadesMedida: addUnit(p.unidadesMedida || []),
+                                unitsOfMeasure: addUnit(p.unitsOfMeasure || []),
                             }));
                         }}
                     >
@@ -490,7 +490,7 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     <button
                         type="button"
                         className={styles.secondaryButton}
-                        onClick={actions.abrirModalUnidadeMedida}
+                        onClick={actions.openUnitOfMeasureModal}
                         title="Cadastrar Unidade no Sistema"
                     >
                         Cadastro de Unidades
@@ -506,10 +506,10 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     id="form-cod-interno"
                     type="text"
                     className={styles.inputField}
-                    placeholder={editarProdutoId ? "Código Interno não pode ser alterado" : "Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"}
-                    value={form.codigoInterno}
-                    onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
-                    disabled={!!editarProdutoId}
+                    placeholder={editingProductId ? "Código Interno não pode ser alterado" : "Ex: PROD-001 (preenchido automaticamente caso deixado em branco)"}
+                    value={form.internalCode}
+                    onChange={(e) => setForm(prev => ({ ...prev, internalCode: e.target.value }))}
+                    disabled={!!editingProductId}
                 />
             </div>
 
@@ -522,8 +522,8 @@ const ProductForm: React.FC<FormularioProdutoProps> = ({
                     type="text"
                     className={styles.inputField}
                     placeholder="Ex: REF-001"
-                    value={form.referencia}
-                    onChange={(e) => setForm(prev => ({ ...prev, referencia: e.target.value }))}
+                    value={form.reference}
+                    onChange={(e) => setForm(prev => ({ ...prev, reference: e.target.value }))}
                 />
             </div>
         </div>

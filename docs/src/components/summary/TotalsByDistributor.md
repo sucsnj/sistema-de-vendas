@@ -8,8 +8,8 @@
 - Estado vazio: "Sem pendências por distribuidora."
 
 ```ts
-interface TotaisPorDistribuidoraProps {
-  totaisPorDistribuidora: Record<string, number>;
+interface TotalsByDistributorProps {
+  totalsByDistributor: Record<string, number>;
 }
 ```
 

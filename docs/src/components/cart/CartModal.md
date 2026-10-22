@@ -9,7 +9,7 @@
 - Estado vazio (mensagem central) e rodapé com "Limpar Carrinho" (só com itens).
 
 ```ts
-interface ModalCarrinhoProps {
+interface CartModalProps {
   isOpen: boolean; onClose: () => void;
   cartItems: CartItem[];
   onUpdateQuantity: (id: number, tipo: 'PRODUTO' | 'SERVICO', newQty: number) => void;

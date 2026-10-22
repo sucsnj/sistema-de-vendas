@@ -11,7 +11,7 @@ import {
 } from '../../database/produtosDb';
 import { parseNumber } from '../../utils/number';
 
-interface UnidadePayload {
+interface UnitPayload {
   unidade_medida_id: number;
   multiplicador_unidade: number;
   principal: number;
@@ -88,10 +88,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
       // Validação de unidades de medida
-      let listUnidades: UnidadePayload[] = [];
+      let listUnidades: UnitPayload[] = [];
       if (tipo === 'PRODUTO') {
         if (unidades_medida && Array.isArray(unidades_medida)) {
-          listUnidades = unidades_medida.map((u: UnidadePayload) => ({
+          listUnidades = unidades_medida.map((u: UnitPayload) => ({
             unidade_medida_id: Number(u.unidade_medida_id),
             multiplicador_unidade: parseNumber(u.multiplicador_unidade),
             principal: u.principal ? 1 : 0
@@ -242,10 +242,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Selecione uma categoria válida.' });
       }
       // Validação de unidades de medida
-      let listUnidades: UnidadePayload[] = [];
+      let listUnidades: UnitPayload[] = [];
       if (tipo === 'PRODUTO') {
         if (unidades_medida && Array.isArray(unidades_medida)) {
-          listUnidades = unidades_medida.map((u: UnidadePayload) => ({
+          listUnidades = unidades_medida.map((u: UnitPayload) => ({
             unidade_medida_id: Number(u.unidade_medida_id),
             multiplicador_unidade: parseNumber(u.multiplicador_unidade),
             principal: u.principal ? 1 : 0

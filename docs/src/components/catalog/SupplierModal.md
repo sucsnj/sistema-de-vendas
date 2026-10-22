@@ -5,13 +5,13 @@
 ## O que faz
 
 - Campo **Nome** (obrigatório); submit chama `handleSaveSupplier`.
-- Fechar limpa `novoFornecedorNome` e fecha o modal.
+- Fechar limpa `newSupplierName` e fecha o modal.
 
 ```ts
-interface ModalFornecedorProps {
-  setModalFornecedorOpen: (value: boolean) => void;
-  novoFornecedorNome: string;
-  setNovoFornecedorNome: (value: string) => void;
+interface SupplierModalProps {
+  setSupplierModalOpen: (value: boolean) => void;
+  newSupplierName: string;
+  setNewSupplierName: (value: string) => void;
   handleSaveSupplier: (e: React.FormEvent) => void;
 }
 ```

@@ -19,7 +19,7 @@ const History: React.FC = () => {
   // Notificações (toast) exibidas na tela
   const { showToast } = useToast();
   // Filtro de vendas (persistido no localStorage)
-  const { filtro, changeFilter } = useFilter();
+  const { filter, changeFilter } = useFilter();
   // Estado e ações de vendas (carregar, editar, excluir). Aqui o autoConsolidate
   // fica desligado e o filtro é dinâmico, diferente do dashboard.
   const {
@@ -30,7 +30,7 @@ const History: React.FC = () => {
     handleCancelEdit,
     handleSaved,
     handleDeleteSale,
-  } = useSales(mes, ano, showToast, { filtro, autoConsolidate: false });
+  } = useSales(mes, ano, showToast, { filter, autoConsolidate: false });
 
   // Recarrega as vendas sempre que o período ou o filtro mudar
   useEffect(() => {
@@ -65,13 +65,13 @@ const History: React.FC = () => {
             </label>
             {/* Botões de filtro por valor da venda */}
             <div className="buttons-filter">
-              <button className={filtro === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFilter('todas')}>
+              <button className={filter === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFilter('todas')}>
                 Todas
               </button>
-              <button className={filtro === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFilter('positivas')}>
+              <button className={filter === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFilter('positivas')}>
                 Positivas
               </button>
-              <button className={filtro === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFilter('negativas')}>
+              <button className={filter === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFilter('negativas')}>
                 Negativas
               </button>
 
@@ -92,7 +92,7 @@ const History: React.FC = () => {
         {/* Tabela com as vendas do período */}
         <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
         {/* Exportação e importação de vendas */}
-        <ExportButtons sales={sales} mes={mes} ano={ano} onMessage={showToast} />
+        <ExportButtons sales={sales} month={mes} year={ano} onMessage={showToast} />
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { VendaDiaria } from '../../services/vendasService';
+import { DailySale } from '../../services/vendasService';
 import { formatCurrency } from '../../utils/formatter';
 import { formatDateString } from '../../utils/date';
 import { canEdit } from '../../utils/edit';
@@ -8,10 +8,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useShortcuts } from '../../utils/shortcuts';
 
 interface DailySalesTotalProps {
-  sales: VendaDiaria[];
+  sales: DailySale[];
   selectedDay?: string;
-  recentSales?: VendaDiaria[];
-  onEditSale?: (sale: VendaDiaria) => void;
+  recentSales?: DailySale[];
+  onEditSale?: (sale: DailySale) => void;
   onDeleteSale?: (id: number) => void;
   children?: ReactNode;
 }

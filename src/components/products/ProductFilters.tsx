@@ -1,49 +1,49 @@
 import {
-    CategoriaData,
-    MarcaData,
-    FornecedorData
+    CategoryData,
+    BrandData,
+    SupplierData
 } from '../../services/produtosService';
 import styles from '../../styles/produtos.module.css';
 
-export interface FiltrosState {
+export interface ProductFiltersState {
     search: string;
-    tipo: 'PRODUTO' | 'SERVICO' | 'TODOS';
-    categoriaId: number | '';
-    marcaId: number | '';
-    fornecedorId: number | '';
+    type: 'PRODUTO' | 'SERVICO' | 'TODOS';
+    categoryId: number | '';
+    brandId: number | '';
+    supplierId: number | '';
     status: 'ATIVO' | 'INATIVO' | 'TODOS';
 }
 
-export interface FiltrosData {
-    categorias: CategoriaData[];
-    marcas: MarcaData[];
-    fornecedores: FornecedorData[];
+export interface ProductFiltersData {
+    categories: CategoryData[];
+    brands: BrandData[];
+    suppliers: SupplierData[];
 }
 
-export interface FiltrosActions {
-    buscar: (e: React.FormEvent) => void;
-    limpar: () => void;
-    mudarPagina: (page: number) => void;
+export interface ProductFiltersActions {
+    search: (e: React.FormEvent) => void;
+    clear: () => void;
+    changePage: (page: number) => void;
 }
 
-interface FiltrosProps {
-    state: FiltrosState;
-    data: FiltrosData;
-    setFiltros: React.Dispatch<React.SetStateAction<FiltrosState>>;
-    actions: FiltrosActions;
+interface ProductFiltersProps {
+    state: ProductFiltersState;
+    data: ProductFiltersData;
+    setFilters: React.Dispatch<React.SetStateAction<ProductFiltersState>>;
+    actions: ProductFiltersActions;
 }
 
-const ProductFilters: React.FC<FiltrosProps> = ({
+const ProductFilters: React.FC<ProductFiltersProps> = ({
     state,
     data,
-    setFiltros,
+    setFilters,
     actions,
 }) => {
 
     return (
         <section className="glass-form" aria-labelledby="filtros-title">
             <h2 id="filtros-title" className="">Filtros de Pesquisa</h2>
-            <form onSubmit={actions.buscar} className={`${styles.filterForm} page-actions`}>
+            <form onSubmit={actions.search} className={`${styles.filterForm} page-actions`}>
                 <label htmlFor="search-input" className={styles.filterLabelSearch}>
                     Buscar:
                     <input
@@ -52,7 +52,7 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                         type="text"
                         placeholder="Nome, código, EAN ou referência..."
                         value={state.search}
-                        onChange={(e) => setFiltros(prev => ({ ...prev, search: e.target.value }))}
+                        onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                     />
                 </label>
 
@@ -61,10 +61,10 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                     <select
                         id="filtro-tipo"
                         className={`${styles.filterSelect} headerSelect`}
-                        value={state.tipo}
+                        value={state.type}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, tipo: e.target.value as 'PRODUTO' | 'SERVICO' | 'TODOS' }));
-                            actions.mudarPagina(1);
+                            setFilters(prev => ({ ...prev, type: e.target.value as 'PRODUTO' | 'SERVICO' | 'TODOS' }));
+                            actions.changePage(1);
                         }}
                     >
                         <option value="TODOS">Todos</option>
@@ -78,13 +78,13 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                     <select
                         id="filtro-categoria"
                         className={`${styles.filterSelect} headerSelect`}
-                        value={state.categoriaId}
+                        value={state.categoryId}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : '' }));
-                            actions.mudarPagina(1);
+                            setFilters(prev => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : '' }));
+                            actions.changePage(1);
                         }}>
                         <option value="">Todas</option>
-                        {data.categorias.map((c) => (
+                        {data.categories.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.nome}
                             </option>
@@ -97,13 +97,13 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                     <select
                         id="filtro-marca"
                         className={`${styles.filterSelect} headerSelect`}
-                        value={state.marcaId}
+                        value={state.brandId}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, marcaId: e.target.value ? Number(e.target.value) : '' }));
-                            actions.mudarPagina(1);
+                            setFilters(prev => ({ ...prev, brandId: e.target.value ? Number(e.target.value) : '' }));
+                            actions.changePage(1);
                         }}>
                         <option value="">Todas</option>
-                        {data.marcas.map((m) => (
+                        {data.brands.map((m) => (
                             <option key={m.id} value={m.id}>
                                 {m.nome}
                             </option>
@@ -116,13 +116,13 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                     <select
                         id="filtro-fornecedor"
                         className={`${styles.filterSelect} headerSelect`}
-                        value={state.fornecedorId}
+                        value={state.supplierId}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, fornecedorId: e.target.value ? Number(e.target.value) : '' }));
-                            actions.mudarPagina(1);
+                            setFilters(prev => ({ ...prev, supplierId: e.target.value ? Number(e.target.value) : '' }));
+                            actions.changePage(1);
                         }}>
                         <option value="">Todos</option>
-                        {data.fornecedores.map((f) => (
+                        {data.suppliers.map((f) => (
                             <option key={f.id} value={f.id}>
                                 {f.nome}
                             </option>
@@ -137,8 +137,8 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                         className={`${styles.filterSelect} headerSelect`}
                         value={state.status}
                         onChange={(e) => {
-                            setFiltros(prev => ({ ...prev, status: e.target.value as 'ATIVO' | 'INATIVO' | 'TODOS' }));
-                            actions.mudarPagina(1);
+                            setFilters(prev => ({ ...prev, status: e.target.value as 'ATIVO' | 'INATIVO' | 'TODOS' }));
+                            actions.changePage(1);
                         }}
                     >
                         <option value="TODOS">Todos</option>
@@ -154,7 +154,7 @@ const ProductFilters: React.FC<FiltrosProps> = ({
                     <button
                         type="button"
                         className="headerButton"
-                        onClick={actions.limpar}
+                        onClick={actions.clear}
                     >
                         Limpar
                     </button>

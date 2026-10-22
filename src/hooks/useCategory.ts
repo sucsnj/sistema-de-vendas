@@ -5,22 +5,22 @@ import {
   deleteCategory,
   updateCategory,
 } from '../services/produtosService';
-import { CategoriaFormData } from '@/types/categoria';
-import { ProdutoFormData } from '@/components/products/ProductForm';
-import { ProdutoOptions } from '@/components/products/ProductForm';
+import { CategoryFormData } from '@/types/categoria';
+import { ProductFormData } from '@/components/products/ProductForm';
+import { ProductOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';
 
-interface UseCategoriaParams {
-  form: ProdutoFormData;
-  setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
-  setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
+interface UseCategoryParams {
+  form: ProductFormData;
+  setForm: React.Dispatch<React.SetStateAction<ProductFormData>>;
+  setOptions: React.Dispatch<React.SetStateAction<ProductOptions>>;
   showToast: (message: string, type: 'success' | 'error' | 'info') => void;
   loadItems: () => void;
   items: unknown[];
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setItemParaExcluir: (value: null) => void;
+  setItemToDelete: (value: null) => void;
 }
 
 export const useCategory = ({
@@ -33,35 +33,35 @@ export const useCategory = ({
   page,
   setPage,
   setDeleteConfirmOpen,
-  setItemParaExcluir,
-}: UseCategoriaParams) => {
+  setItemToDelete,
+}: UseCategoryParams) => {
   // Modais de cadastro rápido
-  const [modalCategoriaOpen, setModalCategoriaOpen] = useState(false);
-  const [catForm, setCatForm] = useState<CategoriaFormData>({ nome: '', descricao: '' });
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [categoryForm, setCategoryForm] = useState<CategoryFormData>({ name: '', description: '' });
 
   // Modais de Edição
-  const [modalCategoriaEditOpen, setModalCategoriaEditOpen] = useState(false);
+  const [categoryEditModalOpen, setCategoryEditModalOpen] = useState(false);
 
   // Cadastro de Categoria Inline
   const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nomeCategoria = validateRequired(catForm.nome, 'O nome da categoria');
+    const nomeCategoria = validateRequired(categoryForm.name, 'O nome da categoria');
     if (!nomeCategoria.ok) {
       showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {
-      const response = await createCategory(catForm.nome.trim(), catForm.descricao.trim());
+      const response = await createCategory(categoryForm.name.trim(), categoryForm.description.trim());
       showToast(response.message || 'Categoria criada com sucesso.', 'success');
 
-      // Re-carrega lista de categorias e seleciona a criada
+      // Re-carrega lista de categories e seleciona a criada
       const cats = await fetchCategories();
-      setOptions(prev => ({ ...prev, categorias: cats }));
-      setForm(prev => ({ ...prev, categoriaId: response.id }));
+      setOptions(prev => ({ ...prev, categories: cats }));
+      setForm(prev => ({ ...prev, categoryId: response.id }));
 
       // Fecha modal
-      setModalCategoriaOpen(false);
-      setCatForm({ nome: '', descricao: '' });
+      setCategoryModalOpen(false);
+      setCategoryForm({ name: '', description: '' });
     } catch (error: unknown) {
       showToast(error instanceof Error ? error.message : 'Erro ao criar categoria.', 'error');
     }
@@ -69,34 +69,34 @@ export const useCategory = ({
 
   // Handler para abrir modal de edição de categoria
   const handleOpenEditModal = (category: { id: number; nome: string; descricao?: string }) => {
-    setForm(prev => ({ ...prev, categoriaId: category.id }));
-    setCatForm({ nome: category.nome, descricao: category.descricao || '' });
-    setModalCategoriaEditOpen(true);
+    setForm(prev => ({ ...prev, categoryId: category.id }));
+    setCategoryForm({ name: category.nome, description: category.descricao || '' });
+    setCategoryEditModalOpen(true);
   };
 
   // Ediçao de categoria
   const handleUpdateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nomeCategoria = validateRequired(catForm.nome, 'O nome da categoria');
+    const nomeCategoria = validateRequired(categoryForm.name, 'O nome da categoria');
     if (!nomeCategoria.ok) {
       showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {
-      const response = await updateCategory(form.categoriaId, catForm.nome.trim(), catForm.descricao.trim());
+      const response = await updateCategory(form.categoryId, categoryForm.name.trim(), categoryForm.description.trim());
 
       // Atualiza na interface após confirmação da API
       setOptions(prev =>
       ({
-        ...prev, categorias: prev.categorias.map(cat =>
-          cat.id === form.categoriaId ?
-            { ...cat, nome: catForm.nome.trim(), descricao: catForm.descricao.trim() } : cat
+        ...prev, categories: prev.categories.map(cat =>
+          cat.id === form.categoryId ?
+            { ...cat, nome: categoryForm.name.trim(), descricao: categoryForm.description.trim() } : cat
         )
       }));
 
       showToast(response.message || 'Categoria atualizada com sucesso.', 'success');
-      setModalCategoriaEditOpen(false);
-      setCatForm({ nome: '', descricao: '' });
+      setCategoryEditModalOpen(false);
+      setCategoryForm({ name: '', description: '' });
       loadItems();
     } catch (error: unknown) {
       showToast(error instanceof Error ? error.message : 'Erro ao atualizar categoria.', 'error');
@@ -106,23 +106,23 @@ export const useCategory = ({
   // Handle para deletar categoria
   const handleDeleteCategory = async () => {
     try {
-      await deleteCategory(form.categoriaId);
+      await deleteCategory(form.categoryId);
       showToast('Marca deletada com sucesso.', 'success');
       setDeleteConfirmOpen(false);
-      setItemParaExcluir(null);
+      setItemToDelete(null);
 
       // Atualiza a interface após confirmação da API
       setOptions(prev => ({
         ...prev,
-        categorias: prev.categorias.filter(cat => cat.id !== form.categoriaId)
+        categories: prev.categories.filter(cat => cat.id !== form.categoryId)
       }));
 
       // Fecha o modal após a exclusão
-      setModalCategoriaOpen(false);
-      setCatForm({ nome: '', descricao: '' });
+      setCategoryModalOpen(false);
+      setCategoryForm({ name: '', description: '' });
 
       // Coloca o Id para 1
-      setForm(prev => ({ ...prev, categoriaId: 1 }));
+      setForm(prev => ({ ...prev, categoryId: 1 }));
 
       if (items.length === 1 && page > 1) {
         setPage(page - 1);
@@ -136,12 +136,12 @@ export const useCategory = ({
 
   return {
     // Estados
-    modalCategoriaOpen,
-    setModalCategoriaOpen,
-    catForm,
-    setCatForm,
-    modalCategoriaEditOpen,
-    setModalCategoriaEditOpen,
+    categoryModalOpen,
+    setCategoryModalOpen,
+    categoryForm,
+    setCategoryForm,
+    categoryEditModalOpen,
+    setCategoryEditModalOpen,
 
     // Handlers
     handleSaveCategory,

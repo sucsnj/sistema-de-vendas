@@ -5,15 +5,15 @@ import { capitalize } from '../../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
 import { now } from '../../utils/date';
 
-interface ContasAPagarHeaderProps {
-  ano: number;
-  mes: number;
-  setAno: (ano: number) => void;
-  setMes: (mes: number) => void;
+interface PayablesHeaderProps {
+  year: number;
+  month: number;
+  setYear: (year: number) => void;
+  setMonth: (month: number) => void;
   handleBackup: () => Promise<void>;
 }
 
-const PayablesHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAno, setMes, handleBackup }) => {
+const PayablesHeader: React.FC<PayablesHeaderProps> = ({ year, month, setYear, setMonth, handleBackup }) => {
   const today = now();
 
   return (
@@ -28,13 +28,13 @@ const PayablesHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAno, s
           <input
             className={styles.anoInput}
             type="number"
-            value={ano}
-            onChange={(e) => setAno(parseInt(e.target.value, 10) || today.year())}
+            value={year}
+            onChange={(e) => setYear(parseInt(e.target.value, 10) || today.year())}
           />
         </label>
         <label>
           Mês:
-          <select className={styles.mesSelect} value={mes} onChange={(e) => setMes(parseInt(e.target.value, 10))}>
+          <select className={styles.mesSelect} value={month} onChange={(e) => setMonth(parseInt(e.target.value, 10))}>
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i + 1}>
                 {capitalize(formatMonthName(i + 1))}

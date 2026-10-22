@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { ContaDetalhe } from '../../services/contasService';
+import { AccountDetails } from '../../services/contasService';
 import { formatDateString } from '../../utils/date';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
@@ -13,34 +13,34 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
-interface ContasAPagarFilterPanelProps {
-  filtroDistribuidora: string;
-  setFiltroDistribuidora: (value: string) => void;
-  filtroStatus: 'Todos' | 'Pendente' | 'Pago';
-  setFiltroStatus: (value: 'Todos' | 'Pendente' | 'Pago') => void;
-  filtroVencimentoDe: string;
-  setFiltroVencimentoDe: (value: string) => void;
-  filtroVencimentoAte: string;
-  setFiltroVencimentoAte: (value: string) => void;
-  hoje: string;
-  filteredContas: ContaDetalhe[];
-  handleView: (conta: ContaDetalhe) => void;
+interface PayablesFilterPanelProps {
+  distributorFilter: string;
+  setDistributorFilter: (value: string) => void;
+  statusFilter: 'Todos' | 'Pendente' | 'Pago';
+  setStatusFilter: (value: 'Todos' | 'Pendente' | 'Pago') => void;
+  dueDateFromFilter: string;
+  setDueDateFromFilter: (value: string) => void;
+  dueDateToFilter: string;
+  setDueDateToFilter: (value: string) => void;
+  today: string;
+  filteredAccounts: AccountDetails[];
+  handleView: (account: AccountDetails) => void;
   handleDelete: (id: number) => void;
-  handleEdit: (conta: ContaDetalhe) => void;
-  handleStartPayment: (conta: ContaDetalhe) => void;
+  handleEdit: (account: AccountDetails) => void;
+  handleStartPayment: (account: AccountDetails) => void;
   onClearFilters: () => void;
 }
 
-const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
-  filtroDistribuidora,
-  setFiltroDistribuidora,
-  filtroStatus,
-  setFiltroStatus,
-  filtroVencimentoDe,
-  setFiltroVencimentoDe,
-  filtroVencimentoAte,
-  setFiltroVencimentoAte,
-  filteredContas,
+const PayablesFilterPanel: React.FC<PayablesFilterPanelProps> = ({
+  distributorFilter,
+  setDistributorFilter,
+  statusFilter,
+  setStatusFilter,
+  dueDateFromFilter,
+  setDueDateFromFilter,
+  dueDateToFilter,
+  setDueDateToFilter,
+  filteredAccounts,
   handleView,
   handleDelete,
   handleStartPayment,
@@ -71,8 +71,8 @@ const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
               <input
                 type="text"
                 placeholder="Filtrar por distribuidora"
-                value={filtroDistribuidora}
-                onChange={(e) => setFiltroDistribuidora(e.target.value)}
+                value={distributorFilter}
+                onChange={(e) => setDistributorFilter(e.target.value)}
               />
             </label>
           </div>
@@ -81,8 +81,8 @@ const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
               Vencimento de
               <input
                 type="date"
-                value={filtroVencimentoDe}
-                onChange={(e) => setFiltroVencimentoDe(e.target.value)}
+                value={dueDateFromFilter}
+                onChange={(e) => setDueDateFromFilter(e.target.value)}
               />
             </label>
           </div>
@@ -91,15 +91,15 @@ const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
               até
               <input
                 type="date"
-                value={filtroVencimentoAte}
-                onChange={(e) => setFiltroVencimentoAte(e.target.value)}
+                value={dueDateToFilter}
+                onChange={(e) => setDueDateToFilter(e.target.value)}
               />
             </label>
           </div>
           <div>
             <label>
               Status
-              <select className={styles.statusSelect} value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
+              <select className={styles.statusSelect} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'Todos' | 'Pendente' | 'Pago')}>
                 <option value="Todos">Todos</option>
                 <option value="Pendente">Pendente</option>
                 <option value="Pago">Pago</option>
@@ -127,7 +127,7 @@ const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
             </tr>
           </thead>
           <tbody>
-            {filteredContas.map((account) => (
+            {filteredAccounts.map((account) => (
               <tr key={account.id}>
                 <td>{account.distribuidora}</td>
                 <td>R$ {formatCurrency(account.valor, 2)}</td>
@@ -178,7 +178,7 @@ const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                 </td>
               </tr>
             ))}
-            {filteredContas.length === 0 ? (
+            {filteredAccounts.length === 0 ? (
               <tr>
                 <td colSpan={6} className={styles.emptyRow}>
                   Nenhuma conta encontrada para o período selecionado.

@@ -10,8 +10,8 @@
 
 ```ts
 interface SalesTableProps {
-  sales: VendaDiaria[];
-  onEditSale?: (sale: VendaDiaria) => void;
+  sales: DailySale[];
+  onEditSale?: (sale: DailySale) => void;
   onDeleteSale?: (id: number) => void;
 }
 ```

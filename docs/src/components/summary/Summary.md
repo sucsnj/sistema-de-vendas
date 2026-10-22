@@ -9,15 +9,15 @@
 - Renderiza [TotalsByDistributor](./TotalsByDistributor.md), [MonthlyConsolidation](./MonthlyConsolidation.md) e [MonthNotes](./MonthNotes.md).
 
 ```ts
-interface ResumoProps {
-  contasAno: ContaDetalhe[]; ano: number; mes: number;
-  setAno: (ano: number) => void; setMes: (mes: number) => void;
+interface SummaryProps {
+  accountsYear: AccountDetails[]; year: number; month: number;
+  setYear: (year: number) => void; setMonth: (month: number) => void;
 }
 ```
 
 ## Relações
 
-- **Usa:** `ContaDetalhe` (`src/services/contasService.ts`), `formatCurrency` (`src/utils/formatter.tsx`), `parseDate` (`src/utils/date.ts`), `contas.module.css`.
+- **Usa:** `AccountDetails` (`src/services/contasService.ts`), `formatCurrency` (`src/utils/formatter.tsx`), `parseDate` (`src/utils/date.ts`), `contas.module.css`.
 - **Usado por:** `../../pages/contas-a-pagar.md`.
 
 ## Notas

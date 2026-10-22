@@ -9,22 +9,22 @@
 - Fecha ao clicar fora.
 
 ```ts
-interface SugestaoItem {
-  id: number; tipo: 'PRODUTO' | 'SERVICO'; nome: string; precoVenda: number;
-  estoque?: number; codigoInterno?: string; ean?: string; categoriaNome?: string;
+interface SuggestionItem {
+  id: number; type: 'PRODUTO' | 'SERVICO'; name: string; salePrice: number;
+  stock?: number; internalCode?: string; ean?: string; categoryName?: string;
 }
 interface ItemNameDropdownProps {
-  item: ItemComStatus; onSelectSuggestion: (s: SugestaoItem) => void;
-  onTextChange: (texto: string) => void; disabled?: boolean;
+  item: ItemWithStatus; onSelectSuggestion: (s: SuggestionItem) => void;
+  onTextChange: (newText: string) => void; disabled?: boolean;
 }
 ```
 
 ## Relações
 
-- **Usa:** `fetchProducts`/`fetchServices` (`src/services/produtosService.ts`), `ItemComStatus` (`src/hooks/useImportItems.ts`), `modalImport.module.css`.
+- **Usa:** `fetchProducts`/`fetchServices` (`src/services/produtosService.ts`), `ItemWithStatus` (`src/hooks/useImportItems.ts`), `modalImport.module.css`.
 - **Usado por:** [ImportItemsModal](./ImportItemsModal.md) (coluna "Item no Sistema").
 
 ## Notas
 
 - Sincroniza o texto quando `item.descricao` muda por fora (`prevDescription`).
-- Extraído do modal na refatoração; `SugestaoItem` é o view-model do dropdown.
+- Extraído do modal na refatoração; `SuggestionItem` é o view-model do dropdown.

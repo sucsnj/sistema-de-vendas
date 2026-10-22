@@ -4,7 +4,7 @@ import {
   consolidateMonthly,
   backupDatabase,
   deleteSale,
-  VendaDiaria,
+  DailySale,
   autoConsolidate
 } from '../services/vendasService';
 import { canEdit } from '../utils/edit';
@@ -13,28 +13,28 @@ import { canEdit } from '../utils/edit';
 type ToastFn = (message: string, type: 'success' | 'error' | 'info') => void;
 
 // Opções de configuração do hook
-export interface UseVendasOptions {
+export interface UseSalesOptions {
   // Filtro das vendas a carregar ('positivas' é o usado no dashboard)
-  filtro?: 'todas' | 'positivas' | 'negativas';
+  filter?: 'todas' | 'positivas' | 'negativas';
   // Se deve disparar autoConsolidate após carregar (desligado no histórico)
   autoConsolidate?: boolean;
 }
 
 // Hook que concentra o estado de vendas e todas as ações de vendas:
 // carregar, consolidar, fazer backup, editar, salvar e excluir.
-export const useSales = (month: number, year: number, showToast: ToastFn, options: UseVendasOptions = {}) => {
+export const useSales = (month: number, year: number, showToast: ToastFn, options: UseSalesOptions = {}) => {
   // Lista de vendas diárias do período selecionado
-  const [sales, setSales] = useState<VendaDiaria[]>([]);
+  const [sales, setSales] = useState<DailySale[]>([]);
   // Venda atualmente em edição (null = nenhuma)
-  const [editingSale, setEditingSale] = useState<VendaDiaria | null>(null);
+  const [editingSale, setEditingSale] = useState<DailySale | null>(null);
   // Indica se há uma carga de dados em andamento
   const [loading, setLoading] = useState(true);
 
   // Aplica os padrões quando a opção não é informada
-  const { filtro: filter = 'positivas', autoConsolidate: autoConsolidateEnabled = true } = options;
+  const { filter = 'positivas', autoConsolidate: autoConsolidateEnabled = true } = options;
 
   // Busca as vendas do mês/ano conforme o filtro e, opcionalmente, dispara a consolidação automática.
-  // useCallback mantém a referência estável enquanto mes/ano/filtro não mudarem.
+  // useCallback mantém a referência estável enquanto mes/ano/filter não mudarem.
   const loadSales = useCallback(async () => {
     try {
       setLoading(true);
@@ -70,7 +70,7 @@ export const useSales = (month: number, year: number, showToast: ToastFn, option
   };
 
   // Abre o formulário de edição com a venda selecionada
-  const handleEditSale = (sale: VendaDiaria) => {
+  const handleEditSale = (sale: DailySale) => {
     setEditingSale(sale);
   };
 

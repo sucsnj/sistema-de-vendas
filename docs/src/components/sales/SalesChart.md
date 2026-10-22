@@ -8,12 +8,12 @@
 - Tooltip formata valores com `formatCurrency`; eixo X usa `criado_em`.
 
 ```ts
-interface SalesChartProps { data: VendaDiaria[]; }
+interface SalesChartProps { data: DailySale[]; }
 ```
 
 ## Relações
 
-- **Usa:** `recharts`, `VendaDiaria` (`src/services/vendasService.ts`), `formatCurrency`/`formatCurrencyNumber` (`src/utils/formatter.tsx`).
+- **Usa:** `recharts`, `DailySale` (`src/services/vendasService.ts`), `formatCurrency`/`formatCurrencyNumber` (`src/utils/formatter.tsx`).
 - **Usado por:** `../../pages/index.md`.
 
 ## Notas

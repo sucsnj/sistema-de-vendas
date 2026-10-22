@@ -3,25 +3,25 @@ import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 import { BrandDeleteModal } from '@/components/products/ProductDeleteModal';
 
-export interface MarcaFormData {
-    nome: string;
+export interface BrandFormData {
+    name: string;
 }
 
-export interface MarcaOptions {
-    abrirModalMarca: () => void;
-    salvarMarca: React.FormEventHandler<HTMLFormElement>;
+export interface BrandOptions {
+    openBrandModal: () => void;
+    saveBrand: React.FormEventHandler<HTMLFormElement>;
 }
 
-interface ModalMarcaEditProps {
-    marcaForm: MarcaFormData;
-    setMarcaForm: React.Dispatch<React.SetStateAction<MarcaFormData>>;
+interface BrandEditModalProps {
+    brandForm: BrandFormData;
+    setBrandForm: React.Dispatch<React.SetStateAction<BrandFormData>>;
     onDelete: () => void;
-    options: MarcaOptions;
+    options: BrandOptions;
 }
 
-const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
-    marcaForm,
-    setMarcaForm,
+const BrandEditModal: React.FC<BrandEditModalProps> = ({
+    brandForm,
+    setBrandForm,
     onDelete,
     options,
 }) => {
@@ -32,7 +32,7 @@ const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-mar-edit-title" tabIndex={-1}>
                 <h3 id="modal-mar-edit-title" className={styles.modalTitle}>Editar Marca</h3>
-                <form onSubmit={options.salvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveBrand} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="edit-mar-nome">
                             Nome:*
@@ -42,8 +42,8 @@ const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da marca"
-                            value={marcaForm.nome}
-                            onChange={(e) => setMarcaForm({ ...marcaForm, nome: e.target.value })}
+                            value={brandForm.name}
+                            onChange={(e) => setBrandForm({ ...brandForm, name: e.target.value })}
                             required
                             autoFocus
                         />
@@ -66,8 +66,8 @@ const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalMarca();
-                                setMarcaForm({ nome: '' });
+                                options.openBrandModal();
+                                setBrandForm({ name: '' });
                             }}
                             id="cancel-edit-mar-btn"
                         >
@@ -79,12 +79,12 @@ const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
             {deleteConfirmOpen && (
                 <BrandDeleteModal
                     open={deleteConfirmOpen}
-                    marca={marcaForm}
+                    brand={brandForm}
                     onConfirm={() => {
                         onDelete();
                         setDeleteConfirmOpen(false);
-                        options.abrirModalMarca(); // fecha modal de edição
-                        setMarcaForm({ nome: '' }); // limpa formulário
+                        options.openBrandModal(); // fecha modal de edição
+                        setBrandForm({ name: '' }); // limpa formulário
                     }}
                     onClose={() => setDeleteConfirmOpen(false)}
                 />

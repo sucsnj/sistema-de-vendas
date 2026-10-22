@@ -4,20 +4,20 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import { parseNumber } from '../../utils/number';
 import { formatCurrencyNumber } from '../../utils/formatter';
-// CategoriaData type not needed directly in this component
-import type { ProdutoFormData, ProdutoOptions, ProdutoActions } from './ProductForm';
+// CategoryData type not needed directly in this component
+import type { ProductFormData, ProductOptions, ProductActions } from './ProductForm';
 
-interface FormularioServicoProps {
-  editarProdutoId: number | null;
-  form: ProdutoFormData;
-  setForm: Dispatch<SetStateAction<ProdutoFormData>>;
-  options: ProdutoOptions;
-  actions: ProdutoActions;
+interface ServiceFormProps {
+  editingProductId: number | null;
+  form: ProductFormData;
+  setForm: Dispatch<SetStateAction<ProductFormData>>;
+  options: ProductOptions;
+  actions: ProductActions;
   inputRef: RefObject<HTMLInputElement | null>;
 }
 
-const ServiceForm: React.FC<FormularioServicoProps> = ({
-  editarProdutoId,
+const ServiceForm: React.FC<ServiceFormProps> = ({
+  editingProductId,
   form,
   setForm,
   options,
@@ -36,8 +36,8 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           type="text"
           className={styles.inputField}
           placeholder="Nome do serviço"
-          value={form.nome}
-          onChange={(e) => setForm(prev => ({ ...prev, nome: e.target.value }))}
+          value={form.name}
+          onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
         />
       </div>
 
@@ -50,8 +50,8 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           className={styles.textareaField}
           placeholder="Detalhes ou especificações"
           rows={3}
-          value={form.descricao}
-          onChange={(e) => setForm(prev => ({ ...prev, descricao: e.target.value }))}
+          value={form.description}
+          onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
         />
       </div>
 
@@ -63,10 +63,10 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           <select
             id="form-categoria"
             className={styles.selectField}
-            value={form.categoriaId}
-            onChange={(e) => setForm(prev => ({ ...prev, categoriaId: e.target.value ? Number(e.target.value) : 1 }))}
+            value={form.categoryId}
+            onChange={(e) => setForm(prev => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : 1 }))}
           >
-            {options.categorias.map((c) => (
+            {options.categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.nome}
               </option>
@@ -75,7 +75,7 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           <button
             type="button"
             className={styles.addButton}
-            onClick={actions.abrirModalCategoria}
+            onClick={actions.openCategoryModal}
             title="Adicionar Categoria"
             id="add-categoria-btn"
           >
@@ -85,9 +85,9 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
             type="button"
             className={styles.manageButton}
             onClick={() => {
-              const categoriaSelecionada = options.categorias.find((c) => c.id === form.categoriaId);
+              const categoriaSelecionada = options.categories.find((c) => c.id === form.categoryId);
               if (categoriaSelecionada) {
-                actions.editarCategoria(categoriaSelecionada);
+                actions.editCategory(categoriaSelecionada);
               }
             }}
             title="Editar Categoria Selecionada"
@@ -109,15 +109,15 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
             inputMode="decimal"
             className={styles.inputField}
             placeholder="0,00"
-            value={form.precoVenda}
+            value={form.salePrice}
             onChange={(e) => {
-              const precoVenda = e.target.value;
-              const precoValor = parseNumber(precoVenda);
+              const salePrice = e.target.value;
+              const precoValor = parseNumber(salePrice);
               if (!Number.isNaN(precoValor) && precoValor >= 0) {
-                setForm(prev => ({ ...prev, precoVenda: String(formatCurrencyNumber(precoValor, 2)) }));
+                setForm(prev => ({ ...prev, salePrice: String(formatCurrencyNumber(precoValor, 2)) }));
                 return;
               }
-              setForm(prev => ({ ...prev, precoVenda }));
+              setForm(prev => ({ ...prev, salePrice }));
             }}
           />
         </div>
@@ -132,8 +132,8 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
             inputMode="numeric"
             className={styles.inputField}
             placeholder="Ex: 60"
-            value={form.duracaoMinutos}
-            onChange={(e) => setForm(prev => ({ ...prev, duracaoMinutos: e.target.value }))}
+            value={form.durationMinutes}
+            onChange={(e) => setForm(prev => ({ ...prev, durationMinutes: e.target.value }))}
           />
         </div>
       </div>
@@ -146,10 +146,10 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           id="form-cod-interno"
           type="text"
           className={styles.inputField}
-          placeholder={editarProdutoId ? 'Código Interno não pode ser alterado' : 'Ex: SERV-001 (preenchido automaticamente caso deixado em branco)'}
-          value={form.codigoInterno}
-          onChange={(e) => setForm(prev => ({ ...prev, codigoInterno: e.target.value }))}
-          disabled={!!editarProdutoId}
+          placeholder={editingProductId ? 'Código Interno não pode ser alterado' : 'Ex: SERV-001 (preenchido automaticamente caso deixado em branco)'}
+          value={form.internalCode}
+          onChange={(e) => setForm(prev => ({ ...prev, internalCode: e.target.value }))}
+          disabled={!!editingProductId}
         />
       </div>
 
@@ -162,8 +162,8 @@ const ServiceForm: React.FC<FormularioServicoProps> = ({
           type="text"
           className={styles.inputField}
           placeholder="Ex: REF-001"
-          value={form.referencia}
-          onChange={(e) => setForm(prev => ({ ...prev, referencia: e.target.value }))}
+          value={form.reference}
+          onChange={(e) => setForm(prev => ({ ...prev, reference: e.target.value }))}
         />
       </div>
     </div>

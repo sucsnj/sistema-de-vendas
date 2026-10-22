@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { VendaDiaria } from '../../services/vendasService';
+import { DailySale } from '../../services/vendasService';
 import { formatDateString } from '../../utils/date';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
@@ -12,8 +12,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { toTimestamp } from '../../utils/date';
 
 interface SalesTableProps {
-  sales: VendaDiaria[];
-  onEditSale?: (sale: VendaDiaria) => void;
+  sales: DailySale[];
+  onEditSale?: (sale: DailySale) => void;
   onDeleteSale?: (id: number) => void;
 }
 

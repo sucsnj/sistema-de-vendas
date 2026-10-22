@@ -2,17 +2,17 @@ import { useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 
-interface ModalFornecedorProps {
-    setModalFornecedorOpen: (value: boolean) => void;
-    novoFornecedorNome: string;
-    setNovoFornecedorNome: (value: string) => void;
+interface SupplierModalProps {
+    setSupplierModalOpen: (value: boolean) => void;
+    newSupplierName: string;
+    setNewSupplierName: (value: string) => void;
     handleSaveSupplier: (e: React.FormEvent) => void;
 }
 
-const SupplierModal: React.FC<ModalFornecedorProps> = ({
-    setModalFornecedorOpen,
-    novoFornecedorNome,
-    setNovoFornecedorNome,
+const SupplierModal: React.FC<SupplierModalProps> = ({
+    setSupplierModalOpen,
+    newSupplierName,
+    setNewSupplierName,
     handleSaveSupplier,
 }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
@@ -31,8 +31,8 @@ const SupplierModal: React.FC<ModalFornecedorProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome do fornecedor"
-                            value={novoFornecedorNome}
-                            onChange={(e) => setNovoFornecedorNome(e.target.value)}
+                            value={newSupplierName}
+                            onChange={(e) => setNewSupplierName(e.target.value)}
                             required
                             autoFocus
                         />
@@ -45,8 +45,8 @@ const SupplierModal: React.FC<ModalFornecedorProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                setModalFornecedorOpen(false);
-                                setNovoFornecedorNome('');
+                                setSupplierModalOpen(false);
+                                setNewSupplierName('');
                             }}
                             id="cancel-new-fornecedor-btn"
                         >

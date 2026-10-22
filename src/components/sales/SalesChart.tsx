@@ -10,11 +10,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { VendaDiaria } from '../../services/vendasService';
+import { DailySale } from '../../services/vendasService';
 import { formatCurrency, formatCurrencyNumber } from '../../utils/formatter';
 
 interface SalesChartProps {
-  data: VendaDiaria[];
+  data: DailySale[];
 }
 
 const SalesChart: React.FC<SalesChartProps> = ({ data }) => {

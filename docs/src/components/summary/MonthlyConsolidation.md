@@ -8,8 +8,8 @@
 - Usa `capitalize(formatMonthName(mes))` no rótulo do mês.
 
 ```ts
-interface ConsolidacaoMensalProps {
-  meses: { mes: number; pago: number; pendente: number }[];
+interface MonthlyConsolidationProps {
+  months: { month: number; paid: number; pending: number }[];
 }
 ```
 

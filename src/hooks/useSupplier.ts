@@ -5,22 +5,22 @@ import {
     deleteSupplier,
     updateSupplier,
 } from '../services/produtosService';
-import { FornecedorFormData } from '@/components/catalog/SupplierEditModal'
-import { ProdutoFormData } from '@/components/products/ProductForm';
-import { ProdutoOptions } from '@/components/products/ProductForm';
+import { SupplierFormData } from '@/components/catalog/SupplierEditModal'
+import { ProductFormData } from '@/components/products/ProductForm';
+import { ProductOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';
 
-interface UseFornecedorParams {
-    form: ProdutoFormData;
-    setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
-    setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
+interface UseSupplierParams {
+    form: ProductFormData;
+    setForm: React.Dispatch<React.SetStateAction<ProductFormData>>;
+    setOptions: React.Dispatch<React.SetStateAction<ProductOptions>>;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
     loadItems: () => void;
     items: unknown[];
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     setDeleteConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setItemParaExcluir: (value: null) => void;
+    setItemToDelete: (value: null) => void;
 }
 
 export const useSupplier = ({
@@ -33,36 +33,36 @@ export const useSupplier = ({
     page,
     setPage,
     setDeleteConfirmOpen,
-    setItemParaExcluir,
-}: UseFornecedorParams) => {
+    setItemToDelete,
+}: UseSupplierParams) => {
     // Modais de cadastro rápido
-    const [modalFornecedorOpen, setModalFornecedorOpen] = useState(false);
-    const [fornecedorForm, setFornecedorForm] = useState<FornecedorFormData>({ nome: '' });
-    const [novoFornecedorNome, setNovoFornecedorNome] = useState('');
+    const [supplierModalOpen, setSupplierModalOpen] = useState(false);
+    const [supplierForm, setSupplierForm] = useState<SupplierFormData>({ name: '' });
+    const [newSupplierName, setNewSupplierName] = useState('');
 
     // Modais de Edição
-    const [modalFornecedorEditOpen, setModalFornecedorEditOpen] = useState(false);
+    const [supplierEditModalOpen, setSupplierEditModalOpen] = useState(false);
 
     // Cadastro de Fornecedor Inline
     const handleSaveSupplier = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeFornecedor = validateRequired(novoFornecedorNome, 'O nome do fornecedor');
+        const nomeFornecedor = validateRequired(newSupplierName, 'O nome do fornecedor');
         if (!nomeFornecedor.ok) {
             showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {
-            const response = await createSupplier(novoFornecedorNome.trim());
+            const response = await createSupplier(newSupplierName.trim());
             showToast(response.message || 'Fornecedor criado com sucesso.', 'success');
 
-            // Re-carrega lista de fornecedores e seleciona o criado
+            // Re-carrega lista de suppliers e seleciona o criado
             const forns = await fetchSuppliers();
-            setOptions(prev => ({ ...prev, fornecedores: forns }));
-            setForm(prev => ({ ...prev, fornecedorId: response.id }));
+            setOptions(prev => ({ ...prev, suppliers: forns }));
+            setForm(prev => ({ ...prev, supplierId: response.id }));
 
             // Fecha modal
-            setModalFornecedorOpen(false);
-            setFornecedorForm({ nome: '' });
+            setSupplierModalOpen(false);
+            setSupplierForm({ name: '' });
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao criar fornecedor.', 'error');
         }
@@ -70,34 +70,34 @@ export const useSupplier = ({
 
     // Handler para abrir modal de edição de fornecedor
     const handleOpenEditSupplierModal = (supplier: { id: number; nome: string }) => {
-        setForm(prev => ({ ...prev, fornecedorId: supplier.id }));
-        setFornecedorForm({ nome: supplier.nome || '' });
-        setModalFornecedorEditOpen(true);
+        setForm(prev => ({ ...prev, supplierId: supplier.id }));
+        setSupplierForm({ name: supplier.nome || '' });
+        setSupplierEditModalOpen(true);
     };
 
     // Ediçao de fornecedor
     const handleUpdateSupplier = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeFornecedor = validateRequired(fornecedorForm.nome, 'O nome do fornecedor');
+        const nomeFornecedor = validateRequired(supplierForm.name, 'O nome do fornecedor');
         if (!nomeFornecedor.ok) {
             showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {
-            const response = await updateSupplier(form.fornecedorId, fornecedorForm.nome.trim());
+            const response = await updateSupplier(form.supplierId, supplierForm.name.trim());
 
             // Atualiza na interface após confirmação da API
             setOptions(prev =>
             ({
-                ...prev, fornecedores: prev.fornecedores.map(forn =>
-                    forn.id === form.fornecedorId ?
-                        { ...forn, nome: fornecedorForm.nome.trim() } : forn
+                ...prev, suppliers: prev.suppliers.map(forn =>
+                    forn.id === form.supplierId ?
+                        { ...forn, nome: supplierForm.name.trim() } : forn
                 )
             }));
 
             showToast(response.message || 'Fornecedor atualizado com sucesso.', 'success');
-            setModalFornecedorEditOpen(false);
-            setFornecedorForm({ nome: '' });
+            setSupplierEditModalOpen(false);
+            setSupplierForm({ name: '' });
             loadItems();
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao atualizar fornecedor.', 'error');
@@ -107,23 +107,23 @@ export const useSupplier = ({
     // Handle para deletar fornecedor
     const handleDeleteSupplier = async () => {
         try {
-            await deleteSupplier(form.fornecedorId);
+            await deleteSupplier(form.supplierId);
             showToast('Fornecedor deletado com sucesso.', 'success');
             setDeleteConfirmOpen(false);
-            setItemParaExcluir(null);
+            setItemToDelete(null);
 
             // Atualiza a interface após confirmação da API
             setOptions(prev => ({
                 ...prev,
-                fornecedores: prev.fornecedores.filter(forn => forn.id !== form.fornecedorId)
+                suppliers: prev.suppliers.filter(forn => forn.id !== form.supplierId)
             }));
 
             // Fecha o modal após a exclusão
-            setModalFornecedorOpen(false);
-            setFornecedorForm({ nome: '' });
+            setSupplierModalOpen(false);
+            setSupplierForm({ name: '' });
 
             // Coloca o Id para 1
-            setForm(prev => ({ ...prev, fornecedorId: 1 }));
+            setForm(prev => ({ ...prev, supplierId: 1 }));
 
             if (items.length === 1 && page > 1) {
                 setPage(page - 1);
@@ -137,14 +137,14 @@ export const useSupplier = ({
 
     return {
         // Estados
-        modalFornecedorOpen,
-        setModalFornecedorOpen,
-        fornecedorForm,
-        setFornecedorForm,
-        modalFornecedorEditOpen,
-        setModalFornecedorEditOpen,
-        novoFornecedorNome,
-        setNovoFornecedorNome,
+        supplierModalOpen,
+        setSupplierModalOpen,
+        supplierForm,
+        setSupplierForm,
+        supplierEditModalOpen,
+        setSupplierEditModalOpen,
+        newSupplierName,
+        setNewSupplierName,
 
         // Handlers
         handleSaveSupplier,

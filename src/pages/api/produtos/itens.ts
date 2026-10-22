@@ -3,14 +3,14 @@ import db, { insertItem, getItemByBarcode, checkDuplicateBarcode, insertStockMov
 import { parseNumber } from '../../../utils/number';
 import { parseStringPromise } from 'xml2js';
 
-interface ItemExistenteRow {
+interface ExistingItemRow {
   id: number;
   nome: string;
   preco_venda: number;
   estoque: number;
 }
 
-interface ProdutoPreview {
+interface ProductPreview {
   cProd: string;
   ean: string;
   descricao: string;
@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const infNFe = parsed.nfeProc.NFe[0].infNFe[0];
             const itens = infNFe.det || [];
-            const produtos: ProdutoPreview[] = [];
+            const produtos: ProductPreview[] = [];
 
             // Na importação de nota (mesmo sendo saída do fornecedor), para a loja local é um AJUSTE ou ENTRADA para somar no estoque.
             const tipoMovimentacao = 'ENTRADA';
@@ -61,20 +61,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const unidadeMedida = prod.uCom?.[0] ? String(prod.uCom[0]).trim() : '';
                 
                 // Verifica se já existe no banco de dados
-                let itemExistente: ItemExistenteRow | null | undefined = null;
+                let itemExistente: ExistingItemRow | null | undefined = null;
                 if (ean) {
                     itemExistente = getItemByBarcode(ean);
                 }
                 if (!itemExistente && cProd) {
-                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ItemExistenteRow | undefined;
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ExistingItemRow | undefined;
                     if (!itemExistente) {
-                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ItemExistenteRow | undefined;
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)').get(cProd) as unknown as ExistingItemRow | undefined;
                     }
                 }
                 if (!itemExistente && descricao) {
-                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ItemExistenteRow | undefined;
+                    itemExistente = db.prepare('SELECT id, nome, preco_venda, estoque FROM itens WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ExistingItemRow | undefined;
                     if (!itemExistente) {
-                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ItemExistenteRow | undefined;
+                        itemExistente = db.prepare('SELECT id, nome, preco_venda, 0 as estoque FROM servicos WHERE LOWER(TRIM(nome)) = LOWER(?)').get(descricao) as unknown as ExistingItemRow | undefined;
                     }
                 }
 
@@ -143,9 +143,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // fornecedor_id 1 = Sem fornecedor
             const listBarcodes = ean ? [{ codigo_barras: ean.trim(), principal: 1 }] : [];
 
-            const precoCompra = valorUnitario;
-            const precoVenda = valorUnitario * 1.5; // Margem padrão de 50%
-            const margemLucro = 50;
+            const purchasePrice = valorUnitario;
+            const salePrice = valorUnitario * 1.5; // Margem padrão de 50%
+            const profitMargin = 50;
 
             const novoItem = {
                 tipo: 'PRODUTO' as const,
@@ -155,9 +155,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 unidade_medida_id: 1, 
                 marca_id: 1,
                 fornecedor_id: 1,
-                preco_compra: precoCompra,
-                margem_lucro: margemLucro,
-                preco_venda: precoVenda,
+                preco_compra: purchasePrice,
+                margem_lucro: profitMargin,
+                preco_venda: salePrice,
                 estoque: quantidade,
                 multiplicador_unidade: 1,
                 referencia: null,

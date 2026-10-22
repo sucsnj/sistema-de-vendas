@@ -1,14 +1,14 @@
 import { useRef, type ChangeEvent, type FC } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { registerSaleWithCreatedAt, VendaDiaria } from '../../services/vendasService';
+import { registerSaleWithCreatedAt, DailySale } from '../../services/vendasService';
 import parseNumber from '../../utils/number';
 import { parseDate } from '../../utils/date';
 
 interface ExportButtonsProps {
-  sales: VendaDiaria[];
-  mes: number;
-  ano: number;
+  sales: DailySale[];
+  month: number;
+  year: number;
   selectedDate?: string;
   onMessage?: (message: string, type: 'success' | 'error' | 'info') => void;
   onImportCompleted?: () => void;
@@ -16,8 +16,8 @@ interface ExportButtonsProps {
 
 const ExportButtons: FC<ExportButtonsProps> = ({
   sales,
-  mes,
-  ano,
+  month,
+  year,
   selectedDate,
   onMessage,
   onImportCompleted,
@@ -64,7 +64,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       a.download =
         mode === 'day'
           ? `vendas-dia-${selectedDate}.xlsx`
-          : `vendas-mes-${mes}-${ano}.xlsx`;
+          : `vendas-mes-${month}-${year}.xlsx`;
       a.click();
       URL.revokeObjectURL(url);
       notify('Arquivo XLSX gerado com sucesso.', 'success');
@@ -167,7 +167,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 
         if (mode === 'month' && !dateMatchesMonth(dataValue)) {
           errors.push(
-            `Linha ${index + 1}: a data deve pertencer ao mês ${mes}/${ano}.`
+            `Linha ${index + 1}: a data deve pertencer ao mês ${month}/${year}.`
           );
           return;
         }
@@ -220,8 +220,8 @@ const ExportButtons: FC<ExportButtonsProps> = ({
     const parsed = parseDate(`${dateValue}T00:00:00`);
     return (
       !Number.isNaN(parsed.valueOf()) &&
-      parsed.month() + 1 === mes &&
-      parsed.year() === ano
+      parsed.month() + 1 === month &&
+      parsed.year() === year
     );
   };
 
@@ -235,7 +235,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
       const imgWidth = 190;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save(`vendas-${mes}-${ano}.pdf`);
+      pdf.save(`vendas-${month}-${year}.pdf`);
     }
   };
 

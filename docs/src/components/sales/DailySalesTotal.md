@@ -10,15 +10,15 @@
 
 ```ts
 interface DailySalesTotalProps {
-  sales: VendaDiaria[]; selectedDay?: string; recentSales?: VendaDiaria[];
-  onEditSale?: (sale: VendaDiaria) => void; onDeleteSale?: (id: number) => void;
+  sales: DailySale[]; selectedDay?: string; recentSales?: DailySale[];
+  onEditSale?: (sale: DailySale) => void; onDeleteSale?: (id: number) => void;
   children?: ReactNode;
 }
 ```
 
 ## Relações
 
-- **Usa:** `VendaDiaria` (`src/services/vendasService.ts`), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString` (`src/utils/date.ts`), `canEdit` (`src/utils/edit.ts`), `useShortcuts`.
+- **Usa:** `DailySale` (`src/services/vendasService.ts`), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString` (`src/utils/date.ts`), `canEdit` (`src/utils/edit.ts`), `useShortcuts`.
 - **Usado por:** `../../pages/index.md`.
 
 ## Notas

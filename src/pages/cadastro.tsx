@@ -18,9 +18,9 @@ import {
     updateService,
     deleteService,
     ItemData,
-    ServicoData,
+    ServiceData,
     BarcodeData,
-    MovimentacaoEstoqueData,
+    StockMovementData,
 } from '../services/produtosService';
 import { parseNumber } from '../utils/number';
 import { validateNumber, validateRequired } from '../utils/validation';
@@ -37,7 +37,7 @@ import ModalUnidadeMedida from '@/components/catalog/UomModal';
 import UnitOfMeasureEditModal from '@/components/catalog/UomEditModal';
 import StockAdjustModal from '@/components/products/StockAdjustModal';
 import ImportItemsModal from '@/components/import/ImportItemsModal';
-import { ProdutoFormData, ProdutoOptions } from '@/components/products/ProductForm';
+import { ProductFormData, ProductOptions } from '@/components/products/ProductForm';
 import { useCategory } from '@/hooks/useCategory';
 import { useBrand } from '@/hooks/useBrand';
 import { useSupplier } from '@/hooks/useSupplier';
@@ -49,45 +49,45 @@ const RegistrationPage: React.FC = () => {
     const router = useRouter();
 
     // Listas auxiliares para dropdowns
-    const [options, setOptions] = useState<ProdutoOptions>({
-        categorias: [],
-        marcas: [],
-        fornecedores: [],
-        unidadesMedida: [],
+    const [options, setOptions] = useState<ProductOptions>({
+        categories: [],
+        brands: [],
+        suppliers: [],
+        unitsOfMeasure: [],
     });
 
     // Estado do formulário de Cadastro/Edição
     const [editingId, setEditingId] = useState<number | null>(null);
-    const [form, setForm] = useState<ProdutoFormData>({
-        tipo: 'PRODUTO',
-        nome: '',
-        descricao: '',
-        categoriaId: 1,
-        marcaId: 1,
-        fornecedorId: 1,
-        precoCompra: '',
-        margemLucro: '',
-        precoVenda: '',
-        estoque: '',
-        multiplicadorUnidade: '1',
-        unidadeMedidaId: 1,
-        codigoInterno: '',
-        referencia: '',
-        duracaoMinutos: '',
-        ativo: 1,
-        unidadesMedida: [{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: true }],
+    const [form, setForm] = useState<ProductFormData>({
+        type: 'PRODUTO',
+        name: '',
+        description: '',
+        categoryId: 1,
+        brandId: 1,
+        supplierId: 1,
+        purchasePrice: '',
+        profitMargin: '',
+        salePrice: '',
+        stock: '',
+        unitMultiplier: '1',
+        unitOfMeasureId: 1,
+        internalCode: '',
+        reference: '',
+        durationMinutes: '',
+        active: 1,
+        unitsOfMeasure: [{ unitOfMeasureId: 1, unitMultiplier: '1', isPrincipal: true }],
     });
     const [modalAjusteOpen, setModalAjusteOpen] = useState(false);
     const [ajusteQuantidade, setAjusteQuantidade] = useState('');
     const [ajusteDescricao, setAjusteDescricao] = useState('');
-    const [movimentacoesEstoque, setMovimentacoesEstoque] = useState<MovimentacaoEstoqueData[]>([]);
+    const [movimentacoesEstoque, setMovimentacoesEstoque] = useState<StockMovementData[]>([]);
     const [movimentacoesLoading, setMovimentacoesLoading] = useState(false);
     const [formCodigosBarras, setFormCodigosBarras] = useState<BarcodeData[]>([]);
     const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
 
     // Modal de confirmação de exclusão
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-    const [itemParaExcluir, setItemParaExcluir] = useState<ItemData | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<ItemData | null>(null);
 
     // Modal de Importação XML
     const [modalImportOpen, setModalImportOpen] = useState(false);
@@ -105,7 +105,7 @@ const RegistrationPage: React.FC = () => {
 
     // Deriva o estado "dirty": marca o formulário como editado quando o nome sai de vazio
     const [nomeEraVazio, setNomeEraVazio] = useState(true);
-    const nomePreenchido = form.nome.trim() !== '';
+    const nomePreenchido = form.name.trim() !== '';
     if (nomePreenchido !== nomeEraVazio) {
         setNomeEraVazio(nomePreenchido);
         if (nomePreenchido) {
@@ -127,10 +127,10 @@ const RegistrationPage: React.FC = () => {
                 fetchUnitsOfMeasure(),
             ]);
             setOptions({
-                categorias: cats,
-                marcas: brands,
-                fornecedores: forns,
-                unidadesMedida: uoms,
+        categories: cats,
+        brands: brands,
+        suppliers: forns,
+                unitsOfMeasure: uoms,
             });
         } catch (error) {
             console.error(error);
@@ -142,27 +142,27 @@ const RegistrationPage: React.FC = () => {
     const preencherFormComItem = useCallback((item: ItemData) => {
         setEditingId(item.id);
         setForm({
-            tipo: item.tipo,
-            nome: item.nome,
-            descricao: item.descricao || '',
-            categoriaId: item.categoria_id,
-            marcaId: item.marca_id,
-            fornecedorId: item.fornecedor_id,
-            precoCompra: String(item.preco_compra),
-            margemLucro: String(item.margem_lucro),
-            precoVenda: String(item.preco_venda),
-            estoque: String(item.estoque),
-            multiplicadorUnidade: String(item.multiplicador_unidade ?? 1),
-            unidadeMedidaId: item.unidade_medida_id,
-            codigoInterno: item.codigo_interno || '',
-            referencia: item.referencia || '',
-            duracaoMinutos: String(item.duracao_minutos ?? ''),
-            ativo: item.ativo ?? 1,
-            unidadesMedida: item.unidades_medida ? item.unidades_medida.map(u => ({
-                unidadeMedidaId: u.unidade_medida_id,
-                multiplicadorUnidade: String(u.multiplicador_unidade),
-                principal: u.principal === 1,
-            })) : [{ unidadeMedidaId: item.unidade_medida_id, multiplicadorUnidade: String(item.multiplicador_unidade ?? 1), principal: true }],
+        type: item.tipo,
+        name: item.nome,
+        description: item.descricao || '',
+            categoryId: item.categoria_id,
+            brandId: item.marca_id,
+            supplierId: item.fornecedor_id,
+            purchasePrice: String(item.preco_compra),
+            profitMargin: String(item.margem_lucro),
+            salePrice: String(item.preco_venda),
+        stock: String(item.estoque),
+            unitMultiplier: String(item.multiplicador_unidade ?? 1),
+            unitOfMeasureId: item.unidade_medida_id,
+            internalCode: item.codigo_interno || '',
+        reference: item.referencia || '',
+            durationMinutes: String(item.duracao_minutos ?? ''),
+        active: item.ativo ?? 1,
+            unitsOfMeasure: item.unidades_medida ? item.unidades_medida.map(u => ({
+                unitOfMeasureId: u.unidade_medida_id,
+                unitMultiplier: String(u.multiplicador_unidade),
+        isPrincipal: u.principal === 1,
+            })) : [{ unitOfMeasureId: item.unidade_medida_id, unitMultiplier: String(item.multiplicador_unidade ?? 1), isPrincipal: true }],
         });
         setFormCodigosBarras(item.codigos_barras || []);
         setNovoCodigoBarras('');
@@ -184,11 +184,11 @@ const RegistrationPage: React.FC = () => {
             ]);
 
             const todosProdutos: ItemData[] = produtosData?.items || [];
-            const todosServicos: ItemData[] = (servicosData?.items || []).map((servico: ServicoData) => ({
+            const todosServicos: ItemData[] = (servicosData?.items || []).map((servico: ServiceData) => ({
                 id: servico.id,
-                tipo: 'SERVICO',
-                nome: servico.nome,
-                descricao: servico.descricao,
+        tipo: 'SERVICO',
+        nome: servico.nome,
+        descricao: servico.descricao,
                 categoria_id: servico.categoria_id,
                 unidade_medida_id: 21,
                 marca_id: 1,
@@ -196,11 +196,11 @@ const RegistrationPage: React.FC = () => {
                 preco_compra: 0,
                 margem_lucro: 0,
                 preco_venda: servico.preco_venda,
-                estoque: 0,
+        estoque: 0,
                 multiplicador_unidade: 1,
                 estoque_total: 0,
                 codigo_interno: servico.codigo_interno,
-                referencia: servico.referencia || '',
+        referencia: servico.referencia || '',
                 duracao_minutos: servico.duracao_minutos,
                 data_criacao: servico.data_criacao,
                 data_atualizacao: servico.data_atualizacao,
@@ -232,7 +232,7 @@ const RegistrationPage: React.FC = () => {
     // Lê a query: pré-carrega para edição (?id=X) ou preenche para cadastro rápido (?novoImport=1...)
     useEffect(() => {
         if (!router.isReady || queryProcessada.current) return;
-        const { id, novoImport, nome, precoCompra, estoque, unidade, ean, codigoInterno } = router.query;
+        const { id, novoImport, nome, purchasePrice, estoque, unidade, ean, internalCode } = router.query;
 
         if (id) {
             const numId = Number(id);
@@ -247,15 +247,15 @@ const RegistrationPage: React.FC = () => {
             queryProcessada.current = true;
             const timer = setTimeout(() => {
                 const nomeStr = typeof nome === 'string' ? nome : '';
-                const precoCompraStr = typeof precoCompra === 'string' ? precoCompra : '';
+                const precoCompraStr = typeof purchasePrice === 'string' ? purchasePrice : '';
                 const estoqueStr = typeof estoque === 'string' ? estoque : '';
                 const unidadeStr = typeof unidade === 'string' ? unidade.trim().toUpperCase() : '';
                 const eanStr = typeof ean === 'string' ? ean.trim() : '';
-                const codigoInternoStr = typeof codigoInterno === 'string' ? codigoInterno.trim() : '';
+                const codigoInternoStr = typeof internalCode === 'string' ? internalCode.trim() : '';
 
                 let uomId = 1;
-                if (unidadeStr && options.unidadesMedida.length > 0) {
-                    const encontrada = options.unidadesMedida.find(
+                if (unidadeStr && options.unitsOfMeasure.length > 0) {
+                    const encontrada = options.unitsOfMeasure.find(
                         u => u.sigla.toUpperCase() === unidadeStr || u.sigla.toUpperCase().includes(unidadeStr)
                     );
                     if (encontrada) uomId = encontrada.id;
@@ -267,23 +267,23 @@ const RegistrationPage: React.FC = () => {
 
                 setEditingId(null);
                 setForm({
-                    tipo: 'PRODUTO',
-                    nome: nomeStr,
-                    descricao: 'Importado via XML da NF-e',
-                    categoriaId: 1,
-                    marcaId: 1,
-                    fornecedorId: 1,
-                    precoCompra: precoCompraStr,
-                    margemLucro: precoCompraNum > 0 ? String(margemPadrao) : '',
-                    precoVenda: precoVendaCalculado,
-                    estoque: estoqueStr,
-                    multiplicadorUnidade: '1',
-                    unidadeMedidaId: uomId,
-                    codigoInterno: codigoInternoStr,
-                    referencia: '',
-                    duracaoMinutos: '',
-                    ativo: 1,
-                    unidadesMedida: [{ unidadeMedidaId: uomId, multiplicadorUnidade: '1', principal: true }],
+        type: 'PRODUTO',
+        name: nomeStr,
+        description: 'Importado via XML da NF-e',
+                    categoryId: 1,
+                    brandId: 1,
+                    supplierId: 1,
+                    purchasePrice: precoCompraStr,
+                    profitMargin: precoCompraNum > 0 ? String(margemPadrao) : '',
+                    salePrice: precoVendaCalculado,
+        stock: estoqueStr,
+                    unitMultiplier: '1',
+                    unitOfMeasureId: uomId,
+                    internalCode: codigoInternoStr,
+        reference: '',
+        durationMinutes: '',
+        active: 1,
+                    unitsOfMeasure: [{ unitOfMeasureId: uomId, unitMultiplier: '1', isPrincipal: true }],
                 });
 
                 if (eanStr) {
@@ -296,7 +296,7 @@ const RegistrationPage: React.FC = () => {
             }, 0);
             return () => clearTimeout(timer);
         }
-    }, [router.isReady, router.query, options.unidadesMedida, loadItemForEditing, showToast]);
+    }, [router.isReady, router.query, options.unitsOfMeasure, loadItemForEditing, showToast]);
 
     // Guard: aviso nativo do browser ao fechar aba ou recarregar página
     useEffect(() => {
@@ -331,23 +331,23 @@ const RegistrationPage: React.FC = () => {
         setIsDirty(false);
         setEditingId(null);
         setForm({
-            tipo: 'PRODUTO',
-            nome: '',
-            descricao: '',
-            categoriaId: 1,
-            marcaId: 1,
-            fornecedorId: 1,
-            precoCompra: '',
-            margemLucro: '',
-            precoVenda: '',
-            estoque: '',
-            multiplicadorUnidade: '1',
-            unidadeMedidaId: 1,
-            codigoInterno: '',
-            referencia: '',
-            duracaoMinutos: '',
-            ativo: 1,
-            unidadesMedida: [{ unidadeMedidaId: 1, multiplicadorUnidade: '1', principal: true }],
+        type: 'PRODUTO',
+        name: '',
+        description: '',
+            categoryId: 1,
+            brandId: 1,
+            supplierId: 1,
+            purchasePrice: '',
+            profitMargin: '',
+            salePrice: '',
+        stock: '',
+            unitMultiplier: '1',
+            unitOfMeasureId: 1,
+            internalCode: '',
+        reference: '',
+        durationMinutes: '',
+        active: 1,
+            unitsOfMeasure: [{ unitOfMeasureId: 1, unitMultiplier: '1', isPrincipal: true }],
         });
         setFormCodigosBarras([]);
         setNovoCodigoBarras('');
@@ -423,40 +423,40 @@ const RegistrationPage: React.FC = () => {
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const nomeCheck = validateRequired(form.nome, 'O nome do item');
+        const nomeCheck = validateRequired(form.name, 'O nome do item');
         if (!nomeCheck.ok) {
             showToast(nomeCheck.message ?? 'O nome do item é obrigatório.', 'error');
             nomeInputRef.current?.focus();
             return;
         }
-        const categoriaCheck = validateRequired(form.categoriaId, 'Categoria');
+        const categoriaCheck = validateRequired(form.categoryId, 'Categoria');
         if (!categoriaCheck.ok) {
             showToast(categoriaCheck.message ?? 'Selecione uma categoria.', 'error');
             return;
         }
-        if (form.tipo === 'PRODUTO') {
-            const marcaCheck = validateRequired(form.marcaId, 'Marca');
+        if (form.type === 'PRODUTO') {
+            const marcaCheck = validateRequired(form.brandId, 'Marca');
             if (!marcaCheck.ok) {
                 showToast(marcaCheck.message ?? 'Selecione uma marca.', 'error');
                 return;
             }
-            const fornecedorCheck = validateRequired(form.fornecedorId, 'Fornecedor');
+            const fornecedorCheck = validateRequired(form.supplierId, 'Fornecedor');
             if (!fornecedorCheck.ok) {
                 showToast(fornecedorCheck.message ?? 'Selecione um fornecedor.', 'error');
                 return;
             }
-            const unidadeCheck = validateRequired(form.unidadeMedidaId, 'Unidade de medida');
+            const unidadeCheck = validateRequired(form.unitOfMeasureId, 'Unidade de medida');
             if (!unidadeCheck.ok) {
                 showToast(unidadeCheck.message ?? 'Selecione uma unidade de medida.', 'error');
                 return;
             }
         }
 
-        const precoCompraRaw = parseNumber(form.precoCompra);
-        const margemLucroRaw = parseNumber(form.margemLucro);
-        const precoVendaRaw = parseNumber(form.precoVenda);
-        const estoqueRaw = parseNumber(form.estoque);
-        const multiplicadorRaw = parseNumber(form.multiplicadorUnidade);
+        const precoCompraRaw = parseNumber(form.purchasePrice);
+        const margemLucroRaw = parseNumber(form.profitMargin);
+        const precoVendaRaw = parseNumber(form.salePrice);
+        const estoqueRaw = parseNumber(form.stock);
+        const multiplicadorRaw = parseNumber(form.unitMultiplier);
 
         const precoCompraValor = Number.isFinite(precoCompraRaw) ? precoCompraRaw : 0;
         const margemLucroValor = Number.isFinite(margemLucroRaw) ? margemLucroRaw : 0;
@@ -478,42 +478,42 @@ const RegistrationPage: React.FC = () => {
         }
 
         const payload = {
-            tipo: form.tipo,
-            nome: form.nome.trim(),
-            descricao: form.descricao.trim() || undefined,
-            categoria_id: Number(form.categoriaId),
-            marca_id: Number(form.marcaId || 1),
-            fornecedor_id: Number(form.fornecedorId || 1),
+            tipo: form.type,
+            nome: form.name.trim(),
+            descricao: form.description.trim() || undefined,
+            categoria_id: Number(form.categoryId),
+            marca_id: Number(form.brandId || 1),
+            fornecedor_id: Number(form.supplierId || 1),
             preco_compra: precoCompraValor,
             margem_lucro: margemLucroValor,
             preco_venda: precoVendaValor,
             estoque: estoqueValor,
             multiplicador_unidade: multiplicadorValor,
-            unidade_medida_id: Number(form.unidadeMedidaId || 1),
-            codigo_interno: form.codigoInterno.trim() || undefined,
-            referencia: form.referencia.trim(),
-            duracao_minutos: Number(form.duracaoMinutos) || 0,
-            ativo: form.ativo,
+            unidade_medida_id: Number(form.unitOfMeasureId || 1),
+            codigo_interno: form.internalCode.trim() || undefined,
+            referencia: form.reference.trim(),
+            duracao_minutos: Number(form.durationMinutes) || 0,
+            ativo: form.active,
             codigos_barras: codigosBarrasFinal,
-            unidades_medida: form.unidadesMedida.map(u => ({
-                unidade_medida_id: Number(u.unidadeMedidaId),
-                multiplicador_unidade: parseNumber(u.multiplicadorUnidade) || 1,
-                principal: u.principal ? 1 : 0
+            unidades_medida: form.unitsOfMeasure.map(u => ({
+                unidade_medida_id: Number(u.unitOfMeasureId),
+                multiplicador_unidade: parseNumber(u.unitMultiplier) || 1,
+                principal: u.isPrincipal ? 1 : 0
             })),
         };
 
         const servicePayload = {
-            nome: form.nome.trim(),
-            descricao: form.descricao.trim() || undefined,
-            categoria_id: Number(form.categoriaId),
+            nome: form.name.trim(),
+            descricao: form.description.trim() || undefined,
+            categoria_id: Number(form.categoryId),
             preco_venda: precoVendaValor,
-            codigo_interno: form.codigoInterno.trim() || undefined,
-            referencia: form.referencia.trim(),
-            duracao_minutos: Number(form.duracaoMinutos) || 0,
+            codigo_interno: form.internalCode.trim() || undefined,
+            referencia: form.reference.trim(),
+            duracao_minutos: Number(form.durationMinutes) || 0,
         };
 
         try {
-            if (form.tipo === 'SERVICO') {
+            if (form.type === 'SERVICO') {
                 if (editingId) {
                     await updateService(editingId, servicePayload);
                     showToast('Serviço atualizado com sucesso. Redirecionando...', 'success');
@@ -541,16 +541,16 @@ const RegistrationPage: React.FC = () => {
 
     // Confirma exclusão
     const handleConfirmDelete = async () => {
-        if (!itemParaExcluir) return;
+        if (!itemToDelete) return;
         try {
-            if (itemParaExcluir.tipo === 'SERVICO') {
-                await deleteService(itemParaExcluir.id);
+            if (itemToDelete.tipo === 'SERVICO') {
+                await deleteService(itemToDelete.id);
             } else {
-                await deleteProduct(itemParaExcluir.id);
+                await deleteProduct(itemToDelete.id);
             }
             showToast('Item excluído com sucesso.', 'success');
             setDeleteConfirmOpen(false);
-            setItemParaExcluir(null);
+            setItemToDelete(null);
             resetForm();
         } catch (error) {
             showToast(error instanceof Error ? error.message : 'Erro ao excluir item.', 'error');
@@ -559,12 +559,12 @@ const RegistrationPage: React.FC = () => {
 
     // Categorias (hook)
     const {
-        modalCategoriaOpen,
-        setModalCategoriaOpen,
-        catForm,
-        setCatForm,
-        modalCategoriaEditOpen,
-        setModalCategoriaEditOpen,
+        categoryModalOpen,
+        setCategoryModalOpen,
+        categoryForm,
+        setCategoryForm,
+        categoryEditModalOpen,
+        setCategoryEditModalOpen,
         handleSaveCategory,
         handleOpenEditModal,
         handleUpdateCategory,
@@ -579,23 +579,23 @@ const RegistrationPage: React.FC = () => {
         page: 1,
         setPage: () => { },
         setDeleteConfirmOpen,
-        setItemParaExcluir,
+        setItemToDelete,
     });
 
     // Marcas (hook)
     const {
-        modalMarcaOpen,
-        setModalMarcaOpen,
-        marcaForm,
-        setMarcaForm,
-        modalMarcaEditOpen,
-        setModalMarcaEditOpen,
+        brandModalOpen,
+        setBrandModalOpen,
+        brandForm,
+        setBrandForm,
+        brandEditModalOpen,
+        setBrandEditModalOpen,
         handleSaveBrand,
         handleOpenEditBrandModal,
         handleUpdateBrand,
         handleDeleteBrand,
-        novaMarcaNome,
-        setNovaMarcaNome,
+        newBrandName,
+        setNewBrandName,
     } = useBrand({
         form,
         setForm,
@@ -606,23 +606,23 @@ const RegistrationPage: React.FC = () => {
         page: 1,
         setPage: () => { },
         setDeleteConfirmOpen,
-        setItemParaExcluir,
+        setItemToDelete,
     });
 
     // Fornecedores (Hooks)
     const {
-        modalFornecedorOpen,
-        setModalFornecedorOpen,
-        fornecedorForm,
-        setFornecedorForm,
-        modalFornecedorEditOpen,
-        setModalFornecedorEditOpen,
+        supplierModalOpen,
+        setSupplierModalOpen,
+        supplierForm,
+        setSupplierForm,
+        supplierEditModalOpen,
+        setSupplierEditModalOpen,
         handleSaveSupplier,
         handleOpenEditSupplierModal,
         handleUpdateSupplier,
         handleDeleteSupplier,
-        novoFornecedorNome,
-        setNovoFornecedorNome,
+        newSupplierName,
+        setNewSupplierName,
     } = useSupplier({
         form,
         setForm,
@@ -633,17 +633,17 @@ const RegistrationPage: React.FC = () => {
         page: 1,
         setPage: () => { },
         setDeleteConfirmOpen,
-        setItemParaExcluir,
+        setItemToDelete,
     });
 
     // Unidades de Medida (hook)
     const {
-        modalUnidadeMedidaOpen,
-        setModalUnidadeMedidaOpen,
+        unitOfMeasureModalOpen,
+        setUnitOfMeasureModalOpen,
         uomForm,
         setUomForm,
-        modalUnidadeMedidaEditOpen,
-        setModalUnidadeMedidaEditOpen,
+        unitOfMeasureEditModalOpen,
+        setUnitOfMeasureEditModalOpen,
         handleSaveUnitOfMeasure,
         handleOpenEditUnitOfMeasureModal,
         handleUpdateUnitOfMeasure,
@@ -658,7 +658,7 @@ const RegistrationPage: React.FC = () => {
         page: 1,
         setPage: () => { },
         setDeleteConfirmOpen,
-        setItemParaExcluir,
+        setItemToDelete,
     });
 
     // Função para importação de XML
@@ -695,42 +695,42 @@ const RegistrationPage: React.FC = () => {
                             <form onSubmit={handleSubmitForm}>
                                 <ItemForm
                                     onImportXML={handleImportXML}
-                                    editarProdutoId={editingId}
+                                    editingProductId={editingId}
                                     form={form}
                                     setForm={setForm}
                                     options={options}
                                     inputRef={nomeInputRef}
                                     actions={{
-                                        abrirModalCategoria: () => setModalCategoriaOpen(true),
-                                        abrirModalMarca: () => setModalMarcaOpen(true),
-                                        abrirModalFornecedor: () => setModalFornecedorOpen(true),
-                                        abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(true),
-                                        abrirModalAjusteEstoque: async () => {
+                                        openCategoryModal: () => setCategoryModalOpen(true),
+                                        openBrandModal: () => setBrandModalOpen(true),
+                                        openSupplierModal: () => setSupplierModalOpen(true),
+                                        openUnitOfMeasureModal: () => setUnitOfMeasureModalOpen(true),
+                                        openStockAdjustModal: async () => {
                                             if (editingId) {
                                                 await loadMovements(editingId);
                                             }
                                             setModalAjusteOpen(true);
                                         },
-                                        editarCategoria: handleOpenEditModal,
-                                        editarMarca: handleOpenEditBrandModal,
-                                        editarFornecedor: handleOpenEditSupplierModal,
-                                        editarUnidadeMedida: handleOpenEditUnitOfMeasureModal,
+                                        editCategory: handleOpenEditModal,
+                                        editBrand: handleOpenEditBrandModal,
+                                        editSupplier: handleOpenEditSupplierModal,
+                                        editUnitOfMeasure: handleOpenEditUnitOfMeasureModal,
                                     }}
                                 />
 
                                 {/* Códigos de Barras */}
-                                {form.tipo === 'PRODUTO' && (
+                                {form.type === 'PRODUTO' && (
                                     <BarcodeManager
                                         data={{
-                                            codigosBarras: formCodigosBarras,
-                                            novoCodigoBarras: novoCodigoBarras,
+                                            barcodes: formCodigosBarras,
+                                            newBarcode: novoCodigoBarras,
                                         }}
                                         inputRef={barcodeInputRef}
                                         actions={{
-                                            adicionar: handleAddBarcode,
-                                            definirPrincipal: handleSetPrincipalBarcode,
-                                            alterar: setNovoCodigoBarras,
-                                            remover: handleRemoveBarcode,
+                                            add: handleAddBarcode,
+                                            setAsPrincipal: handleSetPrincipalBarcode,
+                                            change: setNovoCodigoBarras,
+                                            remove: handleRemoveBarcode,
                                         }}
                                     />
                                 )}
@@ -758,97 +758,97 @@ const RegistrationPage: React.FC = () => {
                 </div>
 
                 {/* Modal: Cadastro de Categoria */}
-                {modalCategoriaOpen && (
+                {categoryModalOpen && (
                     <ModalCategoria
-                        catForm={catForm}
-                        setCatForm={setCatForm}
+                        categoryForm={categoryForm}
+                        setCategoryForm={setCategoryForm}
                         options={{
-                            abrirModalCategoria: () => setModalCategoriaOpen(false),
-                            salvarCategoria: handleSaveCategory,
+                            openCategoryModal: () => setCategoryModalOpen(false),
+                            saveCategory: handleSaveCategory,
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Categoria */}
-                {modalCategoriaEditOpen && (
+                {categoryEditModalOpen && (
                     <CategoryEditModal
-                        catForm={catForm}
-                        setCatForm={setCatForm}
+                        categoryForm={categoryForm}
+                        setCategoryForm={setCategoryForm}
                         onDelete={handleDeleteCategory}
                         options={{
-                            abrirModalCategoria: () => setModalCategoriaEditOpen(false),
-                            salvarCategoria: handleUpdateCategory,
+                            openCategoryModal: () => setCategoryEditModalOpen(false),
+                            saveCategory: handleUpdateCategory,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Marca */}
-                {modalMarcaOpen && (
+                {brandModalOpen && (
                     <BrandModal
-                        setModalMarcaOpen={setModalMarcaOpen}
-                        novaMarcaNome={novaMarcaNome}
-                        setNovaMarcaNome={setNovaMarcaNome}
+                        setBrandModalOpen={setBrandModalOpen}
+                        newBrandName={newBrandName}
+                        setNewBrandName={setNewBrandName}
                         handleSaveBrand={handleSaveBrand}
                     />
                 )}
 
                 {/* Modal: Edição de Marca */}
-                {modalMarcaEditOpen && (
+                {brandEditModalOpen && (
                     <BrandEditModal
-                        marcaForm={marcaForm}
-                        setMarcaForm={setMarcaForm}
+                        brandForm={brandForm}
+                        setBrandForm={setBrandForm}
                         onDelete={handleDeleteBrand}
                         options={{
-                            abrirModalMarca: () => setModalMarcaEditOpen(false),
-                            salvarMarca: handleUpdateBrand,
+                            openBrandModal: () => setBrandEditModalOpen(false),
+                            saveBrand: handleUpdateBrand,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Fornecedor */}
-                {modalFornecedorOpen && (
+                {supplierModalOpen && (
                     <SupplierModal
-                        setModalFornecedorOpen={setModalFornecedorOpen}
-                        novoFornecedorNome={novoFornecedorNome}
-                        setNovoFornecedorNome={setNovoFornecedorNome}
+                        setSupplierModalOpen={setSupplierModalOpen}
+                        newSupplierName={newSupplierName}
+                        setNewSupplierName={setNewSupplierName}
                         handleSaveSupplier={handleSaveSupplier}
                     />
                 )}
 
                 {/* Modal: Edição de Fornecedor */}
-                {modalFornecedorEditOpen && (
+                {supplierEditModalOpen && (
                     <SupplierEditModal
-                        fornecedorForm={fornecedorForm}
-                        setFornecedorForm={setFornecedorForm}
+                        supplierForm={supplierForm}
+                        setSupplierForm={setSupplierForm}
                         onDelete={handleDeleteSupplier}
                         options={{
-                            abrirModalFornecedor: () => setModalFornecedorEditOpen(false),
-                            salvarFornecedor: handleUpdateSupplier,
+                            openSupplierModal: () => setSupplierEditModalOpen(false),
+                            saveSupplier: handleUpdateSupplier,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Unidade de Medida */}
-                {modalUnidadeMedidaOpen && (
+                {unitOfMeasureModalOpen && (
                     <ModalUnidadeMedida
                         uomForm={uomForm}
                         setUomForm={setUomForm}
                         options={{
-                            abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(false),
-                            salvarUnidadeMedida: handleSaveUnitOfMeasure,
+                            openUnitOfMeasureModal: () => setUnitOfMeasureModalOpen(false),
+                            saveUnitOfMeasure: handleSaveUnitOfMeasure,
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Unidade de Medida */}
-                {modalUnidadeMedidaEditOpen && (
+                {unitOfMeasureEditModalOpen && (
                     <UnitOfMeasureEditModal
                         uomForm={uomForm}
                         setUomForm={setUomForm}
                         onDelete={handleDeleteUnitOfMeasure}
                         options={{
-                            abrirModalUnidadeMedida: () => setModalUnidadeMedidaEditOpen(false),
-                            salvarUnidadeMedida: handleUpdateUnitOfMeasure,
+                            openUnitOfMeasureModal: () => setUnitOfMeasureEditModalOpen(false),
+                            saveUnitOfMeasure: handleUpdateUnitOfMeasure,
                         }}
                     />
                 )}
@@ -857,14 +857,14 @@ const RegistrationPage: React.FC = () => {
                 {modalAjusteOpen && editingId && (
                     <StockAdjustModal
                         open={modalAjusteOpen}
-                        itemName={form.nome}
-                        itemEstoque={parseNumber(form.estoque) * (parseNumber(form.multiplicadorUnidade) || 1)}
-                        quantidade={ajusteQuantidade}
-                        descricao={ajusteDescricao}
-                        setQuantidade={setAjusteQuantidade}
-                        setDescricao={setAjusteDescricao}
-                        movimentacoes={movimentacoesEstoque}
-                        movimentacoesLoading={movimentacoesLoading}
+                        itemName={form.name}
+                        itemStock={parseNumber(form.stock) * (parseNumber(form.unitMultiplier) || 1)}
+                        quantity={ajusteQuantidade}
+                        description={ajusteDescricao}
+                        setQuantity={setAjusteQuantidade}
+                        setDescription={setAjusteDescricao}
+                        movements={movimentacoesEstoque}
+                        movementsLoading={movimentacoesLoading}
                         onSave={() => {
                             const quantidadeCheck = validateNumber(ajusteQuantidade);
                             if (!quantidadeCheck.ok) {
@@ -874,8 +874,8 @@ const RegistrationPage: React.FC = () => {
                             const quantidadeAjusteNumero = parseNumber(ajusteQuantidade);
 
                             setForm((prev) => {
-                                const estoqueAtual = parseNumber(prev.estoque) || 0;
-                                return { ...prev, estoque: String(estoqueAtual + quantidadeAjusteNumero) };
+                                const estoqueAtual = parseNumber(prev.stock) || 0;
+                                return { ...prev, stock: String(estoqueAtual + quantidadeAjusteNumero) };
                             });
 
                             showToast('Ajuste aplicado no formulário. Lembre-se de "Salvar Alterações"!', 'info');
@@ -888,14 +888,14 @@ const RegistrationPage: React.FC = () => {
                 )}
 
                 {/* Modal: Confirmação de Exclusão */}
-                {deleteConfirmOpen && itemParaExcluir && (
+                {deleteConfirmOpen && itemToDelete && (
                     <ProductDeleteModal
                         open={deleteConfirmOpen}
-                        item={itemParaExcluir}
+                        item={itemToDelete}
                         onConfirm={handleConfirmDelete}
                         onClose={() => {
                             setDeleteConfirmOpen(false);
-                            setItemParaExcluir(null);
+                            setItemToDelete(null);
                         }}
                     />
                 )}

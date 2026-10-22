@@ -1,4 +1,4 @@
-export interface TabelaRow {
+export interface TableRow {
   substancia: string;
   laboratorio: string;
   ean: string;
@@ -9,7 +9,7 @@ export interface TabelaRow {
   pmc205: string;
 }
 
-export interface TabelaSearchHistoryItem {
+export interface TableSearchHistoryItem {
   id: number;
   query: string;
   result_count: number;
@@ -18,7 +18,7 @@ export interface TabelaSearchHistoryItem {
 
 export interface TabelaSearchResponse {
   source: 'history' | 'table';
-  results: TabelaRow[];
+  results: TableRow[];
   query: string;
 }
 
@@ -51,7 +51,7 @@ export const searchTable = async (query: string): Promise<TabelaSearchResponse> 
 };
 
 // Função assíncrona exportada.
-export const fetchTableHistory = async (): Promise<TabelaSearchHistoryItem[]> => {
+export const fetchTableHistory = async (): Promise<TableSearchHistoryItem[]> => {
   const response = await fetch('/api/tabela?history=1');
   return handleJsonResponse(response);
 };

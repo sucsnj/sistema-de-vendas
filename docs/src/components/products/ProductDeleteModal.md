@@ -9,12 +9,12 @@
 - `if (!open) return null;`; botões Excluir (destaque `--danger`) e Cancelar.
 
 ```ts
-interface ModalProdExclusaoProps {
+interface ProductDeleteModalProps {
   open: boolean; item: ItemData | null; onConfirm: () => void; onClose: () => void;
 }
 // Variantes recebem a entidade só para a mensagem:
-// CategoryDeleteModal { categoria }; BrandDeleteModal { marca };
-// SupplierDeleteModal { fornecedor }; UnitOfMeasureDeleteModal { unidadeMedida }
+// CategoryDeleteModal { category }; BrandDeleteModal { brand };
+// SupplierDeleteModal { supplier }; UnitOfMeasureDeleteModal { unitOfMeasure }
 ```
 
 ## Relações

@@ -1,17 +1,17 @@
 import { useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
-import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
+import { CategoryFormData, CategoryOptions } from '@/types/categoria';
 
-interface ModalAddCategoriaProps {
-    catForm: CategoriaFormData;
-    setCatForm: React.Dispatch<React.SetStateAction<CategoriaFormData>>;
-    options: CategoriaOptions;
+interface CategoryModalProps {
+    categoryForm: CategoryFormData;
+    setCategoryForm: React.Dispatch<React.SetStateAction<CategoryFormData>>;
+    options: CategoryOptions;
 }
 
-const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
-    catForm,
-    setCatForm,
+const CategoryModal: React.FC<CategoryModalProps> = ({
+    categoryForm,
+    setCategoryForm,
     options,
 }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-cat-title" tabIndex={-1}>
                 <h3 id="modal-cat-title" className={styles.modalTitle}>Adicionar Categoria</h3>
-                <form onSubmit={options.salvarCategoria} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveCategory} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="new-cat-nome">
                             Nome:*
@@ -31,8 +31,8 @@ const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Nome da categoria"
-                            value={catForm.nome}
-                            onChange={(e) => setCatForm(prev => ({ ...prev, nome: e.target.value }))}
+                            value={categoryForm.name}
+                            onChange={(e) => setCategoryForm(prev => ({ ...prev, name: e.target.value }))}
                             required
                             autoFocus
                         />
@@ -46,8 +46,8 @@ const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Descrição opcional"
-                            value={catForm.descricao}
-                            onChange={(e) => setCatForm(prev => ({ ...prev, descricao: e.target.value }))}
+                            value={categoryForm.description}
+                            onChange={(e) => setCategoryForm(prev => ({ ...prev, description: e.target.value }))}
                         />
                     </div>
                     <div className={styles.modalActions}>
@@ -58,8 +58,8 @@ const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalCategoria();
-                                setCatForm({ nome: '', descricao: '' });
+                                options.openCategoryModal();
+                                setCategoryForm({ name: '', description: '' });
                             }}
                             id="cancel-new-cat-btn"
                         >

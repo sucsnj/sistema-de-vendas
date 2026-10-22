@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Processa arquivo XML (`previewInvoiceItems`), valida extensão `.xml` e exibe preview com `ItemComStatus`.
+- Processa arquivo XML (`previewInvoiceItems`), valida extensão `.xml` e exibe preview com `ItemWithStatus`.
 - Suporta drag/drop, seleção via input, reset e fluxo de importação em lote (`importInvoiceItem`).
 - Gerencia estados: `loading`, `importing`, `error`, `completed`, `isDragOver`, `products`, `fileName`.
 - Manipula sugestões de nome (`handleItemDescriptionChange`, `handleSelectSuggestion`) e ações de edição/cadastro rápido (abrem páginas com parâmetros).
@@ -12,7 +12,7 @@
 
 ## Relações
 
-- **Usa:** `previewInvoiceItems`, `importInvoiceItem` (`src/services/produtosService.ts`), tipos `ProdutoImportado`, `SugestaoItem` (`src/components/import/ItemNameDropdown.tsx`).
+- **Usa:** `previewInvoiceItems`, `importInvoiceItem` (`src/services/produtosService.ts`), tipos `ImportedProduct`, `SuggestionItem` (`src/components/import/ItemNameDropdown.tsx`).
 - **Usado por:** `src/components/import/ImportItemsModal.tsx`.
 
 ## Notas

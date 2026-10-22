@@ -8,9 +8,9 @@
 - Botão **Backup Anual** chama `handleBackup`.
 
 ```ts
-interface ContasAPagarHeaderProps {
-  ano: number; mes: number;
-  setAno: (ano: number) => void; setMes: (mes: number) => void;
+interface PayablesHeaderProps {
+  year: number; month: number;
+  setYear: (year: number) => void; setMonth: (month: number) => void;
   handleBackup: () => Promise<void>;
 }
 ```

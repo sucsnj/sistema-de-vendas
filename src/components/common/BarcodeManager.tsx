@@ -7,15 +7,15 @@ import {
 } from '../../services/produtosService';
 
 export interface BarcodeManagerData {
-  codigosBarras: BarcodeData[];
-  novoCodigoBarras: string;
+  barcodes: BarcodeData[];
+  newBarcode: string;
 }
 
 export interface BarcodeManagerActions {
-  adicionar: () => void;
-  definirPrincipal: (barcode: string) => void;
-  alterar: (barcode: string) => void;
-  remover: (barcode: string) => void;
+  add: () => void;
+  setAsPrincipal: (barcode: string) => void;
+  change: (barcode: string) => void;
+  remove: (barcode: string) => void;
 }
 
 interface BarcodeManagerProps {
@@ -38,12 +38,12 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
           type="text"
           className={styles.inputField}
           placeholder="Digitar código de barras..."
-          value={data.novoCodigoBarras}
-          onChange={(e) => actions.alterar(e.target.value)}
+          value={data.newBarcode}
+          onChange={(e) => actions.change(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              actions.adicionar();
+              actions.add();
             }
           }}
           id="barcode-input-field"
@@ -51,7 +51,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         <button
           type="button"
           className={styles.primaryButton}
-          onClick={actions.adicionar}
+          onClick={actions.add}
           style={{ padding: '8px 14px', marginTop: 0, marginBottom: 0 }}
           id="add-barcode-action-btn"
         >
@@ -59,7 +59,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         </button>
       </div>
 
-      {data.codigosBarras.length === 0 ? (
+      {data.barcodes.length === 0 ? (
         <div
           style={{
             textAlign: 'center',
@@ -72,12 +72,12 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
         </div>
       ) : (
         <div className={styles.barcodeList}>
-          {data.codigosBarras.map((cb) => (
+          {data.barcodes.map((cb) => (
             <div key={cb.codigo_barras} className={styles.barcodeItem}>
               <div className={styles.barcodeLeft}>
                 <span style={{ fontWeight: 'bold' }}>{cb.codigo_barras}</span>
                 <span
-                  onClick={() => actions.definirPrincipal(cb.codigo_barras)}
+                  onClick={() => actions.setAsPrincipal(cb.codigo_barras)}
                   className={styles.barcodeRadioLabel}
                   title={cb.principal === 1 ? 'Código Principal' : 'Marcar como Principal'}
                   id={`principal-star-${cb.codigo_barras}`}
@@ -92,7 +92,7 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
               </div>
               <button
                 type="button"
-                onClick={() => actions.remover(cb.codigo_barras)}
+                onClick={() => actions.remove(cb.codigo_barras)}
                 className={styles.removeBtn}
                 title="Remover"
                 id={`remove-barcode-${cb.codigo_barras}`}

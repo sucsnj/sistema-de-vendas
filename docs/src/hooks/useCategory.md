@@ -4,13 +4,13 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`modalCategoriaOpen`, `catForm`) e edição (`modalCategoriaEditOpen`).
+- Controla modais de cadastro (`categoryModalOpen`, `categoryForm`) e edição (`categoryEditModalOpen`).
 - Cria categoria com nome/descrição via `createCategory`, atualiza opções e seleciona criada.
-- Atualiza/exclui categoria, sincroniza `setOptions.categorias` e ajusta paginação/listagem.
+- Atualiza/exclui categoria, sincroniza `setOptions.categories` e ajusta paginação/listagem.
 
 ## Relações
 
-- **Usa:** `fetchCategories`, `createCategory`, `deleteCategory`, `updateCategory` (`src/services/produtosService.ts`), `CategoriaFormData` (`src/types/categoria.ts`), `validateRequired` (`src/utils/validation.ts`).
+- **Usa:** `fetchCategories`, `createCategory`, `deleteCategory`, `updateCategory` (`src/services/produtosService.ts`), `CategoryFormData` (`src/types/categoria.ts`), `validateRequired` (`src/utils/validation.ts`).
 - **Usado por:** componentes de cadastro de produtos.
 
 ## Notas

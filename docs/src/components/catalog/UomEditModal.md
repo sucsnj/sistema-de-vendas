@@ -4,15 +4,15 @@
 
 ## O que faz
 
-- Edita **Sigla**/**Descrição**; "Atualizar" chama `options.salvarUnidadeMedida`.
+- Edita **Sigla**/**Descrição**; "Atualizar" chama `options.saveUnitOfMeasure`.
 - "Excluir" abre `UnitOfMeasureDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
-interface ModalUnidadeMedidaEditProps {
-  uomForm: UnidadeMedidaFormData;
-  setUomForm: React.Dispatch<React.SetStateAction<UnidadeMedidaFormData>>;
+interface UnitOfMeasureEditModalProps {
+  uomForm: UnitOfMeasureFormData;
+  setUomForm: React.Dispatch<React.SetStateAction<UnitOfMeasureFormData>>;
   onDelete: () => void;
-  options: UnidadeMedidaOptions;
+  options: UnitOfMeasureOptions;
 }
 ```
 
@@ -23,4 +23,4 @@ interface ModalUnidadeMedidaEditProps {
 
 ## Notas
 
-- Fechar reseta o formulário e chama `abrirModalUnidadeMedida()`.
+- Fechar reseta o formulário e chama `openUnitOfMeasureModal()`.

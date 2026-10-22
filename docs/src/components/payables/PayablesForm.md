@@ -9,18 +9,18 @@
 - Expõe refs dos inputs ao pai (foco/validação).
 
 ```ts
-interface ContasAPagarFormProps {
-  distribuidora: string; valor: string; vencimento: string; documento: string;
-  bancoObservacoes: string; editingConta: ContaDetalhe | null;
+interface PayablesFormProps {
+  distributor: string; amount: string; dueDate: string; document: string;
+  bankNotes: string; editingAccount: AccountDetails | null;
   onSubmit: (e: React.FormEvent) => Promise<void>;
-  onReset: () => void; onImportXML: () => Promise<void>; onCancelarEdicao: () => void;
-  distribuidoraInputRef; valorInputRef; dataInputRef; documentoInputRef;
+  onReset: () => void; onImportXML: () => Promise<void>; onCancelEdit: () => void;
+  distributorInputRef; amountInputRef; dataInputRef; documentInputRef;
 }
 ```
 
 ## Relações
 
-- **Usa:** `ContaDetalhe` (`src/services/contasService.ts`), `contas.module.css`, ícones MUI.
+- **Usa:** `AccountDetails` (`src/services/contasService.ts`), `contas.module.css`, ícones MUI.
 - **Usado por:** `../../pages/contas-a-pagar.md`.
 
 ## Notas

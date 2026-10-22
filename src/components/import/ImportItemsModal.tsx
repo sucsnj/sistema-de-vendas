@@ -21,13 +21,13 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useImportItems } from '../../hooks/useImportItems';
 import ItemNameDropdown from './ItemNameDropdown';
 
-interface ModalImportItensProps {
+interface ImportItemsModalProps {
   onClose: () => void;
   onImportSuccess: () => void;
   initialFile?: File | null;
 }
 
-const ImportItemsModal: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess, initialFile }) => {
+const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSuccess, initialFile }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   useFocusTrap(dialogRef, true);
 

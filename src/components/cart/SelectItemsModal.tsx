@@ -15,7 +15,7 @@ import { CartModalShell } from './CartModalShell';
 import { ItemData } from '../../services/produtosService';
 import type { CartItem } from '../../types/sale';
 
-interface ModalSelecionarItensProps {
+interface SelectItemsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onManageCart: () => void;
@@ -28,7 +28,7 @@ interface ModalSelecionarItensProps {
   onRemoveFromCart: (item: ItemData) => void;
 }
 
-const SelectItemsModal: React.FC<ModalSelecionarItensProps> = ({
+const SelectItemsModal: React.FC<SelectItemsModalProps> = ({
   isOpen,
   onClose,
   onManageCart,

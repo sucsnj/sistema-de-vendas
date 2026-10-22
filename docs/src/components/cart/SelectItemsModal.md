@@ -9,7 +9,7 @@
 - Foco automático na busca ao abrir (timeout 50ms); botão "Gerenciar" abre o [CartModal](./CartModal.md).
 
 ```ts
-interface ModalSelecionarItensProps {
+interface SelectItemsModalProps {
   isOpen: boolean; onClose: () => void; onManageCart: () => void;
   cartItems: CartItem[]; catalogItems: ItemData[]; loadingCatalog: boolean;
   cartSearch: string; onCartSearchChange: (value: string) => void;

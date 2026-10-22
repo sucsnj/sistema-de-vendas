@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/useToast';
 import Agenda from '@/components/payables/Agenda';
-import Resumo from '@/components/summary/Summary';
+import Summary from '@/components/summary/Summary';
 import PayablesHeader from '@/components/payables/PayablesHeader';
 import PayablesFilterPanel from '@/components/payables/PayablesFilterPanel';
 import PayablesForm from '@/components/payables/PayablesForm';
@@ -18,7 +18,7 @@ import {
   backupAccounts,
   payAccount,
   registerAccount,
-  ContaDetalhe,
+  AccountDetails,
 } from '../services/contasService';
 import { highlightField } from '../utils/forms';
 import { useShortcuts } from '../utils/shortcuts';
@@ -32,15 +32,15 @@ const Payables: React.FC = () => {
   const queryClient = useQueryClient();
   const [ano, setAno] = useState(getDateArray()[2]);
   const [mes, setMes] = useState(getDateArray()[1]);
-  const [contasMes, setContasMes] = useState<ContaDetalhe[]>([]);
-  const [contasAno, setContasAno] = useState<ContaDetalhe[]>([]);
+  const [contasMes, setContasMes] = useState<AccountDetails[]>([]);
+  const [contasAno, setContasAno] = useState<AccountDetails[]>([]);
   const [distribuidora, setDistribuidora] = useState('');
   const [valor, setValor] = useState('');
   const [vencimento, setVencimento] = useState(hoje);
   const [documento, setDocumento] = useState('');
   const [bancoObservacoes, setBancoObservacoes] = useState('');
-  const [editingConta, setEditingConta] = useState<ContaDetalhe | null>(null);
-  const [selectedConta, setSelectedConta] = useState<ContaDetalhe | null>(null);
+  const [editingConta, setEditingConta] = useState<AccountDetails | null>(null);
+  const [selectedConta, setSelectedConta] = useState<AccountDetails | null>(null);
   const [filtroDistribuidora, setFiltroDistribuidora] = useState('');
   const [filtroStatus, setFiltroStatus] = useState<'Todos' | 'Pendente' | 'Pago'>('Todos');
   const [filtroVencimentoDe, setFiltroVencimentoDe] = useState(() => {
@@ -204,7 +204,7 @@ const Payables: React.FC = () => {
     }
   };
 
-  const handleEdit = (account: ContaDetalhe) => {
+  const handleEdit = (account: AccountDetails) => {
     setEditingConta(account);
     setDistribuidora(account.distribuidora);
     setValor(account.valor.toFixed(2));
@@ -216,7 +216,7 @@ const Payables: React.FC = () => {
 
   const handleCancelEdit = () => resetForm();
 
-  const handleView = (account: ContaDetalhe) => setSelectedConta(account);
+  const handleView = (account: AccountDetails) => setSelectedConta(account);
 
   const handleDelete = async (id: number) => {
     try {
@@ -346,21 +346,21 @@ const Payables: React.FC = () => {
 
   return (
     <div className={styles.contasPage}>
-      <PayablesHeader ano={ano} mes={mes} setAno={setAno} setMes={setMes} handleBackup={handleBackup} />
+      <PayablesHeader year={ano} month={mes} setYear={setAno} setMonth={setMes} handleBackup={handleBackup} />
 
       <main className={styles.contasGrid}>
         <section className={`${styles.contasPanel} ${styles.detailPanel}`}>
           <PayablesFilterPanel
-            filtroDistribuidora={filtroDistribuidora}
-            setFiltroDistribuidora={setFiltroDistribuidora}
-            filtroStatus={filtroStatus}
-            setFiltroStatus={setFiltroStatus}
-            filtroVencimentoDe={filtroVencimentoDe}
-            setFiltroVencimentoDe={handleDueDateFromChange}
-            filtroVencimentoAte={filtroVencimentoAte}
-            setFiltroVencimentoAte={handleDueDateToChange}
-            hoje={hoje}
-            filteredContas={filteredContas}
+            distributorFilter={filtroDistribuidora}
+            setDistributorFilter={setFiltroDistribuidora}
+            statusFilter={filtroStatus}
+            setStatusFilter={setFiltroStatus}
+            dueDateFromFilter={filtroVencimentoDe}
+            setDueDateFromFilter={handleDueDateFromChange}
+            dueDateToFilter={filtroVencimentoAte}
+            setDueDateToFilter={handleDueDateToChange}
+            today={hoje}
+            filteredAccounts={filteredContas}
             handleView={handleView}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
@@ -383,29 +383,29 @@ const Payables: React.FC = () => {
           />
 
           <PayablesForm
-            distribuidora={distribuidora}
-            setDistribuidora={setDistribuidora}
-            valor={valor}
-            setValor={setValor}
-            vencimento={vencimento}
-            setVencimento={setVencimento}
-            documento={documento}
-            setDocumento={setDocumento}
-            bancoObservacoes={bancoObservacoes}
-            setBancoObservacoes={setBancoObservacoes}
-            editingConta={editingConta}
+            distributor={distribuidora}
+            setDistributor={setDistribuidora}
+            amount={valor}
+            setAmount={setValor}
+            dueDate={vencimento}
+            setDueDate={setVencimento}
+            document={documento}
+            setDocument={setDocumento}
+            bankNotes={bancoObservacoes}
+            setBankNotes={setBancoObservacoes}
+            editingAccount={editingConta}
             onSubmit={handleSubmit}
             onReset={resetForm}
             onImportXML={handleImportXML}
-            onCancelarEdicao={handleCancelEdit}
-            distribuidoraInputRef={distribuidoraInputRef}
-            valorInputRef={valorInputRef}
+            onCancelEdit={handleCancelEdit}
+            distributorInputRef={distribuidoraInputRef}
+            amountInputRef={valorInputRef}
             dataInputRef={dataInputRef}
-            documentoInputRef={documentoInputRef}
+            documentInputRef={documentoInputRef}
           />
 
           <PayablesLastTen
-            ultimasContas={ultimasContas}
+            latestAccounts={ultimasContas}
             handleView={handleView}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
@@ -413,32 +413,32 @@ const Payables: React.FC = () => {
         </section>
 
         {/* #Agenda */}
-        <Agenda contasMes={contasMes} contasAno={contasAno} />
+        <Agenda accountsMonth={contasMes} accountsYear={contasAno} />
 
         {/* #Resumo */}
-        <Resumo contasAno={contasAno} ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
+        <Summary accountsYear={contasAno} year={ano} month={mes} setYear={setAno} setMonth={setMes} />
 
       </main>
 
       <PayablesModals
-        selectedConta={selectedConta}
-        editingConta={editingConta}
-        distribuidora={distribuidora}
-        setDistribuidora={setDistribuidora}
-        valor={valor}
-        setValor={setValor}
-        vencimento={vencimento}
-        setVencimento={setVencimento}
-        documento={documento}
-        setDocumento={setDocumento}
-        bancoObservacoes={bancoObservacoes}
-        setBancoObservacoes={setBancoObservacoes}
+        selectedAccount={selectedConta}
+        editingAccount={editingConta}
+        distributor={distribuidora}
+        setDistributor={setDistribuidora}
+        amount={valor}
+        setAmount={setValor}
+        dueDate={vencimento}
+        setDueDate={setVencimento}
+        document={documento}
+        setDocument={setDocumento}
+        bankNotes={bancoObservacoes}
+        setBankNotes={setBancoObservacoes}
         payModalOpen={payModalOpen}
-        payObservacao={payObservacao}
-        setPayObservacao={setPayObservacao}
-        onCloseSelectedConta={() => setSelectedConta(null)}
+        paymentNotes={payObservacao}
+        setPaymentNotes={setPayObservacao}
+        onCloseSelectedAccount={() => setSelectedConta(null)}
         onSave={handleSubmit}
-        onEditar={handleEdit}
+        onEdit={handleEdit}
         onCancelEdit={handleCancelEdit}
         onStartPayment={(account) => {
           setSelectedConta(account);

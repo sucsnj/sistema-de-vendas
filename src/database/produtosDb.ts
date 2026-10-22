@@ -272,23 +272,23 @@ const syncSharedAutoincrementSequence = () => {
 
 syncSharedAutoincrementSequence();
 
-export interface CategoriaRow {
+export interface CategoryRow {
   id: number;
   nome: string;
   descricao: string | null;
 }
 
-export interface MarcaRow {
+export interface BrandRow {
   id: number;
   nome: string;
 }
 
-export interface FornecedorRow {
+export interface SupplierRow {
   id: number;
   nome: string;
 }
 
-export interface UnidadeMedidaRow {
+export interface UnitOfMeasureRow {
   id: number;
   sigla: string;
   descricao: string | null;
@@ -296,11 +296,11 @@ export interface UnidadeMedidaRow {
 
 // Helpers para Categorias
 export const getCategories = () => {
-  return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as unknown as CategoriaRow[];
+  return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as unknown as CategoryRow[];
 };
 
 export const getCategoryById = (id: number) => {
-  return db.prepare('SELECT * FROM categorias WHERE id = ?').get(id) as unknown as CategoriaRow | undefined;
+  return db.prepare('SELECT * FROM categorias WHERE id = ?').get(id) as unknown as CategoryRow | undefined;
 };
 
 export const insertCategory = (name: string, description?: string) => {
@@ -331,11 +331,11 @@ export const updateCategory = (id: number, name: string, description?: string) =
 
 // Helpers para Marcas
 export const getBrands = () => {
-  return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as unknown as MarcaRow[];
+  return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as unknown as BrandRow[];
 };
 
 export const getBrandById = (id: number) => {
-  return db.prepare('SELECT * FROM marcas WHERE id = ?').get(id) as unknown as MarcaRow | undefined;
+  return db.prepare('SELECT * FROM marcas WHERE id = ?').get(id) as unknown as BrandRow | undefined;
 };
 
 export const insertBrand = (name: string) => {
@@ -367,11 +367,11 @@ export const updateBrand = (id: number, name: string) => {
 
 // Helpers para Fornecedores
 export const getSuppliers = () => {
-  return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as unknown as FornecedorRow[];
+  return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as unknown as SupplierRow[];
 };
 
 export const getSupplierById = (id: number) => {
-  return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as unknown as FornecedorRow | undefined;
+  return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as unknown as SupplierRow | undefined;
 };
 
 export const insertSupplier = (name: string) => {
@@ -403,11 +403,11 @@ export const updateSupplier = (id: number, name: string) => {
 
 // Helpers para Unidades de Medida
 export const getUnitsOfMeasure = () => {
-  return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as unknown as UnidadeMedidaRow[];
+  return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as unknown as UnitOfMeasureRow[];
 };
 
 export const getUnitOfMeasureById = (id: number) => {
-  return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as unknown as UnidadeMedidaRow | undefined;
+  return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as unknown as UnitOfMeasureRow | undefined;
 };
 
 export const insertUnitOfMeasure = (abbreviation: string, description?: string) => {
@@ -435,7 +435,7 @@ export const deleteUnitOfMeasure = (id: number) => {
   return db.prepare('DELETE FROM unidades_medida WHERE id = ?').run(id);
 };
 
-export interface ServicoData {
+export interface ServiceData {
   id: number;
   nome: string;
   descricao?: string;
@@ -449,7 +449,7 @@ export interface ServicoData {
   categoria_nome?: string;
 }
 
-export interface ServicoInput {
+export interface ServiceInput {
   nome: string;
   descricao?: string;
   categoria_id: number;
@@ -459,7 +459,7 @@ export interface ServicoInput {
   duracao_minutos?: number;
 }
 
-export interface MovimentacaoEstoqueData {
+export interface StockMovementData {
   id: number;
   item_id: number;
   item: string;
@@ -470,7 +470,7 @@ export interface MovimentacaoEstoqueData {
   data_movimentacao: string;
 }
 
-export interface MovimentacaoEstoqueInput {
+export interface StockMovementInput {
   item_id: number;
   tipo: 'ENTRADA' | 'SAIDA' | 'AJUSTE';
   quantidade: number;
@@ -485,7 +485,7 @@ const normalizeMovementType = (type: string) => {
   return upper as 'ENTRADA' | 'SAIDA' | 'AJUSTE';
 };
 
-const insertStockMovementRaw = (movement: MovimentacaoEstoqueInput) => {
+const insertStockMovementRaw = (movement: StockMovementInput) => {
   const itemRow = db.prepare('SELECT nome, estoque FROM itens WHERE id = ?').get(movement.item_id) as { nome: string; estoque: number } | undefined;
   if (!itemRow) {
     throw new Error('Item não encontrado para movimentação de estoque.');
@@ -531,7 +531,7 @@ export const insertStockMovement = db.transaction(insertStockMovementRaw);
 export const getStockMovements = (itemId: number) => {
   return db.prepare(
     'SELECT id, item_id, item, tipo, quantidade, estoque_final, descricao, data_movimentacao FROM movimentacoes_estoque WHERE item_id = ? ORDER BY data_movimentacao DESC, id DESC'
-  ).all(itemId) as MovimentacaoEstoqueData[];
+  ).all(itemId) as StockMovementData[];
 };
 
 // Validações de Unicidade
@@ -566,7 +566,7 @@ export const checkDuplicateBarcode = (barcodes: string[], excludeItemId?: number
 };
 
 // CRUD de Serviços
-export interface ServicoData {
+export interface ServiceData {
   id: number;
   nome: string;
   descricao?: string;
@@ -580,7 +580,7 @@ export interface ServicoData {
   categoria_nome?: string;
 }
 
-export interface ServicoInput {
+export interface ServiceInput {
   nome: string;
   descricao?: string;
   categoria_id: number;
@@ -651,7 +651,7 @@ export const getServices = (options: {
     LIMIT ? OFFSET ?
   `;
 
-  const services = db.prepare(servicesQuery).all(...params, pageSize, offset) as ServicoData[];
+  const services = db.prepare(servicesQuery).all(...params, pageSize, offset) as ServiceData[];
 
   return {
     services,
@@ -679,10 +679,10 @@ export const getServiceById = (id: number) => {
     FROM servicos s
     JOIN categorias c ON s.categoria_id = c.id
     WHERE s.id = ?
-  `).get(id) as ServicoData | undefined;
+  `).get(id) as ServiceData | undefined;
 };
 
-export const insertService = db.transaction((servicoData: ServicoInput) => {
+export const insertService = db.transaction((servicoData: ServiceInput) => {
   syncSharedAutoincrementSequence();
 
   const stmt = db.prepare(`
@@ -721,7 +721,7 @@ export const insertService = db.transaction((servicoData: ServicoInput) => {
   return result.lastInsertRowid as number;
 });
 
-export const updateService = db.transaction((id: number, servicoData: ServicoInput) => {
+export const updateService = db.transaction((id: number, servicoData: ServiceInput) => {
   const stmt = db.prepare(`
     UPDATE servicos
     SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, data_atualizacao = datetime('now', 'localtime')
@@ -752,7 +752,7 @@ export interface BarcodeData {
   principal: number;
 }
 
-export interface ItemUnidadeData {
+export interface ItemUnitData {
   unidade_medida_id: number;
   multiplicador_unidade: number;
   principal: number;
@@ -777,7 +777,7 @@ export interface ItemInput {
   referencia?: string | null;
   ativo?: number;
   codigos_barras?: BarcodeData[];
-  unidades_medida?: ItemUnidadeData[];
+  unidades_medida?: ItemUnitData[];
 }
 
 export interface ItemRow extends ItemInput {
@@ -891,7 +891,7 @@ export const getItems = (options: {
 
   for (const item of items) {
     item.codigos_barras = barcodesStmt.all(item.id) as unknown as BarcodeData[];
-    item.unidades_medida = unidadesStmt.all(item.id) as unknown as ItemUnidadeData[];
+    item.unidades_medida = unidadesStmt.all(item.id) as unknown as ItemUnitData[];
     if (!item.unidades_medida || item.unidades_medida.length === 0) {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,
@@ -957,7 +957,7 @@ export const getItemById = (id: number) => {
     `).all(id);
 
     if (unidades && unidades.length > 0) {
-      item.unidades_medida = unidades as unknown as ItemUnidadeData[];
+      item.unidades_medida = unidades as unknown as ItemUnitData[];
     } else {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,

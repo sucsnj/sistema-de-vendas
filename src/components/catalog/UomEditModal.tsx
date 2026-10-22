@@ -3,24 +3,24 @@ import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 import { UnitOfMeasureDeleteModal } from '@/components/products/ProductDeleteModal';
 
-export interface UnidadeMedidaFormData {
-    sigla: string;
-    descricao: string;
+export interface UnitOfMeasureFormData {
+    abbreviation: string;
+    description: string;
 }
 
-export interface UnidadeMedidaOptions {
-    abrirModalUnidadeMedida: () => void;
-    salvarUnidadeMedida: React.FormEventHandler<HTMLFormElement>;
+export interface UnitOfMeasureOptions {
+    openUnitOfMeasureModal: () => void;
+    saveUnitOfMeasure: React.FormEventHandler<HTMLFormElement>;
 }
 
-interface ModalUnidadeMedidaEditProps {
-    uomForm: UnidadeMedidaFormData;
-    setUomForm: React.Dispatch<React.SetStateAction<UnidadeMedidaFormData>>;
+interface UnitOfMeasureEditModalProps {
+    uomForm: UnitOfMeasureFormData;
+    setUomForm: React.Dispatch<React.SetStateAction<UnitOfMeasureFormData>>;
     onDelete: () => void;
-    options: UnidadeMedidaOptions;
+    options: UnitOfMeasureOptions;
 }
 
-const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
+const UnitOfMeasureEditModal: React.FC<UnitOfMeasureEditModalProps> = ({
     uomForm,
     setUomForm,
     onDelete,
@@ -33,7 +33,7 @@ const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-uom-edit-title" tabIndex={-1}>
                 <h3 id="modal-uom-edit-title" className={styles.modalTitle}>Editar Unidade de Medida</h3>
-                <form onSubmit={options.salvarUnidadeMedida} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={options.saveUnitOfMeasure} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="edit-uom-sigla">
                             Sigla:*
@@ -43,8 +43,8 @@ const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Sigla da Unidade de Medida"
-                            value={uomForm.sigla}
-                            onChange={(e) => setUomForm({ ...uomForm, sigla: e.target.value })}
+                            value={uomForm.abbreviation}
+                            onChange={(e) => setUomForm({ ...uomForm, abbreviation: e.target.value })}
                             required
                             autoFocus
                         />
@@ -58,8 +58,8 @@ const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
                             type="text"
                             className={styles.inputField}
                             placeholder="Descrição opcional"
-                            value={uomForm.descricao}
-                            onChange={(e) => setUomForm({ ...uomForm, descricao: e.target.value })}
+                            value={uomForm.description}
+                            onChange={(e) => setUomForm({ ...uomForm, description: e.target.value })}
                         />
                     </div>
                     <div className={styles.modalActions}>
@@ -80,8 +80,8 @@ const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => {
-                                options.abrirModalUnidadeMedida();
-                                setUomForm({ sigla: '', descricao: '' });
+                                options.openUnitOfMeasureModal();
+                                setUomForm({ abbreviation: '', description: '' });
                             }}
                             id="cancel-edit-uom-btn"
                         >
@@ -93,12 +93,12 @@ const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
             {deleteConfirmOpen && (
                 <UnitOfMeasureDeleteModal
                     open={deleteConfirmOpen}
-                    unidadeMedida={uomForm}
+                    unitOfMeasure={uomForm}
                     onConfirm={() => {
                         onDelete();
                         setDeleteConfirmOpen(false);
-                        options.abrirModalUnidadeMedida(); // fecha modal de edição
-                        setUomForm({ sigla: '', descricao: '' }); // limpa formulário
+                        options.openUnitOfMeasureModal(); // fecha modal de edição
+                        setUomForm({ abbreviation: '', description: '' }); // limpa formulário
                     }}
                     onClose={() => setDeleteConfirmOpen(false)}
                 />
