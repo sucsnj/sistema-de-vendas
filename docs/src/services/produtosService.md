@@ -5,11 +5,11 @@
 ## O que faz
 
 - Define interfaces: `BarcodeData`, `ItemData`, `ServicoData`, `ServicoInput`, `MovimentacaoEstoqueData`, `MovimentacaoEstoqueInput`, `PagedResult<T>`, `CategoriaData`, `MarcaData`, `FornecedorData`, `UnidadeMedidaData`, `ProdutoImportado`, `InvoiceItemsPreviewResult`, `InvoiceItemImportResult`.
-- Produtos: `buscarProdutos`, `registrarProduto`, `atualizarProduto`, `excluirProduto`, `toggleStatusProduto` (chama `/api/produtos`, com tratamento de erro via `response.json()`).
-- Serviços: `buscarServicos`, `buscarServicoPorId`, `registrarServico`, `atualizarServico`, `excluirServico` (chama `/api/produtos/servicos`).
-- Movimentações de estoque: `buscarMovimentacoesEstoque`, `registrarMovimentacaoEstoque` (chama `/api/produtos/movimentacoes`).
+- Produtos: `fetchProducts`, `registerProduct`, `updateProduct`, `deleteProduct`, `toggleProductStatus` (chama `/api/produtos`, com tratamento de erro via `response.json()`).
+- Serviços: `fetchServices`, `fetchServiceById`, `registerService`, `updateService`, `deleteService` (chama `/api/produtos/servicos`).
+- Movimentações de estoque: `fetchStockMovements`, `registerStockMovement` (chama `/api/produtos/movimentacoes`).
 - Cadastros auxiliares: CRUD completo para categorias, marcas, fornecedores e unidades de medida via endpoints `/api/produtos/<entidade>`.
-- Importação NF-e: `previewInvoiceItems(xml)` (POST `/api/produtos/itens` com `{xml, preview:true}`) e `importInvoiceItem(produto)` (POST com `{importar:true, produto}`), retornando resultados normalizados (`ok`, flags, `error`).
+- Importação NF-e: `previewInvoiceItems(xml)` (POST `/api/produtos/itens` com `{xml, preview:true}`) e `importInvoiceItem(product)` (POST com `{importar:true, produto}`), retornando resultados normalizados (`ok`, flags, `error`).
 
 ## Relações
 
@@ -19,5 +19,5 @@
 ## Notas
 
 - Quase todas as funções lançam `Error` com mensagem extraída de `errorData.error` quando `!response.ok`.
-- `buscarProdutos` aceita filtros (`search`, `categoria_id`, `marca_id`, `fornecedor_id`, `preco_venda`, `ativo`, paginação) e monta query string condicional.
+- `fetchProducts` aceita filtros (`search`, `categoria_id`, `marca_id`, `fornecedor_id`, `preco_venda`, `ativo`, paginação) e monta query string condicional.
 - `previewInvoiceItems` normaliza resposta com `{ok,...}` mesmo em caso de erro HTTP.

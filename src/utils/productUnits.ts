@@ -4,7 +4,7 @@
  * Regras puras das unidades de medida do formulário de produto
  * (seleção de principal, atualização e remoção com sincronização dos
  * campos "resumo" unidadeMedidaId/multiplicadorUnidade).
- * Extraídas dos handlers inline de `FormularioProduto` (ver docs).
+ * Extraídas dos handlers inline de `ProductForm` (ver docs).
  */
 
 export interface UnitOfMeasureRow {
@@ -47,13 +47,13 @@ export function setUnitAsPrincipal(
 export function updateUnitId(
   units: UnitOfMeasureRow[],
   index: number,
-  unidadeMedidaId: number
+  unitOfMeasureId: number
 ): UnitChangeResult {
   const next = [...units];
-  next[index] = { ...next[index], unidadeMedidaId };
+  next[index] = { ...next[index], unidadeMedidaId: unitOfMeasureId };
   const result: UnitChangeResult = { units: next };
   if (units[index].principal) {
-    result.unidadeMedidaId = unidadeMedidaId;
+    result.unidadeMedidaId = unitOfMeasureId;
   }
   return result;
 }
@@ -62,13 +62,13 @@ export function updateUnitId(
 export function updateUnitMultiplier(
   units: UnitOfMeasureRow[],
   index: number,
-  multiplicadorUnidade: string
+  unitMultiplier: string
 ): UnitChangeResult {
   const next = [...units];
-  next[index] = { ...next[index], multiplicadorUnidade };
+  next[index] = { ...next[index], multiplicadorUnidade: unitMultiplier };
   const result: UnitChangeResult = { units: next };
   if (units[index].principal) {
-    result.multiplicadorUnidade = multiplicadorUnidade;
+    result.multiplicadorUnidade = unitMultiplier;
   }
   return result;
 }

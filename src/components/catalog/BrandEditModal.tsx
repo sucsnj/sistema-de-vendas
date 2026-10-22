@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
-import { ModalMarcaExclusao } from '@/components/products/ProductDeleteModal';
+import { BrandDeleteModal } from '@/components/products/ProductDeleteModal';
 
 export interface MarcaFormData {
     nome: string;
@@ -19,7 +19,7 @@ interface ModalMarcaEditProps {
     options: MarcaOptions;
 }
 
-const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
+const BrandEditModal: React.FC<ModalMarcaEditProps> = ({
     marcaForm,
     setMarcaForm,
     onDelete,
@@ -77,7 +77,7 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
                 </form>
             </div>
             {deleteConfirmOpen && (
-                <ModalMarcaExclusao
+                <BrandDeleteModal
                     open={deleteConfirmOpen}
                     marca={marcaForm}
                     onConfirm={() => {
@@ -93,4 +93,4 @@ const ModalMarcaEdit: React.FC<ModalMarcaEditProps> = ({
     )
 };
 
-export default ModalMarcaEdit;
+export default BrandEditModal;

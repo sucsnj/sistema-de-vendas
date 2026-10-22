@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
-  deleteServico,
-  getServicoById,
-  getServicos,
-  insertServico,
-  updateServico,
+  deleteService,
+  getServiceById,
+  getServices,
+  insertService,
+  updateService,
 } from '../../../database/produtosDb';
 
-const normalizeServicoPayload = (body: Record<string, unknown>) => {
+const normalizeServicePayload = (body: Record<string, unknown>) => {
   const payload = body && typeof body === 'object' ? body : {};
 
   const categoriaId = Number(payload.categoria_id);
@@ -29,10 +29,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
       if (req.query.id) {
-        return res.status(200).json(getServicoById(Number(req.query.id)) ?? null);
+        return res.status(200).json(getServiceById(Number(req.query.id)) ?? null);
       }
 
-      const result = getServicos({
+      const result = getServices({
         search: typeof req.query.search === 'string' ? req.query.search : undefined,
         categoria_id: req.query.categoria_id ? Number(req.query.categoria_id) : undefined,
         page: req.query.page ? Number(req.query.page) : undefined,
@@ -53,7 +53,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
-      const payload = normalizeServicoPayload(req.body);
+      const payload = normalizeServicePayload(req.body);
       if (!payload.nome) {
         return res.status(400).json({ error: 'O nome do serviço é obrigatório.' });
       }
@@ -61,8 +61,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'A categoria do serviço é obrigatória.' });
       }
 
-      const id = insertServico(payload);
-      return res.status(201).json(getServicoById(Number(id)) ?? { id });
+      const id = insertService(payload);
+      return res.status(201).json(getServiceById(Number(id)) ?? { id });
     } catch (error: unknown) {
       return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao criar serviço.' });
     }
@@ -71,19 +71,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'PUT') {
     try {
       const id = Number(req.query.id);
-      const payload = normalizeServicoPayload(req.body);
+      const payload = normalizeServicePayload(req.body);
       if (!id) {
         return res.status(400).json({ error: 'ID do serviço é obrigatório.' });
       }
       if (!payload.nome || !payload.categoria_id) {
         return res.status(400).json({ error: 'Nome e categoria do serviço são obrigatórios.' });
       }
-      if (!getServicoById(id)) {
+      if (!getServiceById(id)) {
         return res.status(404).json({ error: 'Serviço não encontrado.' });
       }
 
-      updateServico(id, payload);
-      return res.status(200).json(getServicoById(id));
+      updateService(id, payload);
+      return res.status(200).json(getServiceById(id));
     } catch (error: unknown) {
       return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao atualizar serviço.' });
     }
@@ -95,11 +95,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!id) {
         return res.status(400).json({ error: 'ID do serviço é obrigatório.' });
       }
-      if (!getServicoById(id)) {
+      if (!getServiceById(id)) {
         return res.status(404).json({ error: 'Serviço não encontrado.' });
       }
 
-      deleteServico(id);
+      deleteService(id);
       return res.status(200).json({ message: 'Serviço excluído com sucesso.' });
     } catch (error: unknown) {
       return res.status(500).json({ error: error instanceof Error ? error.message : 'Erro ao excluir serviço.' });

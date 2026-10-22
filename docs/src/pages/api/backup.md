@@ -11,7 +11,7 @@
 ## Relações
 
 - **Usa:** `backupDatabase` de `src/database/db.ts`.
-- **Usado por:** `fazerBackup` em `src/services/vendasService.ts`; `../index.md` (botão "Fazer Backup").
+- **Usado por:** `backupDatabase` em `src/services/vendasService.ts`; `../index.md` (botão "Fazer Backup").
 
 ## Notas
 

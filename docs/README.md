@@ -171,7 +171,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 
 ## Hooks
 
-- [src/hooks/README.md](src/hooks/README.md) - índice dos hooks de estado (arquivos em inglês; identificadores exportados ainda em pt-BR — ADR 0004).
+- [src/hooks/README.md](src/hooks/README.md) - índice dos hooks de estado (arquivos e identificadores em inglês — ADR 0004).
 
 ## Tipos
 

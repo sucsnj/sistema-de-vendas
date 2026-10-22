@@ -15,6 +15,6 @@
 
 ## Notas
 
-- `buscarContas(ano, mes?)` monta `URLSearchParams` e omite `mes` quando não informado.
+- `fetchAccounts(year, month?)` monta `URLSearchParams` e omite `month` quando não informado.
 - Ações `pagar`/`cancelar` são enviadas via `POST /api/contas` com `{action, id}` (sem rota REST dedicada).
 - Duplicidade `distribuidora+documento` é tratada pela API e retornada no JSON.

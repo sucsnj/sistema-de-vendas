@@ -1,7 +1,7 @@
 import { useRef, type ChangeEvent, type FC } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { registrarVendaComCriadoEm, VendaDiaria } from '../../services/vendasService';
+import { registerSaleWithCreatedAt, VendaDiaria } from '../../services/vendasService';
 import parseNumber from '../../utils/number';
 import { parseDate } from '../../utils/date';
 
@@ -198,7 +198,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
 
       await Promise.all(
         parsedItems.map((item) =>
-          registrarVendaComCriadoEm(item.data, item.valor, item.observacoes, item.criado_em)
+          registerSaleWithCreatedAt(item.data, item.valor, item.observacoes, item.criado_em)
         )
       );
 

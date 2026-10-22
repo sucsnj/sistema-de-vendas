@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertVendaItens, deleteVendaItens } from '../../database/db';
+import { insertDailySale, getDailySales, updateDailySale, getDailySaleById, deleteDailySale, insertSaleItems, deleteSaleItems } from '../../database/db';
 import { parseCurrency } from '../../utils/number';
 import { toDate } from '../../utils/date';
 import { canEdit } from '../../utils/edit';
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (itens && Array.isArray(itens) && itens.length > 0 && result.lastInsertRowid) {
-        insertVendaItens(
+        insertSaleItems(
           Number(result.lastInsertRowid),
           itens.map((item: ItemVendaApi) => ({
             item_id: item.id,
@@ -75,9 +75,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       updateDailySale(id, data, validValue, observacoes);
 
       // Substitui os itens: remove os existentes e insere os novos
-      deleteVendaItens(id);
+      deleteSaleItems(id);
       if (itens && Array.isArray(itens) && itens.length > 0) {
-        insertVendaItens(
+        insertSaleItems(
           Number(id),
           itens.map((item: ItemVendaApi) => ({
             item_id: item.item_id ?? item.id ?? undefined,

@@ -5,7 +5,7 @@
 ## O que faz
 
 - Edita **Nome**; "Atualizar" chama `options.salvarMarca`.
-- "Excluir" abre `ModalMarcaExclusao` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
+- "Excluir" abre `BrandDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
 interface ModalMarcaEditProps {
@@ -19,7 +19,7 @@ interface ModalMarcaEditProps {
 ## Relações
 
 - **Usa:** [ProductDeleteModal](../products/ProductDeleteModal.md), `useFocusTrap`.
-- **Usado por:** hook `useMarca`, via "⋮" do [ProductForm](../products/ProductForm.md).
+- **Usado por:** hook `useBrand`, via "⋮" do [ProductForm](../products/ProductForm.md).
 
 ## Notas
 

@@ -1,7 +1,7 @@
 import { FormEvent, useState, useEffect, useRef } from "react";
-import { buscarVendaItens, atualizarVenda, VendaDiaria, VendaItemData } from "../../services/vendasService";
-import ModalCarrinho from "@/components/cart/CartModal";
-import ModalSelecionarItens from "@/components/cart/SelectItemsModal";
+import { fetchSaleItems, updateSale, VendaDiaria, VendaItemData } from "../../services/vendasService";
+import CartModal from "@/components/cart/CartModal";
+import SelectItemsModal from "@/components/cart/SelectItemsModal";
 import { useCart } from "../../hooks/useCart";
 import parseNumber from "../../utils/number";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -49,7 +49,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
   useEffect(() => {
     const load = async () => {
       setLoadingItens(true);
-      const itens: VendaItemData[] = await buscarVendaItens(sale.id);
+      const itens: VendaItemData[] = await fetchSaleItems(sale.id);
       setCartItems(
         itens.map((item) => ({
           id: item.item_id ?? item.id,
@@ -90,7 +90,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
     const valor = parseNumber(editValor);
 
     try {
-      await atualizarVenda(
+      await updateSale(
         sale.id,
         editData,
         valor,
@@ -194,7 +194,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
       </form>
 
       {/* Modal de seleção de itens (adicionar ao carrinho) */}
-      <ModalSelecionarItens
+      <SelectItemsModal
         isOpen={selecionarOpen}
         onClose={closeSelecao}
         onManageCart={handleManageCart}
@@ -208,7 +208,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
       />
 
       {/* Modal de carrinho para editar itens */}
-      <ModalCarrinho
+      <CartModal
         isOpen={cartModalOpen}
         onClose={closeCarrinho}
         cartItems={cartItems}

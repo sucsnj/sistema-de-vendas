@@ -24,4 +24,4 @@ interface FormularioServicoProps {
 
 ## Notas
 
-- Análogo ao `FormularioProduto`, mas com preço único e duração; `categoriaId` cai para `1` se vazio.
+- Análogo ao `ProductForm`, mas com preço único e duração; `categoriaId` cai para `1` se vazio.

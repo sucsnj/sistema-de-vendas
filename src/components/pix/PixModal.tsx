@@ -151,7 +151,7 @@ const ModalPixContent: React.FC<ModalPixProps> = ({
   return createPortal(modalContent, document.body);
 };
 
-export default function ModalPix(props: ModalPixProps) {
+export default function PixModal(props: ModalPixProps) {
   if (!props.isOpen) return null;
   return <ModalPixContent {...props} />;
 }

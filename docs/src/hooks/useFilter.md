@@ -4,8 +4,8 @@
 
 ## O que faz
 
-- Estado `filtro` com inicialização lazy: lê `localStorage` (se navegador), valida via `isFiltroValido`; padrão `todas` em SSR.
-- `changeFiltro(value)`: atualiza estado e grava em `localStorage` com chave `historicoFiltro`.
+- Estado `filtro` com inicialização lazy: lê `localStorage` (se navegador), valida via `isValidFilter`; padrão `todas` em SSR.
+- `changeFilter(value)`: atualiza estado e grava em `localStorage` com chave `historicoFiltro`.
 - Tipo exportado `FiltroVendas = 'todas' | 'positivas' | 'negativas'`.
 
 ## Relações

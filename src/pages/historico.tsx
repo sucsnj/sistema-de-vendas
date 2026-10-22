@@ -5,13 +5,13 @@ import EditSaleForm from '../components/sales/EditSaleForm';
 import { capitalize } from '../utils/captalize';
 import { getDateArray, formatMonthName } from '../utils/date';
 import { useToast } from '../hooks/useToast';
-import { useVendas } from '../hooks/useSales';
-import { useFiltro } from '../hooks/useFilter';
+import { useSales } from '../hooks/useSales';
+import { useFilter } from '../hooks/useFilter';
 
 // Componente React: tela de Histórico de Vendas.
 // Lista as vendas do período com filtro (todas/positivas/negativas), permitindo
-// editar e excluir. Usa os hooks useToast, useVendas e useFiltro.
-const Historico: React.FC = () => {
+// editar e excluir. Usa os hooks useToast, useSales e useFilter.
+const History: React.FC = () => {
   // Período selecionado (mês e ano), usado para carregar as vendas
   const [mes, setMes] = useState(getDateArray()[1]);
   const [ano, setAno] = useState(getDateArray()[2]);
@@ -19,8 +19,8 @@ const Historico: React.FC = () => {
   // Notificações (toast) exibidas na tela
   const { showToast } = useToast();
   // Filtro de vendas (persistido no localStorage)
-  const { filtro, changeFiltro } = useFiltro();
-  // Estado e ações de vendas (carregar, editar, excluir). Aqui o autoConsolidar
+  const { filtro, changeFilter } = useFilter();
+  // Estado e ações de vendas (carregar, editar, excluir). Aqui o autoConsolidate
   // fica desligado e o filtro é dinâmico, diferente do dashboard.
   const {
     sales,
@@ -30,7 +30,7 @@ const Historico: React.FC = () => {
     handleCancelEdit,
     handleSaved,
     handleDeleteSale,
-  } = useVendas(mes, ano, showToast, { filtro, autoConsolidar: false });
+  } = useSales(mes, ano, showToast, { filtro, autoConsolidate: false });
 
   // Recarrega as vendas sempre que o período ou o filtro mudar
   useEffect(() => {
@@ -65,13 +65,13 @@ const Historico: React.FC = () => {
             </label>
             {/* Botões de filtro por valor da venda */}
             <div className="buttons-filter">
-              <button className={filtro === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFiltro('todas')}>
+              <button className={filtro === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFilter('todas')}>
                 Todas
               </button>
-              <button className={filtro === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFiltro('positivas')}>
+              <button className={filtro === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFilter('positivas')}>
                 Positivas
               </button>
-              <button className={filtro === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFiltro('negativas')}>
+              <button className={filtro === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFilter('negativas')}>
                 Negativas
               </button>
 
@@ -98,4 +98,4 @@ const Historico: React.FC = () => {
   );
 };
 
-export default Historico;
+export default History;

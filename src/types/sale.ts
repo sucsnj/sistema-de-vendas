@@ -2,7 +2,7 @@
  * src/types/sale.ts
  *
  * Tipos compartilhados do domínio de vendas (carrinho de itens) usados por
- * DailySaleForm, EditSaleForm, ModalCarrinho, ModalSelecionarItens e useCart.
+ * DailySaleForm, EditSaleForm, CartModal, SelectItemsModal e useCart.
  */
 
 /** Tipo de item do catálogo/carrinho. */

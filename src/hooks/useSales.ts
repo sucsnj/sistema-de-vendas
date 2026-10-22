@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 import {
-  buscarVendasDiarias,
-  consolidarMensal,
-  fazerBackup,
-  excluirVenda,
+  fetchDailySales,
+  consolidateMonthly,
+  backupDatabase,
+  deleteSale,
   VendaDiaria,
-  autoConsolidar
+  autoConsolidate
 } from '../services/vendasService';
 import { canEdit } from '../utils/edit';
 
@@ -16,13 +16,13 @@ type ToastFn = (message: string, type: 'success' | 'error' | 'info') => void;
 export interface UseVendasOptions {
   // Filtro das vendas a carregar ('positivas' é o usado no dashboard)
   filtro?: 'todas' | 'positivas' | 'negativas';
-  // Se deve disparar autoConsolidar após carregar (desligado no histórico)
-  autoConsolidar?: boolean;
+  // Se deve disparar autoConsolidate após carregar (desligado no histórico)
+  autoConsolidate?: boolean;
 }
 
 // Hook que concentra o estado de vendas e todas as ações de vendas:
 // carregar, consolidar, fazer backup, editar, salvar e excluir.
-export const useVendas = (mes: number, ano: number, showToast: ToastFn, options: UseVendasOptions = {}) => {
+export const useSales = (month: number, year: number, showToast: ToastFn, options: UseVendasOptions = {}) => {
   // Lista de vendas diárias do período selecionado
   const [sales, setSales] = useState<VendaDiaria[]>([]);
   // Venda atualmente em edição (null = nenhuma)
@@ -31,28 +31,28 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
   const [loading, setLoading] = useState(true);
 
   // Aplica os padrões quando a opção não é informada
-  const { filtro = 'positivas', autoConsolidar: autoConsolidarAtivo = true } = options;
+  const { filtro: filter = 'positivas', autoConsolidate: autoConsolidateEnabled = true } = options;
 
   // Busca as vendas do mês/ano conforme o filtro e, opcionalmente, dispara a consolidação automática.
   // useCallback mantém a referência estável enquanto mes/ano/filtro não mudarem.
   const loadSales = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await buscarVendasDiarias(mes, ano, filtro);
+      const data = await fetchDailySales(month, year, filter);
       setSales(data);
 
-      if (autoConsolidarAtivo) {
-        await autoConsolidar();
+      if (autoConsolidateEnabled) {
+        await autoConsolidate();
       }
     } finally {
       setLoading(false);
     }
-  }, [mes, ano, filtro, autoConsolidarAtivo]);
+  }, [month, year, filter, autoConsolidateEnabled]);
 
   // Consolida o mês selecionado e informa o resultado
   const handleConsolidate = async () => {
     try {
-      await consolidarMensal(mes, ano);
+      await consolidateMonthly(month, year);
       showToast('O mês foi consolidado com sucesso.', 'success');
     } catch {
       showToast('Não foi possível consolidar o mês.', 'error');
@@ -62,7 +62,7 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
   // Executa o backup das vendas e mostra a mensagem retornada pelo serviço
   const handleBackup = async () => {
     try {
-      const result = await fazerBackup();
+      const result = await backupDatabase();
       showToast(result.message, 'success');
     } catch {
       showToast('Não foi possível fazer o backup.', 'error');
@@ -98,7 +98,7 @@ export const useVendas = (mes: number, ano: number, showToast: ToastFn, options:
     try {
       // mostra outro toast quando a venda tiver mais de 2 dias
       if (edit) {
-        await excluirVenda(id);
+        await deleteSale(id);
         showToast('Venda excluída com sucesso.', 'success');
         loadSales();
       } else {

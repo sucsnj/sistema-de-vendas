@@ -13,7 +13,7 @@
 ## Relações
 
 - **Usa:** `previewInvoiceItems`, `importInvoiceItem` (`src/services/produtosService.ts`), tipos `ProdutoImportado`, `SugestaoItem` (`src/components/import/ItemNameDropdown.tsx`).
-- **Usado por:** `src/components/import/ModalImportItens.tsx`.
+- **Usado por:** `src/components/import/ImportItemsModal.tsx`.
 
 ## Notas
 

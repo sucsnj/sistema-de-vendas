@@ -10,7 +10,7 @@
 ## Relações
 
 - **Usa:** nenhum tipo externo além dos primitivos.
-- **Usado por:** `src/hooks/useCart.ts`, `src/components/sales/DailySaleForm.tsx`, `src/components/sales/EditSaleForm.tsx`, `src/components/cart/ModalCarrinho.tsx`, `src/components/cart/ModalSelecionarItens.tsx`.
+- **Usado por:** `src/hooks/useCart.ts`, `src/components/sales/DailySaleForm.tsx`, `src/components/sales/EditSaleForm.tsx`, `src/components/cart/CartModal.tsx`, `src/components/cart/SelectItemsModal.tsx`.
 
 ## Notas
 

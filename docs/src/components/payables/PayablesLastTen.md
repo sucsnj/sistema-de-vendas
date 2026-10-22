@@ -12,7 +12,7 @@ interface ContasAPagarLastTenProps {
   ultimasContas: ContaDetalhe[];
   handleView: (conta: ContaDetalhe) => void;
   handleDelete: (id: number) => void;
-  handleEditar: (conta: ContaDetalhe) => void;
+  handleEdit: (conta: ContaDetalhe) => void;
 }
 ```
 

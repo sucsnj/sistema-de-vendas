@@ -6,14 +6,14 @@ interface ModalMarcaProps {
     setModalMarcaOpen: (value: boolean) => void;
     novaMarcaNome: string;
     setNovaMarcaNome: (value: string) => void;
-    handleSalvarMarca: (e: React.FormEvent) => void;
+    handleSaveBrand: (e: React.FormEvent) => void;
 }
 
-const ModalMarca: React.FC<ModalMarcaProps> = ({
+const BrandModal: React.FC<ModalMarcaProps> = ({
     setModalMarcaOpen,
     novaMarcaNome,
     setNovaMarcaNome,
-    handleSalvarMarca,
+    handleSaveBrand,
 }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
@@ -21,7 +21,7 @@ const ModalMarca: React.FC<ModalMarcaProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-marca-title" tabIndex={-1}>
                 <h3 id="modal-marca-title" className={styles.modalTitle}>Adicionar Marca</h3>
-                <form onSubmit={handleSalvarMarca} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={handleSaveBrand} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="new-marca-nome">
                             Nome:*
@@ -59,4 +59,4 @@ const ModalMarca: React.FC<ModalMarcaProps> = ({
     )
 };
 
-export default ModalMarca;
+export default BrandModal;

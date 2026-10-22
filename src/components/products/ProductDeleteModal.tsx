@@ -40,7 +40,7 @@ interface ModalUomExclusaoProps {
     onClose: () => void;
 }
 
-const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
+const ProductDeleteModal: React.FC<ModalProdExclusaoProps> = ({
     open,
     item,
     onConfirm,
@@ -86,7 +86,7 @@ const ModalProdExclusao: React.FC<ModalProdExclusaoProps> = ({
     )
 };
 
-export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
+export const CategoryDeleteModal: React.FC<ModalCatExclusaoProps> = ({ open, categoria, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -110,7 +110,7 @@ export const ModalCatExclusao: React.FC<ModalCatExclusaoProps> = ({ open, catego
     );
 };
 
-export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
+export const BrandDeleteModal: React.FC<ModalMarcaExclusaoProps> = ({ open, marca, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -134,7 +134,7 @@ export const ModalMarcaExclusao: React.FC<ModalMarcaExclusaoProps> = ({ open, ma
     );
 };
 
-export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
+export const SupplierDeleteModal: React.FC<ModalFornecedorExclusaoProps> = ({ open, fornecedor, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -158,7 +158,7 @@ export const ModalFornecedorExclusao: React.FC<ModalFornecedorExclusaoProps> = (
     );
 };
 
-export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
+export const UnitOfMeasureDeleteModal: React.FC<ModalUomExclusaoProps> = ({ open, unidadeMedida, onConfirm, onClose }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
 
@@ -182,4 +182,4 @@ export const ModalUomExclusao: React.FC<ModalUomExclusaoProps> = ({ open, unidad
     );
 };
 
-export default ModalProdExclusao;
+export default ProductDeleteModal;

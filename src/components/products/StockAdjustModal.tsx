@@ -17,7 +17,7 @@ interface ModalAjusteEstoqueProps {
   onClose: () => void;
 }
 
-const ModalAjusteEstoque: React.FC<ModalAjusteEstoqueProps> = ({
+const StockAdjustModal: React.FC<ModalAjusteEstoqueProps> = ({
   open,
   itemName,
   itemEstoque,
@@ -128,4 +128,4 @@ const ModalAjusteEstoque: React.FC<ModalAjusteEstoqueProps> = ({
   );
 };
 
-export default ModalAjusteEstoque;
+export default StockAdjustModal;

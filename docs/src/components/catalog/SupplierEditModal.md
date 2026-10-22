@@ -5,7 +5,7 @@
 ## O que faz
 
 - Edita **Nome**; "Atualizar" chama `options.salvarFornecedor`.
-- "Excluir" abre `ModalFornecedorExclusao` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
+- "Excluir" abre `SupplierDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
 interface ModalFornecedorEditProps {
@@ -19,7 +19,7 @@ interface ModalFornecedorEditProps {
 ## Relações
 
 - **Usa:** [ProductDeleteModal](../products/ProductDeleteModal.md), `useFocusTrap`.
-- **Usado por:** hook `useFornecedor`, via "⋮" do [ProductForm](../products/ProductForm.md).
+- **Usado por:** hook `useSupplier`, via "⋮" do [ProductForm](../products/ProductForm.md).
 
 ## Notas
 

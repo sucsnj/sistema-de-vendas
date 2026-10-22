@@ -5,13 +5,13 @@
 ## O que faz
 
 - Dois fluxos: novo (direto ou `?novoImport=1&nome=&precoCompra=&estoque=&unidade=&ean=&codigoInterno=`) e edição (`?id=X`).
-- Salva produto (`registrarProduto`/`atualizarProduto`) ou serviço (`registrarServico`/`atualizarServico`) conforme `form.tipo`; redireciona para `/produtos` após 2s.
+- Salva produto (`registerProduct`/`updateProduct`) ou serviço (`registerService`/`updateService`) conforme `form.tipo`; redireciona para `/produtos` após 2s.
 - Gerencia múltiplos códigos de barras (`BarcodeManager`) e CRUD auxiliar (categoria, marca, fornecedor, unidade) via hooks.
 - Guarda alterações não salvas (`beforeunload` + guard do router + `ConfirmDialog`).
 
 ## Relações
 
-- **Usa:** `produtosService`; `ItemForm`, `BarcodeManager`, modais de catálogo/estoque/import; hooks `useCategoria`, `useMarca`, `useFornecedor`, `useUnidadeMedida`.
+- **Usa:** `produtosService`; `ItemForm`, `BarcodeManager`, modais de catálogo/estoque/import; hooks `useCategory`, `useBrand`, `useSupplier`, `useUnitOfMeasure`.
 - **Usado por:** `./produtos.md` (edição via `?id=`) e `./api/produtos/itens.md` (cadastro rápido).
 
 ## Notas

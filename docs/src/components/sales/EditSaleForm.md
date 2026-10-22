@@ -4,9 +4,9 @@
 
 ## O que faz
 
-- Carrega os itens via `buscarVendaItens` → `CartItem`; permite editar data, valor e observações.
+- Carrega os itens via `fetchSaleItems` → `CartItem`; permite editar data, valor e observações.
 - Recalcula o valor a partir do carrinho quando ele não está vazio (preserva o campo se for esvaziado).
-- Salva via `atualizarVenda`; integra [SelectItemsModal](../cart/SelectItemsModal.md) e [CartModal](../cart/CartModal.md).
+- Salva via `updateSale`; integra [SelectItemsModal](../cart/SelectItemsModal.md) e [CartModal](../cart/CartModal.md).
 
 ```ts
 interface EditSaleFormProps {
@@ -17,7 +17,7 @@ interface EditSaleFormProps {
 
 ## Relações
 
-- **Usa:** `buscarVendaItens`/`atualizarVenda` (`src/services/vendasService.ts`), `useCart` (`src/hooks/useCart.ts`), `parseNumber`, modais de carrinho.
+- **Usa:** `fetchSaleItems`/`updateSale` (`src/services/vendasService.ts`), `useCart` (`src/hooks/useCart.ts`), `parseNumber`, modais de carrinho.
 - **Usado por:** `../../pages/index.md` quando `editingSale` está preenchido.
 
 ## Notas

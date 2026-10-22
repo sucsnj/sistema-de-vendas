@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 import { CategoriaFormData, CategoriaOptions } from '@/types/categoria';
-import { ModalCatExclusao } from '@/components/products/ProductDeleteModal';
+import { CategoryDeleteModal } from '@/components/products/ProductDeleteModal';
 
 interface ModalCategoriaEditProps {
     catForm: CategoriaFormData;
@@ -11,7 +11,7 @@ interface ModalCategoriaEditProps {
     options: CategoriaOptions;
 }
 
-const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
+const CategoryEditModal: React.FC<ModalCategoriaEditProps> = ({
     catForm,
     setCatForm,
     onDelete,
@@ -82,7 +82,7 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
                 </form>
             </div>
             {deleteConfirmOpen && (
-                <ModalCatExclusao
+                <CategoryDeleteModal
                     open={deleteConfirmOpen}
                     categoria={catForm}
                     onConfirm={() => {
@@ -98,4 +98,4 @@ const ModalCategoriaEdit: React.FC<ModalCategoriaEditProps> = ({
     )
 };
 
-export default ModalCategoriaEdit;
+export default CategoryEditModal;

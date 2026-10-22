@@ -1,10 +1,10 @@
 import Tesseract from "tesseract.js";
 
-export async function lerLinhaDigitavel(imagemPath: string, regexConst: string = "regex1") {
+export async function readDigitableLine(imagePath: string, regexName: string = "regex1") {
 
     try {
 
-        console.log("OCR EXECUTANDO:", imagemPath);
+        console.log("OCR EXECUTANDO:", imagePath);
 
         const worker = await Tesseract.createWorker("eng");
 
@@ -12,7 +12,7 @@ export async function lerLinhaDigitavel(imagemPath: string, regexConst: string =
             tessedit_char_whitelist: "0123456789. "
         });
 
-        const resultado = await worker.recognize(imagemPath);
+        const resultado = await worker.recognize(imagePath);
 
         await worker.terminate();
 
@@ -27,7 +27,7 @@ export async function lerLinhaDigitavel(imagemPath: string, regexConst: string =
         const regex2 = /\d{5}[\s\.]?\d{5}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d{5}[\s\.]?\d{6}[\s\.]?\d[\s\.]?\d{13,14}/g;
         let regex = null;
 
-        if (regexConst === "regex1") {
+        if (regexName === "regex1") {
             regex = regex1;
         } else {
             regex = regex2;

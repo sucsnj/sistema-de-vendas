@@ -5,7 +5,7 @@
 ## O que faz
 
 - Só aceita `POST` multipart, campo `files` (um ou mais); `bodyParser` desligado, upload via `multer`.
-- Encaminha `.pdf` para `lerPdfComOcr` e as demais extensões para `lerLinhaDigitavel`.
+- Encaminha `.pdf` para `readPdfWithOcr` e as demais extensões para `readDigitableLine`.
 - Responde `200` com `[{ arquivo, linha }]` ou `[{ arquivo, erro }]`; `400` sem arquivos; `405` fora de POST.
 - Remove cada arquivo de upload no `finally`.
 

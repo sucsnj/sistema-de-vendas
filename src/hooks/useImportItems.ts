@@ -3,7 +3,7 @@
  *
  * Hook que concentra o estado e a lógica do modal de importação de itens
  * via XML de NF-e (preview do arquivo, vínculo com itens do sistema e
- * importação em lote). Lógica extraída de `ModalImportItens` (ver docs).
+ * importação em lote). Lógica extraída de `ImportItemsModal` (ver docs).
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,7 +25,7 @@ interface UseImportItensOptions {
   initialFile?: File | null;
 }
 
-export const useImportItens = ({ onImportSuccess, initialFile }: UseImportItensOptions) => {
+export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItensOptions) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -130,13 +130,13 @@ export const useImportItens = ({ onImportSuccess, initialFile }: UseImportItensO
     onImportSuccess();
   }, [products, onImportSuccess]);
 
-  const handleItemDescriptionChange = (index: number, novoNome: string) => {
+  const handleItemDescriptionChange = (index: number, newName: string) => {
     setProducts((prev) => {
       const copy = [...prev];
       const item = copy[index];
       copy[index] = {
         ...item,
-        descricao: novoNome,
+        descricao: newName,
         existe: false,
         itemIdExistente: undefined,
       };
@@ -144,16 +144,16 @@ export const useImportItens = ({ onImportSuccess, initialFile }: UseImportItensO
     });
   };
 
-  const handleSelectSuggestion = (index: number, sugestao: SugestaoItem) => {
+  const handleSelectSuggestion = (index: number, suggestion: SugestaoItem) => {
     setProducts((prev) => {
       const copy = [...prev];
       const item = copy[index];
       copy[index] = {
         ...item,
-        descricao: sugestao.nome,
+        descricao: suggestion.nome,
         existe: true,
-        itemIdExistente: sugestao.id,
-        ean: item.ean || sugestao.ean || '',
+        itemIdExistente: suggestion.id,
+        ean: item.ean || suggestion.ean || '',
       };
       return copy;
     });

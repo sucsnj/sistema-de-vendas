@@ -32,7 +32,7 @@ interface ContasAPagarModalsProps {
   onSave: (event: React.FormEvent<HTMLButtonElement>) => void;
 }
 
-const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
+const PayablesModals: React.FC<ContasAPagarModalsProps> = ({
   selectedConta,
   editingConta,
   distribuidora,
@@ -246,4 +246,4 @@ const ContasAPagarModals: React.FC<ContasAPagarModalsProps> = ({
   );
 };
 
-export default ContasAPagarModals;
+export default PayablesModals;

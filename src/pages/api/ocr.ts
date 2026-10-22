@@ -3,8 +3,8 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 
-import { lerLinhaDigitavel } from "@/services/ocrService";
-import { lerPdfComOcr, info } from "@/services/pdfService";
+import { readDigitableLine } from "@/services/ocrService";
+import { readPdfWithOcr, info } from "@/services/pdfService";
 
 export const config = {
     api: {
@@ -79,13 +79,13 @@ export default async function handler(
 
                 console.log("PROCESSANDO PDF");
 
-                linhaDigitavel = await lerPdfComOcr(file.path);
+                linhaDigitavel = await readPdfWithOcr(file.path);
 
             } else {
 
                 console.log("PROCESSANDO IMAGEM");
 
-                linhaDigitavel = await lerLinhaDigitavel(file.path);
+                linhaDigitavel = await readDigitableLine(file.path);
             }
 
             if (linhaDigitavel) {

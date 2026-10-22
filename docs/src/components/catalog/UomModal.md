@@ -18,7 +18,7 @@ interface ModalAddUnidadeMedidaProps {
 ## Relações
 
 - **Usa:** `useFocusTrap`, `produtos.module.css`.
-- **Usado por:** hook `useUnidadeMedida`, via [ProductForm](../products/ProductForm.md).
+- **Usado por:** hook `useUnitOfMeasure`, via [ProductForm](../products/ProductForm.md).
 
 ## Notas
 

@@ -9,7 +9,7 @@ interface ModalAddCategoriaProps {
     options: CategoriaOptions;
 }
 
-const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
+const CategoryModal: React.FC<ModalAddCategoriaProps> = ({
     catForm,
     setCatForm,
     options,
@@ -72,4 +72,4 @@ const ModalAddCategoria: React.FC<ModalAddCategoriaProps> = ({
     )
 };
 
-export default ModalAddCategoria;
+export default CategoryModal;

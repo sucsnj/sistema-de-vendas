@@ -15,7 +15,7 @@
 
 ## Notas
 
-- `getNotasByPeriod` filtra por `substr(data_emissao,1,10)` entre datas (evita interpretação UTC do SQLite ao usar `date()` com strings com offset).
-- `getSumNotasByYear` soma `valor_nota` para o ano; retorna `0` se não houver resultados.
-- `getNotasByValor` retorna `null` se `valor < 0`.
-- `backupNotasDatabase()` gera `notas-backup-<YYYY-MM-DD>.db` na raiz do projeto (fora de `db/`).
+- `getInvoicesByPeriod` filtra por `substr(data_emissao,1,10)` entre datas (evita interpretação UTC do SQLite ao usar `date()` com strings com offset).
+- `getInvoiceSumByYear` soma `valor_nota` para o ano; retorna `0` se não houver resultados.
+- `getInvoicesByAmount` retorna `null` se `amount < 0`.
+- `backupInvoicesDatabase()` gera `notas-backup-<YYYY-MM-DD>.db` na raiz do projeto (fora de `db/`).

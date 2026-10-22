@@ -19,8 +19,8 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 ## Camadas (onde mora cada coisa)
 
 - `src/pages/*.tsx` — rotas/páginas que orquestram tudo.
-- `src/components/<domínio>/*.tsx` — UI agrupada por domínio (ADR 0005): `cart/` (carrinho), `sales/` (vendas do dia), `summary/` (resumo/consolidação), `payables/` (contas a pagar + agenda), `products/` (catálogo/estoque), `catalog/` (modais de cadastros auxiliares), `import/` (importação XML/OCR), `pix/` (PIX), `common/` (Nav, Toast, ConfirmDialog, BarcodeManager). Arquivos em inglês (ADR 0004); identificadores internos podem ainda estar em pt-BR.
-- `src/hooks/*.ts` — hooks de estado (flat): carrinho, filtros, toasts, CRUD de catálogo. Arquivos em inglês (ADR 0004); identificadores exportados ainda em pt-BR.
+- `src/components/<domínio>/*.tsx` — UI agrupada por domínio (ADR 0005): `cart/` (carrinho), `sales/` (vendas do dia), `summary/` (resumo/consolidação), `payables/` (contas a pagar + agenda), `products/` (catálogo/estoque), `catalog/` (modais de cadastros auxiliares), `import/` (importação XML/OCR), `pix/` (PIX), `common/` (Nav, Toast, ConfirmDialog, BarcodeManager). Arquivos e identificadores internos em inglês (ADR 0004).
+- `src/hooks/*.ts` — hooks de estado (flat): carrinho, filtros, toasts, CRUD de catálogo. Arquivos e identificadores exportados em inglês (ADR 0004).
 - `src/services/*.ts` — cliente `fetch` para os endpoints internos.
 - `src/pages/api/**/*.ts` — endpoints REST internos.
 - `src/database/*.ts` — abstrações `better-sqlite3` (vendas, contas, notas, tabela, produtos).

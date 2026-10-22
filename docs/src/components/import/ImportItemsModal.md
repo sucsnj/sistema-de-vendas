@@ -18,7 +18,7 @@ interface ModalImportItensProps {
 
 ## Relações
 
-- **Usa:** `useImportItens` (`src/hooks/useImportItems.ts`), [ItemNameDropdown](./ItemNameDropdown.md), `produtosService`, `modalImport.module.css`.
+- **Usa:** `useImportItems` (`src/hooks/useImportItems.ts`), [ItemNameDropdown](./ItemNameDropdown.md), `produtosService`, `modalImport.module.css`.
 - **Usado por:** `../../pages/cadastro.md`.
 
 ## Notas

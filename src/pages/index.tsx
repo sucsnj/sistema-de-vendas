@@ -5,7 +5,7 @@ import SalesChart from '../components/sales/SalesChart';
 import ExportButtons from '../components/sales/ExportButtons';
 import EditSaleForm from '../components/sales/EditSaleForm';
 import { useToast } from '../hooks/useToast';
-import { useVendas } from '../hooks/useSales';
+import { useSales } from '../hooks/useSales';
 import { capitalize } from '../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -15,7 +15,7 @@ import { getDateArray, now, toTimestamp, formatMonthName } from '../utils/date';
 const hoje = now().format('YYYY-MM-DD');
 
 // Componente React da página inicial: Dashboard de Vendas.
-// Orquestra os subcomponentes da tela usando os hooks useToast e useVendas,
+// Orquestra os subcomponentes da tela usando os hooks useToast e useSales,
 // mantendo apenas o estado de filtro (mês/ano) e da data selecionada.
 const Home: React.FC = () => {
   // Período de hoje (mês/ano no fuso do app), calculado uma única vez
@@ -42,7 +42,7 @@ const Home: React.FC = () => {
     handleCancelEdit,
     handleSaved,
     handleDeleteSale,
-  } = useVendas(mes, ano, showToast);
+  } = useSales(mes, ano, showToast);
 
   // Recarrega as vendas sempre que o período (mes/ano) mudar
   useEffect(() => {

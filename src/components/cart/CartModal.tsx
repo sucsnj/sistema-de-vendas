@@ -27,7 +27,7 @@ interface ModalCarrinhoProps {
   onClearCart: () => void;
 }
 
-const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
+const CartModal: React.FC<ModalCarrinhoProps> = ({
   isOpen,
   onClose,
   cartItems,
@@ -351,4 +351,4 @@ const ModalCarrinho: React.FC<ModalCarrinhoProps> = ({
   );
 };
 
-export default ModalCarrinho;
+export default CartModal;

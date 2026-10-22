@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Busca `buscarProdutos` + `buscarServicos` (8 cada) com debounce de 250ms; EAN = código de barras principal.
+- Busca `fetchProducts` + `fetchServices` (8 cada) com debounce de 250ms; EAN = código de barras principal.
 - Seleciona uma sugestão (`onSelectSuggestion`) ou propaga o texto digitado (`onTextChange`).
 - Fecha ao clicar fora.
 
@@ -21,7 +21,7 @@ interface ItemNameDropdownProps {
 
 ## Relações
 
-- **Usa:** `buscarProdutos`/`buscarServicos` (`src/services/produtosService.ts`), `ItemComStatus` (`src/hooks/useImportItems.ts`), `modalImport.module.css`.
+- **Usa:** `fetchProducts`/`fetchServices` (`src/services/produtosService.ts`), `ItemComStatus` (`src/hooks/useImportItems.ts`), `modalImport.module.css`.
 - **Usado por:** [ImportItemsModal](./ImportItemsModal.md) (coluna "Item no Sistema").
 
 ## Notas

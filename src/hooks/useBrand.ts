@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { buscarMarcas, criarMarca, deletarMarca, atualizarMarca } from "../services/produtosService";
+import { fetchBrands, createBrand, deleteBrand, updateBrand } from "../services/produtosService";
 import { MarcaFormData } from "@/components/catalog/BrandEditModal";
 import { ProdutoFormData } from "@/components/products/ProductForm";
 import { ProdutoOptions } from "@/components/products/ProductForm";
@@ -10,7 +10,7 @@ interface UseMarcaParams {
     setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
     setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
-    carregarItens: () => void;
+    loadItems: () => void;
     items: unknown[];
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -18,12 +18,12 @@ interface UseMarcaParams {
     setItemParaExcluir: (value: null) => void;
 }
 
-export const useMarca = ({
+export const useBrand = ({
     form,
     setForm,
     setOptions,
     showToast,
-    carregarItens,
+    loadItems,
     items,
     page,
     setPage,
@@ -39,7 +39,7 @@ export const useMarca = ({
     const [modalMarcaEditOpen, setModalMarcaEditOpen] = useState(false);
 
     // Cadastro de Marca Inline
-    const handleSalvarMarca = async (e: React.FormEvent) => {
+    const handleSaveBrand = async (e: React.FormEvent) => {
         e.preventDefault();
         const nomeMarca = validateRequired(novaMarcaNome, "O nome da marca");
         if (!nomeMarca.ok) {
@@ -47,11 +47,11 @@ export const useMarca = ({
             return;
         }
         try {
-            const response = await criarMarca(novaMarcaNome.trim());
+            const response = await createBrand(novaMarcaNome.trim());
             showToast(response.message || 'Marca criada com sucesso.', 'success');
 
             // Re-carrega lista de marcas e seleciona a criada
-            const brands = await buscarMarcas();
+            const brands = await fetchBrands();
             setOptions(prev => ({ ...prev, marcas: brands }));
             setForm(prev => ({ ...prev, marcaId: response.id }));
 
@@ -64,14 +64,14 @@ export const useMarca = ({
     };
 
     // Handler para abrir modal de edição de marca
-    const handleOpenEditMarcaModal = (marca: { id: number; nome: string }) => {
-        setForm(prev => ({ ...prev, marcaId: marca.id }));
-        setMarcaForm({ nome: marca.nome });
+    const handleOpenEditBrandModal = (brand: { id: number; nome: string }) => {
+        setForm(prev => ({ ...prev, marcaId: brand.id }));
+        setMarcaForm({ nome: brand.nome });
         setModalMarcaEditOpen(true);
     };
 
     // Edição de marca
-    const handleAtualizarMarca = async (e: React.FormEvent) => {
+    const handleUpdateBrand = async (e: React.FormEvent) => {
         e.preventDefault();
         const nomeMarca = validateRequired(marcaForm.nome, "O nome da marca");
         if (!nomeMarca.ok) {
@@ -79,29 +79,29 @@ export const useMarca = ({
             return;
         }
         try {
-            const response = await atualizarMarca(form.marcaId, marcaForm.nome.trim());
+            const response = await updateBrand(form.marcaId, marcaForm.nome.trim());
 
             // Atualiza na interface após confirmação da API
             setOptions(prev => ({
-                ...prev, marcas: prev.marcas.map(marca =>
-                    marca.id === form.marcaId ?
-                        { ...marca, nome: marcaForm.nome.trim() } : marca
+                ...prev, marcas: prev.marcas.map(brand =>
+                    brand.id === form.marcaId ?
+                        { ...brand, nome: marcaForm.nome.trim() } : brand
                 )
             }));
 
             showToast(response.message || 'Marca atualizada com sucesso.', 'success');
             setModalMarcaEditOpen(false);
             setMarcaForm({ nome: '' });
-            carregarItens();
+            loadItems();
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao atualizar marca.', 'error');
         }
     };
 
     // Handle para deletar marca
-    const handleDeletarMarca = async () => {
+    const handleDeleteBrand = async () => {
         try {
-            await deletarMarca(form.marcaId);
+            await deleteBrand(form.marcaId);
             showToast('Marca deletada com sucesso.', 'success');
             setDeleteConfirmOpen(false);
             setItemParaExcluir(null);
@@ -109,7 +109,7 @@ export const useMarca = ({
             // Atualiza a interface após confirmação da API
             setOptions(prev => ({
                 ...prev,
-                marcas: prev.marcas.filter(marca => marca.id !== form.marcaId)
+                marcas: prev.marcas.filter(brand => brand.id !== form.marcaId)
             }));
 
             // Fecha o modal após a exclusão
@@ -122,7 +122,7 @@ export const useMarca = ({
             if (items.length === 1 && page > 1) {
                 setPage(page - 1);
             } else {
-                carregarItens();
+                loadItems();
             }
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao deletar marca.', 'error');
@@ -141,9 +141,9 @@ export const useMarca = ({
         setNovaMarcaNome,
 
         // Handlers
-        handleSalvarMarca,
-        handleOpenEditMarcaModal,
-        handleAtualizarMarca,
-        handleDeletarMarca,
+        handleSaveBrand,
+        handleOpenEditBrandModal,
+        handleUpdateBrand,
+        handleDeleteBrand,
     };
 };

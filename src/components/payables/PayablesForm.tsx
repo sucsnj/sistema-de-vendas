@@ -27,7 +27,7 @@ interface ContasAPagarFormProps {
   documentoInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
+const PayablesForm: React.FC<ContasAPagarFormProps> = ({
   distribuidora,
   setDistribuidora,
   valor,
@@ -118,4 +118,4 @@ const ContasAPagarForm: React.FC<ContasAPagarFormProps> = ({
   );
 };
 
-export default ContasAPagarForm;
+export default PayablesForm;

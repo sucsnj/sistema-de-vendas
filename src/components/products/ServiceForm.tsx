@@ -16,7 +16,7 @@ interface FormularioServicoProps {
   inputRef: RefObject<HTMLInputElement | null>;
 }
 
-const FormularioServico: React.FC<FormularioServicoProps> = ({
+const ServiceForm: React.FC<FormularioServicoProps> = ({
   editarProdutoId,
   form,
   setForm,
@@ -170,4 +170,4 @@ const FormularioServico: React.FC<FormularioServicoProps> = ({
   );
 };
 
-export default FormularioServico;
+export default ServiceForm;

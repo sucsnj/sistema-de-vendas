@@ -15,4 +15,4 @@
 
 ## Notas
 
-- `handleEditar` está na interface de props mas não é usado (dead prop).
+- `handleEdit` está na interface de props mas não é usado (dead prop).

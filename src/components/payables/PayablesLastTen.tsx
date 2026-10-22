@@ -13,14 +13,14 @@ interface ContasAPagarLastTenProps {
   ultimasContas: ContaDetalhe[];
   handleView: (conta: ContaDetalhe) => void;
   handleDelete: (id: number) => void;
-  handleEditar: (conta: ContaDetalhe) => void;
+  handleEdit: (conta: ContaDetalhe) => void;
 }
 
-const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
+const PayablesLastTen: React.FC<ContasAPagarLastTenProps> = ({
   ultimasContas,
   handleView,
   handleDelete,
-  handleEditar,
+  handleEdit,
 }) => {
 
   // Estado para o diálogo
@@ -45,25 +45,25 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
           </tr>
         </thead>
         <tbody>
-          {ultimasContas.map((conta) => (
-            <tr key={conta.id}>
-              <td>{formatDateString(conta.vencimento, 'DD/MM/YYYY')}</td>
-              <td>{conta.distribuidora}</td>
-              <td>R$ {formatCurrency(conta.valor, 2)}</td>
+          {ultimasContas.map((account) => (
+            <tr key={account.id}>
+              <td>{formatDateString(account.vencimento, 'DD/MM/YYYY')}</td>
+              <td>{account.distribuidora}</td>
+              <td>R$ {formatCurrency(account.valor, 2)}</td>
               <td className={styles.actionsCell}>
-                <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
+                <button type="button" className={styles.viewButton} onClick={() => handleView(account)}>
                   <span className="icon-responsive">
                     <VisibilityIcon />
                   </span>
                   <span className="text-responsive">Ver</span>
                 </button>
-                <button type="button" className={styles.deleteButton} onClick={() => openConfirm(conta.id)}>
+                <button type="button" className={styles.deleteButton} onClick={() => openConfirm(account.id)}>
                   <span className="icon-responsive">
                     <DeleteIcon />
                   </span>
                   <span className="text-responsive">Excluir</span>
                 </button>
-                <button type="button" className={styles.editButton} onClick={() => handleEditar(conta)}>
+                <button type="button" className={styles.editButton} onClick={() => handleEdit(account)}>
                   <span className="icon-responsive">
                     <EditIcon />
                   </span>
@@ -100,4 +100,4 @@ const ContasAPagarLastTen: React.FC<ContasAPagarLastTenProps> = ({
   );
 };
 
-export default ContasAPagarLastTen;
+export default PayablesLastTen;

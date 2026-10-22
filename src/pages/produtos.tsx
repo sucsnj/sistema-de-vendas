@@ -5,25 +5,25 @@ import Link from 'next/link';
 import styles from '../styles/produtos.module.css';
 import { useToast } from '../hooks/useToast';
 import {
-  buscarProdutos,
-  buscarServicos,
-  excluirProduto,
-  toggleStatusProduto,
-  buscarCategorias,
-  buscarMarcas,
-  buscarFornecedores,
-  buscarUnidadesMedida,
-  excluirServico,
+  fetchProducts,
+  fetchServices,
+  deleteProduct,
+  toggleProductStatus,
+  fetchCategories,
+  fetchBrands,
+  fetchSuppliers,
+  fetchUnitsOfMeasure,
+  deleteService,
   ItemData,
   ServicoData,
 } from '../services/produtosService';
 import { ProdutoOptions } from '@/components/products/ProductForm';
 import ProdutosList from '@/components/products/ProductList';
-import Filtros from '@/components/products/ProductFilters';
-import ModalProdExclusao from '@/components/products/ProductDeleteModal';
+import ProductFilters from '@/components/products/ProductFilters';
+import ProductDeleteModal from '@/components/products/ProductDeleteModal';
 import { FiltrosState } from '@/components/products/ProductFilters';
 
-const ProdutosPage: React.FC = () => {
+const ProductsPage: React.FC = () => {
 
   const router = useRouter();
 
@@ -61,13 +61,13 @@ const ProdutosPage: React.FC = () => {
   const { showToast } = useToast();
 
   // Carrega opções auxiliares para os filtros
-  const carregarAuxiliares = useCallback(async () => {
+  const loadAuxiliaryData = useCallback(async () => {
     try {
       const [cats, brands, forns, uoms] = await Promise.all([
-        buscarCategorias(),
-        buscarMarcas(),
-        buscarFornecedores(),
-        buscarUnidadesMedida(),
+        fetchCategories(),
+        fetchBrands(),
+        fetchSuppliers(),
+        fetchUnitsOfMeasure(),
       ]);
       setOptions({
         categorias: cats,
@@ -82,11 +82,11 @@ const ProdutosPage: React.FC = () => {
   }, [showToast]);
 
   // Carrega o catálogo a partir das tabelas específicas de cada tipo
-  const carregarItens = useCallback(async () => {
+  const loadItems = useCallback(async () => {
     setLoading(true);
     try {
       const [produtosData, servicosData] = await Promise.all([
-        state.tipo === 'SERVICO' ? Promise.resolve(null) : buscarProdutos({
+        state.tipo === 'SERVICO' ? Promise.resolve(null) : fetchProducts({
           search: searchQuery || undefined,
           categoria_id: state.categoriaId || undefined,
           marca_id: state.marcaId || undefined,
@@ -95,7 +95,7 @@ const ProdutosPage: React.FC = () => {
           page: 1,
           pageSize: 10000,
         }),
-        state.tipo === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : buscarServicos({
+        state.tipo === 'PRODUTO' || state.status !== 'TODOS' ? Promise.resolve(null) : fetchServices({
           search: searchQuery || undefined,
           categoria_id: state.categoriaId || undefined,
           page: 1,
@@ -142,15 +142,15 @@ const ProdutosPage: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      carregarAuxiliares();
+      loadAuxiliaryData();
     }, 0);
     return () => clearTimeout(timer);
-  }, [carregarAuxiliares]);
+  }, [loadAuxiliaryData]);
 
   useEffect(() => {
-    const timer = setTimeout(() => carregarItens(), 0);
+    const timer = setTimeout(() => loadItems(), 0);
     return () => clearTimeout(timer);
-  }, [carregarItens]);
+  }, [loadItems]);
 
   // Handler de Busca
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -159,7 +159,7 @@ const ProdutosPage: React.FC = () => {
     setSearchQuery(state.search);
   };
 
-  const handleLimparFiltros = () => {
+  const handleClearFilters = () => {
     setSearchQuery('');
     setState({
       search: '',
@@ -173,7 +173,7 @@ const ProdutosPage: React.FC = () => {
   };
 
   // Navega para /cadastro?id=X para editar o item
-  const handleEditarClick = (item: ItemData) => {
+  const handleEditClick = (item: ItemData) => {
     router.push({
       pathname: '/cadastro',
       query: { id: item.id },
@@ -185,32 +185,32 @@ const ProdutosPage: React.FC = () => {
     const novoStatus = item.ativo === 1 ? 0 : 1;
     try {
       if (item.tipo === 'PRODUTO') {
-        await toggleStatusProduto(item.id, novoStatus);
+        await toggleProductStatus(item.id, novoStatus);
       }
       showToast(
         `Item ${novoStatus === 1 ? 'ativado' : 'desativado'} com sucesso.`,
         'success'
       );
-      carregarItens();
+      loadItems();
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Erro ao alterar status.', 'error');
     }
   };
 
   // Abre confirmação de exclusão
-  const handleExcluirClick = (item: ItemData) => {
+  const handleDeleteClick = (item: ItemData) => {
     setItemParaExcluir(item);
     setDeleteConfirmOpen(true);
   };
 
   // Confirma exclusão
-  const handleConfirmExcluir = async () => {
+  const handleConfirmDelete = async () => {
     if (!itemParaExcluir) return;
     try {
       if (itemParaExcluir.tipo === 'SERVICO') {
-        await excluirServico(itemParaExcluir.id);
+        await deleteService(itemParaExcluir.id);
       } else {
-        await excluirProduto(itemParaExcluir.id);
+        await deleteProduct(itemParaExcluir.id);
       }
       showToast('Item excluído com sucesso.', 'success');
       setDeleteConfirmOpen(false);
@@ -218,7 +218,7 @@ const ProdutosPage: React.FC = () => {
       if (items.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
-        carregarItens();
+        loadItems();
       }
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Erro ao excluir item.', 'error');
@@ -246,13 +246,13 @@ const ProdutosPage: React.FC = () => {
           {/* Coluna Esquerda: Listagem e Filtros */}
           <div className={styles.produtosGridLeft}>
             {/* Filtros */}
-            <Filtros
+            <ProductFilters
               state={state}
               data={options}
               setFiltros={setState}
               actions={{
                 buscar: handleSearchSubmit,
-                limpar: handleLimparFiltros,
+                limpar: handleClearFilters,
                 mudarPagina: setPage,
               }}
             />
@@ -266,18 +266,18 @@ const ProdutosPage: React.FC = () => {
               totalPages={totalPages}
               onPageChange={setPage}
               onToggleStatus={handleToggleStatus}
-              onEdit={handleEditarClick}
-              onDelete={handleExcluirClick}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
             />
           </div>
         </div>
 
         {/* Modal: Confirmação de Exclusão */}
         {deleteConfirmOpen && itemParaExcluir && (
-          <ModalProdExclusao
+          <ProductDeleteModal
             open={deleteConfirmOpen}
             item={itemParaExcluir}
-            onConfirm={handleConfirmExcluir}
+            onConfirm={handleConfirmDelete}
             onClose={() => {
               setDeleteConfirmOpen(false);
               setItemParaExcluir(null);
@@ -294,4 +294,4 @@ const ProdutosPage: React.FC = () => {
   );
 };
 
-export default ProdutosPage;
+export default ProductsPage;

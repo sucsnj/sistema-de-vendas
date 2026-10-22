@@ -15,10 +15,10 @@
 
 ## Relações
 
-- **Usa:** `src/database/produtosDb.ts` (`getServicos`, `insertServico`, `updateServico`, `deleteServico`).
+- **Usa:** `src/database/produtosDb.ts` (`getServices`, `insertService`, `updateService`, `deleteService`).
 - **Usado por:** `produtosService`; `../../produtos.md` e `../../cadastro.md`.
 
 ## Notas
 
-- `normalizeServicoPayload` trima strings e converte números (fallback 0).
-- `insertServico` grava o próprio ID como `codigo_interno` quando vazio.
+- `normalizeServicePayload` trima strings e converte números (fallback 0).
+- `insertService` grava o próprio ID como `codigo_interno` quando vazio.

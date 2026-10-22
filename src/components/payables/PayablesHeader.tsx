@@ -13,7 +13,7 @@ interface ContasAPagarHeaderProps {
   handleBackup: () => Promise<void>;
 }
 
-const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAno, setMes, handleBackup }) => {
+const PayablesHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAno, setMes, handleBackup }) => {
   const today = now();
 
   return (
@@ -51,4 +51,4 @@ const ContasAPagarHeader: React.FC<ContasAPagarHeaderProps> = ({ ano, mes, setAn
   );
 };
 
-export default ContasAPagarHeader;
+export default PayablesHeader;

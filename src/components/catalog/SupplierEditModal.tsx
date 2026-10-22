@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
-import { ModalFornecedorExclusao } from '@/components/products/ProductDeleteModal';
+import { SupplierDeleteModal } from '@/components/products/ProductDeleteModal';
 
 export interface FornecedorFormData {
     nome: string;
@@ -19,7 +19,7 @@ interface ModalFornecedorEditProps {
     options: FornecedorOptions;
 }
 
-const ModalFornecedorEdit: React.FC<ModalFornecedorEditProps> = ({
+const SupplierEditModal: React.FC<ModalFornecedorEditProps> = ({
     fornecedorForm,
     setFornecedorForm,
     onDelete,
@@ -77,7 +77,7 @@ const ModalFornecedorEdit: React.FC<ModalFornecedorEditProps> = ({
                 </form>
             </div>
             {deleteConfirmOpen && (
-                <ModalFornecedorExclusao
+                <SupplierDeleteModal
                     open={deleteConfirmOpen}
                     fornecedor={fornecedorForm}
                     onConfirm={() => {
@@ -93,4 +93,4 @@ const ModalFornecedorEdit: React.FC<ModalFornecedorEditProps> = ({
     )
 };
 
-export default ModalFornecedorEdit;
+export default SupplierEditModal;

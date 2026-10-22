@@ -3,9 +3,9 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import { formatCurrency } from '../../utils/formatter';
 import { useDailySaleForm } from '../../hooks/useDailySaleForm';
 import type { VendaDiaria } from '../../services/vendasService';
-import ModalCarrinho from '@/components/cart/CartModal';
-import ModalPix from '@/components/pix/PixModal';
-import ModalSelecionarItens from '@/components/cart/SelectItemsModal';
+import CartModal from '@/components/cart/CartModal';
+import PixModal from '@/components/pix/PixModal';
+import SelectItemsModal from '@/components/cart/SelectItemsModal';
 
 interface DailySaleFormProps {
   sales?: VendaDiaria[];
@@ -185,7 +185,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
           </div>
         </div>
       </form>
-      <ModalSelecionarItens
+      <SelectItemsModal
         isOpen={selecionarOpen}
         onClose={closeSelecao}
         onManageCart={handleManageCart}
@@ -197,7 +197,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveFromCart}
       />
-      <ModalCarrinho
+      <CartModal
         isOpen={cartModalOpen}
         onClose={closeCarrinho}
         cartItems={cartItems}
@@ -205,7 +205,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
       />
-      <ModalPix
+      <PixModal
         isOpen={pixModalOpen}
         onClose={() => setPixModalOpen(false)}
         payload={pixPayload}

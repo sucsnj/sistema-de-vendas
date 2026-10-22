@@ -5,11 +5,11 @@
 ## O que faz
 
 - Define interfaces: `VendaDiaria`, `VendaItemData`, `VendaItemInput`, `VendaMensal`.
-- Vendas diárias: `registrarVenda(data, valor, observacoes?, itens?)`, `registrarVendaComCriadoEm` (uso exclusivo na importação XLSX), `buscarVendasDiarias(mes,ano,filtro)`, `atualizarVenda`, `excluirVenda`.
-- Itens de venda: `buscarVendaItens(vendaId)` retorna array vazio se `!response.ok`.
-- Mensais: `buscarTotalMensal`, `buscarTodosMensais`, `consolidarMensal`, `verificarConsolidado`, `autoConsolidar`, `excluirMensal`.
-- Backup: `fazerBackup` (POST `/api/backup`).
-- `autoConsolidar()` lê data atual via `getDateArray()` (`utils/date`), decide consolidação do mês anterior (regra: se dia==3 consolida; se já consolidado retorna; se dia>2 consolida) e chama `consolidarMensal`.
+- Vendas diárias: `registerSale(data, amount, notes?, items?)`, `registerSaleWithCreatedAt` (uso exclusivo na importação XLSX), `fetchDailySales(month, year, filter)`, `updateSale`, `deleteSale`.
+- Itens de venda: `fetchSaleItems(saleId)` retorna array vazio se `!response.ok`.
+- Mensais: `fetchMonthlyTotal`, `fetchAllMonthly`, `consolidateMonthly`, `isConsolidated`, `autoConsolidate`, `deleteMonthly`.
+- Backup: `backupDatabase` (POST `/api/backup`).
+- `autoConsolidate()` lê data atual via `getDateArray()` (`utils/date`), decide consolidação do mês anterior (regra: se dia==3 consolida; se já consolidado retorna; se dia>2 consolida) e chama `consolidateMonthly`.
 
 ## Relações
 
@@ -18,6 +18,6 @@
 
 ## Notas
 
-- `registrarVendaComCriadoEm` aceita `criado_em` opcional para preservar timestamps na importação de planilhas.
-- `verificarConsolidado` lê corpo como texto: retorna `false` se não ok, sem texto ou sem campo `total !== undefined`.
-- `autoConsolidar` não faz nada se `getDateArray()` retornar valores inválidos.
+- `registerSaleWithCreatedAt` aceita `criado_em` opcional para preservar timestamps na importação de planilhas.
+- `isConsolidated` lê corpo como texto: retorna `false` se não ok, sem texto ou sem campo `total !== undefined`.
+- `autoConsolidate` não faz nada se `getDateArray()` retornar valores inválidos.

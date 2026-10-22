@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import {
-  buscarUnidadesMedida,
-  criarUnidadeMedida,
-  deletarUnidadeMedida,
-  atualizarUnidadeMedida,
+  fetchUnitsOfMeasure,
+  createUnitOfMeasure,
+  deleteUnitOfMeasure,
+  updateUnitOfMeasure,
 } from '../services/produtosService';
 import { ProdutoFormData } from '@/components/products/ProductForm';
 import { ProdutoOptions } from '@/components/products/ProductForm';
@@ -24,7 +24,7 @@ interface UseUnidadeMedidaParams {
   setForm: React.Dispatch<React.SetStateAction<ProdutoFormData>>;
   setOptions: React.Dispatch<React.SetStateAction<ProdutoOptions>>;
   showToast: (message: string, type: 'success' | 'error' | 'info') => void;
-  carregarItens: () => void;
+  loadItems: () => void;
   items: unknown[];
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -32,12 +32,12 @@ interface UseUnidadeMedidaParams {
   setItemParaExcluir: (value: null) => void;
 }
 
-export const useUnidadeMedida = ({
+export const useUnitOfMeasure = ({
   form,
   setForm,
   setOptions,
   showToast,
-  carregarItens,
+  loadItems,
   items,
   page,
   setPage,
@@ -52,7 +52,7 @@ export const useUnidadeMedida = ({
   const [modalUnidadeMedidaEditOpen, setModalUnidadeMedidaEditOpen] = useState(false);
 
   // Cadastro de Unidade de Medida Inline
-  const handleSalvarUnidadeMedida = async (e: React.FormEvent) => {
+  const handleSaveUnitOfMeasure = async (e: React.FormEvent) => {
     e.preventDefault();
     const siglaUnidade = validateRequired(uomForm.sigla, 'A sigla da unidade de medida');
     if (!siglaUnidade.ok) {
@@ -60,11 +60,11 @@ export const useUnidadeMedida = ({
       return;
     }
     try {
-      const response = await criarUnidadeMedida(uomForm.sigla.trim(), uomForm.descricao.trim());
+      const response = await createUnitOfMeasure(uomForm.sigla.trim(), uomForm.descricao.trim());
       showToast(response.message || 'Unidade de medida criada com sucesso.', 'success');
 
       // Re-carrega lista de unidade de medida e seleciona a criada
-      const uoms = await buscarUnidadesMedida();
+      const uoms = await fetchUnitsOfMeasure();
       setOptions(prev => ({ ...prev, unidadesMedida: uoms }));
       setForm(prev => ({ ...prev, unidadeMedidaId: response.id }));
 
@@ -77,21 +77,21 @@ export const useUnidadeMedida = ({
   };
 
   // Handler para abrir modal de edição de unidade de medida
-  const handleOpenEditUnidadeMedidaModal = (unidadeMedida: { id: number; sigla: string; descricao?: string }) => {
-    setForm(prev => ({ ...prev, unidadeMedidaId: unidadeMedida.id }));
-    setUomForm({ sigla: unidadeMedida.sigla, descricao: unidadeMedida.descricao || '' });
+  const handleOpenEditUnitOfMeasureModal = (unit: { id: number; sigla: string; descricao?: string }) => {
+    setForm(prev => ({ ...prev, unidadeMedidaId: unit.id }));
+    setUomForm({ sigla: unit.sigla, descricao: unit.descricao || '' });
     setModalUnidadeMedidaEditOpen(true);
   };
 
   // Ediçao de unidade de medida
-  const handleAtualizarUnidadeMedida = async (e: React.FormEvent) => {
+  const handleUpdateUnitOfMeasure = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!uomForm.sigla.trim()) {
       showToast('A sigla da unidade de medida é obrigatório.', 'error');
       return;
     }
     try {
-      const response = await atualizarUnidadeMedida(form.unidadeMedidaId, uomForm.sigla.trim(), uomForm.descricao.trim());
+      const response = await updateUnitOfMeasure(form.unidadeMedidaId, uomForm.sigla.trim(), uomForm.descricao.trim());
 
       // Atualiza na interface após confirmação da API
       setOptions(prev =>
@@ -105,16 +105,16 @@ export const useUnidadeMedida = ({
       showToast(response.message || 'Unidade de medida atualizada com sucesso.', 'success');
       setModalUnidadeMedidaEditOpen(false);
       setUomForm({ sigla: '', descricao: '' });
-      carregarItens();
+      loadItems();
     } catch (error: unknown) {
       showToast(error instanceof Error ? error.message : 'Erro ao atualizar unidade de medida.', 'error');
     }
   };
 
   // Handle para deletar unidade de medida
-  const handleDeletarUnidadeMedida = async () => {
+  const handleDeleteUnitOfMeasure = async () => {
     try {
-      await deletarUnidadeMedida(form.unidadeMedidaId);
+      await deleteUnitOfMeasure(form.unidadeMedidaId);
       showToast('Unidade de medida deletada com sucesso.', 'success');
       setDeleteConfirmOpen(false);
       setItemParaExcluir(null);
@@ -135,7 +135,7 @@ export const useUnidadeMedida = ({
       if (items.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
-        carregarItens();
+        loadItems();
       }
     } catch (error: unknown) {
       showToast(error instanceof Error ? error.message : 'Erro ao deletar unidade de medida.', 'error');
@@ -152,9 +152,9 @@ export const useUnidadeMedida = ({
     setModalUnidadeMedidaEditOpen,
 
     // Handlers
-    handleSalvarUnidadeMedida,
-    handleOpenEditUnidadeMedidaModal,
-    handleAtualizarUnidadeMedida,
-    handleDeletarUnidadeMedida,
+    handleSaveUnitOfMeasure,
+    handleOpenEditUnitOfMeasureModal,
+    handleUpdateUnitOfMeasure,
+    handleDeleteUnitOfMeasure,
   };
 };

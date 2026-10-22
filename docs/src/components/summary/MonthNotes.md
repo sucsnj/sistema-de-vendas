@@ -17,7 +17,7 @@ interface NotasDoMesProps {
 
 ## Relações
 
-- **Usa:** React Query, `buscarNotasPorPeriodo`/`excluirNota`/`NotaDetalhe` (`src/services/notasService.ts`), [ConfirmDialog](../common/ConfirmDialog.md), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString`/`getCurrentYear` (`src/utils/date.ts`).
+- **Usa:** React Query, `fetchInvoicesByPeriod`/`deleteInvoice`/`NotaDetalhe` (`src/services/notasService.ts`), [ConfirmDialog](../common/ConfirmDialog.md), `formatCurrency` (`src/utils/formatter.tsx`), `formatDateString`/`getCurrentYear` (`src/utils/date.ts`).
 - **Usado por:** [Summary](./Summary.md).
 
 ## Notas

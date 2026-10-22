@@ -203,27 +203,27 @@ try {
   // Seeding inicial para Categoria
   const countCat = db.prepare('SELECT count(*) as count FROM categorias').get() as { count: number };
   if (countCat.count === 0) {
-    const insertCategoria = db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)');
+    const insertCategory = db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)');
     for (const categoria of seedCategorias) {
-      insertCategoria.run(categoria.nome, categoria.descricao);
+      insertCategory.run(categoria.nome, categoria.descricao);
     }
   }
 
   // Seeding inicial para Marca
   const countBrand = db.prepare('SELECT count(*) as count FROM marcas').get() as { count: number };
   if (countBrand.count === 0) {
-    const insertMarca = db.prepare('INSERT INTO marcas (nome) VALUES (?)');
+    const insertBrand = db.prepare('INSERT INTO marcas (nome) VALUES (?)');
     for (const marca of seedMarcas) {
-      insertMarca.run(marca.nome);
+      insertBrand.run(marca.nome);
     }
   }
 
   // Seeding inicial para Fornecedores
   const countFornecedor = db.prepare('SELECT count(*) as count FROM fornecedores').get() as { count: number };
   if (countFornecedor.count === 0) {
-    const insertFornecedor = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
+    const insertSupplier = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
     for (const fornecedor of seedFornecedores) {
-      insertFornecedor.run(fornecedor.nome);
+      insertSupplier.run(fornecedor.nome);
     }
   }
 
@@ -295,21 +295,21 @@ export interface UnidadeMedidaRow {
 }
 
 // Helpers para Categorias
-export const getCategorias = () => {
+export const getCategories = () => {
   return db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all() as unknown as CategoriaRow[];
 };
 
-export const getCategoriaById = (id: number) => {
+export const getCategoryById = (id: number) => {
   return db.prepare('SELECT * FROM categorias WHERE id = ?').get(id) as unknown as CategoriaRow | undefined;
 };
 
-export const insertCategoria = (nome: string, descricao?: string) => {
+export const insertCategory = (name: string, description?: string) => {
   const stmt = db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)');
-  return stmt.run(nome, descricao || null);
+  return stmt.run(name, description || null);
 };
 
 // Apaga uma categoria, se houver itens associados, renomeia para a categoria "Geral" (id=1)
-export const deleteCategoria = (id: number) => {
+export const deleteCategory = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a categoria Geral.');
   }
@@ -322,29 +322,29 @@ export const deleteCategoria = (id: number) => {
 };
 
 // Atualiza uma categoria em todos os itens associados
-export const updateCategoria = (id: number, nome: string, descricao?: string) => {
+export const updateCategory = (id: number, name: string, description?: string) => {
   if (id === 1) {
     throw new Error('Não é possível atualizar a categoria Geral.');
   }
-  return db.prepare('UPDATE categorias SET nome = ?, descricao = ? WHERE id = ?').run(nome, descricao || null, id);
+  return db.prepare('UPDATE categorias SET nome = ?, descricao = ? WHERE id = ?').run(name, description || null, id);
 };
 
 // Helpers para Marcas
-export const getMarcas = () => {
+export const getBrands = () => {
   return db.prepare('SELECT * FROM marcas ORDER BY nome ASC').all() as unknown as MarcaRow[];
 };
 
-export const getMarcaById = (id: number) => {
+export const getBrandById = (id: number) => {
   return db.prepare('SELECT * FROM marcas WHERE id = ?').get(id) as unknown as MarcaRow | undefined;
 };
 
-export const insertMarca = (nome: string) => {
+export const insertBrand = (name: string) => {
   const stmt = db.prepare('INSERT INTO marcas (nome) VALUES (?)');
-  return stmt.run(nome);
+  return stmt.run(name);
 };
 
 // Deleta uma marca, se houver itens associados, renomeia para a marca "Outros" (id=1)
-export const deleteMarca = (id: number) => {
+export const deleteBrand = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a marca Outros.');
   }
@@ -357,30 +357,30 @@ export const deleteMarca = (id: number) => {
 };
 
 // Atualiza uma marca em todos os itens associados
-export const updateMarca = (id: number, nome: string) => {
+export const updateBrand = (id: number, name: string) => {
   if (id === 1) {
     throw new Error('Não é possível atualizar a marca Outros.');
   }
 
-  return db.prepare('UPDATE marcas SET nome = ? WHERE id = ?').run(nome || null, id);
+  return db.prepare('UPDATE marcas SET nome = ? WHERE id = ?').run(name || null, id);
 };
 
 // Helpers para Fornecedores
-export const getFornecedores = () => {
+export const getSuppliers = () => {
   return db.prepare('SELECT * FROM fornecedores ORDER BY nome ASC').all() as unknown as FornecedorRow[];
 };
 
-export const getFornecedorById = (id: number) => {
+export const getSupplierById = (id: number) => {
   return db.prepare('SELECT * FROM fornecedores WHERE id = ?').get(id) as unknown as FornecedorRow | undefined;
 };
 
-export const insertFornecedor = (nome: string) => {
+export const insertSupplier = (name: string) => {
   const stmt = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
-  return stmt.run(nome);
+  return stmt.run(name);
 };
 
 // Deleta um fornecedor, se houver itens associados, renomeia para o fornecedor "Sem fornecedor" (id=1)
-export const deleteFornecedor = (id: number) => {
+export const deleteSupplier = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar o fornecedor Sem fornecedor.');
   }
@@ -393,37 +393,37 @@ export const deleteFornecedor = (id: number) => {
 };
 
 // Atualiza um fornecedor em todos os itens associados
-export const updateFornecedor = (id: number, nome: string) => {
+export const updateSupplier = (id: number, name: string) => {
   if (id === 1) {
     throw new Error('Não é possível atualizar o fornecedor Sem fornecedor.');
   }
 
-  return db.prepare('UPDATE fornecedores SET nome = ? WHERE id = ?').run(nome || null, id);
+  return db.prepare('UPDATE fornecedores SET nome = ? WHERE id = ?').run(name || null, id);
 };
 
 // Helpers para Unidades de Medida
-export const getUnidadesMedida = () => {
+export const getUnitsOfMeasure = () => {
   return db.prepare('SELECT * FROM unidades_medida ORDER BY sigla ASC').all() as unknown as UnidadeMedidaRow[];
 };
 
-export const getUnidadeMedidaById = (id: number) => {
+export const getUnitOfMeasureById = (id: number) => {
   return db.prepare('SELECT * FROM unidades_medida WHERE id = ?').get(id) as unknown as UnidadeMedidaRow | undefined;
 };
 
-export const insertUnidadeMedida = (sigla: string, descricao?: string) => {
+export const insertUnitOfMeasure = (abbreviation: string, description?: string) => {
   const stmt = db.prepare('INSERT INTO unidades_medida (sigla, descricao) VALUES (?, ?)');
-  return stmt.run(sigla, descricao || null);
+  return stmt.run(abbreviation, description || null);
 };
 
-export const updateUnidadeMedida = (id: number, sigla: string, descricao?: string) => {
+export const updateUnitOfMeasure = (id: number, abbreviation: string, description?: string) => {
   // Se a sigla estiver dentro de seedUoms, não pode ser atualizada
-  if (seedUoms.some((uom) => uom.sigla === sigla)) {
-    throw new Error('Não é possível atualizar a unidade de medida ' + sigla);
+  if (seedUoms.some((uom) => uom.sigla === abbreviation)) {
+    throw new Error('Não é possível atualizar a unidade de medida ' + abbreviation);
   }
-  return db.prepare('UPDATE unidades_medida SET sigla = ?, descricao = ? WHERE id = ?').run(sigla || null, descricao || null, id);
+  return db.prepare('UPDATE unidades_medida SET sigla = ?, descricao = ? WHERE id = ?').run(abbreviation || null, description || null, id);
 };
 
-export const deleteUnidadeMedida = (id: number) => {
+export const deleteUnitOfMeasure = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a unidade de medida UN.');
   }
@@ -477,21 +477,21 @@ export interface MovimentacaoEstoqueInput {
   descricao?: string;
 }
 
-const normalizeTipoMovimentacao = (tipo: string) => {
-  const upper = String(tipo).trim().toUpperCase();
+const normalizeMovementType = (type: string) => {
+  const upper = String(type).trim().toUpperCase();
   if (upper !== 'ENTRADA' && upper !== 'SAIDA' && upper !== 'AJUSTE') {
     throw new Error('Tipo de movimentação inválido.');
   }
   return upper as 'ENTRADA' | 'SAIDA' | 'AJUSTE';
 };
 
-const insertMovimentacaoEstoqueRaw = (movement: MovimentacaoEstoqueInput) => {
+const insertStockMovementRaw = (movement: MovimentacaoEstoqueInput) => {
   const itemRow = db.prepare('SELECT nome, estoque FROM itens WHERE id = ?').get(movement.item_id) as { nome: string; estoque: number } | undefined;
   if (!itemRow) {
     throw new Error('Item não encontrado para movimentação de estoque.');
   }
 
-  const tipo = normalizeTipoMovimentacao(movement.tipo);
+  const tipo = normalizeMovementType(movement.tipo);
   const quantidade = Number(movement.quantidade);
   if (!Number.isFinite(quantidade)) {
     throw new Error('Quantidade inválida para movimentação de estoque.');
@@ -526,19 +526,19 @@ const insertMovimentacaoEstoqueRaw = (movement: MovimentacaoEstoqueInput) => {
   );
 };
 
-export const insertMovimentacaoEstoque = db.transaction(insertMovimentacaoEstoqueRaw);
+export const insertStockMovement = db.transaction(insertStockMovementRaw);
 
-export const getMovimentacoesEstoque = (itemId: number) => {
+export const getStockMovements = (itemId: number) => {
   return db.prepare(
     'SELECT id, item_id, item, tipo, quantidade, estoque_final, descricao, data_movimentacao FROM movimentacoes_estoque WHERE item_id = ? ORDER BY data_movimentacao DESC, id DESC'
   ).all(itemId) as MovimentacaoEstoqueData[];
 };
 
 // Validações de Unicidade
-export const checkDuplicateCodigoInterno = (codigoInterno: string, excludeId?: number) => {
-  if (!codigoInterno || !codigoInterno.trim()) return false;
+export const checkDuplicateInternalCode = (internalCode: string, excludeId?: number) => {
+  if (!internalCode || !internalCode.trim()) return false;
   let query = 'SELECT id FROM itens WHERE LOWER(codigo_interno) = LOWER(?)';
-  const params: unknown[] = [codigoInterno.trim()];
+  const params: unknown[] = [internalCode.trim()];
   if (excludeId) {
     query += ' AND id != ?';
     params.push(excludeId);
@@ -590,10 +590,10 @@ export interface ServicoInput {
   duracao_minutos?: number;
 }
 
-export const checkDuplicateServicoCodigoInterno = (codigoInterno: string, excludeId?: number) => {
-  if (!codigoInterno || !codigoInterno.trim()) return false;
+export const checkDuplicateServiceInternalCode = (internalCode: string, excludeId?: number) => {
+  if (!internalCode || !internalCode.trim()) return false;
   let query = 'SELECT id FROM servicos WHERE LOWER(codigo_interno) = LOWER(?)';
-  const params: unknown[] = [codigoInterno.trim()];
+  const params: unknown[] = [internalCode.trim()];
   if (excludeId) {
     query += ' AND id != ?';
     params.push(excludeId);
@@ -602,7 +602,7 @@ export const checkDuplicateServicoCodigoInterno = (codigoInterno: string, exclud
   return !!row;
 };
 
-export const getServicos = (options: {
+export const getServices = (options: {
   search?: string;
   categoria_id?: number;
   ativo?: number;
@@ -662,7 +662,7 @@ export const getServicos = (options: {
   };
 };
 
-export const getServicoById = (id: number) => {
+export const getServiceById = (id: number) => {
   return db.prepare(`
     SELECT
       s.id,
@@ -682,7 +682,7 @@ export const getServicoById = (id: number) => {
   `).get(id) as ServicoData | undefined;
 };
 
-export const insertServico = db.transaction((servicoData: ServicoInput) => {
+export const insertService = db.transaction((servicoData: ServicoInput) => {
   syncSharedAutoincrementSequence();
 
   const stmt = db.prepare(`
@@ -721,7 +721,7 @@ export const insertServico = db.transaction((servicoData: ServicoInput) => {
   return result.lastInsertRowid as number;
 });
 
-export const updateServico = db.transaction((id: number, servicoData: ServicoInput) => {
+export const updateService = db.transaction((id: number, servicoData: ServicoInput) => {
   const stmt = db.prepare(`
     UPDATE servicos
     SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, data_atualizacao = datetime('now', 'localtime')
@@ -742,7 +742,7 @@ export const updateServico = db.transaction((id: number, servicoData: ServicoInp
   return true;
 });
 
-export const deleteServico = (id: number) => {
+export const deleteService = (id: number) => {
   return db.prepare('DELETE FROM servicos WHERE id = ?').run(id);
 };
 
@@ -791,7 +791,7 @@ export interface ItemRow extends ItemInput {
   duracao_minutos?: number | null;
 }
 
-export const getItens = (options: {
+export const getItems = (options: {
   search?: string;
   categoria_id?: number;
   marca_id?: number;
@@ -1048,7 +1048,7 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
   const initialStock = Number(itemData.estoque);
   // Estoque inicial zero é válido; somente gera movimentação se houver entrada positiva.
   if (itemData.tipo === 'PRODUTO' && initialStock > 0) {
-    insertMovimentacaoEstoqueRaw({
+    insertStockMovementRaw({
       item_id: itemId,
       tipo: 'ENTRADA',
       quantidade: initialStock,
@@ -1089,7 +1089,7 @@ export const updateItem = db.transaction((id: number, itemData: ItemInput) => {
 
   if (currentStock !== targetStock) {
     const diff = targetStock - currentStock;
-    insertMovimentacaoEstoqueRaw({
+    insertStockMovementRaw({
       item_id: id,
       tipo: 'AJUSTE',
       quantidade: diff,
@@ -1135,13 +1135,13 @@ export const deleteItem = (id: number) => {
   return stmt.run(id);
 };
 
-export const toggleItemStatus = (id: number, ativo: number) => {
+export const toggleItemStatus = (id: number, active: number) => {
   const stmt = db.prepare(`
     UPDATE itens 
     SET ativo = ?, data_atualizacao = datetime('now', 'localtime') 
     WHERE id = ?
   `);
-  return stmt.run(ativo, id);
+  return stmt.run(active, id);
 };
 
 export default db;

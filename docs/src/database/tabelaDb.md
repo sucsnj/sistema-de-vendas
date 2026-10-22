@@ -6,7 +6,7 @@
 
 - Abre conexão com `db/tabela.db`, pragmas `journal_mode=WAL`, `synchronous=FULL`.
 - Cria tabela `tabela_search_history` (query, normalized_query UNIQUE, result_json, result_count, updated_at).
-- Salva/atualiza histórico com `ON CONFLICT(normalized_query) DO UPDATE` e mantém apenas os 25 mais recentes via `pruneTabelaSearchHistory()` (chamado após salvar).
+- Salva/atualiza histórico com `ON CONFLICT(normalized_query) DO UPDATE` e mantém apenas os 25 mais recentes via `pruneTableSearchHistory()` (chamado após salvar).
 - Fornece busca por `normalized_query`, listagem dos 25 recentes e limpeza completa do histórico.
 
 ## Relações
@@ -16,6 +16,6 @@
 
 ## Notas
 
-- `pruneTabelaSearchHistory()` é função interna (não exportada).
-- `saveTabelaSearchHistory` serializa `results` com `JSON.stringify` e atualiza timestamps em caso de conflito.
-- `getRecentTabelaSearchHistory` retorna apenas campos `id, query, result_count, updated_at`.
+- `pruneTableSearchHistory()` é função interna (não exportada).
+- `saveTableSearchHistory` serializa `results` com `JSON.stringify` e atualiza timestamps em caso de conflito.
+- `getRecentTableSearchHistory` retorna apenas campos `id, query, result_count, updated_at`.

@@ -108,17 +108,17 @@ const getLocalTimestamp = () => {
 // Funções de acesso ao banco de dados e operações de persistência.
 export const insertDailySale = (
   data: string,
-  valor: number,
-  observacoes?: string,
-  criado_em?: string,
-  carrinho_id?: number | null
+  amount: number,
+  notes?: string,
+  createdAt?: string,
+  cartId?: number | null
 ) => {
   try {
-    const criadoEm = criado_em || getLocalTimestamp();
+    const criadoEm = createdAt || getLocalTimestamp();
     const stmt = db.prepare(
       'INSERT INTO vendas_diarias (data, valor, observacoes, carrinho_id, criado_em) VALUES (?, ?, ?, ?, ?)'
     );
-    const result = stmt.run(data, valor, observacoes || null, carrinho_id ?? null, criadoEm);
+    const result = stmt.run(data, amount, notes || null, cartId ?? null, criadoEm);
     return result;
   } catch (error) {
     console.error('Erro ao inserir venda:', error);
@@ -127,9 +127,9 @@ export const insertDailySale = (
 };
 
 // Inserção em lote dos itens associados a uma venda
-export const insertVendaItens = (vendaId: number, itens: VendaItemInput[]) => {
+export const insertSaleItems = (saleId: number, items: VendaItemInput[]) => {
   try {
-    if (!itens || itens.length === 0) return;
+    if (!items || items.length === 0) return;
 
     const stmt = db.prepare(`
       INSERT INTO venda_itens (
@@ -146,12 +146,12 @@ export const insertVendaItens = (vendaId: number, itens: VendaItemInput[]) => {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    const criadoEm = getLocalTimestamp();
-    const insertMany = db.transaction((listaItens: VendaItemInput[]) => {
-      for (const item of listaItens) {
+    const createdAt = getLocalTimestamp();
+    const insertMany = db.transaction((saleItems: VendaItemInput[]) => {
+      for (const item of saleItems) {
         const subtotal = item.subtotal ?? Number((item.preco_unitario * item.quantidade).toFixed(2));
         stmt.run(
-          vendaId,
+          saleId,
           item.item_id ?? null,
           item.tipo,
           item.nome,
@@ -160,12 +160,12 @@ export const insertVendaItens = (vendaId: number, itens: VendaItemInput[]) => {
           subtotal,
           item.codigo_interno ?? null,
           item.referencia ?? null,
-          criadoEm
+          createdAt
         );
       }
     });
 
-    insertMany(itens);
+    insertMany(items);
   } catch (error) {
     console.error('Erro ao inserir itens da venda:', error);
     throw error;
@@ -173,10 +173,10 @@ export const insertVendaItens = (vendaId: number, itens: VendaItemInput[]) => {
 };
 
 // Busca todos os itens associados a uma venda específica
-export const getVendaItens = (vendaId: number): VendaItemData[] => {
+export const getSaleItems = (saleId: number): VendaItemData[] => {
   try {
     const stmt = db.prepare('SELECT * FROM venda_itens WHERE venda_id = ? ORDER BY id ASC');
-    return stmt.all(vendaId) as VendaItemData[];
+    return stmt.all(saleId) as VendaItemData[];
   } catch (error) {
     console.error('Erro ao buscar itens da venda:', error);
     throw error;
@@ -184,10 +184,10 @@ export const getVendaItens = (vendaId: number): VendaItemData[] => {
 };
 
 // Exclui os itens associados a uma venda
-export const deleteVendaItens = (vendaId: number) => {
+export const deleteSaleItems = (saleId: number) => {
   try {
     const stmt = db.prepare('DELETE FROM venda_itens WHERE venda_id = ?');
-    return stmt.run(vendaId);
+    return stmt.run(saleId);
   } catch (error) {
     console.error('Erro ao excluir itens da venda:', error);
     throw error;
@@ -195,23 +195,23 @@ export const deleteVendaItens = (vendaId: number) => {
 };
 
 // Constante exportada com função.
-export const getDailySales = (mes: number, ano: number, filtro?: 'positivas' | 'negativas' | 'todas') => {
+export const getDailySales = (month: number, year: number, filter?: 'positivas' | 'negativas' | 'todas') => {
   try {
-    const mesAno = `${ano}-${String(mes).padStart(2, '0')}`;
+    const mesAno = `${year}-${String(month).padStart(2, '0')}`;
     const startDate = `${mesAno}-01`;
-    const ultimoDia = `${mesAno}-${String(getLastDayOfMonth(ano, mes)).padStart(2, '0')}`;
+    const ultimoDia = `${mesAno}-${String(getLastDayOfMonth(year, month)).padStart(2, '0')}`;
 
     let query = 'SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ?';
-    if (filtro === 'positivas') {
+    if (filter === 'positivas') {
       query += ' AND valor > 0';
-    } else if (filtro === 'negativas') {
+    } else if (filter === 'negativas') {
       query += ' AND valor <= 0';
     }
     query += ' ORDER BY data DESC';
 
     const stmt = db.prepare(query);
     const sales = stmt.all(startDate, ultimoDia) as unknown as DailySaleRow[];
-    console.log(`Buscando vendas de ${startDate} a ${ultimoDia} (${filtro || 'todas'}):`, sales.length, 'registros');
+    console.log(`Buscando vendas de ${startDate} a ${ultimoDia} (${filter || 'todas'}):`, sales.length, 'registros');
     return sales;
   } catch (error) {
     console.error('Erro ao buscar vendas:', error);
@@ -231,11 +231,11 @@ export const getDailySaleById = (id: number) => {
 };
 
 // Constante exportada com função.
-export const updateDailySale = (id: number, data: string, valor: number, observacoes?: string) => {
+export const updateDailySale = (id: number, data: string, amount: number, notes?: string) => {
   try {
     const stmt = db.prepare('UPDATE vendas_diarias SET data = ?, valor = ?, observacoes = ? WHERE id = ?');
-    const result = stmt.run(data, valor, observacoes || null, id);
-    console.log('Venda atualizada:', { id, data, valor, observacoes, result });
+    const result = stmt.run(data, amount, notes || null, id);
+    console.log('Venda atualizada:', { id, data, valor: amount, observacoes: notes, result });
     return result;
   } catch (error) {
     console.error('Erro ao atualizar venda:', error);
@@ -258,10 +258,10 @@ export const deleteDailySale = (id: number) => {
 };
 
 // Constante exportada com função.
-export const getMonthlyTotal = (mes: number, ano: number) => {
+export const getMonthlyTotal = (month: number, year: number) => {
   try {
     const stmt = db.prepare('SELECT total FROM vendas_mensais WHERE mes = ? AND ano = ?');
-    return stmt.get(mes, ano);
+    return stmt.get(month, year);
   } catch (error) {
     console.error('Erro ao buscar total mensal:', error);
     throw error;
@@ -269,10 +269,10 @@ export const getMonthlyTotal = (mes: number, ano: number) => {
 };
 
 // Função local ou componente.
-const getTickerMedio = (vendas: { valor: number }[]) => {
+const getAverageTicket = (sales: { valor: number }[]) => {
   try {
-    const total = vendas.reduce((acc, v) => acc + v.valor, 0);
-    return vendas.length > 0 ? total / vendas.length : 0;
+    const total = sales.reduce((acc, v) => acc + v.valor, 0);
+    return sales.length > 0 ? total / sales.length : 0;
   } catch (error) {
     console.error('Erro ao calcular ticket médio:', error);
     throw error;
@@ -280,22 +280,22 @@ const getTickerMedio = (vendas: { valor: number }[]) => {
 };
 
 // Função local ou componente.
-const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
+const getAverageCustomers = (sales: { data: string; valor: number }[]) => {
   try {
-    if (vendas.length === 0) {
+    if (sales.length === 0) {
       return { media: 0, mediaNegativa: 0 };
     }
 
-    const vendasPositivas = vendas.filter((v) => v.valor > 0);
-    const vendasNegativas = vendas.filter((v) => v.valor <= 0);
+    const vendasPositivas = sales.filter((v) => v.valor > 0);
+    const vendasNegativas = sales.filter((v) => v.valor <= 0);
 
     // Média para dias negativos
-    const diasComVendasNegativos = [...new Set(vendasNegativas.map((venda) => venda.data))];
+    const diasComVendasNegativos = [...new Set(vendasNegativas.map((sale) => sale.data))];
     const quantidadeVendasNegativas = vendasNegativas.length;
     const mediaNegativa =
       quantidadeVendasNegativas > 0 && diasComVendasNegativos.length > 0 ? quantidadeVendasNegativas / diasComVendasNegativos.length : 0;
 
-    const diasComVendas = [...new Set(vendasPositivas.map((venda) => venda.data))];
+    const diasComVendas = [...new Set(vendasPositivas.map((sale) => sale.data))];
     const quantidadeVendas = vendasPositivas.length;
     const media = quantidadeVendas > 0 && diasComVendas.length > 0 ? quantidadeVendas / diasComVendas.length : 0;
 
@@ -307,9 +307,9 @@ const getMediaClientes = (vendas: { data: string; valor: number }[]) => {
 };
 
 // Função local ou componente.
-const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, ano: number) => {
+const getBestDay = (sales: { data: string; valor: number }[], month: number, year: number) => {
   try {
-    const agrupado = vendas.reduce((acc: Record<string, number>, v) => {
+    const agrupado = sales.reduce((acc: Record<string, number>, v) => {
       acc[v.data] = (acc[v.data] || 0) + v.valor; // retorna o dia com o maior valor acumulado
       return acc;
     }, {});
@@ -317,7 +317,7 @@ const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, an
     let melhor = Object.entries(agrupado).sort((a, b) => b[1] - a[1])[0];
     // se melhor for vazio, retorna o primeiro dia do mês
     if (!melhor) {
-      melhor = [`${ano}-${mes}-01`, 0];
+      melhor = [`${year}-${month}-01`, 0];
     }
     return { dia: melhor[0], valor: melhor[1] }
   } catch (error) {
@@ -327,9 +327,9 @@ const getMelhorDia = (vendas: { data: string; valor: number }[], mes: number, an
 };
 
 // Função local ou componente.
-const getMaiorVenda = (vendas: { valor: number }[]) => {
+const getLargestSale = (sales: { valor: number }[]) => {
   try {
-    const maiorVenda = vendas.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
+    const maiorVenda = sales.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
     return maiorVenda || 0;
   } catch (error) {
     console.error('Erro ao calcular maior venda:', error);
@@ -338,19 +338,19 @@ const getMaiorVenda = (vendas: { valor: number }[]) => {
 };
 
 // Função local ou componente.
-const getQtdVendas = (vendas: { valor: number }[]) => {
+const getSalesCount = (sales: { valor: number }[]) => {
   try {
-    return vendas.length;
+    return sales.length;
   } catch (error) {
     console.error('Erro ao calcular quantidade de vendas:', error);
     throw error;
   }
 };
 
-const getVendasEsp = (mes: number, ano: number) => {
+const getSpecialSales = (month: number, year: number) => {
   try {
     // Retorna a quantidade e total de vendas negativas no mês
-    const vendasEspeciais = getDailySales(mes, ano, 'negativas') as { valor: number }[];
+    const vendasEspeciais = getDailySales(month, year, 'negativas') as { valor: number }[];
     const totalEspeciais = vendasEspeciais.reduce((sum, sale) => sum + sale.valor, 0);
 
     return [vendasEspeciais.length, totalEspeciais];
@@ -361,21 +361,21 @@ const getVendasEsp = (mes: number, ano: number) => {
 };
 
 // Constante exportada com função.
-export const consolidateMonthly = (mes: number, ano: number) => {
+export const consolidateMonthly = (month: number, year: number) => {
   try {
     // Vendas Especiais
-    const vendasEspeciais = getVendasEsp(mes, ano);
+    const vendasEspeciais = getSpecialSales(month, year);
     const qtdVendasEspeciais = vendasEspeciais[0];
 
     // Vendas Diárias
-    const sales = getDailySales(mes, ano);
+    const sales = getDailySales(month, year);
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
-    const ticketMedio = getTickerMedio(sales);
-    const { media, mediaNegativa } = getMediaClientes(sales);
+    const ticketMedio = getAverageTicket(sales);
+    const { media, mediaNegativa } = getAverageCustomers(sales);
     const mediaClientes = media;
-    const melhorDia = getMelhorDia(sales, mes, ano);
-    const maiorVenda = getMaiorVenda(sales);
-    const qtdVendas = getQtdVendas(sales) - qtdVendasEspeciais;
+    const melhorDia = getBestDay(sales, month, year);
+    const maiorVenda = getLargestSale(sales);
+    const qtdVendas = getSalesCount(sales) - qtdVendasEspeciais;
 
     const mediaClientesEsp = mediaNegativa;
     const qtdVendasEsp = qtdVendasEspeciais;
@@ -383,7 +383,7 @@ export const consolidateMonthly = (mes: number, ano: number) => {
 
     const stmt = db.prepare(
       'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia, melhorDiaValor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    return stmt.run(mes, ano, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp);
+    return stmt.run(month, year, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp);
   } catch (error) {
     console.error('Erro ao consolidar mensal:', error);
     throw error;

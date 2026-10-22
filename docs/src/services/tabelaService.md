@@ -6,7 +6,7 @@
 
 - Expõe interfaces: `TabelaRow`, `TabelaSearchHistoryItem`, `TabelaSearchResponse`, `TabelaStatusResponse`.
 - Centraliza tratamento de resposta com `handleJsonResponse(response)` (lança `Error` com `json.error` se `!response.ok`).
-- Realiza upload de arquivo (`uploadTabela` via `FormData` POST), busca (`searchTabela` com `query` codificada), histórico (`fetchTabelaHistory`), limpa histórico (`clearTabelaHistory` DELETE) e consulta status (`fetchTabelaStatus`).
+- Realiza upload de arquivo (`uploadTable` via `FormData` POST), busca (`searchTable` com `query` codificada), histórico (`fetchTableHistory`), limpa histórico (`clearTableHistory` DELETE) e consulta status (`fetchTableStatus`).
 
 ## Relações
 
@@ -15,5 +15,5 @@
 
 ## Notas
 
-- `searchTabela` aplica `encodeURIComponent(query.trim())` na URL.
-- `fetchTabelaHistory` chama `?history=1`; `fetchTabelaStatus` chama `?status=1`.
+- `searchTable` aplica `encodeURIComponent(query.trim())` na URL.
+- `fetchTableHistory` chama `?history=1`; `fetchTableStatus` chama `?status=1`.

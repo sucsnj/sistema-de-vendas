@@ -4,9 +4,9 @@
 
 ## O que faz
 
-- Carrega status (`fetchTabelaStatus`) e histórico (`fetchTabelaHistory`) ao montar.
-- Faz upload XLS/XLSX via `uploadTabela` (FormData campo `file`) e busca por termo via `searchTabela` (fonte `history` ou `table`).
-- Limpa o histórico (`clearTabelaHistory`) e repete buscas clicando em um item do histórico.
+- Carrega status (`fetchTableStatus`) e histórico (`fetchTableHistory`) ao montar.
+- Faz upload XLS/XLSX via `uploadTable` (FormData campo `file`) e busca por termo via `searchTable` (fonte `history` ou `table`).
+- Limpa o histórico (`clearTableHistory`) e repete buscas clicando em um item do histórico.
 - Escape limpa o input de busca via `document.querySelector('.search-input')`.
 
 ## Relações

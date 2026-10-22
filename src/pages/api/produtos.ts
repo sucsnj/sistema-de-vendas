@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
-  getItens,
+  getItems,
   getItemById,
   insertItem,
   updateItem,
   deleteItem,
   toggleItemStatus,
-  checkDuplicateCodigoInterno,
+  checkDuplicateInternalCode,
   checkDuplicateBarcode,
 } from '../../database/produtosDb';
 import { parseNumber } from '../../utils/number';
@@ -47,7 +47,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         pageSize: pageSize ? Number(pageSize) : 10,
       };
 
-      const result = getItens(parsedOptions);
+      const result = getItems(parsedOptions);
       return res.status(200).json(result);
     } catch (error) {
       console.error('Erro ao buscar itens:', error);
@@ -134,7 +134,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       // Validação de código interno duplicado
-      if (codigo_interno && checkDuplicateCodigoInterno(codigo_interno)) {
+      if (codigo_interno && checkDuplicateInternalCode(codigo_interno)) {
         return res.status(400).json({ error: `O código interno "${codigo_interno}" já está cadastrado.` });
       }
 

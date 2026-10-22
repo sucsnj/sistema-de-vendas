@@ -6,14 +6,14 @@ interface ModalFornecedorProps {
     setModalFornecedorOpen: (value: boolean) => void;
     novoFornecedorNome: string;
     setNovoFornecedorNome: (value: string) => void;
-    handleSalvarFornecedor: (e: React.FormEvent) => void;
+    handleSaveSupplier: (e: React.FormEvent) => void;
 }
 
-const ModalFornecedor: React.FC<ModalFornecedorProps> = ({
+const SupplierModal: React.FC<ModalFornecedorProps> = ({
     setModalFornecedorOpen,
     novoFornecedorNome,
     setNovoFornecedorNome,
-    handleSalvarFornecedor,
+    handleSaveSupplier,
 }) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     useFocusTrap(dialogRef, true);
@@ -21,7 +21,7 @@ const ModalFornecedor: React.FC<ModalFornecedorProps> = ({
         <div className={styles.modalOverlay} role="presentation">
             <div className={styles.modalContent} ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-fornecedor-title" tabIndex={-1}>
                 <h3 id="modal-fornecedor-title" className={styles.modalTitle}>Adicionar Fornecedor</h3>
-                <form onSubmit={handleSalvarFornecedor} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={handleSaveSupplier} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel} htmlFor="new-fornecedor-nome">
                             Nome:*
@@ -59,4 +59,4 @@ const ModalFornecedor: React.FC<ModalFornecedorProps> = ({
     )
 };
 
-export default ModalFornecedor;
+export default SupplierModal;

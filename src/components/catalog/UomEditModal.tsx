@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
-import { ModalUomExclusao } from '@/components/products/ProductDeleteModal';
+import { UnitOfMeasureDeleteModal } from '@/components/products/ProductDeleteModal';
 
 export interface UnidadeMedidaFormData {
     sigla: string;
@@ -20,7 +20,7 @@ interface ModalUnidadeMedidaEditProps {
     options: UnidadeMedidaOptions;
 }
 
-const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
+const UnitOfMeasureEditModal: React.FC<ModalUnidadeMedidaEditProps> = ({
     uomForm,
     setUomForm,
     onDelete,
@@ -91,7 +91,7 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
                 </form>
             </div>
             {deleteConfirmOpen && (
-                <ModalUomExclusao
+                <UnitOfMeasureDeleteModal
                     open={deleteConfirmOpen}
                     unidadeMedida={uomForm}
                     onConfirm={() => {
@@ -107,4 +107,4 @@ const ModalUnidadeMedidaEdit: React.FC<ModalUnidadeMedidaEditProps> = ({
     )
 };
 
-export default ModalUnidadeMedidaEdit;
+export default UnitOfMeasureEditModal;

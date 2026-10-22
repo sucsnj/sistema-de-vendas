@@ -4,9 +4,9 @@
 
 ## O que faz
 
-- Busca `buscarProdutos` e `buscarServicos` (`pageSize: 10000`), mescla, ordena por nome e pagina localmente (10/página).
+- Busca `fetchProducts` e `fetchServices` (`pageSize: 10000`), mescla, ordena por nome e pagina localmente (10/página).
 - Filtros: texto, tipo (`PRODUTO`/`SERVICO`/`TODOS`), categoria, marca, fornecedor e status (`ATIVO`/`INATIVO`/`TODOS`).
-- Alterna status de produtos (`toggleStatusProduto`) e exclui com confirmação (`excluirProduto`/`excluirServico`).
+- Alterna status de produtos (`toggleProductStatus`) e exclui com confirmação (`deleteProduct`/`deleteService`).
 - Navega para `/cadastro?id=X` ao editar; FAB "+" leva a `/cadastro`.
 
 ## Relações

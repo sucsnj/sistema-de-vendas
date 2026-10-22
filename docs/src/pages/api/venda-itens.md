@@ -9,8 +9,8 @@
 
 ## Relações
 
-- **Usa:** `getVendaItens` de `src/database/db.ts`.
-- **Usado por:** `buscarVendaItens` em `vendasService`; `./vendas.md` e `../historico.md`.
+- **Usa:** `getSaleItems` de `src/database/db.ts`.
+- **Usado por:** `fetchSaleItems` em `vendasService`; `./vendas.md` e `../historico.md`.
 
 ## Notas
 

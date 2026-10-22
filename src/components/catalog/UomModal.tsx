@@ -18,7 +18,7 @@ interface ModalAddUnidadeMedidaProps {
     options: UnidadeMedidaOptions;
 }
 
-const ModalAddUnidadeMedida: React.FC<ModalAddUnidadeMedidaProps> = ({
+const UnitOfMeasureModal: React.FC<ModalAddUnidadeMedidaProps> = ({
     uomForm,
     setUomForm,
     options,
@@ -80,4 +80,4 @@ const ModalAddUnidadeMedida: React.FC<ModalAddUnidadeMedidaProps> = ({
     )
 };
 
-export default ModalAddUnidadeMedida;
+export default UnitOfMeasureModal;

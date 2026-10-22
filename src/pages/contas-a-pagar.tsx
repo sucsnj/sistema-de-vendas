@@ -3,21 +3,21 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/useToast';
 import Agenda from '@/components/payables/Agenda';
 import Resumo from '@/components/summary/Summary';
-import ContasAPagarHeader from '@/components/payables/PayablesHeader';
-import ContasAPagarFilterPanel from '@/components/payables/PayablesFilterPanel';
-import ContasAPagarForm from '@/components/payables/PayablesForm';
+import PayablesHeader from '@/components/payables/PayablesHeader';
+import PayablesFilterPanel from '@/components/payables/PayablesFilterPanel';
+import PayablesForm from '@/components/payables/PayablesForm';
 import parseNumber from '../utils/number';
-import ContasAPagarLastTen from '@/components/payables/PayablesLastTen';
-import ContasAPagarModals from '@/components/payables/PayablesModals';
+import PayablesLastTen from '@/components/payables/PayablesLastTen';
+import PayablesModals from '@/components/payables/PayablesModals';
 import styles from '@/styles/contas.module.css';
 import {
-  buscarContas,
-  atualizarConta,
-  cancelarPagamentoConta,
-  excluirConta,
-  fazerBackupContas,
-  pagarConta,
-  registrarConta,
+  fetchAccounts,
+  updateAccount,
+  cancelAccountPayment,
+  deleteAccount,
+  backupAccounts,
+  payAccount,
+  registerAccount,
   ContaDetalhe,
 } from '../services/contasService';
 import { highlightField } from '../utils/forms';
@@ -28,7 +28,7 @@ import { validateRequired, validateCurrency } from '../utils/validation';
 const hoje = now().format('YYYY-MM-DD');
 
 // Componente React.
-const ContasAPagar: React.FC = () => {
+const Payables: React.FC = () => {
   const queryClient = useQueryClient();
   const [ano, setAno] = useState(getDateArray()[2]);
   const [mes, setMes] = useState(getDateArray()[1]);
@@ -59,7 +59,7 @@ const ContasAPagar: React.FC = () => {
   const [payModalOpen, setPayModalOpen] = useState(false);
   const [payObservacao, setPayObservacao] = useState('');
 
-  const handleFiltroVencimentoDeChange = (value: string) => {
+  const handleDueDateFromChange = (value: string) => {
     setFiltroVencimentoDe(value);
     if (typeof window !== 'undefined') {
       localStorage.setItem('filtroVencimentoDe', value);
@@ -72,7 +72,7 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const handleFiltroVencimentoAteChange = (value: string) => {
+  const handleDueDateToChange = (value: string) => {
     setFiltroVencimentoAte(value);
     if (typeof window !== 'undefined') {
       localStorage.setItem('filtroVencimentoAte', value);
@@ -89,7 +89,7 @@ const ContasAPagar: React.FC = () => {
 
   const loadContasMes = useCallback(async () => {
     try {
-      const data = await buscarContas(ano, mes);
+      const data = await fetchAccounts(ano, mes);
       setContasMes(data);
     } catch {
       showToast('Não foi possível carregar as contas do mês.', 'error');
@@ -98,7 +98,7 @@ const ContasAPagar: React.FC = () => {
 
   const loadContasAno = useCallback(async () => {
     try {
-      const data = await buscarContas(ano);
+      const data = await fetchAccounts(ano);
       setContasAno(data);
     } catch {
       showToast('Não foi possível carregar o resumo anual.', 'error');
@@ -175,7 +175,7 @@ const ContasAPagar: React.FC = () => {
 
     try {
       if (editingConta) {
-        await atualizarConta(
+        await updateAccount(
           editingConta.id,
           distribuidora,
           numericValor,
@@ -187,12 +187,12 @@ const ContasAPagar: React.FC = () => {
       } else {
         // traz o retorno do backend para mostrar a mensagem de sucesso ou erro específico
         // o retorno do json
-        const response = await registrarConta(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        const response = await registerAccount(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
         if (response.error) {
           showToast(response.error, 'error');
           return;
         }
-        // await registrarConta(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        // await registerAccount(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
         showToast(response.message, 'success');
       }
 
@@ -204,23 +204,23 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const handleEditar = (conta: ContaDetalhe) => {
-    setEditingConta(conta);
-    setDistribuidora(conta.distribuidora);
-    setValor(conta.valor.toFixed(2));
-    setVencimento(conta.vencimento);
-    setDocumento(conta.documento);
-    setBancoObservacoes(conta.banco_observacoes ?? '');
+  const handleEdit = (account: ContaDetalhe) => {
+    setEditingConta(account);
+    setDistribuidora(account.distribuidora);
+    setValor(account.valor.toFixed(2));
+    setVencimento(account.vencimento);
+    setDocumento(account.documento);
+    setBancoObservacoes(account.banco_observacoes ?? '');
     distribuidoraInputRef.current?.focus();
   };
 
-  const handleCancelarEdicao = () => resetForm();
+  const handleCancelEdit = () => resetForm();
 
-  const handleView = (conta: ContaDetalhe) => setSelectedConta(conta);
+  const handleView = (account: ContaDetalhe) => setSelectedConta(account);
 
   const handleDelete = async (id: number) => {
     try {
-      await excluirConta(id);
+      await deleteAccount(id);
       showToast('Conta excluída com sucesso.', 'success');
       loadContasMes();
       loadContasAno();
@@ -230,11 +230,11 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const handleConfirmarPagamento = async () => {
+  const handleConfirmPayment = async () => {
     if (!selectedConta) return;
 
     try {
-      await atualizarConta(
+      await updateAccount(
         selectedConta.id,
         selectedConta.distribuidora,
         selectedConta.valor,
@@ -243,7 +243,7 @@ const ContasAPagar: React.FC = () => {
         payObservacao
       );
 
-      await pagarConta(selectedConta.id);
+      await payAccount(selectedConta.id);
 
       showToast('Conta paga com sucesso.', 'success');
 
@@ -258,9 +258,9 @@ const ContasAPagar: React.FC = () => {
     }
   };
 
-  const handleCancelarPagamento = async (id: number) => {
+  const handleCancelPayment = async (id: number) => {
     try {
-      await cancelarPagamentoConta(id);
+      await cancelAccountPayment(id);
       showToast('Pagamento cancelado e conta voltou a Pendente.', 'success');
       loadContasMes();
       loadContasAno();
@@ -272,7 +272,7 @@ const ContasAPagar: React.FC = () => {
 
   const handleBackup = async () => {
     try {
-      const result = await fazerBackupContas();
+      const result = await backupAccounts();
       showToast(result.message || 'Backup criado com sucesso.', 'success');
     } catch {
       showToast('Erro ao fazer backup das contas.', 'error');
@@ -318,13 +318,13 @@ const ContasAPagar: React.FC = () => {
   };
 
   const filteredContas = useMemo(() => {
-    return contasAno.filter((conta) => {
-      const matchesDistribuidora = conta.distribuidora
+    return contasAno.filter((account) => {
+      const matchesDistribuidora = account.distribuidora
         .toLowerCase()
         .includes(filtroDistribuidora.toLowerCase());
-      const matchesStatus = filtroStatus === 'Todos' || conta.status === filtroStatus;
-      const matchesVencimentoDe = filtroVencimentoDe ? conta.vencimento >= filtroVencimentoDe : true;
-      const matchesVencimentoAte = filtroVencimentoAte ? conta.vencimento <= filtroVencimentoAte : true;
+      const matchesStatus = filtroStatus === 'Todos' || account.status === filtroStatus;
+      const matchesVencimentoDe = filtroVencimentoDe ? account.vencimento >= filtroVencimentoDe : true;
+      const matchesVencimentoAte = filtroVencimentoAte ? account.vencimento <= filtroVencimentoAte : true;
       return matchesDistribuidora && matchesStatus && matchesVencimentoDe && matchesVencimentoAte;
     });
   }, [contasAno, filtroDistribuidora, filtroStatus, filtroVencimentoDe, filtroVencimentoAte]);
@@ -346,27 +346,27 @@ const ContasAPagar: React.FC = () => {
 
   return (
     <div className={styles.contasPage}>
-      <ContasAPagarHeader ano={ano} mes={mes} setAno={setAno} setMes={setMes} handleBackup={handleBackup} />
+      <PayablesHeader ano={ano} mes={mes} setAno={setAno} setMes={setMes} handleBackup={handleBackup} />
 
       <main className={styles.contasGrid}>
         <section className={`${styles.contasPanel} ${styles.detailPanel}`}>
-          <ContasAPagarFilterPanel
+          <PayablesFilterPanel
             filtroDistribuidora={filtroDistribuidora}
             setFiltroDistribuidora={setFiltroDistribuidora}
             filtroStatus={filtroStatus}
             setFiltroStatus={setFiltroStatus}
             filtroVencimentoDe={filtroVencimentoDe}
-            setFiltroVencimentoDe={handleFiltroVencimentoDeChange}
+            setFiltroVencimentoDe={handleDueDateFromChange}
             filtroVencimentoAte={filtroVencimentoAte}
-            setFiltroVencimentoAte={handleFiltroVencimentoAteChange}
+            setFiltroVencimentoAte={handleDueDateToChange}
             hoje={hoje}
             filteredContas={filteredContas}
             handleView={handleView}
             handleDelete={handleDelete}
-            handleEditar={handleEditar}
-            handleStartPayment={(conta) => {
-              setSelectedConta(conta);
-              setPayObservacao(conta.banco_observacoes || '');
+            handleEdit={handleEdit}
+            handleStartPayment={(account) => {
+              setSelectedConta(account);
+              setPayObservacao(account.banco_observacoes || '');
               setPayModalOpen(true);
             }}
             onClearFilters={() => {
@@ -382,7 +382,7 @@ const ContasAPagar: React.FC = () => {
             }}
           />
 
-          <ContasAPagarForm
+          <PayablesForm
             distribuidora={distribuidora}
             setDistribuidora={setDistribuidora}
             valor={valor}
@@ -397,18 +397,18 @@ const ContasAPagar: React.FC = () => {
             onSubmit={handleSubmit}
             onReset={resetForm}
             onImportXML={handleImportXML}
-            onCancelarEdicao={handleCancelarEdicao}
+            onCancelarEdicao={handleCancelEdit}
             distribuidoraInputRef={distribuidoraInputRef}
             valorInputRef={valorInputRef}
             dataInputRef={dataInputRef}
             documentoInputRef={documentoInputRef}
           />
 
-          <ContasAPagarLastTen
+          <PayablesLastTen
             ultimasContas={ultimasContas}
             handleView={handleView}
             handleDelete={handleDelete}
-            handleEditar={handleEditar}
+            handleEdit={handleEdit}
           />
         </section>
 
@@ -420,7 +420,7 @@ const ContasAPagar: React.FC = () => {
 
       </main>
 
-      <ContasAPagarModals
+      <PayablesModals
         selectedConta={selectedConta}
         editingConta={editingConta}
         distribuidora={distribuidora}
@@ -438,23 +438,23 @@ const ContasAPagar: React.FC = () => {
         setPayObservacao={setPayObservacao}
         onCloseSelectedConta={() => setSelectedConta(null)}
         onSave={handleSubmit}
-        onEditar={handleEditar}
-        onCancelEdit={handleCancelarEdicao}
-        onStartPayment={(conta) => {
-          setSelectedConta(conta);
-          setPayObservacao(conta.banco_observacoes || '');
+        onEditar={handleEdit}
+        onCancelEdit={handleCancelEdit}
+        onStartPayment={(account) => {
+          setSelectedConta(account);
+          setPayObservacao(account.banco_observacoes || '');
           setPayModalOpen(true);
         }}
         onConfirmPayment={() => {
-          handleConfirmarPagamento();
-          handleCancelarEdicao();
+          handleConfirmPayment();
+          handleCancelEdit();
           setSelectedConta(null);
         }}
         onClosePayModal={() => setPayModalOpen(false)}
-        onCancelPayment={handleCancelarPagamento}
+        onCancelPayment={handleCancelPayment}
       />
     </div>
   );
 };
 
-export default ContasAPagar;
+export default Payables;

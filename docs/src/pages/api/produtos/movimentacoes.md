@@ -15,7 +15,7 @@
 
 ## Relações
 
-- **Usa:** `src/database/produtosDb.ts` (`getMovimentacoesEstoque`, `insertMovimentacaoEstoque`, `getItemById`).
+- **Usa:** `src/database/produtosDb.ts` (`getStockMovements`, `insertStockMovement`, `getItemById`).
 - **Usado por:** `produtosService`; `../../cadastro.md` (ajuste de estoque).
 
 ## Notas

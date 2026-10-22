@@ -6,18 +6,18 @@ import { capitalize } from '../utils/captalize';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useToast } from '../hooks/useToast';
-import { useMensais } from '../hooks/useMonthlyData';
+import { useMonthlyData } from '../hooks/useMonthlyData';
 import { useConfirmDialog } from '../hooks/useConfirmDialog';
 dayjs.locale('pt-br');
 
 // Componente React: tela de Resumo Mensal.
 // Mostra as consolidações mensais (normal e especial) com opção de exclusão,
-// usando os hooks useToast, useMensais e useConfirmDialog.
-const Resumo: React.FC = () => {
+// usando os hooks useToast, useMonthlyData e useConfirmDialog.
+const SummaryPage: React.FC = () => {
   // Notificações (toast) exibidas na tela
   const { showToast } = useToast();
   // Consolidações mensais (carregar e excluir)
-  const { mensais, loadMensais, handleDelete } = useMensais(showToast);
+  const { mensais, loadMensais, handleDelete } = useMonthlyData(showToast);
   // Diálogo de confirmação antes de excluir
   const { confirmOpen, openConfirm, handleConfirm, cancelConfirm } = useConfirmDialog(handleDelete);
 
@@ -142,4 +142,4 @@ const Resumo: React.FC = () => {
   );
 };
 
-export default Resumo;
+export default SummaryPage;

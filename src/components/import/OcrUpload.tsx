@@ -9,7 +9,7 @@ interface OcrResultado {
 
 // Handler de API ou componente exportado.
 export default function OcrUpload() {
-    const lerOcrRecente = (): OcrResultado[] | null => {
+    const readRecentOcr = (): OcrResultado[] | null => {
         try {
             const ocrJson = localStorage.getItem("ocrRecente");
             return ocrJson ? (JSON.parse(ocrJson) as OcrResultado[]) : null;
@@ -18,13 +18,13 @@ export default function OcrUpload() {
         }
     };
 
-    const [resultado, setResultado] = useState<OcrResultado[] | null>(lerOcrRecente);
+    const [resultado, setResultado] = useState<OcrResultado[] | null>(readRecentOcr);
 
     // Notificações (toast) do store global
     const { showToast } = useToast();
 
     // Função de upload
-    async function uploadArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+    async function uploadFile(e: React.ChangeEvent<HTMLInputElement>) {
 
         if (!e.target.files?.[0]) return;
 
@@ -60,9 +60,9 @@ export default function OcrUpload() {
     }
 
     // Função de copiar conteúdo para a área de transferência (cópia apenas a linha digitável)
-    function copiarConteudo(texto: string) {
+    function copyContent(text: string) {
 
-        navigator.clipboard.writeText(texto)
+        navigator.clipboard.writeText(text)
             .then(() => {
 
                 showToast("Linha digitável copiada!", "success");
@@ -79,7 +79,7 @@ export default function OcrUpload() {
         <div>
             <input type="file"
                 accept=".pdf,.jpg,.jpeg,.png"
-                className="ocr-upload" multiple onChange={uploadArquivo} />
+                className="ocr-upload" multiple onChange={uploadFile} />
 
             {resultado && (
                 <div className="ocr-results">
@@ -87,7 +87,7 @@ export default function OcrUpload() {
                         <pre
                             key={index}
                             className="ocr-upload-wrapper"
-                            onClick={() => copiarConteudo(item.linha || '')}>
+                            onClick={() => copyContent(item.linha || '')}>
                             <strong>{item.arquivo}</strong>
                             {"\n"}
                             {item.linha || item.erro}

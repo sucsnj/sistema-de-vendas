@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Campo **Nome** (obrigatório); submit chama `handleSalvarMarca`.
+- Campo **Nome** (obrigatório); submit chama `handleSaveBrand`.
 - Fechar limpa `novaMarcaNome` e fecha o modal.
 
 ```ts
@@ -12,7 +12,7 @@ interface ModalMarcaProps {
   setModalMarcaOpen: (value: boolean) => void;
   novaMarcaNome: string;
   setNovaMarcaNome: (value: string) => void;
-  handleSalvarMarca: (e: React.FormEvent) => void;
+  handleSaveBrand: (e: React.FormEvent) => void;
 }
 ```
 

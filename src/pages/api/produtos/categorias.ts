@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getCategorias, insertCategoria, deleteCategoria, updateCategoria } from '../../../database/produtosDb';
+import { getCategories, insertCategory, deleteCategory, updateCategory } from '../../../database/produtosDb';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const cats = getCategorias();
+      const cats = getCategories();
       return res.status(200).json(cats);
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
@@ -19,12 +19,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Nome da categoria é obrigatório.' });
       }
 
-      const cats = getCategorias();
+      const cats = getCategories();
       if (cats.some(c => c.nome.toLowerCase() === nome.trim().toLowerCase())) {
         return res.status(400).json({ error: 'Esta categoria já existe.' });
       }
 
-      const result = insertCategoria(nome.trim(), descricao);
+      const result = insertCategory(nome.trim(), descricao);
       return res.status(201).json({ id: result.lastInsertRowid, message: 'Categoria cadastrada com sucesso.' });
     } catch (error) {
       console.error('Erro ao salvar categoria:', error);
@@ -39,7 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!id || isNaN(Number(id))) {
         return res.status(400).json({ error: 'ID da categoria é inválido.' });
       }
-      deleteCategoria(Number(id));
+      deleteCategory(Number(id));
       return res.status(200).json({ message: 'Categoria apagada com sucesso.' });
     } catch (error) {
       console.error('Erro ao apagar categoria:', error);
@@ -58,7 +58,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!nome || !nome.trim()) {
         return res.status(400).json({ error: 'Nome da categoria é obrigatório.' });
       }
-      updateCategoria(Number(id), nome.trim(), descricao);
+      updateCategory(Number(id), nome.trim(), descricao);
       return res.status(200).json({ message: 'Categoria atualizada com sucesso.' });
     } catch (error) {
       console.error('Erro ao atualizar categoria:', error);

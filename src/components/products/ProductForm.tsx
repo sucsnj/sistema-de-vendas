@@ -67,7 +67,7 @@ interface FormularioProdutoProps {
     inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const FormularioProduto: React.FC<FormularioProdutoProps> = ({
+const ProductForm: React.FC<FormularioProdutoProps> = ({
     editarProdutoId,
     form,
     setForm,
@@ -530,4 +530,4 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
     )
 };
 
-export default FormularioProduto;
+export default ProductForm;

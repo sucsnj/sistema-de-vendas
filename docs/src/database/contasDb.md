@@ -15,5 +15,5 @@
 
 ## Notas
 
-- `getContasByPeriod(ano, mes?)` define período de 1º dia do mês/ano até último dia (`endOf('month')`) ou até 31/12 quando `mes` não informado; ordena por `vencimento DESC, id DESC`.
-- `backupContasDatabase()` gera `db/contas-backup-<YYYY-MM-DD>.db`.
+- `getAccountsByPeriod(year, month?)` define período de 1º dia do mês/ano até último dia (`endOf('month')`) ou até 31/12 quando `month` não informado; ordena por `vencimento DESC, id DESC`.
+- `backupAccountsDatabase()` gera `db/contas-backup-<YYYY-MM-DD>.db`.

@@ -26,12 +26,12 @@ interface ContasAPagarFilterPanelProps {
   filteredContas: ContaDetalhe[];
   handleView: (conta: ContaDetalhe) => void;
   handleDelete: (id: number) => void;
-  handleEditar: (conta: ContaDetalhe) => void;
+  handleEdit: (conta: ContaDetalhe) => void;
   handleStartPayment: (conta: ContaDetalhe) => void;
   onClearFilters: () => void;
 }
 
-const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
+const PayablesFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   filtroDistribuidora,
   setFiltroDistribuidora,
   filtroStatus,
@@ -127,22 +127,22 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
             </tr>
           </thead>
           <tbody>
-            {filteredContas.map((conta) => (
-              <tr key={conta.id}>
-                <td>{conta.distribuidora}</td>
-                <td>R$ {formatCurrency(conta.valor, 2)}</td>
-                <td>{formatDateString(conta.vencimento, 'DD/MM/YYYY')}</td>
-                <td>{conta.documento}</td>
+            {filteredContas.map((account) => (
+              <tr key={account.id}>
+                <td>{account.distribuidora}</td>
+                <td>R$ {formatCurrency(account.valor, 2)}</td>
+                <td>{formatDateString(account.vencimento, 'DD/MM/YYYY')}</td>
+                <td>{account.documento}</td>
                 <td>
-                  <span className={`${styles.status} ${styles[conta.status.toLowerCase()]} status`}
-                    data-observacoes={conta.banco_observacoes || 'Sem observações'}>
+                  <span className={`${styles.status} ${styles[account.status.toLowerCase()]} status`}
+                    data-observacoes={account.banco_observacoes || 'Sem observações'}>
                     <span className="text-responsive">
-                      {conta.status}
+                      {account.status}
                     </span>
                     <span className="icon-responsive">
-                      {conta.status === 'Pago' ? (
+                      {account.status === 'Pago' ? (
                         <CheckCircleIcon />
-                      ) : conta.status === 'Pendente' ? (
+                      ) : account.status === 'Pendente' ? (
                         <HighlightOffIcon />
                       ) : (
                         <CancelIcon />
@@ -151,23 +151,23 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
                   </span>
                 </td>
                 <td className={styles.actionsCell}>
-                  <button type="button" className={styles.viewButton} onClick={() => handleView(conta)}>
+                  <button type="button" className={styles.viewButton} onClick={() => handleView(account)}>
                     <span className="icon-responsive">
                       <VisibilityIcon />
                     </span>
                     <span className="text-responsive">Ver</span>
                   </button>
-                  <button type="button" className={styles.deleteButton} onClick={() => openConfirm(conta.id)}>
+                  <button type="button" className={styles.deleteButton} onClick={() => openConfirm(account.id)}>
                     <span className="icon-responsive">
                       <DeleteIcon />
                     </span>
                     <span className="text-responsive">Excluir</span>
                   </button>
-                  {conta.status === 'Pendente' ? (
+                  {account.status === 'Pendente' ? (
                     <button
                       type="button"
                       className={styles.payButton}
-                      onClick={() => handleStartPayment(conta)}
+                      onClick={() => handleStartPayment(account)}
                     >
                       <span className="icon-responsive">
                         <MonetizationOnIcon />
@@ -220,5 +220,5 @@ const ContasAPagarFilterPanel: React.FC<ContasAPagarFilterPanelProps> = ({
   );
 };
 
-export default ContasAPagarFilterPanel;
+export default PayablesFilterPanel;
 

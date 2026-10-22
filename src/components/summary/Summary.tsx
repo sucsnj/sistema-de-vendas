@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import styles from '../../styles/contas.module.css';
 import { ContaDetalhe } from '../../services/contasService';
 import ConsolidacaoMensal from './MonthlyConsolidation';
-import TotaisPorDistribuidora from './TotalsByDistributor';
-import NotasDoMes from './MonthNotes';
+import TotalsByDistributor from './TotalsByDistributor';
+import MonthNotes from './MonthNotes';
 import { formatCurrency } from '../../utils/formatter';
 import { parseDate } from '../../utils/date';
 
@@ -15,23 +15,23 @@ interface ResumoProps {
     setMes: (mes: number) => void;
 }
 
-const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) => {
+const Summary: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) => {
     const resumo = useMemo(() => {
-        const totalPago = contasAno.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0);
-        const totalPendente = contasAno.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0);
+        const totalPago = contasAno.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0);
+        const totalPendente = contasAno.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0);
         
         // Conta a quantidade pendente
-        const qtdPendente = contasAno.filter((conta) => conta.status === 'Pendente').length;
+        const qtdPendente = contasAno.filter((account) => account.status === 'Pendente').length;
 
         // Conta a quantidade de contas pagas
-        const qtdPago = contasAno.filter((conta) => conta.status === 'Pago').length;
+        const qtdPago = contasAno.filter((account) => account.status === 'Pago').length;
 
         // Conta o total de contas
         const qtdTotal = contasAno.length;
 
-        const totaisPorDistribuidora = contasAno.reduce<Record<string, number>>((acc, conta) => {
-            if (conta.status === 'Pendente') {
-                acc[conta.distribuidora] = (acc[conta.distribuidora] || 0) + conta.valor;
+        const totaisPorDistribuidora = contasAno.reduce<Record<string, number>>((acc, account) => {
+            if (account.status === 'Pendente') {
+                acc[account.distribuidora] = (acc[account.distribuidora] || 0) + account.valor;
             }
             
             return acc;
@@ -39,11 +39,11 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
 
         const meses = Array.from({ length: 12 }, (_, i) => {
             const monthIndex = i + 1;
-            const contasNoMes = contasAno.filter((conta) => parseDate(`${conta.vencimento}T00:00:00`).month() + 1 === monthIndex);
+            const contasNoMes = contasAno.filter((account) => parseDate(`${account.vencimento}T00:00:00`).month() + 1 === monthIndex);
             return {
                 mes: monthIndex,
-                pago: contasNoMes.filter((conta) => conta.status === 'Pago').reduce((sum, conta) => sum + conta.valor, 0),
-                pendente: contasNoMes.filter((conta) => conta.status === 'Pendente').reduce((sum, conta) => sum + conta.valor, 0),
+                pago: contasNoMes.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0),
+                pendente: contasNoMes.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0),
             };
         });
 
@@ -114,13 +114,13 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
 
                 </div>
                 {/* #Totais por distribuidora */}
-                <TotaisPorDistribuidora totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
+                <TotalsByDistributor totaisPorDistribuidora={resumo.totaisPorDistribuidora} />
 
                 { /* #Consolidação mensal */}
                 <ConsolidacaoMensal meses={resumo.meses} />
 
                 {/* #Notas do Mês */}
-                <NotasDoMes ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
+                <MonthNotes ano={ano} mes={mes} setAno={setAno} setMes={setMes} />
 
             </section>
             <style jsx>{`
@@ -197,4 +197,4 @@ const Resumo: React.FC<ResumoProps> = ({ contasAno, ano, mes, setAno, setMes }) 
     );
 };
 
-export default Resumo;
+export default Summary;

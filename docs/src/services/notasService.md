@@ -5,8 +5,8 @@
 ## O que faz
 
 - Expõe `NotaDetalhe` (distribuidora, chave, data_emissao `YYYY-MM-DD`, valor_nota).
-- Lista notas por período (`buscarNotasPorPeriodo`), busca por valor (`buscarNotaPorValor`), lista todas (`buscarTodasNotas`) e exclui (`excluirNota`).
-- Retorna `null` em `buscarNotaPorValor` quando a API responde com status 404.
+- Lista notas por período (`fetchInvoicesByPeriod`), busca por valor (`fetchInvoiceByAmount`), lista todas (`fetchAllInvoices`) e exclui (`deleteInvoice`).
+- Retorna `null` em `fetchInvoiceByAmount` quando a API responde com status 404.
 
 ## Relações
 
@@ -15,5 +15,5 @@
 
 ## Notas
 
-- `buscarNotaPorValor` envia `valor` via query string e trata 404 como "não encontrada".
+- `fetchInvoiceByAmount` envia `valor` via query string e trata 404 como "não encontrada".
 - `data_emissao` é retornada como string (formato YYYY-MM-DD conforme API/DB).

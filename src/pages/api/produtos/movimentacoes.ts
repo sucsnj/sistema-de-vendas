@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertMovimentacaoEstoque, getMovimentacoesEstoque, getItemById } from '../../../database/produtosDb';
+import { insertStockMovement, getStockMovements, getItemById } from '../../../database/produtosDb';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -9,7 +9,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'ID do item é obrigatório para buscar movimentações.' });
       }
 
-      const movements = getMovimentacoesEstoque(Number(item_id));
+      const movements = getStockMovements(Number(item_id));
       return res.status(200).json(movements);
     } catch (error) {
       console.error('Erro ao buscar movimentações de estoque:', error);
@@ -35,7 +35,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(404).json({ error: 'Item não encontrado.' });
       }
 
-      const movement = insertMovimentacaoEstoque({
+      const movement = insertStockMovement({
         item_id: Number(item_id),
         tipo: String(tipo).toUpperCase() as 'ENTRADA' | 'SAIDA' | 'AJUSTE',
         quantidade: Number(quantidade),

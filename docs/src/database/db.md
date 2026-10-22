@@ -17,7 +17,7 @@
 ## Notas
 
 - `insertDailySale` aceita `criado_em` opcional e `carrinho_id` nullable.
-- `insertVendaItens` insere em lote com transação; calcula `subtotal = preco_unitario*quantidade` se ausente.
+- `insertSaleItems` insere em lote com transação; calcula `subtotal = preco_unitario*quantidade` se ausente.
 - `consolidateMonthly` calcula métricas (ticket médio, médias, melhor dia, maior venda, quantidades/totais) com base em vendas diárias e grava via `INSERT OR REPLACE`.
 - `backupDatabase()` gera `backup-<YYYY-MM-DD>.db` na raiz do projeto (não em `db/`).
 - Divergência histórica: documentação citava `db.db`, arquivo real é `db/vendas.db`.

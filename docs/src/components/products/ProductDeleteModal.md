@@ -4,8 +4,8 @@
 
 ## O que faz
 
-- Default `ModalProdExclusao`: confirma a exclusão do item (avisa que é irreversível e remove os códigos de barras).
-- Variantes nomeadas: `ModalCatExclusao`, `ModalMarcaExclusao`, `ModalFornecedorExclusao`, `ModalUomExclusao`.
+- Default `ProductDeleteModal`: confirma a exclusão do item (avisa que é irreversível e remove os códigos de barras).
+- Variantes nomeadas: `CategoryDeleteModal`, `BrandDeleteModal`, `SupplierDeleteModal`, `UnitOfMeasureDeleteModal`.
 - `if (!open) return null;`; botões Excluir (destaque `--danger`) e Cancelar.
 
 ```ts
@@ -13,8 +13,8 @@ interface ModalProdExclusaoProps {
   open: boolean; item: ItemData | null; onConfirm: () => void; onClose: () => void;
 }
 // Variantes recebem a entidade só para a mensagem:
-// ModalCatExclusao { categoria }; ModalMarcaExclusao { marca };
-// ModalFornecedorExclusao { fornecedor }; ModalUomExclusao { unidadeMedida }
+// CategoryDeleteModal { categoria }; BrandDeleteModal { marca };
+// SupplierDeleteModal { fornecedor }; UnitOfMeasureDeleteModal { unidadeMedida }
 ```
 
 ## Relações

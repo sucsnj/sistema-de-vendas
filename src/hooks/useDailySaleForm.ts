@@ -10,7 +10,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { registrarVenda } from '../services/vendasService';
+import { registerSale } from '../services/vendasService';
 import { useShortcuts } from '../utils/shortcuts';
 import {
   validateRequired,
@@ -277,7 +277,7 @@ export const useDailySaleForm = ({
       }
 
       // Registra a venda
-      await registrarVenda(selectedDate, valueFromInput, observations, cartItems);
+      await registerSale(selectedDate, valueFromInput, observations, cartItems);
 
       if (formRef.current) {
         const top =

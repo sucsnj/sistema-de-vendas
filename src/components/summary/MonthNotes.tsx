@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react';
-import { buscarNotasPorPeriodo, excluirNota, NotaDetalhe } from '../../services/notasService';
+import { fetchInvoicesByPeriod, deleteInvoice, NotaDetalhe } from '../../services/notasService';
 import { formatCurrency } from '../../utils/formatter';
 import { formatDateString, getCurrentYear } from '../../utils/date';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
@@ -19,7 +19,7 @@ interface NotasDoMesProps {
     setMes: (mes: number) => void;
 }
 
-const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => {
+const MonthNotes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => {
     const queryClient = useQueryClient();
 
     // estado para o diálogo
@@ -29,7 +29,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
     // Hook que busca notas automaticamente
     const { data: notas = [], isLoading } = useQuery<NotaDetalhe[]>({
         queryKey: ['notas', ano, mes],
-        queryFn: () => buscarNotasPorPeriodo(ano, mes).then((data) =>
+        queryFn: () => fetchInvoicesByPeriod(ano, mes).then((data) =>
             Array.isArray(data) ? data : [data]
         ),
     });
@@ -37,9 +37,9 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
     // Somatório de notas
     const somaNotas = notas.reduce((sum, nota) => sum + nota.valor_nota, 0);
 
-    const handleExcluir = async (id: number) => {
+    const handleDelete = async (id: number) => {
         try {
-            await excluirNota(id);
+            await deleteInvoice(id);
             // invalida cache e força refetch
             queryClient.invalidateQueries({ queryKey: ['notas', ano, mes] });
         } catch (error) {
@@ -59,9 +59,9 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
             {/* Seletor de período */}
             <div className="selectors">
                 <select value={mes} onChange={(e) => setMes(Number(e.target.value))}>
-                    {meses.map((nome, index) => (
+                    {meses.map((name, index) => (
                         <option key={index} value={index + 1}>
-                            {nome}
+                            {name}
                         </option>
                     ))}
                 </select>
@@ -119,7 +119,7 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
                 cancelText="Cancelar"
                 onConfirm={() => {
                     if (selectedId !== null) {
-                        handleExcluir(selectedId);
+                        handleDelete(selectedId);
                     }
                     setConfirmOpen(false);
                 }}
@@ -219,4 +219,4 @@ const NotasDoMes: React.FC<NotasDoMesProps> = ({ ano, mes, setAno, setMes }) => 
     );
 };
 
-export default NotasDoMes;
+export default MonthNotes;

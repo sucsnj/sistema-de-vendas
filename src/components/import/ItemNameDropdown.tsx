@@ -2,7 +2,7 @@
  * src/components/import/ItemNameDropdown.tsx
  *
  * Campo com busca de itens cadastrados (produtos/serviços) usado na
- * coluna "Item no Sistema" do ModalImportItens. Seletor com sugestões
+ * coluna "Item no Sistema" do ImportItemsModal. Seletor com sugestões
  * (busca com debounce), extraído do modal para isolamento e reuso.
  * Ver docs/components/ItemNameDropdown.md.
  */
@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import importStyles from '../../styles/modalImport.module.css';
-import { buscarProdutos, buscarServicos } from '../../services/produtosService';
+import { fetchProducts, fetchServices } from '../../services/produtosService';
 import type { ItemComStatus } from '../../hooks/useImportItems';
 
 export interface SugestaoItem {
@@ -75,8 +75,8 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
     setHasSearched(true);
     try {
       const [prodRes, servRes] = await Promise.all([
-        buscarProdutos({ search: query, page: 1, pageSize: 8 }),
-        buscarServicos({ search: query, page: 1, pageSize: 8 }),
+        fetchProducts({ search: query, page: 1, pageSize: 8 }),
+        fetchServices({ search: query, page: 1, pageSize: 8 }),
       ]);
 
       const produtos: SugestaoItem[] = (prodRes.items || []).map((p) => ({

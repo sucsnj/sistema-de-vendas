@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react';
 import type { Dispatch, RefObject, SetStateAction } from 'react';
 import styles from '../../styles/produtos.module.css';
 import importStyles from '../../styles/modalImport.module.css';
-import FormularioProduto from './ProductForm';
-import FormularioServico from './ServiceForm';
+import ProductForm from './ProductForm';
+import ServiceForm from './ServiceForm';
 import type { ProdutoFormData, ProdutoOptions, ProdutoActions } from './ProductForm';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 
@@ -17,7 +17,7 @@ interface FormularioItemProps {
     inputRef: RefObject<HTMLInputElement | null>;
 }
 
-const FormularioItem: React.FC<FormularioItemProps> = ({
+const ItemForm: React.FC<FormularioItemProps> = ({
     onImportXML,
     editarProdutoId,
     form,
@@ -87,7 +87,7 @@ const FormularioItem: React.FC<FormularioItemProps> = ({
             </div>
 
             {form.tipo === 'PRODUTO' ? (
-                <FormularioProduto
+                <ProductForm
                     editarProdutoId={editarProdutoId}
                     form={form}
                     setForm={setForm}
@@ -96,7 +96,7 @@ const FormularioItem: React.FC<FormularioItemProps> = ({
                     actions={actions}
                 />
             ) : (
-                <FormularioServico
+                <ServiceForm
                     editarProdutoId={editarProdutoId}
                     form={form}
                     setForm={setForm}
@@ -109,4 +109,4 @@ const FormularioItem: React.FC<FormularioItemProps> = ({
     );
 };
 
-export default FormularioItem;
+export default ItemForm;

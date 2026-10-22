@@ -2,7 +2,7 @@
  * src/components/import/ImportItemsModal.tsx
  *
  * Modal de importação de produtos via nota fiscal (XML). Apresentacional —
- * lógica no `useImportItens` e seletor de vínculo no `ItemNameDropdown`.
+ * lógica no `useImportItems` e seletor de vínculo no `ItemNameDropdown`.
  * Ver docs/components/ImportItemsModal.md.
  */
 
@@ -18,7 +18,7 @@ import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useImportItens } from '../../hooks/useImportItems';
+import { useImportItems } from '../../hooks/useImportItems';
 import ItemNameDropdown from './ItemNameDropdown';
 
 interface ModalImportItensProps {
@@ -27,7 +27,7 @@ interface ModalImportItensProps {
   initialFile?: File | null;
 }
 
-const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess, initialFile }) => {
+const ImportItemsModal: React.FC<ModalImportItensProps> = ({ onClose, onImportSuccess, initialFile }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   useFocusTrap(dialogRef, true);
 
@@ -50,7 +50,7 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
     handleEditItem,
     handleQuickRegister,
     resetFile,
-  } = useImportItens({ onImportSuccess, initialFile });
+  } = useImportItems({ onImportSuccess, initialFile });
 
   const counts = useMemo(() => {
     let okCount = 0;
@@ -210,8 +210,8 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
                       <td>
                         <ItemNameDropdown
                           item={p}
-                          onSelectSuggestion={(sugestao) => handleSelectSuggestion(i, sugestao)}
-                          onTextChange={(novoTexto) => handleItemDescriptionChange(i, novoTexto)}
+                          onSelectSuggestion={(suggestion) => handleSelectSuggestion(i, suggestion)}
+                          onTextChange={(newText) => handleItemDescriptionChange(i, newText)}
                           disabled={completed || importing}
                         />
                         {!completed && (
@@ -329,4 +329,4 @@ const ModalImportItens: React.FC<ModalImportItensProps> = ({ onClose, onImportSu
   );
 };
 
-export default ModalImportItens;
+export default ImportItemsModal;

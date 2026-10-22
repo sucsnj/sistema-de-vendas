@@ -6,12 +6,12 @@
 
 - Gerencia campos (`value`, `observations`), cálculo da expressão (`evaluateExpression`), loading e estado do PIX (`pixModalOpen`, `pixPayload`, `pixAmount`).
 - Integra carrinho via `useCart(showToast)`, sincroniza total do carrinho com campo (adiciona/remove `"+valor_carrinho"`).
-- Handlers: `handleKeyDown` (filtro de teclas), `handleValueChange` (sanitiza), `handlePixClick` (valida e gera payload EMVCo), `handleSubmit` (valida, registra via `registrarVenda`, limpa/foca), `handleClear`, `addOperator(op)`.
+- Handlers: `handleKeyDown` (filtro de teclas), `handleValueChange` (sanitiza), `handlePixClick` (valida e gera payload EMVCo), `handleSubmit` (valida, registra via `registerSale`, limpa/foca), `handleClear`, `addOperator(op)`.
 - Efeitos: ESC limpa formulário, auto-foco/visibilidade do input e atualizações por carrinho.
 
 ## Relações
 
-- **Usa:** `registrarVenda` (`src/services/vendasService.ts`), `useShortcuts` (`src/utils/shortcuts.ts`), `validateRequired/validateCurrency/validateDate` (`src/utils/validation.ts`), `highlightField` (`src/utils/forms.ts`), `parseCurrency` (`src/utils/number.ts`), `buildPixPayload` (`src/utils/pix.ts`), `evaluateExpression` (`src/utils/calculator.ts`), `useCart`, `useToast`.
+- **Usa:** `registerSale` (`src/services/vendasService.ts`), `useShortcuts` (`src/utils/shortcuts.ts`), `validateRequired/validateCurrency/validateDate` (`src/utils/validation.ts`), `highlightField` (`src/utils/forms.ts`), `parseCurrency` (`src/utils/number.ts`), `buildPixPayload` (`src/utils/pix.ts`), `evaluateExpression` (`src/utils/calculator.ts`), `useCart`, `useToast`.
 - **Usado por:** `src/components/sales/DailySaleForm.tsx` (apresentacional).
 
 ## Notas

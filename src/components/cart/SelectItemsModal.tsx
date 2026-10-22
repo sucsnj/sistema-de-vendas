@@ -28,7 +28,7 @@ interface ModalSelecionarItensProps {
   onRemoveFromCart: (item: ItemData) => void;
 }
 
-const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
+const SelectItemsModal: React.FC<ModalSelecionarItensProps> = ({
   isOpen,
   onClose,
   onManageCart,
@@ -372,4 +372,4 @@ const ModalSelecionarItens: React.FC<ModalSelecionarItensProps> = ({
   );
 };
 
-export default ModalSelecionarItens;
+export default SelectItemsModal;

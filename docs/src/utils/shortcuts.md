@@ -5,7 +5,7 @@
 ## O que faz
 
 - `useShortcuts(shortcuts, callback)` dispara o callback por `event.code` quando a tecla está na lista.
-- `useShortcutsHanlers(handlers)` mapeia `event.key` para handlers individuais.
+- `useShortcutsHandlers(handlers)` mapeia `event.key` para handlers individuais.
 
 ## Relações
 

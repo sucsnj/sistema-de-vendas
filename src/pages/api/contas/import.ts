@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { insertConta, getAllContas } from '../../../database/contasDb';
-import { getAllNotas, insertNota } from '../../../database/notasDb';
+import { insertAccount, getAllAccounts } from '../../../database/contasDb';
+import { getAllInvoices, insertInvoice } from '../../../database/notasDb';
 import parseNumber, { parseCurrency } from '../../../utils/number';
 import { toDate } from '../../../utils/date';
 import { parseStringPromise } from 'xml2js';
@@ -12,8 +12,8 @@ const nomesValidos = [
 ];
 
 // Funções auxiliares para formatar e normalizar dados
-const formatarDistribuidora = (nome: string) => {
-  const lower = nome.toLowerCase();
+const formatDistributor = (name: string) => {
+  const lower = name.toLowerCase();
   if (lower.includes('f&f')) return 'FF';
   const encontrado = nomesValidos.find(n => lower.includes(n));
   if (encontrado) {
@@ -23,16 +23,16 @@ const formatarDistribuidora = (nome: string) => {
 };
 
 // Funções auxiliares para ajustar valores por distribuidora
-const ajustarValorPorDistribuidora = (nome: string, valor: number) => {
-  if (nome.toLowerCase() === 'cimed') return valor + 3.99;
-  if (nome.toLowerCase() === 'pro') return valor + 1.39;
-  if (nome.toLowerCase() === 'profarma') return valor + 1.39;
-  return valor;
+const adjustAmountByDistributor = (name: string, amount: number) => {
+  if (name.toLowerCase() === 'cimed') return amount + 3.99;
+  if (name.toLowerCase() === 'pro') return amount + 1.39;
+  if (name.toLowerCase() === 'profarma') return amount + 1.39;
+  return amount;
 };
 
 // Funções auxiliares para normalizar documentos
-const normalizarDocumento = (doc: string) => {
-  return doc.replace(/[A-Z]/gi, (letra) => {
+const normalizeDocument = (document: string) => {
+  return document.replace(/[A-Z]/gi, (letra) => {
     const code = letra.toUpperCase().charCodeAt(0) - 64; // A=1
     return code.toString();
   });
@@ -64,8 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const vNF = infNFe.total[0].ICMSTot[0].vNF[0]; // total
     const chave = parsed.nfeProc.protNFe[0].infProt[0].chNFe[0]; // chave
 
-    let distribuidora = formatarDistribuidora(distribuidoraRaw);
-    const documentoBase = normalizarDocumento(nNF);
+    let distribuidora = formatDistributor(distribuidoraRaw);
+    const documentoBase = normalizeDocument(nNF);
 
     const registros: { distribuidora: string; valor: number; vencimento: string; documento: string }[] = [];
 
@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const validatedValor = parseCurrency(String(duplicatas[i].vDup[0])) ?? valor;
       const validatedVencimento = toDate(vencimento);
 
-      valor = ajustarValorPorDistribuidora(distribuidora, validatedValor);
+      valor = adjustAmountByDistributor(distribuidora, validatedValor);
       vencimento = validatedVencimento ? validatedVencimento.toISOString().split('T')[0] : vencimento;
       const documento = `${documentoBase}${i + 1}`;
 
@@ -86,14 +86,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         distribuidora = 'Mbca';
       }
 
-      const todasContas = getAllContas();
+      const todasContas = getAllAccounts();
       // se já existir uma conta com a mesma distribuidora e documento, pule para a próxima
       const contaExistente = todasContas.find(c => c.distribuidora === distribuidora && c.documento === documento);
       if (contaExistente) {
         continue; // pula pra proxima duplicata
       }
 
-      insertConta(distribuidora, valor, vencimento, documento);
+      insertAccount(distribuidora, valor, vencimento, documento);
 
       registros.push({ distribuidora, valor, vencimento, documento });
     }
@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let notaInserida = false;
 
     // se já existir uma nota com a mesma chave
-    const todasNotas = getAllNotas();
+    const todasNotas = getAllInvoices();
     const notaExistente = todasNotas.find(n => n.chave === chave);
 
     if (notaExistente) {
@@ -115,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     } else {
       // adiciona nota
-      insertNota(distribuidora, chave, dataEmissao, vNF);
+      insertInvoice(distribuidora, chave, dataEmissao, vNF);
       notaInserida = true;
     }
 

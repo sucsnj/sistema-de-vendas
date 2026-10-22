@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getFornecedores, insertFornecedor, deleteFornecedor, updateFornecedor } from '../../../database/produtosDb';
+import { getSuppliers, insertSupplier, deleteSupplier, updateSupplier } from '../../../database/produtosDb';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const forns = getFornecedores();
+      const forns = getSuppliers();
       return res.status(200).json(forns);
     } catch (error) {
       console.error('Erro ao buscar fornecedores:', error);
@@ -19,12 +19,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Nome do fornecedor é obrigatório.' });
       }
 
-      const forns = getFornecedores();
+      const forns = getSuppliers();
       if (forns.some(f => f.nome.toLowerCase() === nome.trim().toLowerCase())) {
         return res.status(400).json({ error: 'Este fornecedor já existe.' });
       }
 
-      const result = insertFornecedor(nome.trim());
+      const result = insertSupplier(nome.trim());
       return res.status(201).json({ id: result.lastInsertRowid, message: 'Fornecedor cadastrado com sucesso.' });
     } catch (error) {
       console.error('Erro ao salvar fornecedor:', error);
@@ -39,7 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!id || isNaN(Number(id))) {
         return res.status(400).json({ error: 'ID do fornecedor é inválido.' });
       }
-      deleteFornecedor(Number(id));
+      deleteSupplier(Number(id));
       return res.status(200).json({ message: 'Fornecedor apagado com sucesso.' });
     } catch (error) {
       console.error('Erro ao apagar fornecedor:', error);
@@ -58,7 +58,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!nome || !nome.trim()) {
         return res.status(400).json({ error: 'Nome do fornecedor é obrigatório.' });
       }
-      updateFornecedor(Number(id), nome.trim());
+      updateSupplier(Number(id), nome.trim());
       return res.status(200).json({ message: 'Fornecedor atualizado com sucesso.' });
     } catch (error) {
       console.error('Erro ao atualizar fornecedor:', error);

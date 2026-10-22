@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import db, { insertItem, getItemByBarcode, checkDuplicateBarcode, insertMovimentacaoEstoque } from '../../../database/produtosDb';
+import db, { insertItem, getItemByBarcode, checkDuplicateBarcode, insertStockMovement } from '../../../database/produtosDb';
 import { parseNumber } from '../../../utils/number';
 import { parseStringPromise } from 'xml2js';
 
@@ -109,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             // 1. Se já possui item vinculado pelo usuário ou preview, atualiza o estoque
             if (itemIdExistente) {
-                insertMovimentacaoEstoque({
+                insertStockMovement({
                     item_id: itemIdExistente,
                     tipo: tipoMovimentacao || 'ENTRADA',
                     quantidade,
@@ -122,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (ean) {
                 const itemExistente = getItemByBarcode(ean);
                 if (itemExistente) {
-                    insertMovimentacaoEstoque({
+                    insertStockMovement({
                         item_id: itemExistente.id,
                         tipo: tipoMovimentacao || 'ENTRADA',
                         quantidade,

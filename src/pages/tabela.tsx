@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToast } from '../hooks/useToast';
 import styles from '../styles/contas.module.css';
 import {
-  uploadTabela,
-  searchTabela,
-  fetchTabelaHistory,
-  clearTabelaHistory,
-  fetchTabelaStatus,
+  uploadTable,
+  searchTable,
+  fetchTableHistory,
+  clearTableHistory,
+  fetchTableStatus,
   TabelaRow,
   TabelaSearchHistoryItem,
 } from '../services/tabelaService';
@@ -30,16 +30,16 @@ const Tabela: React.FC = () => {
 
   const loadSearchHistory = useCallback(async () => {
     try {
-      const recent = await fetchTabelaHistory();
+      const recent = await fetchTableHistory();
       setHistory(recent);
     } catch (error) {
       console.error(error);
     }
   }, []);
 
-  const loadTabelaStatus = useCallback(async () => {
+  const loadTableStatus = useCallback(async () => {
     try {
-      const status = await fetchTabelaStatus();
+      const status = await fetchTableStatus();
       setTabelaLoaded(status.loaded);
       setRowCount(status.rowCount);
     } catch (error) {
@@ -50,10 +50,10 @@ const Tabela: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       loadSearchHistory();
-      loadTabelaStatus();
+      loadTableStatus();
     }, 0);
     return () => clearTimeout(timer);
-  }, [loadSearchHistory, loadTabelaStatus]);
+  }, [loadSearchHistory, loadTableStatus]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -66,7 +66,7 @@ const Tabela: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await uploadTabela(formData);
+      const result = await uploadTable(formData);
       setRowCount(result.rowCount ?? null);
       setTabelaLoaded(true);
       setResults([]);
@@ -91,7 +91,7 @@ const Tabela: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await searchTabela(searchTerm);
+      const response = await searchTable(searchTerm);
       setResults(response.results ?? []);
       setSource(response.source);
       if ((response.results ?? []).length === 0) {
@@ -122,7 +122,7 @@ const Tabela: React.FC = () => {
 
   const handleClearHistory = async () => {
     try {
-      await clearTabelaHistory();
+      await clearTableHistory();
       setHistory([]);
       showToast('Histórico de pesquisas limpo.', 'success');
     } catch (error) {

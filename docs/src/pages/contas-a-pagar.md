@@ -4,10 +4,10 @@
 
 ## O que faz
 
-- Lista contas do mês (`buscarContas(ano, mes)`) e do ano (`buscarContas(ano)`); filtros por distribuidora, status e intervalo de vencimento (persistidos em `localStorage`).
-- CRUD via `registrarConta`/`atualizarConta`/`excluirConta`; valida `distribuidora`, `valor` (> 0), `vencimento` e `documento`.
-- Paga (`pagarConta`) e cancela pagamento (`cancelarPagamentoConta`); a observação é gravada via `atualizarConta` antes do pagamento.
-- Importa XML NF-e via `fetch('/api/contas/import')`; backup via `fazerBackupContas`.
+- Lista contas do mês (`fetchAccounts(year, month)`) e do ano (`fetchAccounts(year)`); filtros por distribuidora, status e intervalo de vencimento (persistidos em `localStorage`).
+- CRUD via `registerAccount`/`updateAccount`/`deleteAccount`; valida `distribuidora`, `valor` (> 0), `vencimento` e `documento`.
+- Paga (`payAccount`) e cancela pagamento (`cancelAccountPayment`); a observação é gravada via `updateAccount` antes do pagamento.
+- Importa XML NF-e via `fetch('/api/contas/import')`; backup via `backupAccounts`.
 
 ## Relações
 

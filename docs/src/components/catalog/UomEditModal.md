@@ -5,7 +5,7 @@
 ## O que faz
 
 - Edita **Sigla**/**Descrição**; "Atualizar" chama `options.salvarUnidadeMedida`.
-- "Excluir" abre `ModalUomExclusao` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
+- "Excluir" abre `UnitOfMeasureDeleteModal` ([ProductDeleteModal](../products/ProductDeleteModal.md)); confirmar chama `onDelete` e fecha.
 
 ```ts
 interface ModalUnidadeMedidaEditProps {
@@ -19,7 +19,7 @@ interface ModalUnidadeMedidaEditProps {
 ## Relações
 
 - **Usa:** [ProductDeleteModal](../products/ProductDeleteModal.md), `useFocusTrap`.
-- **Usado por:** hook `useUnidadeMedida`, via [ProductForm](../products/ProductForm.md).
+- **Usado por:** hook `useUnitOfMeasure`, via [ProductForm](../products/ProductForm.md).
 
 ## Notas
 

@@ -4,19 +4,19 @@ import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
 import { useToast } from '../hooks/useToast';
 import {
-    buscarProdutos,
-    buscarServicos,
-    registrarProduto,
-    atualizarProduto,
-    excluirProduto,
-    buscarCategorias,
-    buscarMarcas,
-    buscarFornecedores,
-    buscarUnidadesMedida,
-    buscarMovimentacoesEstoque,
-    registrarServico,
-    atualizarServico,
-    excluirServico,
+    fetchProducts,
+    fetchServices,
+    registerProduct,
+    updateProduct,
+    deleteProduct,
+    fetchCategories,
+    fetchBrands,
+    fetchSuppliers,
+    fetchUnitsOfMeasure,
+    fetchStockMovements,
+    registerService,
+    updateService,
+    deleteService,
     ItemData,
     ServicoData,
     BarcodeData,
@@ -25,26 +25,26 @@ import {
 import { parseNumber } from '../utils/number';
 import { validateNumber, validateRequired } from '../utils/validation';
 import BarcodeManager from '@/components/common/BarcodeManager';
-import FormularioItem from '@/components/products/ItemForm';
+import ItemForm from '@/components/products/ItemForm';
 import ModalCategoria from '@/components/catalog/CategoryModal';
-import ModalMarca from '@/components/catalog/BrandModal';
-import ModalProdExclusao from '@/components/products/ProductDeleteModal';
-import ModalCategoriaEdit from '@/components/catalog/CategoryEditModal';
-import ModalMarcaEdit from '@/components/catalog/BrandEditModal';
-import ModalFornecedor from '@/components/catalog/SupplierModal';
-import ModalFornecedorEdit from '@/components/catalog/SupplierEditModal';
+import BrandModal from '@/components/catalog/BrandModal';
+import ProductDeleteModal from '@/components/products/ProductDeleteModal';
+import CategoryEditModal from '@/components/catalog/CategoryEditModal';
+import BrandEditModal from '@/components/catalog/BrandEditModal';
+import SupplierModal from '@/components/catalog/SupplierModal';
+import SupplierEditModal from '@/components/catalog/SupplierEditModal';
 import ModalUnidadeMedida from '@/components/catalog/UomModal';
-import ModalUnidadeMedidaEdit from '@/components/catalog/UomEditModal';
-import ModalAjusteEstoque from '@/components/products/StockAdjustModal';
+import UnitOfMeasureEditModal from '@/components/catalog/UomEditModal';
+import StockAdjustModal from '@/components/products/StockAdjustModal';
 import ImportItemsModal from '@/components/import/ImportItemsModal';
 import { ProdutoFormData, ProdutoOptions } from '@/components/products/ProductForm';
-import { useCategoria } from '@/hooks/useCategory';
-import { useMarca } from '@/hooks/useBrand';
-import { useFornecedor } from '@/hooks/useSupplier';
-import { useUnidadeMedida } from '@/hooks/useUnitOfMeasure';
+import { useCategory } from '@/hooks/useCategory';
+import { useBrand } from '@/hooks/useBrand';
+import { useSupplier } from '@/hooks/useSupplier';
+import { useUnitOfMeasure } from '@/hooks/useUnitOfMeasure';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 
-const CadastroPage: React.FC = () => {
+const RegistrationPage: React.FC = () => {
 
     const router = useRouter();
 
@@ -118,13 +118,13 @@ const CadastroPage: React.FC = () => {
     const barcodeInputRef = useRef<HTMLInputElement | null>(null);
 
     // Carrega opções auxiliares
-    const carregarAuxiliares = useCallback(async () => {
+    const loadAuxiliaryData = useCallback(async () => {
         try {
             const [cats, brands, forns, uoms] = await Promise.all([
-                buscarCategorias(),
-                buscarMarcas(),
-                buscarFornecedores(),
-                buscarUnidadesMedida(),
+                fetchCategories(),
+                fetchBrands(),
+                fetchSuppliers(),
+                fetchUnitsOfMeasure(),
             ]);
             setOptions({
                 categorias: cats,
@@ -175,12 +175,12 @@ const CadastroPage: React.FC = () => {
     }, []);
 
     // Carrega item pelo ID (vindo da query ?id=X) para pré-preencher o formulário de edição
-    const carregarItemParaEdicao = useCallback(async (id: number) => {
+    const loadItemForEditing = useCallback(async (id: number) => {
         try {
             // Tenta buscar como produto primeiro, depois como serviço
             const [produtosData, servicosData] = await Promise.all([
-                buscarProdutos({ page: 1, pageSize: 10000 }),
-                buscarServicos({ page: 1, pageSize: 10000 }),
+                fetchProducts({ page: 1, pageSize: 10000 }),
+                fetchServices({ page: 1, pageSize: 10000 }),
             ]);
 
             const todosProdutos: ItemData[] = produtosData?.items || [];
@@ -222,10 +222,10 @@ const CadastroPage: React.FC = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            void carregarAuxiliares();
+            void loadAuxiliaryData();
         }, 0);
         return () => clearTimeout(timer);
-    }, [carregarAuxiliares]);
+    }, [loadAuxiliaryData]);
 
     const queryProcessada = useRef(false);
 
@@ -239,7 +239,7 @@ const CadastroPage: React.FC = () => {
             if (!isNaN(numId) && numId > 0) {
                 queryProcessada.current = true;
                 const timer = setTimeout(() => {
-                    void carregarItemParaEdicao(numId);
+                    void loadItemForEditing(numId);
                 }, 0);
                 return () => clearTimeout(timer);
             }
@@ -296,7 +296,7 @@ const CadastroPage: React.FC = () => {
             }, 0);
             return () => clearTimeout(timer);
         }
-    }, [router.isReady, router.query, options.unidadesMedida, carregarItemParaEdicao, showToast]);
+    }, [router.isReady, router.query, options.unidadesMedida, loadItemForEditing, showToast]);
 
     // Guard: aviso nativo do browser ao fechar aba ou recarregar página
     useEffect(() => {
@@ -359,10 +359,10 @@ const CadastroPage: React.FC = () => {
         router.replace('/cadastro', undefined, { shallow: true });
     };
 
-    const carregarMovimentacoes = async (itemId: number) => {
+    const loadMovements = async (itemId: number) => {
         setMovimentacoesLoading(true);
         try {
-            const data = await buscarMovimentacoesEstoque(itemId);
+            const data = await fetchStockMovements(itemId);
             setMovimentacoesEstoque(data.slice(0, 10));
         } catch (error) {
             console.error(error);
@@ -515,18 +515,18 @@ const CadastroPage: React.FC = () => {
         try {
             if (form.tipo === 'SERVICO') {
                 if (editingId) {
-                    await atualizarServico(editingId, servicePayload);
+                    await updateService(editingId, servicePayload);
                     showToast('Serviço atualizado com sucesso. Redirecionando...', 'success');
                 } else {
-                    await registrarServico(servicePayload);
+                    await registerService(servicePayload);
                     showToast('Serviço cadastrado com sucesso. Redirecionando...', 'success');
                 }
             } else {
                 if (editingId) {
-                    await atualizarProduto(editingId, payload);
+                    await updateProduct(editingId, payload);
                     showToast('Item atualizado com sucesso. Redirecionando...', 'success');
                 } else {
-                    await registrarProduto(payload);
+                    await registerProduct(payload);
                     showToast('Item cadastrado com sucesso. Redirecionando...', 'success');
                 }
             }
@@ -540,13 +540,13 @@ const CadastroPage: React.FC = () => {
     };
 
     // Confirma exclusão
-    const handleConfirmExcluir = async () => {
+    const handleConfirmDelete = async () => {
         if (!itemParaExcluir) return;
         try {
             if (itemParaExcluir.tipo === 'SERVICO') {
-                await excluirServico(itemParaExcluir.id);
+                await deleteService(itemParaExcluir.id);
             } else {
-                await excluirProduto(itemParaExcluir.id);
+                await deleteProduct(itemParaExcluir.id);
             }
             showToast('Item excluído com sucesso.', 'success');
             setDeleteConfirmOpen(false);
@@ -565,16 +565,16 @@ const CadastroPage: React.FC = () => {
         setCatForm,
         modalCategoriaEditOpen,
         setModalCategoriaEditOpen,
-        handleSalvarCategoria,
+        handleSaveCategory,
         handleOpenEditModal,
-        handleAtualizarCategoria,
-        handleDeletarCategoria,
-    } = useCategoria({
+        handleUpdateCategory,
+        handleDeleteCategory,
+    } = useCategory({
         form,
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => { },
+        loadItems: () => { },
         items: [],
         page: 1,
         setPage: () => { },
@@ -590,18 +590,18 @@ const CadastroPage: React.FC = () => {
         setMarcaForm,
         modalMarcaEditOpen,
         setModalMarcaEditOpen,
-        handleSalvarMarca,
-        handleOpenEditMarcaModal,
-        handleAtualizarMarca,
-        handleDeletarMarca,
+        handleSaveBrand,
+        handleOpenEditBrandModal,
+        handleUpdateBrand,
+        handleDeleteBrand,
         novaMarcaNome,
         setNovaMarcaNome,
-    } = useMarca({
+    } = useBrand({
         form,
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => { },
+        loadItems: () => { },
         items: [],
         page: 1,
         setPage: () => { },
@@ -617,18 +617,18 @@ const CadastroPage: React.FC = () => {
         setFornecedorForm,
         modalFornecedorEditOpen,
         setModalFornecedorEditOpen,
-        handleSalvarFornecedor,
-        handleOpenEditFornecedorModal,
-        handleAtualizarFornecedor,
-        handleDeletarFornecedor,
+        handleSaveSupplier,
+        handleOpenEditSupplierModal,
+        handleUpdateSupplier,
+        handleDeleteSupplier,
         novoFornecedorNome,
         setNovoFornecedorNome,
-    } = useFornecedor({
+    } = useSupplier({
         form,
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => { },
+        loadItems: () => { },
         items: [],
         page: 1,
         setPage: () => { },
@@ -644,16 +644,16 @@ const CadastroPage: React.FC = () => {
         setUomForm,
         modalUnidadeMedidaEditOpen,
         setModalUnidadeMedidaEditOpen,
-        handleSalvarUnidadeMedida,
-        handleOpenEditUnidadeMedidaModal,
-        handleAtualizarUnidadeMedida,
-        handleDeletarUnidadeMedida,
-    } = useUnidadeMedida({
+        handleSaveUnitOfMeasure,
+        handleOpenEditUnitOfMeasureModal,
+        handleUpdateUnitOfMeasure,
+        handleDeleteUnitOfMeasure,
+    } = useUnitOfMeasure({
         form,
         setForm,
         setOptions,
         showToast,
-        carregarItens: () => { },
+        loadItems: () => { },
         items: [],
         page: 1,
         setPage: () => { },
@@ -693,7 +693,7 @@ const CadastroPage: React.FC = () => {
                             </h2>
 
                             <form onSubmit={handleSubmitForm}>
-                                <FormularioItem
+                                <ItemForm
                                     onImportXML={handleImportXML}
                                     editarProdutoId={editingId}
                                     form={form}
@@ -707,14 +707,14 @@ const CadastroPage: React.FC = () => {
                                         abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(true),
                                         abrirModalAjusteEstoque: async () => {
                                             if (editingId) {
-                                                await carregarMovimentacoes(editingId);
+                                                await loadMovements(editingId);
                                             }
                                             setModalAjusteOpen(true);
                                         },
                                         editarCategoria: handleOpenEditModal,
-                                        editarMarca: handleOpenEditMarcaModal,
-                                        editarFornecedor: handleOpenEditFornecedorModal,
-                                        editarUnidadeMedida: handleOpenEditUnidadeMedidaModal,
+                                        editarMarca: handleOpenEditBrandModal,
+                                        editarFornecedor: handleOpenEditSupplierModal,
+                                        editarUnidadeMedida: handleOpenEditUnitOfMeasureModal,
                                     }}
                                 />
 
@@ -764,66 +764,66 @@ const CadastroPage: React.FC = () => {
                         setCatForm={setCatForm}
                         options={{
                             abrirModalCategoria: () => setModalCategoriaOpen(false),
-                            salvarCategoria: handleSalvarCategoria,
+                            salvarCategoria: handleSaveCategory,
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Categoria */}
                 {modalCategoriaEditOpen && (
-                    <ModalCategoriaEdit
+                    <CategoryEditModal
                         catForm={catForm}
                         setCatForm={setCatForm}
-                        onDelete={handleDeletarCategoria}
+                        onDelete={handleDeleteCategory}
                         options={{
                             abrirModalCategoria: () => setModalCategoriaEditOpen(false),
-                            salvarCategoria: handleAtualizarCategoria,
+                            salvarCategoria: handleUpdateCategory,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Marca */}
                 {modalMarcaOpen && (
-                    <ModalMarca
+                    <BrandModal
                         setModalMarcaOpen={setModalMarcaOpen}
                         novaMarcaNome={novaMarcaNome}
                         setNovaMarcaNome={setNovaMarcaNome}
-                        handleSalvarMarca={handleSalvarMarca}
+                        handleSaveBrand={handleSaveBrand}
                     />
                 )}
 
                 {/* Modal: Edição de Marca */}
                 {modalMarcaEditOpen && (
-                    <ModalMarcaEdit
+                    <BrandEditModal
                         marcaForm={marcaForm}
                         setMarcaForm={setMarcaForm}
-                        onDelete={handleDeletarMarca}
+                        onDelete={handleDeleteBrand}
                         options={{
                             abrirModalMarca: () => setModalMarcaEditOpen(false),
-                            salvarMarca: handleAtualizarMarca,
+                            salvarMarca: handleUpdateBrand,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Fornecedor */}
                 {modalFornecedorOpen && (
-                    <ModalFornecedor
+                    <SupplierModal
                         setModalFornecedorOpen={setModalFornecedorOpen}
                         novoFornecedorNome={novoFornecedorNome}
                         setNovoFornecedorNome={setNovoFornecedorNome}
-                        handleSalvarFornecedor={handleSalvarFornecedor}
+                        handleSaveSupplier={handleSaveSupplier}
                     />
                 )}
 
                 {/* Modal: Edição de Fornecedor */}
                 {modalFornecedorEditOpen && (
-                    <ModalFornecedorEdit
+                    <SupplierEditModal
                         fornecedorForm={fornecedorForm}
                         setFornecedorForm={setFornecedorForm}
-                        onDelete={handleDeletarFornecedor}
+                        onDelete={handleDeleteSupplier}
                         options={{
                             abrirModalFornecedor: () => setModalFornecedorEditOpen(false),
-                            salvarFornecedor: handleAtualizarFornecedor,
+                            salvarFornecedor: handleUpdateSupplier,
                         }}
                     />
                 )}
@@ -835,27 +835,27 @@ const CadastroPage: React.FC = () => {
                         setUomForm={setUomForm}
                         options={{
                             abrirModalUnidadeMedida: () => setModalUnidadeMedidaOpen(false),
-                            salvarUnidadeMedida: handleSalvarUnidadeMedida,
+                            salvarUnidadeMedida: handleSaveUnitOfMeasure,
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Unidade de Medida */}
                 {modalUnidadeMedidaEditOpen && (
-                    <ModalUnidadeMedidaEdit
+                    <UnitOfMeasureEditModal
                         uomForm={uomForm}
                         setUomForm={setUomForm}
-                        onDelete={handleDeletarUnidadeMedida}
+                        onDelete={handleDeleteUnitOfMeasure}
                         options={{
                             abrirModalUnidadeMedida: () => setModalUnidadeMedidaEditOpen(false),
-                            salvarUnidadeMedida: handleAtualizarUnidadeMedida,
+                            salvarUnidadeMedida: handleUpdateUnitOfMeasure,
                         }}
                     />
                 )}
 
                 {/* Modal: Ajuste de Estoque */}
                 {modalAjusteOpen && editingId && (
-                    <ModalAjusteEstoque
+                    <StockAdjustModal
                         open={modalAjusteOpen}
                         itemName={form.nome}
                         itemEstoque={parseNumber(form.estoque) * (parseNumber(form.multiplicadorUnidade) || 1)}
@@ -889,10 +889,10 @@ const CadastroPage: React.FC = () => {
 
                 {/* Modal: Confirmação de Exclusão */}
                 {deleteConfirmOpen && itemParaExcluir && (
-                    <ModalProdExclusao
+                    <ProductDeleteModal
                         open={deleteConfirmOpen}
                         item={itemParaExcluir}
-                        onConfirm={handleConfirmExcluir}
+                        onConfirm={handleConfirmDelete}
                         onClose={() => {
                             setDeleteConfirmOpen(false);
                             setItemParaExcluir(null);
@@ -940,4 +940,4 @@ const CadastroPage: React.FC = () => {
     );
 };
 
-export default CadastroPage;
+export default RegistrationPage;

@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import parseNumber from '../../utils/number';
 import {
-  insertNota,
-  getNotasById,
-  getNotasByValor,
-  getNotasByPeriod,
-  getAllNotas,
-  deleteNota,
+  insertInvoice,
+  getInvoicesById,
+  getInvoicesByAmount,
+  getInvoicesByPeriod,
+  getAllInvoices,
+  deleteInvoice,
 } from '../../database/notasDb';
 
 // Handler de API ou componente exportado.
@@ -14,7 +14,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     const { ano, mes, id, valor } = req.query;
     if (id) {
-      const nota = getNotasById(parseInt(id as string));
+      const nota = getInvoicesById(parseInt(id as string));
       if (!nota) {
         return res.status(404).json({ error: 'Nota não encontrada' });
       }
@@ -22,7 +22,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     // Buscar por valor
     if (valor) {
-      const nota = getNotasByValor(parseNumber(valor as string));
+      const nota = getInvoicesByAmount(parseNumber(valor as string));
       if (!nota) {
         return res.status(404).json({ error: 'Nenhuma nota encontrada com esse valor' });
       }
@@ -33,13 +33,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!ano) {
       return res.status(400).json({ error: 'Ano é obrigatório' });
     }
-    const notas = getNotasByPeriod(
+    const notas = getInvoicesByPeriod(
       parseInt(ano as string),
       mes ? parseInt(mes as string) : undefined
     );
 
     // Buscar todas as notas
-    const allNotas = getAllNotas();
+    const allNotas = getAllInvoices();
     if (allNotas.length === 0) {
       return res.status(200).json([]);
     }
@@ -53,7 +53,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!distribuidora || !chave || !dataEmissao || !valorNota) {
       return res.status(400).json({ error: 'Data de emissão e valor da nota são obrigatórios' });
     }
-    const result = insertNota(distribuidora, chave, dataEmissao, valorNota);
+    const result = insertInvoice(distribuidora, chave, dataEmissao, valorNota);
     return res.status(201).json({ id: result.lastInsertRowid });
   }
 
@@ -62,7 +62,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!id) {
       return res.status(400).json({ error: 'ID é obrigatório para exclusão' });
     }
-    const result = deleteNota(parseInt(id as string));
+    const result = deleteInvoice(parseInt(id as string));
     return res.status(200).json({ changes: result.changes });
   }
 

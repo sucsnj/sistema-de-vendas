@@ -4,13 +4,13 @@
 
 ## O que faz
 
-- `POST` sem corpo: chama `backupContasDatabase()` e responde `200 { message: 'Backup de contas criado', path }`.
+- `POST` sem corpo: chama `backupAccountsDatabase()` e responde `200 { message: 'Backup de contas criado', path }`.
 - Erro → `500 { error: 'Erro no backup de contas' }`; outros métodos → `405` (`Allow: POST`).
 
 ## Relações
 
-- **Usa:** `backupContasDatabase` de `src/database/contasDb.ts`.
-- **Usado por:** `fazerBackupContas` em `contasService`; `../../contas-a-pagar.md`.
+- **Usa:** `backupAccountsDatabase` de `src/database/contasDb.ts`.
+- **Usado por:** `backupAccounts` em `contasService`; `../../contas-a-pagar.md`.
 
 ## Notas
 

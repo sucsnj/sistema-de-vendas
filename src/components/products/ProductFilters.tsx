@@ -33,7 +33,7 @@ interface FiltrosProps {
     actions: FiltrosActions;
 }
 
-const Filtros: React.FC<FiltrosProps> = ({
+const ProductFilters: React.FC<FiltrosProps> = ({
     state,
     data,
     setFiltros,
@@ -164,4 +164,4 @@ const Filtros: React.FC<FiltrosProps> = ({
     )
 }
 
-export default Filtros;
+export default ProductFilters;

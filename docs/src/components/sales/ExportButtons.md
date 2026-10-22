@@ -5,7 +5,7 @@
 ## O que faz
 
 - Exporta XLSX por mês/dia (`xlsx` importado dinamicamente) e PDF da `.table-container` (`html2canvas` + `jsPDF`).
-- Importa `.xlsx`/`.xls` normalizando headers (`data`/`valor`/`observacoes`/`criado_em`), validando a data por modo e registrando via `registrarVendaComCriadoEm`.
+- Importa `.xlsx`/`.xls` normalizando headers (`data`/`valor`/`observacoes`/`criado_em`), validando a data por modo e registrando via `registerSaleWithCreatedAt`.
 - Notifica por `onMessage`; chama `onImportCompleted` ao concluir.
 
 ```ts

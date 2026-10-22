@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **08/10/2026**
+Atualizado em: **22/10/2026**
 
 ## Resumo executivo
 
@@ -18,6 +18,14 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 | Teste manual (funcionalidades críticas) | OK |
 
 ## Últimas mudanças
+
+### Nomenclatura: varredura completa de funções e parâmetros para inglês (ADR 0004) — 22/10/2026
+
+- Renomeadas ~160 funções em `src/services`, `src/database`, `src/hooks`, `src/pages`, `src/pages/api`, `src/components` e `src/utils` (exports, hooks, componentes, handlers locais e helpers), além dos parâmetros de função (ex.: `mes`→`month`, `ano`→`year`, `valor`→`amount`, `nome`→`name`, `descricao`→`description`, `itens`→`items`).
+- Varredura feita a pedido explícito do dono (substitui a aplicação apenas incremental do ADR 0004 nesta rodada), com codemod e conferência por AST para não deixar funções/parâmetros pt-BR.
+- Contratos preservados: chaves JSON/SQL/query params (`distribuidora`, `valor`, `vencimento`, `documento`, `banco_observacoes`, `mes`, `ano`, `filtro`, `itens`, …) e propriedades de tipos/interfaces permanecem em pt-BR.
+- Docs de código (`docs/src/**`) atualizados para os novos identificadores; `docs/CONTEXT.md`, `docs/src/hooks/README.md` e ADR 0004 revisados.
+- Verificação: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `node scripts/check-encoding.mjs` e `node scripts/check-docs.mjs` verdes.
 
 ### Docs espelhando `src/` em `docs/src/` + template único (ADR 0006) — 08/10/2026
 
@@ -185,14 +193,12 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
 - **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`) e **agrupamento dos componentes em subpastas por domínio com nomes em inglês (ADR 0005)** concluídos. Próximos alvos:
-  - **Grandes componentes** mistos (UI+estado+validação+API): `ModalCarrinho`, `ModalImportItens`, `FormularioProduto`, `ModalSelecionarItens` — extraídas hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
-  - **Renomeação incremental** dos identificadores pt-BR restantes para inglês (ADR 0004), ao tocar nos módulos — agora inclusive os nomes dos componentes cujos **arquivos** já estão em inglês (ex.: `const ModalCarrinho` em `cart/CartModal.tsx`).
+  - **Grandes componentes** mistos (UI+estado+validação+API): `CartModal`, `ImportItemsModal`, `ProductForm`, `SelectItemsModal` — extraídas hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
   - **Decisão pendente do dono**: padronização de estilos (CSS Modules × classes globais × inline).
 - Commit das mudanças atuais **não realizado** (por solicitação do usuário nesta rodada).
 
 ## Futuras / Melhorias sugeridas
 
-- Renomeação incremental dos identificadores pt-BR restantes para inglês (ADR 0004) conforme os módulos forem tocados.
 - Validação adicional em `npm run dev` para cenários não cobertos pelo teste crítico.
 - Revisar formatação de exportação (`jspdf`/`xlsx`) para reforço visual, se desejado.
 - Manter docs e `PROJECT_STATUS.md` alinhados a qualquer evolução de API ou regra.

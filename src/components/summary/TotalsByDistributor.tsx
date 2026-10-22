@@ -5,7 +5,7 @@ interface TotaisPorDistribuidoraProps {
     totaisPorDistribuidora: Record<string, number>;
 }
 
-const TotaisPorDistribuidora: React.FC<TotaisPorDistribuidoraProps> = ({ totaisPorDistribuidora }) => {
+const TotalsByDistributor: React.FC<TotaisPorDistribuidoraProps> = ({ totaisPorDistribuidora }) => {
     return (
         <div>
             <div className="summary-card small">
@@ -58,4 +58,4 @@ const TotaisPorDistribuidora: React.FC<TotaisPorDistribuidoraProps> = ({ totaisP
     );
 };
 
-export default TotaisPorDistribuidora;
+export default TotalsByDistributor;

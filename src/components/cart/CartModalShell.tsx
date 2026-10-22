@@ -1,8 +1,8 @@
 /**
  * src/components/cart/CartModalShell.tsx
  *
- * Casca visual compartilhada dos modais de carrinho (ModalCarrinho e
- * ModalSelecionarItens). Concentra overlay/header/footer, portal,
+ * Casca visual compartilhada dos modais de carrinho (CartModal e
+ * SelectItemsModal). Concentra overlay/header/footer, portal,
  * focus-trap e fechamento por ESC — fonte única do "chrome" do modal,
  * estilizada pelas classes globais `cart-modal-*` (src/styles/globals.css).
  * Ver docs/components/CartModalShell.md.
