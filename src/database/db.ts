@@ -197,9 +197,9 @@ export const deleteSaleItems = (saleId: number) => {
 // Constante exportada com função.
 export const getDailySales = (month: number, year: number, filter?: 'positivas' | 'negativas' | 'todas') => {
   try {
-    const mesAno = `${year}-${String(month).padStart(2, '0')}`;
-    const startDate = `${mesAno}-01`;
-    const ultimoDia = `${mesAno}-${String(getLastDayOfMonth(year, month)).padStart(2, '0')}`;
+    const monthYear = `${year}-${String(month).padStart(2, '0')}`;
+    const startDate = `${monthYear}-01`;
+    const lastDay = `${monthYear}-${String(getLastDayOfMonth(year, month)).padStart(2, '0')}`;
 
     let query = 'SELECT * FROM vendas_diarias WHERE data >= ? AND data <= ?';
     if (filter === 'positivas') {
@@ -210,8 +210,8 @@ export const getDailySales = (month: number, year: number, filter?: 'positivas' 
     query += ' ORDER BY data DESC';
 
     const stmt = db.prepare(query);
-    const sales = stmt.all(startDate, ultimoDia) as unknown as DailySaleRow[];
-    console.log(`Buscando vendas de ${startDate} a ${ultimoDia} (${filter || 'todas'}):`, sales.length, 'registros');
+    const sales = stmt.all(startDate, lastDay) as unknown as DailySaleRow[];
+    console.log(`Buscando vendas de ${startDate} a ${lastDay} (${filter || 'todas'}):`, sales.length, 'registros');
     return sales;
   } catch (error) {
     console.error('Erro ao buscar vendas:', error);
@@ -283,23 +283,23 @@ const getAverageTicket = (sales: { valor: number }[]) => {
 const getAverageCustomers = (sales: { data: string; valor: number }[]) => {
   try {
     if (sales.length === 0) {
-      return { media: 0, mediaNegativa: 0 };
+      return { average: 0, negativeAverage: 0 };
     }
 
-    const vendasPositivas = sales.filter((v) => v.valor > 0);
-    const vendasNegativas = sales.filter((v) => v.valor <= 0);
+    const positiveSales = sales.filter((v) => v.valor > 0);
+    const negativeSales = sales.filter((v) => v.valor <= 0);
 
     // Média para dias negativos
-    const diasComVendasNegativos = [...new Set(vendasNegativas.map((sale) => sale.data))];
-    const quantidadeVendasNegativas = vendasNegativas.length;
-    const mediaNegativa =
-      quantidadeVendasNegativas > 0 && diasComVendasNegativos.length > 0 ? quantidadeVendasNegativas / diasComVendasNegativos.length : 0;
+    const negativeSalesDays = [...new Set(negativeSales.map((sale) => sale.data))];
+    const negativeSalesCount = negativeSales.length;
+    const negativeAverage =
+      negativeSalesCount > 0 && negativeSalesDays.length > 0 ? negativeSalesCount / negativeSalesDays.length : 0;
 
-    const diasComVendas = [...new Set(vendasPositivas.map((sale) => sale.data))];
-    const quantidadeVendas = vendasPositivas.length;
-    const media = quantidadeVendas > 0 && diasComVendas.length > 0 ? quantidadeVendas / diasComVendas.length : 0;
+    const salesDays = [...new Set(positiveSales.map((sale) => sale.data))];
+    const salesCount = positiveSales.length;
+    const average = salesCount > 0 && salesDays.length > 0 ? salesCount / salesDays.length : 0;
 
-    return { media, mediaNegativa };
+    return { average, negativeAverage };
   } catch (error) {
     console.error('Erro ao calcular média de clientes:', error);
     throw error;
@@ -309,17 +309,17 @@ const getAverageCustomers = (sales: { data: string; valor: number }[]) => {
 // Função local ou componente.
 const getBestDay = (sales: { data: string; valor: number }[], month: number, year: number) => {
   try {
-    const agrupado = sales.reduce((acc: Record<string, number>, v) => {
+    const grouped = sales.reduce((acc: Record<string, number>, v) => {
       acc[v.data] = (acc[v.data] || 0) + v.valor; // retorna o dia com o maior valor acumulado
       return acc;
     }, {});
 
-    let melhor = Object.entries(agrupado).sort((a, b) => b[1] - a[1])[0];
+    let best = Object.entries(grouped).sort((a, b) => b[1] - a[1])[0];
     // se melhor for vazio, retorna o primeiro dia do mês
-    if (!melhor) {
-      melhor = [`${year}-${month}-01`, 0];
+    if (!best) {
+      best = [`${year}-${month}-01`, 0];
     }
-    return { dia: melhor[0], valor: melhor[1] }
+    return { day: best[0], amount: best[1] }
   } catch (error) {
     console.error('Erro ao calcular melhor dia:', error);
     throw error;
@@ -329,8 +329,8 @@ const getBestDay = (sales: { data: string; valor: number }[], month: number, yea
 // Função local ou componente.
 const getLargestSale = (sales: { valor: number }[]) => {
   try {
-    const maiorVenda = sales.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
-    return maiorVenda || 0;
+    const largestSale = sales.reduce((acc, v) => acc > v.valor ? acc : v.valor, 0);
+    return largestSale || 0;
   } catch (error) {
     console.error('Erro ao calcular maior venda:', error);
     throw error;
@@ -350,10 +350,10 @@ const getSalesCount = (sales: { valor: number }[]) => {
 const getSpecialSales = (month: number, year: number) => {
   try {
     // Retorna a quantidade e total de vendas negativas no mês
-    const vendasEspeciais = getDailySales(month, year, 'negativas') as { valor: number }[];
-    const totalEspeciais = vendasEspeciais.reduce((sum, sale) => sum + sale.valor, 0);
+    const specialSales = getDailySales(month, year, 'negativas') as { valor: number }[];
+    const specialTotal = specialSales.reduce((sum, sale) => sum + sale.valor, 0);
 
-    return [vendasEspeciais.length, totalEspeciais];
+    return [specialSales.length, specialTotal];
   } catch (error) {
     console.error('Erro ao calcular quantidade de vendas espéciais:', error);
     throw error;
@@ -364,26 +364,24 @@ const getSpecialSales = (month: number, year: number) => {
 export const consolidateMonthly = (month: number, year: number) => {
   try {
     // Vendas Especiais
-    const vendasEspeciais = getSpecialSales(month, year);
-    const qtdVendasEspeciais = vendasEspeciais[0];
+    const specialSales = getSpecialSales(month, year);
+    const specialSalesCount = specialSales[0];
 
     // Vendas Diárias
     const sales = getDailySales(month, year);
     const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
-    const ticketMedio = getAverageTicket(sales);
-    const { media, mediaNegativa } = getAverageCustomers(sales);
-    const mediaClientes = media;
-    const melhorDia = getBestDay(sales, month, year);
-    const maiorVenda = getLargestSale(sales);
-    const qtdVendas = getSalesCount(sales) - qtdVendasEspeciais;
-
-    const mediaClientesEsp = mediaNegativa;
-    const qtdVendasEsp = qtdVendasEspeciais;
-    const totalEsp = vendasEspeciais[1];
+    const averageTicket = getAverageTicket(sales);
+    const { average, negativeAverage } = getAverageCustomers(sales);
+    const averageCustomers = average;
+    const bestDay = getBestDay(sales, month, year);
+    const largestSale = getLargestSale(sales);
+    const salesCount = getSalesCount(sales) - specialSalesCount;
+    const specialAverageCustomers = negativeAverage;
+    const specialTotal = specialSales[1];
 
     const stmt = db.prepare(
       'INSERT OR REPLACE INTO vendas_mensais (mes, ano, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia, melhorDiaValor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    return stmt.run(month, year, ticketMedio, mediaClientes, mediaClientesEsp, melhorDia.dia, melhorDia.valor, maiorVenda, qtdVendas, qtdVendasEsp, total, totalEsp);
+    return stmt.run(month, year, averageTicket, averageCustomers, specialAverageCustomers, bestDay.day, bestDay.amount, largestSale, salesCount, specialSalesCount, total, specialTotal);
   } catch (error) {
     console.error('Erro ao consolidar mensal:', error);
     throw error;

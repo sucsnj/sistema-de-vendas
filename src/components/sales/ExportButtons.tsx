@@ -134,15 +134,15 @@ const ExportButtons: FC<ExportButtonsProps> = ({
           ''
         ).trim();
 
-        const valorValue =
+        const amountValue =
           normalizedRow['valor'] || normalizedRow['value'] || normalizedRow['amount'];
-        const observacoesValue =
+        const notesValue =
           normalizedRow['observacoes'] ||
           normalizedRow['observações'] ||
           normalizedRow['obs'] ||
           '';
 
-        const criadoEmValue =
+        const createdAtValue =
           normalizedRow['criado_em'] ||
           normalizedRow['created_at'] ||
           '';
@@ -172,17 +172,17 @@ const ExportButtons: FC<ExportButtonsProps> = ({
           return;
         }
 
-        const valor = formatValue(valorValue);
-        if (Number.isNaN(valor)) {
+        const amount = formatValue(amountValue);
+        if (Number.isNaN(amount)) {
           errors.push(`Linha ${index + 1}: valor inválido.`);
           return;
         }
 
         parsedItems.push({
           data: dataValue,
-          valor,
-          observacoes: String(observacoesValue).trim() || undefined,
-          criado_em: String(criadoEmValue).trim() || undefined,
+          valor: amount,
+          observacoes: String(notesValue).trim() || undefined,
+          criado_em: String(createdAtValue).trim() || undefined,
         });
       });
 

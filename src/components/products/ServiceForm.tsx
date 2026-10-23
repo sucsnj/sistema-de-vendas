@@ -85,9 +85,9 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             type="button"
             className={styles.manageButton}
             onClick={() => {
-              const categoriaSelecionada = options.categories.find((c) => c.id === form.categoryId);
-              if (categoriaSelecionada) {
-                actions.editCategory(categoriaSelecionada);
+              const selectedCategory = options.categories.find((c) => c.id === form.categoryId);
+              if (selectedCategory) {
+                actions.editCategory(selectedCategory);
               }
             }}
             title="Editar Categoria Selecionada"
@@ -112,9 +112,9 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             value={form.salePrice}
             onChange={(e) => {
               const salePrice = e.target.value;
-              const precoValor = parseNumber(salePrice);
-              if (!Number.isNaN(precoValor) && precoValor >= 0) {
-                setForm(prev => ({ ...prev, salePrice: String(formatCurrencyNumber(precoValor, 2)) }));
+              const salePriceValue = parseNumber(salePrice);
+              if (!Number.isNaN(salePriceValue) && salePriceValue >= 0) {
+                setForm(prev => ({ ...prev, salePrice: String(formatCurrencyNumber(salePriceValue, 2)) }));
                 return;
               }
               setForm(prev => ({ ...prev, salePrice }));

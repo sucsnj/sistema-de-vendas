@@ -8,7 +8,7 @@
 - Ações: copiar payload, baixar PNG e imprimir folha; ESC/overlay fecham.
 
 ```ts
-interface ModalPixProps {
+interface PixModalProps {
   isOpen: boolean; onClose: () => void;
   payload: string; merchantName: string; merchantBank: string;
   amount: string | null; pixKey: string;

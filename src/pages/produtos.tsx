@@ -63,16 +63,16 @@ const ProductsPage: React.FC = () => {
   // Carrega opções auxiliares para os filtros
   const loadAuxiliaryData = useCallback(async () => {
     try {
-      const [cats, brands, forns, uoms] = await Promise.all([
+      const [categories, brands, suppliers, uoms] = await Promise.all([
         fetchCategories(),
         fetchBrands(),
         fetchSuppliers(),
         fetchUnitsOfMeasure(),
       ]);
       setOptions({
-        categories: cats,
+        categories: categories,
         brands: brands,
-        suppliers: forns,
+        suppliers: suppliers,
         unitsOfMeasure: uoms,
       });
     } catch (error) {
@@ -85,7 +85,7 @@ const ProductsPage: React.FC = () => {
   const loadItems = useCallback(async () => {
     setLoading(true);
     try {
-      const [produtosData, servicosData] = await Promise.all([
+      const [productsData, servicesData] = await Promise.all([
         state.type === 'SERVICO' ? Promise.resolve(null) : fetchProducts({
           search: searchQuery || undefined,
           categoria_id: state.categoryId || undefined,
@@ -103,38 +103,38 @@ const ProductsPage: React.FC = () => {
         }),
       ]);
 
-      const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServiceData) => ({
-        id: servico.id,
+      const products = productsData?.items || [];
+      const services: ItemData[] = (servicesData?.items || []).map((service: ServiceData) => ({
+        id: service.id,
         tipo: 'SERVICO',
-        nome: servico.nome,
-        descricao: servico.descricao,
-        categoria_id: servico.categoria_id,
+        nome: service.nome,
+        descricao: service.descricao,
+        categoria_id: service.categoria_id,
         unidade_medida_id: 21,
         marca_id: 1,
         fornecedor_id: 1,
         preco_compra: 0,
         margem_lucro: 0,
-        preco_venda: servico.preco_venda,
+        preco_venda: service.preco_venda,
         estoque: 0,
         multiplicador_unidade: 1,
         estoque_total: 0,
-        codigo_interno: servico.codigo_interno,
-        referencia: servico.referencia || '',
-        duracao_minutos: servico.duracao_minutos,
-        data_criacao: servico.data_criacao,
-        data_atualizacao: servico.data_atualizacao,
-        categoria_nome: servico.categoria_nome,
+        codigo_interno: service.codigo_interno,
+        referencia: service.referencia || '',
+        duracao_minutos: service.duracao_minutos,
+        data_criacao: service.data_criacao,
+        data_atualizacao: service.data_atualizacao,
+        categoria_nome: service.categoria_nome,
       }));
 
-      const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
+      const catalog = [...products, ...services].sort((a, b) => a.nome.localeCompare(b.nome));
       const offset = (page - 1) * 10;
-      setItems(catalogo.slice(offset, offset + 10));
-      setTotal(catalogo.length);
-      setTotalPages(Math.max(1, Math.ceil(catalogo.length / 10)));
+      setItems(catalog.slice(offset, offset + 10));
+      setTotal(catalog.length);
+      setTotalPages(Math.max(1, Math.ceil(catalog.length / 10)));
     } catch (error) {
       console.error(error);
-      showToast('Erro ao carregar produtos e serviços.', 'error');
+      showToast('Erro ao carregar products e serviços.', 'error');
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { seedUoms, seedCategorias, seedMarcas, seedFornecedores } from './seeds';
+import { seedUoms, seedCategories, seedBrands, seedSuppliers } from './seeds';
 
 const dbPath = path.join(process.cwd(), 'db/produtos.db');
 
@@ -116,9 +116,9 @@ try {
     );
   `);
 
-  const servicosTableInfo = db.prepare("PRAGMA table_info(servicos)").all() as Array<{ name: string }>;
-  const servicosColumns = new Set(servicosTableInfo.map((column) => column.name));
-  const servicosColumnDefinitions: Array<{ name: string; definition: string }> = [
+  const servicesTableInfo = db.prepare("PRAGMA table_info(servicos)").all() as Array<{ name: string }>;
+  const servicesColumns = new Set(servicesTableInfo.map((column) => column.name));
+  const servicesColumnDefinitions: Array<{ name: string; definition: string }> = [
     { name: 'descricao', definition: 'TEXT' },
     { name: 'categoria_id', definition: 'INTEGER NOT NULL REFERENCES categorias(id)' },
     { name: 'preco_venda', definition: 'REAL DEFAULT 0' },
@@ -129,18 +129,18 @@ try {
     { name: 'data_atualizacao', definition: 'DATETIME DEFAULT CURRENT_TIMESTAMP' },
   ];
 
-  for (const column of servicosColumnDefinitions) {
-    if (!servicosColumns.has(column.name)) {
+  for (const column of servicesColumnDefinitions) {
+    if (!servicesColumns.has(column.name)) {
       db.exec(`ALTER TABLE servicos ADD COLUMN ${column.name} ${column.definition}`);
     }
   }
 
-  if (servicosColumns.has('ativo')) {
+  if (servicesColumns.has('ativo')) {
     db.exec('ALTER TABLE servicos DROP COLUMN ativo');
   }
 
-  const itensTableSql = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'itens'").get() as { sql?: string } | undefined;
-  if (itensTableSql?.sql?.includes("'SERVICO'")) {
+  const itemsTableSql = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'itens'").get() as { sql?: string } | undefined;
+  if (itemsTableSql?.sql?.includes("'SERVICO'")) {
     db.pragma('foreign_keys = OFF');
     db.exec(`
       ALTER TABLE itens RENAME TO itens_legacy;
@@ -184,10 +184,10 @@ try {
     db.pragma('foreign_keys = ON');
   }
 
-  const itensColumns = new Set(
+  const itemsColumns = new Set(
     (db.prepare('PRAGMA table_info(itens)').all() as Array<{ name: string }>).map((column) => column.name)
   );
-  if (!itensColumns.has('multiplicador_unidade')) {
+  if (!itemsColumns.has('multiplicador_unidade')) {
     db.exec('ALTER TABLE itens ADD COLUMN multiplicador_unidade REAL NOT NULL DEFAULT 1');
   }
 
@@ -201,11 +201,11 @@ try {
   }
 
   // Seeding inicial para Categoria
-  const countCat = db.prepare('SELECT count(*) as count FROM categorias').get() as { count: number };
-  if (countCat.count === 0) {
+  const categoryCount = db.prepare('SELECT count(*) as count FROM categorias').get() as { count: number };
+  if (categoryCount.count === 0) {
     const insertCategory = db.prepare('INSERT INTO categorias (nome, descricao) VALUES (?, ?)');
-    for (const categoria of seedCategorias) {
-      insertCategory.run(categoria.nome, categoria.descricao);
+    for (const category of seedCategories) {
+      insertCategory.run(category.nome, category.descricao);
     }
   }
 
@@ -213,25 +213,25 @@ try {
   const countBrand = db.prepare('SELECT count(*) as count FROM marcas').get() as { count: number };
   if (countBrand.count === 0) {
     const insertBrand = db.prepare('INSERT INTO marcas (nome) VALUES (?)');
-    for (const marca of seedMarcas) {
-      insertBrand.run(marca.nome);
+    for (const brand of seedBrands) {
+      insertBrand.run(brand.nome);
     }
   }
 
   // Seeding inicial para Fornecedores
-  const countFornecedor = db.prepare('SELECT count(*) as count FROM fornecedores').get() as { count: number };
-  if (countFornecedor.count === 0) {
+  const supplierCount = db.prepare('SELECT count(*) as count FROM fornecedores').get() as { count: number };
+  if (supplierCount.count === 0) {
     const insertSupplier = db.prepare('INSERT INTO fornecedores (nome) VALUES (?)');
-    for (const fornecedor of seedFornecedores) {
-      insertSupplier.run(fornecedor.nome);
+    for (const supplier of seedSuppliers) {
+      insertSupplier.run(supplier.nome);
     }
   }
 
   // Migration de unidades de medida da tabela itens para a nova tabela
-  const countItemUnidades = db.prepare('SELECT count(*) as count FROM item_unidades_medida').get() as { count: number };
-  if (countItemUnidades.count === 0) {
-    const countItens = db.prepare("SELECT count(*) as count FROM itens WHERE tipo = 'PRODUTO'").get() as { count: number };
-    if (countItens.count > 0) {
+  const itemUnitCount = db.prepare('SELECT count(*) as count FROM item_unidades_medida').get() as { count: number };
+  if (itemUnitCount.count === 0) {
+    const itemCount = db.prepare("SELECT count(*) as count FROM itens WHERE tipo = 'PRODUTO'").get() as { count: number };
+    if (itemCount.count > 0) {
       db.exec(`
         INSERT INTO item_unidades_medida (item_id, unidade_medida_id, multiplicador_unidade, principal)
         SELECT id, unidade_medida_id, multiplicador_unidade, 1 FROM itens WHERE tipo = 'PRODUTO';
@@ -313,8 +313,8 @@ export const deleteCategory = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a categoria Geral.');
   }
-  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE categoria_id = ?').get(id) as { count: number };
-  if (countItens.count > 0) {
+  const itemCount = db.prepare('SELECT COUNT(*) as count FROM itens WHERE categoria_id = ?').get(id) as { count: number };
+  if (itemCount.count > 0) {
     // Atualiza os itens para a categoria Geral
     db.prepare('UPDATE itens SET categoria_id = 1 WHERE categoria_id = ?').run(id);
   }
@@ -348,8 +348,8 @@ export const deleteBrand = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a marca Outros.');
   }
-  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE marca_id = ?').get(id) as { count: number };
-  if (countItens.count > 0) {
+  const itemCount = db.prepare('SELECT COUNT(*) as count FROM itens WHERE marca_id = ?').get(id) as { count: number };
+  if (itemCount.count > 0) {
     // Atualiza os itens para a marca Outros
     db.prepare('UPDATE itens SET marca_id = 1 WHERE marca_id = ?').run(id);
   }
@@ -384,8 +384,8 @@ export const deleteSupplier = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar o fornecedor Sem fornecedor.');
   }
-  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE fornecedor_id = ?').get(id) as { count: number };
-  if (countItens.count > 0) {
+  const itemCount = db.prepare('SELECT COUNT(*) as count FROM itens WHERE fornecedor_id = ?').get(id) as { count: number };
+  if (itemCount.count > 0) {
     // Atualiza os itens para o fornecedor Sem fornecedor
     db.prepare('UPDATE itens SET fornecedor_id = 1 WHERE fornecedor_id = ?').run(id);
   }
@@ -427,8 +427,8 @@ export const deleteUnitOfMeasure = (id: number) => {
   if (id === 1) {
     throw new Error('Não é possível apagar a unidade de medida UN.');
   }
-  const countItens = db.prepare('SELECT COUNT(*) as count FROM itens WHERE unidade_medida_id = ?').get(id) as { count: number };
-  if (countItens.count > 0) {
+  const itemCount = db.prepare('SELECT COUNT(*) as count FROM itens WHERE unidade_medida_id = ?').get(id) as { count: number };
+  if (itemCount.count > 0) {
     // Atualiza os itens para a unidade de medida UN
     db.prepare('UPDATE itens SET unidade_medida_id = 1 WHERE unidade_medida_id = ?').run(id);
   }
@@ -491,37 +491,37 @@ const insertStockMovementRaw = (movement: StockMovementInput) => {
     throw new Error('Item não encontrado para movimentação de estoque.');
   }
 
-  const tipo = normalizeMovementType(movement.tipo);
-  const quantidade = Number(movement.quantidade);
-  if (!Number.isFinite(quantidade)) {
+  const movementType = normalizeMovementType(movement.tipo);
+  const quantity = Number(movement.quantidade);
+  if (!Number.isFinite(quantity)) {
     throw new Error('Quantidade inválida para movimentação de estoque.');
   }
-  if ((tipo === 'ENTRADA' || tipo === 'SAIDA') && quantidade <= 0) {
+  if ((movementType === 'ENTRADA' || movementType === 'SAIDA') && quantity <= 0) {
     throw new Error('Quantidade deve ser maior que zero para entrada e saída.');
   }
-  if (tipo === 'AJUSTE' && quantidade === 0) {
+  if (movementType === 'AJUSTE' && quantity === 0) {
     throw new Error('Quantidade não pode ser zero para ajuste.');
   }
 
-  let estoqueFinal = itemRow.estoque ?? 0;
-  if (tipo === 'ENTRADA') {
-    estoqueFinal += quantidade;
-  } else if (tipo === 'SAIDA') {
-    estoqueFinal -= quantidade;
+  let finalStock = itemRow.estoque ?? 0;
+  if (movementType === 'ENTRADA') {
+    finalStock += quantity;
+  } else if (movementType === 'SAIDA') {
+    finalStock -= quantity;
   } else {
-    estoqueFinal += quantidade;
+    finalStock += quantity;
   }
 
-  db.prepare('UPDATE itens SET estoque = ? WHERE id = ?').run(estoqueFinal, movement.item_id);
+  db.prepare('UPDATE itens SET estoque = ? WHERE id = ?').run(finalStock, movement.item_id);
   return db.prepare(`
     INSERT INTO movimentacoes_estoque (item_id, item, tipo, quantidade, estoque_final, descricao, data_movimentacao)
     VALUES (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
   `).run(
     movement.item_id,
     itemRow.nome,
-    tipo,
-    quantidade,
-    estoqueFinal,
+    movementType,
+    quantity,
+    finalStock,
     movement.descricao || null
   );
 };
@@ -682,7 +682,7 @@ export const getServiceById = (id: number) => {
   `).get(id) as ServiceData | undefined;
 };
 
-export const insertService = db.transaction((servicoData: ServiceInput) => {
+export const insertService = db.transaction((serviceData: ServiceInput) => {
   syncSharedAutoincrementSequence();
 
   const stmt = db.prepare(`
@@ -700,28 +700,28 @@ export const insertService = db.transaction((servicoData: ServiceInput) => {
   `);
 
   const result = stmt.run(
-    servicoData.nome,
-    servicoData.descricao || null,
-    servicoData.categoria_id,
-    servicoData.preco_venda ?? 0,
-    servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
-    servicoData.referencia || null,
-    servicoData.duracao_minutos ?? 0,
+    serviceData.nome,
+    serviceData.descricao || null,
+    serviceData.categoria_id,
+    serviceData.preco_venda ?? 0,
+    serviceData.codigo_interno ? serviceData.codigo_interno.trim() : null,
+    serviceData.referencia || null,
+    serviceData.duracao_minutos ?? 0,
   );
 
-  if (!servicoData.codigo_interno) {
-    const updateCodigoInterno = db.prepare(`
+  if (!serviceData.codigo_interno) {
+    const updateInternalCode = db.prepare(`
       UPDATE servicos
       SET codigo_interno = ?
       WHERE id = ?
     `);
-    updateCodigoInterno.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
+    updateInternalCode.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
   }
 
   return result.lastInsertRowid as number;
 });
 
-export const updateService = db.transaction((id: number, servicoData: ServiceInput) => {
+export const updateService = db.transaction((id: number, serviceData: ServiceInput) => {
   const stmt = db.prepare(`
     UPDATE servicos
     SET nome = ?, descricao = ?, categoria_id = ?, preco_venda = ?, codigo_interno = ?, referencia = ?, duracao_minutos = ?, data_atualizacao = datetime('now', 'localtime')
@@ -729,13 +729,13 @@ export const updateService = db.transaction((id: number, servicoData: ServiceInp
   `);
 
   stmt.run(
-    servicoData.nome,
-    servicoData.descricao || null,
-    servicoData.categoria_id,
-    servicoData.preco_venda ?? 0,
-    servicoData.codigo_interno ? servicoData.codigo_interno.trim() : null,
-    servicoData.referencia || null,
-    servicoData.duracao_minutos ?? 0,
+    serviceData.nome,
+    serviceData.descricao || null,
+    serviceData.categoria_id,
+    serviceData.preco_venda ?? 0,
+    serviceData.codigo_interno ? serviceData.codigo_interno.trim() : null,
+    serviceData.referencia || null,
+    serviceData.duracao_minutos ?? 0,
     id
   );
 
@@ -881,7 +881,7 @@ export const getItems = (options: {
   const items = db.prepare(itemsQuery).all(...productParams, pageSize, offset) as unknown as ItemRow[];
 
   const barcodesStmt = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC');
-  const unidadesStmt = db.prepare(`
+  const unitsStmt = db.prepare(`
     SELECT um.unidade_medida_id, um.multiplicador_unidade, um.principal, u.sigla, u.descricao
     FROM item_unidades_medida um
     JOIN unidades_medida u ON um.unidade_medida_id = u.id
@@ -891,7 +891,7 @@ export const getItems = (options: {
 
   for (const item of items) {
     item.codigos_barras = barcodesStmt.all(item.id) as unknown as BarcodeData[];
-    item.unidades_medida = unidadesStmt.all(item.id) as unknown as ItemUnitData[];
+    item.unidades_medida = unitsStmt.all(item.id) as unknown as ItemUnitData[];
     if (!item.unidades_medida || item.unidades_medida.length === 0) {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,
@@ -948,7 +948,7 @@ export const getItemById = (id: number) => {
 
   if (item) {
     item.codigos_barras = db.prepare('SELECT codigo_barras, principal FROM item_codigos_barras WHERE item_id = ? ORDER BY principal DESC').all(id) as unknown as BarcodeData[];
-    const unidades = db.prepare(`
+    const units = db.prepare(`
       SELECT um.unidade_medida_id, um.multiplicador_unidade, um.principal, u.sigla, u.descricao
       FROM item_unidades_medida um
       JOIN unidades_medida u ON um.unidade_medida_id = u.id
@@ -956,8 +956,8 @@ export const getItemById = (id: number) => {
       ORDER BY um.principal DESC, u.sigla ASC
     `).all(id);
 
-    if (unidades && unidades.length > 0) {
-      item.unidades_medida = unidades as unknown as ItemUnitData[];
+    if (units && units.length > 0) {
+      item.unidades_medida = units as unknown as ItemUnitData[];
     } else {
       item.unidades_medida = [{
         unidade_medida_id: item.unidade_medida_id,
@@ -972,10 +972,10 @@ export const getItemById = (id: number) => {
 };
 
 export const getItemByBarcode = (barcode: string) => {
-  const codigo = String(barcode || '').trim();
-  if (!codigo) return undefined;
+  const barcodeCode = String(barcode || '').trim();
+  if (!barcodeCode) return undefined;
 
-  const row = db.prepare('SELECT item_id FROM item_codigos_barras WHERE codigo_barras = ?').get(codigo) as { item_id: number } | undefined;
+  const row = db.prepare('SELECT item_id FROM item_codigos_barras WHERE codigo_barras = ?').get(barcodeCode) as { item_id: number } | undefined;
   if (!row) return undefined;
 
   return getItemById(row.item_id);
@@ -1009,12 +1009,12 @@ export const insertItem = db.transaction((itemData: ItemInput) => {
 
   // Se não houve codigo_interno, coloca o id no lugar
   if (!itemData.codigo_interno) {
-    const updateCodigoInterno = db.prepare(`
+    const updateInternalCode = db.prepare(`
       UPDATE itens
       SET codigo_interno = ?
       WHERE id = ?
     `);
-    updateCodigoInterno.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
+    updateInternalCode.run((result.lastInsertRowid as number).toString(), result.lastInsertRowid as number);
   }
 
   // Se for serviço, coloca o id 21 na unidade_medida

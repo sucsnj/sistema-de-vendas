@@ -14,7 +14,7 @@ export const useCart = (onToast?: CartToast) => {
   // Itens adicionados ao carrinho
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   // Modal de seleção de itens (adicionar ao carrinho)
-  const [selecionarOpen, setSelecionarOpen] = useState(false);
+  const [selectModalOpen, setSelectModalOpen] = useState(false);
   // Modal de gerenciamento do carrinho
   const [cartModalOpen, setCartModalOpen] = useState(false);
   // Busca do catálogo
@@ -22,41 +22,41 @@ export const useCart = (onToast?: CartToast) => {
   const [catalogItems, setCatalogItems] = useState<ItemData[]>([]);
   const [loadingCatalog, setLoadingCatalog] = useState(false);
 
-  // Busca produtos e serviços para o catálogo de seleção
-  const buscarItensCatalogo = useCallback(async (query: string) => {
+  // Busca products e serviços para o catálogo de seleção
+  const loadCatalogItems = useCallback(async (query: string) => {
     setLoadingCatalog(true);
     try {
-      const [produtosData, servicosData] = await Promise.all([
+      const [productsData, servicesData] = await Promise.all([
         fetchProducts({ search: query || undefined, ativo: 'ATIVO', page: 1, pageSize: 50 }),
         fetchServices({ search: query || undefined, page: 1, pageSize: 50 }),
       ]);
 
-      const produtos = produtosData?.items || [];
-      const servicos: ItemData[] = (servicosData?.items || []).map((servico: ServiceData) => ({
-        id: servico.id,
+      const products = productsData?.items || [];
+      const services: ItemData[] = (servicesData?.items || []).map((service: ServiceData) => ({
+        id: service.id,
         tipo: 'SERVICO',
-        nome: servico.nome,
-        descricao: servico.descricao,
-        categoria_id: servico.categoria_id,
+        nome: service.nome,
+        descricao: service.descricao,
+        categoria_id: service.categoria_id,
         unidade_medida_id: 21,
         marca_id: 1,
         fornecedor_id: 1,
         preco_compra: 0,
         margem_lucro: 0,
-        preco_venda: servico.preco_venda,
+        preco_venda: service.preco_venda,
         estoque: 0,
         multiplicador_unidade: 1,
         estoque_total: 0,
-        codigo_interno: servico.codigo_interno,
-        referencia: servico.referencia || '',
-        duracao_minutos: servico.duracao_minutos,
-        data_criacao: servico.data_criacao,
-        data_atualizacao: servico.data_atualizacao,
-        categoria_nome: servico.categoria_nome,
+        codigo_interno: service.codigo_interno,
+        referencia: service.referencia || '',
+        duracao_minutos: service.duracao_minutos,
+        data_criacao: service.data_criacao,
+        data_atualizacao: service.data_atualizacao,
+        categoria_nome: service.categoria_nome,
       }));
 
-      const catalogo = [...produtos, ...servicos].sort((a, b) => a.nome.localeCompare(b.nome));
-      setCatalogItems(catalogo);
+      const catalog = [...products, ...services].sort((a, b) => a.nome.localeCompare(b.nome));
+      setCatalogItems(catalog);
     } catch (error) {
       console.error('Erro ao buscar catálogo para o carrinho:', error);
     } finally {
@@ -66,31 +66,31 @@ export const useCart = (onToast?: CartToast) => {
 
   // Carrega o catálogo (com debounce) enquanto o modal de seleção estiver aberto
   useEffect(() => {
-    if (!selecionarOpen) return;
-    const timer = setTimeout(() => buscarItensCatalogo(cartSearch), 250);
+    if (!selectModalOpen) return;
+    const timer = setTimeout(() => loadCatalogItems(cartSearch), 250);
     return () => clearTimeout(timer);
-  }, [selecionarOpen, cartSearch, buscarItensCatalogo]);
+  }, [selectModalOpen, cartSearch, loadCatalogItems]);
 
   // Abre o modal de seleção de itens
   const handleCartClick = useCallback(() => {
-    setSelecionarOpen(true);
+    setSelectModalOpen(true);
   }, []);
 
-  const closeSelecao = useCallback(() => {
-    setSelecionarOpen(false);
+  const closeSelectModal = useCallback(() => {
+    setSelectModalOpen(false);
   }, []);
 
-  const openCarrinho = useCallback(() => {
+  const openCartModal = useCallback(() => {
     setCartModalOpen(true);
   }, []);
 
-  const closeCarrinho = useCallback(() => {
+  const closeCartModal = useCallback(() => {
     setCartModalOpen(false);
   }, []);
 
   // Fecha a seleção e abre o gerenciamento do carrinho
   const handleManageCart = useCallback(() => {
-    setSelecionarOpen(false);
+    setSelectModalOpen(false);
     setCartModalOpen(true);
   }, []);
 
@@ -198,12 +198,12 @@ export const useCart = (onToast?: CartToast) => {
     setCartSearch,
     catalogItems,
     loadingCatalog,
-    selecionarOpen,
+    selectModalOpen,
     cartModalOpen,
     handleCartClick,
-    closeSelecao,
-    openCarrinho,
-    closeCarrinho,
+    closeSelectModal,
+    openCartModal,
+    closeCartModal,
     handleManageCart,
     handleAddToCart,
     handleRemoveFromCart,

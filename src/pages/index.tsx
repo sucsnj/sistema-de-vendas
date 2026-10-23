@@ -11,22 +11,22 @@ import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getDateArray, now, toTimestamp, formatMonthName } from '../utils/date';
 
-// Data de hoje (fuso do app) usada como seleção inicial do formulário
-const hoje = now().format('YYYY-MM-DD');
+// Data de today (fuso do app) usada como seleção inicial do formulário
+const today = now().format('YYYY-MM-DD');
 
 // Componente React da página inicial: Dashboard de Vendas.
 // Orquestra os subcomponentes da tela usando os hooks useToast e useSales,
 // mantendo apenas o estado de filtro (mês/ano) e da data selecionada.
 const Home: React.FC = () => {
-  // Período de hoje (mês/ano no fuso do app), calculado uma única vez
-  const [, mesAtual, anoAtual] = getDateArray();
+  // Período de today (mês/ano no fuso do app), calculado uma única vez
+  const [, currentMonth, currentYear] = getDateArray();
   // Período selecionado (mês e ano), usado para carregar as vendas
-  const [mes, setMes] = useState(mesAtual);
-  const [ano, setAno] = useState(anoAtual);
+  const [month, setMonth] = useState(currentMonth);
+  const [year, setYear] = useState(currentYear);
   // Ano exibido no campo; aceita digitação livre e só comita valores válidos
-  const [anoInput, setAnoInput] = useState(String(anoAtual));
+  const [yearInput, setYearInput] = useState(String(currentYear));
   // Data selecionada no formulário de venda diária
-  const [selectedDate, setSelectedDate] = useState(hoje);
+  const [selectedDate, setSelectedDate] = useState(today);
 
   // Notificações (toast) exibidas na página
   const { showToast } = useToast();
@@ -42,9 +42,9 @@ const Home: React.FC = () => {
     handleCancelEdit,
     handleSaved,
     handleDeleteSale,
-  } = useSales(mes, ano, showToast);
+  } = useSales(month, year, showToast);
 
-  // Recarrega as vendas sempre que o período (mes/ano) mudar
+  // Recarrega as vendas sempre que o período (month/year) mudar
   useEffect(() => {
     loadSales();
   }, [loadSales]);
@@ -96,8 +96,8 @@ const Home: React.FC = () => {
         {/* <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} /> */}
         <ExportButtons
           sales={sales}
-          month={mes}
-          year={ano}
+          month={month}
+          year={year}
           selectedDate={selectedDate}
           onMessage={showToast}
           onImportCompleted={loadSales}
@@ -107,7 +107,7 @@ const Home: React.FC = () => {
           <div className="page-actions">
             <label>
               Mês:
-              <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+              <select className="headerSelect" value={month} onChange={(e) => setMonth(parseInt(e.target.value))}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {capitalize(formatMonthName(i + 1))}
@@ -120,16 +120,16 @@ const Home: React.FC = () => {
               <input
                 className="headerInput"
                 type="number"
-                value={anoInput}
+                value={yearInput}
                 onChange={(e) => {
                   const v = e.target.value;
-                  setAnoInput(v);
+                  setYearInput(v);
                   const parsed = parseInt(v, 10);
-                  if (!Number.isNaN(parsed)) setAno(parsed);
+                  if (!Number.isNaN(parsed)) setYear(parsed);
                 }}
                 onBlur={() => {
-                  const parsed = parseInt(anoInput, 10);
-                  if (Number.isNaN(parsed)) setAnoInput(String(ano));
+                  const parsed = parseInt(yearInput, 10);
+                  if (Number.isNaN(parsed)) setYearInput(String(year));
                 }}
               />
             </label>

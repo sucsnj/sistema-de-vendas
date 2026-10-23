@@ -41,9 +41,9 @@ export const useBrand = ({
     // Cadastro de Marca Inline
     const handleSaveBrand = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeMarca = validateRequired(newBrandName, "O nome da marca");
-        if (!nomeMarca.ok) {
-            showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
+        const nameValidation = validateRequired(newBrandName, "O nome da marca");
+        if (!nameValidation.ok) {
+            showToast(nameValidation.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {
@@ -73,9 +73,9 @@ export const useBrand = ({
     // Edição de marca
     const handleUpdateBrand = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeMarca = validateRequired(brandForm.name, "O nome da marca");
-        if (!nomeMarca.ok) {
-            showToast(nomeMarca.message ?? "Campo obrigatório.", "error");
+        const nameValidation = validateRequired(brandForm.name, "O nome da marca");
+        if (!nameValidation.ok) {
+            showToast(nameValidation.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {

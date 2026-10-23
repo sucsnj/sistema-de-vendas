@@ -79,7 +79,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
         fetchServices({ search: query, page: 1, pageSize: 8 }),
       ]);
 
-      const produtos: SuggestionItem[] = (prodRes.items || []).map((p) => ({
+      const products: SuggestionItem[] = (prodRes.items || []).map((p) => ({
         id: p.id,
         type: 'PRODUTO',
         name: p.nome,
@@ -93,7 +93,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
         categoryName: p.categoria_nome,
       }));
 
-      const servicos: SuggestionItem[] = (servRes.items || []).map((s) => ({
+      const services: SuggestionItem[] = (servRes.items || []).map((s) => ({
         id: s.id,
         type: 'SERVICO',
         name: s.nome,
@@ -102,7 +102,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
         categoryName: s.categoria_nome,
       }));
 
-      setSuggestions([...produtos, ...servicos]);
+      setSuggestions([...products, ...services]);
       setIsOpen(true);
     } catch (err) {
       console.error('Erro na busca de sugestões:', err);
@@ -154,7 +154,7 @@ const ItemNameDropdown: React.FC<ItemNameDropdownProps> = ({
           }}
           disabled={disabled}
           placeholder="Digite para buscar itens..."
-          title="Digite para buscar produtos/serviços cadastrados"
+          title="Digite para buscar products/serviços cadastrados"
         />
         <SearchIcon className={importStyles.searchFieldIcon} fontSize="inherit" />
       </div>

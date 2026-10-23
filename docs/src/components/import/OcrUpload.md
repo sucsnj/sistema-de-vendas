@@ -15,4 +15,4 @@
 ## Notas
 
 - Persiste o último resultado em `localStorage['ocrRecente']` e o recarrega ao montar.
-- Sem props; o payload do OCR tem tipagem local simples (`OcrResultado[]`).
+- Sem props; o payload do OCR tem tipagem local simples (`OcrResult[]`).

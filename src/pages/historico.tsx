@@ -13,8 +13,8 @@ import { useFilter } from '../hooks/useFilter';
 // editar e excluir. Usa os hooks useToast, useSales e useFilter.
 const History: React.FC = () => {
   // Período selecionado (mês e ano), usado para carregar as vendas
-  const [mes, setMes] = useState(getDateArray()[1]);
-  const [ano, setAno] = useState(getDateArray()[2]);
+  const [month, setMonth] = useState(getDateArray()[1]);
+  const [year, setYear] = useState(getDateArray()[2]);
 
   // Notificações (toast) exibidas na tela
   const { showToast } = useToast();
@@ -30,7 +30,7 @@ const History: React.FC = () => {
     handleCancelEdit,
     handleSaved,
     handleDeleteSale,
-  } = useSales(mes, ano, showToast, { filter, autoConsolidate: false });
+  } = useSales(month, year, showToast, { filter, autoConsolidate: false });
 
   // Recarrega as vendas sempre que o período ou o filtro mudar
   useEffect(() => {
@@ -46,7 +46,7 @@ const History: React.FC = () => {
           <div className="page-actions">
             <label>
               Mês:
-              <select className="headerSelect" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+              <select className="headerSelect" value={month} onChange={(e) => setMonth(parseInt(e.target.value))}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {capitalize(formatMonthName(i + 1))}
@@ -59,8 +59,8 @@ const History: React.FC = () => {
               <input
                 className="headerInput"
                 type="number"
-                value={ano}
-                onChange={(e) => setAno(parseInt(e.target.value))}
+                value={year}
+                onChange={(e) => setYear(parseInt(e.target.value))}
               />
             </label>
             {/* Botões de filtro por valor da venda */}
@@ -92,7 +92,7 @@ const History: React.FC = () => {
         {/* Tabela com as vendas do período */}
         <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
         {/* Exportação e importação de vendas */}
-        <ExportButtons sales={sales} month={mes} year={ano} onMessage={showToast} />
+        <ExportButtons sales={sales} month={month} year={year} onMessage={showToast} />
       </div>
     </>
   );

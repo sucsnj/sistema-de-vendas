@@ -16,18 +16,18 @@ interface SummaryProps {
 }
 
 const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, setMonth }) => {
-    const resumo = useMemo(() => {
-        const totalPago = accountsYear.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0);
-        const totalPendente = accountsYear.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0);
+    const summary = useMemo(() => {
+        const paidTotal = accountsYear.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0);
+        const pendingTotal = accountsYear.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0);
         
         // Conta a quantidade pendente
-        const qtdPendente = accountsYear.filter((account) => account.status === 'Pendente').length;
+        const pendingCount = accountsYear.filter((account) => account.status === 'Pendente').length;
 
         // Conta a quantidade de contas pagas
-        const qtdPago = accountsYear.filter((account) => account.status === 'Pago').length;
+        const paidCount = accountsYear.filter((account) => account.status === 'Pago').length;
 
         // Conta o total de contas
-        const qtdTotal = accountsYear.length;
+        const totalCount = accountsYear.length;
 
         const totalsByDistributor = accountsYear.reduce<Record<string, number>>((acc, account) => {
             if (account.status === 'Pendente') {
@@ -39,29 +39,29 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
 
         const months = Array.from({ length: 12 }, (_, i) => {
             const monthIndex = i + 1;
-            const contasNoMes = accountsYear.filter((account) => parseDate(`${account.vencimento}T00:00:00`).month() + 1 === monthIndex);
+            const accountsInMonth = accountsYear.filter((account) => parseDate(`${account.vencimento}T00:00:00`).month() + 1 === monthIndex);
             return {
                 month: monthIndex,
-                paid: contasNoMes.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0),
-                pending: contasNoMes.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0),
+                paid: accountsInMonth.filter((account) => account.status === 'Pago').reduce((sum, account) => sum + account.valor, 0),
+                pending: accountsInMonth.filter((account) => account.status === 'Pendente').reduce((sum, account) => sum + account.valor, 0),
             };
         });
 
         return {
-            totalPago,
-            totalPendente,
-            totalAnual: totalPago + totalPendente,
+            paidTotal,
+            pendingTotal,
+            annualTotal: paidTotal + pendingTotal,
             months,
             totalsByDistributor,
-            qtdPendente,
-            qtdPago,
-            qtdTotal,
+            pendingCount,
+            paidCount,
+            totalCount,
         };
     }, [accountsYear]);
 
     return (
         <div>
-            <section className={`${styles.contasPanel} resumo-panel`}>
+            <section className={`${styles.contasPanel} summary-panel`}>
                 <div className={styles.panelHeader}>
                     <h2>Resumo</h2>
                     <span className={styles.statusChip}>Atualização automática</span>
@@ -80,15 +80,15 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                                     <div>
                                         <div className="summary-row">
                                             <strong>Pago</strong>
-                                            <span>R$ {formatCurrency(resumo.totalPago, 2)}</span>
+                                            <span>R$ {formatCurrency(summary.paidTotal, 2)}</span>
                                         </div>
                                         <div className="summary-row">
                                             <strong>Pendente</strong>
-                                            <span>R$ {formatCurrency(resumo.totalPendente, 2)}</span>
+                                            <span>R$ {formatCurrency(summary.pendingTotal, 2)}</span>
                                         </div>
                                         <div className="summary-row">
                                             <strong>Acumulado anual</strong>
-                                            <span>R$ {formatCurrency(resumo.totalAnual, 2)}</span>
+                                            <span>R$ {formatCurrency(summary.annualTotal, 2)}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -96,15 +96,15 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                                     <div>
                                         <div className="summary-row">
                                             <strong>Pago</strong>
-                                            <span>{resumo.qtdPago}</span>
+                                            <span>{summary.paidCount}</span>
                                         </div>
                                         <div className="summary-row">
                                             <strong>Pendente</strong>
-                                            <span>{resumo.qtdPendente}</span>
+                                            <span>{summary.pendingCount}</span>
                                         </div>
                                         <div className="summary-row">
                                             <strong>Acumulado anual</strong>
-                                            <span>{resumo.qtdTotal}</span>
+                                            <span>{summary.totalCount}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -114,10 +114,10 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
 
                 </div>
                 {/* #Totais por distribuidora */}
-                <TotalsByDistributor totalsByDistributor={resumo.totalsByDistributor} />
+                <TotalsByDistributor totalsByDistributor={summary.totalsByDistributor} />
 
                 { /* #Consolidação mensal */}
-                <MonthlyConsolidation months={resumo.months} />
+                <MonthlyConsolidation months={summary.months} />
 
                 {/* #Notas do Mês */}
                 <MonthNotes year={year} month={month} setYear={setYear} setMonth={setMonth} />
@@ -132,7 +132,7 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                     box-shadow: var(--shadow);
                 }
 
-                .resumo-panel {
+                .summary-panel {
                     display: flex;
                     flex-direction: column;
                     gap: 20px;

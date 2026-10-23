@@ -14,9 +14,9 @@ const TotalsByDistributor: React.FC<TotalsByDistributorProps> = ({ totalsByDistr
                     <p>Sem pendências por distribuidora.</p>
                 ) : (
                     <ul>
-                        {Object.entries(totalsByDistributor).map(([nome, valor]) => (
-                            <li key={nome}>
-                                {nome}: R$ {formatCurrency(valor, 2)}
+                        {Object.entries(totalsByDistributor).map(([distributor, amount]) => (
+                            <li key={distributor}>
+                                {distributor}: R$ {formatCurrency(amount, 2)}
                             </li>
                         ))}
                     </ul>

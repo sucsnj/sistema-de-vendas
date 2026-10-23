@@ -16,5 +16,5 @@
 
 ## Notas
 
-- `filteredContas`/`ultimasContas` (memo) derivam de `contasAno`; Escape limpa o formulário.
+- `filteredAccounts`/`latestAccounts` (memo) derivam de `accountsYear`; Escape limpa o formulário.
 - Duplicidade (distribuidora+documento) é rejeitada só na criação.

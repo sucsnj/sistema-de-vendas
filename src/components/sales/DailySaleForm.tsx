@@ -50,11 +50,11 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     setCartSearch,
     catalogItems,
     loadingCatalog,
-    selecionarOpen,
+    selectModalOpen,
     cartModalOpen,
     handleCartClick,
-    closeSelecao,
-    closeCarrinho,
+    closeSelectModal,
+    closeCartModal,
     handleManageCart,
     handleAddToCart,
     handleRemoveFromCart,
@@ -186,8 +186,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         </div>
       </form>
       <SelectItemsModal
-        isOpen={selecionarOpen}
-        onClose={closeSelecao}
+        isOpen={selectModalOpen}
+        onClose={closeSelectModal}
         onManageCart={handleManageCart}
         cartItems={cartItems}
         catalogItems={catalogItems}
@@ -199,7 +199,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
       />
       <CartModal
         isOpen={cartModalOpen}
-        onClose={closeCarrinho}
+        onClose={closeCartModal}
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}

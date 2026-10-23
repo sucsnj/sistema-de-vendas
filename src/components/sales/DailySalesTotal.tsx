@@ -19,8 +19,8 @@ interface DailySalesTotalProps {
 const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, recentSales = [], onEditSale, onDeleteSale, children }) => {
   
   const total = sales.reduce((sum, sale) => sum + sale.valor, 0);
-  const quantidadeVendas = sales.length;
-  const ticketMedio = quantidadeVendas > 0 ? total / quantidadeVendas : 0;
+  const salesCount = sales.length;
+  const averageTicket = salesCount > 0 ? total / salesCount : 0;
 
   const dailySales = selectedDay ? sales.filter((sale) => sale.data === selectedDay) : [];
   const dailyTotal = dailySales.reduce((sum, sale) => sum + sale.valor, 0);
@@ -30,11 +30,11 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   // Deleta a última venda do histórico de vendas
   useShortcuts(['Delete'], () => {
     if (recentSales.length > 0 && onDeleteSale) {
-      const ultimaVenda = [...recentSales]
+      const latestSale = [...recentSales]
         .sort((a, b) => b.id - a.id)[0];
 
-      if (ultimaVenda) {
-        onDeleteSale(ultimaVenda.id);
+      if (latestSale) {
+        onDeleteSale(latestSale.id);
       }
     }
   });
@@ -54,11 +54,11 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                 </div>
                 <div>
                   <span className="summary-label">Quantidade de Vendas</span>
-                  <span className="summary-value"> {quantidadeVendas}</span>
+                  <span className="summary-value"> {salesCount}</span>
                 </div>
                 <div>
                   <span className="summary-label">Ticket Médio</span>
-                  <span className="summary-value"> R$ {formatCurrency(ticketMedio, 2)}</span>
+                  <span className="summary-value"> R$ {formatCurrency(averageTicket, 2)}</span>
                 </div>
               </div>
             </div>

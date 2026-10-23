@@ -45,9 +45,9 @@ export const useCategory = ({
   // Cadastro de Categoria Inline
   const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nomeCategoria = validateRequired(categoryForm.name, 'O nome da categoria');
-    if (!nomeCategoria.ok) {
-      showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
+    const nameValidation = validateRequired(categoryForm.name, 'O nome da categoria');
+    if (!nameValidation.ok) {
+      showToast(nameValidation.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {
@@ -55,8 +55,8 @@ export const useCategory = ({
       showToast(response.message || 'Categoria criada com sucesso.', 'success');
 
       // Re-carrega lista de categories e seleciona a criada
-      const cats = await fetchCategories();
-      setOptions(prev => ({ ...prev, categories: cats }));
+      const categories = await fetchCategories();
+      setOptions(prev => ({ ...prev, categories: categories }));
       setForm(prev => ({ ...prev, categoryId: response.id }));
 
       // Fecha modal
@@ -77,9 +77,9 @@ export const useCategory = ({
   // Ediçao de categoria
   const handleUpdateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nomeCategoria = validateRequired(categoryForm.name, 'O nome da categoria');
-    if (!nomeCategoria.ok) {
-      showToast(nomeCategoria.message ?? 'Campo obrigatório.', 'error');
+    const nameValidation = validateRequired(categoryForm.name, 'O nome da categoria');
+    if (!nameValidation.ok) {
+      showToast(nameValidation.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {

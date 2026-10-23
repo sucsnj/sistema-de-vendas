@@ -12,14 +12,14 @@ export async function readDigitableLine(imagePath: string, regexName: string = "
             tessedit_char_whitelist: "0123456789. "
         });
 
-        const resultado = await worker.recognize(imagePath);
+        const result = await worker.recognize(imagePath);
 
         await worker.terminate();
 
         console.log("TEXTO OCR:");
-        console.log(resultado.data.text);
+        console.log(result.data.text);
 
-        const texto = resultado.data.text
+        const text = result.data.text
             .replace(/\n/g, " ")
             .replace(/\s+/g, " ");
 
@@ -33,15 +33,15 @@ export async function readDigitableLine(imagePath: string, regexName: string = "
             regex = regex2;
         }
 
-        const matches = texto.match(regex);
+        const matches = text.match(regex);
         console.log("MATCHES:", matches);
 
         if (matches && matches.length > 0) {
-            // pega sempre a última linha encontrada
-            const linha = matches[matches.length - 1]
+            // pega sempre a última line encontrada
+            const line = matches[matches.length - 1]
                 .replace(/\s/g, "")
                 .replace(/\./g, "");
-            return linha;
+            return line;
         }
 
         return null;

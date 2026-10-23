@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- Gerencia `cartItems`, modais (`selecionarOpen`, `cartModalOpen`), busca e catálogo (`cartSearch`, `catalogItems`, `loadingCatalog`).
+- Gerencia `cartItems`, modais (`selectModalOpen`, `cartModalOpen`), busca e catálogo (`cartSearch`, `catalogItems`, `loadingCatalog`).
 - Busca produtos (ativos) e serviços via `Promise.all` com `pageSize: 50`, mapeia serviços para `ItemData` e ordena por nome.
 - Controla adição (+1), remoção (-1), atualização de quantidade e limpeza do carrinho; agrupa por `id+tipo`.
 - Expõe totais via `getCartSummary` (`totalCartCount`, `totalCartValue`).

@@ -10,7 +10,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import PrintIcon from '@mui/icons-material/Print';
 
-interface ModalPixProps {
+interface PixModalProps {
   isOpen: boolean;
   onClose: () => void;
   payload: string;
@@ -20,7 +20,7 @@ interface ModalPixProps {
   pixKey: string;
 }
 
-const ModalPixContent: React.FC<ModalPixProps> = ({
+const ModalPixContent: React.FC<PixModalProps> = ({
   isOpen,
   onClose,
   payload,
@@ -151,7 +151,7 @@ const ModalPixContent: React.FC<ModalPixProps> = ({
   return createPortal(modalContent, document.body);
 };
 
-export default function PixModal(props: ModalPixProps) {
+export default function PixModal(props: PixModalProps) {
   if (!props.isOpen) return null;
   return <ModalPixContent {...props} />;
 }

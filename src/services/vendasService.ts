@@ -163,24 +163,24 @@ export const autoConsolidate = async () => {
   if (!day || !month || !initialYear) return;
   let year = initialYear;
 
-  let mesAnterior = month - 1;
+  let previousMonth = month - 1;
   if (month === 1) {
     year = year - 1;
-    mesAnterior = 12;
+    previousMonth = 12;
   }
 
   // Todo dia 03 do mês atual faz uma consolidação
   if (day === 3) {
-    await consolidateMonthly(mesAnterior, year);
+    await consolidateMonthly(previousMonth, year);
   }
 
-  const jaConsolidado = await isConsolidated(mesAnterior, year);
+  const jaConsolidado = await isConsolidated(previousMonth, year);
   if (jaConsolidado) {
     return;
   }
 
   if (day > 2) {
-    await consolidateMonthly(mesAnterior, year);
+    await consolidateMonthly(previousMonth, year);
   }
 };
 

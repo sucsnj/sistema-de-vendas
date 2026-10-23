@@ -104,23 +104,23 @@ export const useImportItems = ({ onImportSuccess, initialFile }: UseImportItemsO
     const results: ItemWithStatus[] = [...products];
 
     for (let i = 0; i < results.length; i++) {
-      const produto = results[i];
+      const product = results[i];
       try {
-        const result = await importInvoiceItem(produto);
+        const result = await importInvoiceItem(product);
 
         if (!result.ok) {
           results[i] = {
-            ...produto,
+            ...product,
             status: result.duplicado ? 'duplicado' : 'erro',
             mensagem: result.error,
           };
         } else if (result.estoqueAtualizado) {
-          results[i] = { ...produto, status: 'estoque_atualizado', mensagem: 'Estoque atualizado com sucesso' };
+          results[i] = { ...product, status: 'estoque_atualizado', mensagem: 'Estoque atualizado com sucesso' };
         } else {
-          results[i] = { ...produto, status: 'ok' };
+          results[i] = { ...product, status: 'ok' };
         }
       } catch {
-        results[i] = { ...produto, status: 'erro', mensagem: 'Falha na requisição' };
+        results[i] = { ...product, status: 'erro', mensagem: 'Falha na requisição' };
       }
       setProducts([...results]);
     }

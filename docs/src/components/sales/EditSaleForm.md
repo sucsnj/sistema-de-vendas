@@ -23,4 +23,4 @@ interface EditSaleFormProps {
 ## Notas
 
 - Janela de edição de 2 dias validada na página e na API (403).
-- Foca/seleciona o campo de valor ao abrir; mostra `loadingItens` durante a busca.
+- Foca/seleciona o campo de valor ao abrir; mostra `loadingItems` durante a busca.

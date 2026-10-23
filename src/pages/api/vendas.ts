@@ -18,26 +18,26 @@ interface SaleItemApi {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { data, valor, observacoes, criado_em, itens } = req.body;
+    const { data, valor: amount, observacoes: notes, criado_em: createdAt, itens: items } = req.body;
     try {
       // Validar data e valor
       const validDate = toDate(data);
-      const validValue = typeof valor === 'number' ? valor : parseCurrency(String(valor));
+      const validValue = typeof amount === 'number' ? amount : parseCurrency(String(amount));
       if (!validDate || validValue == null) {
         return res.status(400).json({ error: 'Dados inválidos: data ou valor inválidos' });
       }
 
       let result;
-      if (!criado_em) {
-        result = insertDailySale(data, validValue, observacoes);
+      if (!createdAt) {
+        result = insertDailySale(data, validValue, notes);
       } else {
-        result = insertDailySale(data, validValue, observacoes, criado_em);
+        result = insertDailySale(data, validValue, notes, createdAt);
       }
 
-      if (itens && Array.isArray(itens) && itens.length > 0 && result.lastInsertRowid) {
+      if (items && Array.isArray(items) && items.length > 0 && result.lastInsertRowid) {
         insertSaleItems(
           Number(result.lastInsertRowid),
-          itens.map((item: SaleItemApi) => ({
+          items.map((item: SaleItemApi) => ({
             item_id: item.id,
             tipo: item.tipo,
             nome: item.nome,
@@ -56,9 +56,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Erro ao registrar venda', details: String(error) });
     }
   } else if (req.method === 'PUT') {
-    const { id, data, valor, observacoes, itens } = req.body;
+    const { id, data, valor: amount, observacoes: notes, itens: items } = req.body;
     const validDate = toDate(data);
-    const validValue = typeof valor === 'number' ? valor : parseCurrency(String(valor));
+    const validValue = typeof amount === 'number' ? amount : parseCurrency(String(amount));
     if (!id || !validDate || validValue == null) {
       return res.status(400).json({ error: 'Dados inválidos para atualização' });
     }
@@ -72,14 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(403).json({ error: 'Atualização permitida apenas para vendas dos últimos 2 dias' });
       }
 
-      updateDailySale(id, data, validValue, observacoes);
+      updateDailySale(id, data, validValue, notes);
 
       // Substitui os itens: remove os existentes e insere os novos
       deleteSaleItems(id);
-      if (itens && Array.isArray(itens) && itens.length > 0) {
+      if (items && Array.isArray(items) && items.length > 0) {
         insertSaleItems(
           Number(id),
-          itens.map((item: SaleItemApi) => ({
+          items.map((item: SaleItemApi) => ({
             item_id: item.item_id ?? item.id ?? undefined,
             tipo: item.tipo,
             nome: item.nome,
@@ -120,17 +120,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Erro ao excluir venda', details: String(error) });
     }
   } else if (req.method === 'GET') {
-    const { mes, ano, filtro } = req.query;
+    const { mes: monthParam, ano: yearParam, filtro: filter } = req.query;
     try {
       // validação do filtro
-      const filtroValido = ['positivas', 'negativas', 'todas'].includes(filtro as string)
-        ? (filtro as 'positivas' | 'negativas' | 'todas')
+      const validFilter = ['positivas', 'negativas', 'todas'].includes(filter as string)
+        ? (filter as 'positivas' | 'negativas' | 'todas')
         : 'todas';
 
       const sales = getDailySales(
-        parseInt(mes as string),
-        parseInt(ano as string),
-        filtroValido
+        parseInt(monthParam as string),
+        parseInt(yearParam as string),
+        validFilter
       );
       res.status(200).json(sales);
     } catch (error) {

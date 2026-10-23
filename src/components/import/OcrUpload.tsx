@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from '../../hooks/useToast';
 
-interface OcrResultado {
+interface OcrResult {
     arquivo: string;
     linha?: string;
     erro?: string;
@@ -9,16 +9,16 @@ interface OcrResultado {
 
 // Handler de API ou componente exportado.
 export default function OcrUpload() {
-    const readRecentOcr = (): OcrResultado[] | null => {
+    const readRecentOcr = (): OcrResult[] | null => {
         try {
             const ocrJson = localStorage.getItem("ocrRecente");
-            return ocrJson ? (JSON.parse(ocrJson) as OcrResultado[]) : null;
+            return ocrJson ? (JSON.parse(ocrJson) as OcrResult[]) : null;
         } catch {
             return null;
         }
     };
 
-    const [resultado, setResultado] = useState<OcrResultado[] | null>(readRecentOcr);
+    const [results, setResults] = useState<OcrResult[] | null>(readRecentOcr);
 
     // Notificações (toast) do store global
     const { showToast } = useToast();
@@ -43,7 +43,7 @@ export default function OcrUpload() {
             });
 
             const data = await response.json();
-            setResultado(data);
+            setResults(data);
 
             // coloca o ocr recente num json
             const ocrJson = JSON.stringify(data);
@@ -81,9 +81,9 @@ export default function OcrUpload() {
                 accept=".pdf,.jpg,.jpeg,.png"
                 className="ocr-upload" multiple onChange={uploadFile} />
 
-            {resultado && (
+            {results && (
                 <div className="ocr-results">
-                    {resultado.map((item: OcrResultado, index: number) => (
+                    {results.map((item: OcrResult, index: number) => (
                         <pre
                             key={index}
                             className="ocr-upload-wrapper"

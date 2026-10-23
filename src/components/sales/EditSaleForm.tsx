@@ -15,11 +15,11 @@ interface EditSaleFormProps {
 }
 
 const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, onToast }) => {
-  const [editData, setEditData] = useState(sale.data);
-  const [editValor, setEditValor] = useState(sale.valor.toFixed(2));
-  const [editObservacoes, setEditObservacoes] = useState(sale.observacoes ?? "");
-  const [loadingItens, setLoadingItens] = useState(true);
-  const editValorInputRef = useRef<HTMLInputElement | null>(null);
+  const [editDate, setEditDate] = useState(sale.data);
+  const [editAmount, setEditAmount] = useState(sale.valor.toFixed(2));
+  const [editNotes, setEditNotes] = useState(sale.observacoes ?? "");
+  const [loadingItems, setLoadingItems] = useState(true);
+  const editAmountInputRef = useRef<HTMLInputElement | null>(null);
 
   // Estado e ações do carrinho (catálogo, seleção e gerenciamento), compartilhado
   // com o formulário de registrar venda através do hook useCart
@@ -30,12 +30,12 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
     setCartSearch,
     catalogItems,
     loadingCatalog,
-    selecionarOpen,
+    selectModalOpen,
     cartModalOpen,
     handleCartClick,
-    closeSelecao,
-    openCarrinho,
-    closeCarrinho,
+    closeSelectModal,
+    openCartModal,
+    closeCartModal,
     handleManageCart,
     handleAddToCart,
     handleRemoveFromCart,
@@ -48,10 +48,10 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
   // Carrega os itens existentes da venda ao abrir o form
   useEffect(() => {
     const load = async () => {
-      setLoadingItens(true);
-      const itens: SaleItemData[] = await fetchSaleItems(sale.id);
+      setLoadingItems(true);
+      const items: SaleItemData[] = await fetchSaleItems(sale.id);
       setCartItems(
-        itens.map((item) => ({
+        items.map((item) => ({
           id: item.item_id ?? item.id,
           tipo: item.tipo,
           nome: item.nome,
@@ -61,7 +61,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           referencia: item.referencia ?? undefined,
         }))
       );
-      setLoadingItens(false);
+      setLoadingItems(false);
     };
     load();
   }, [sale.id, setCartItems]);
@@ -74,27 +74,27 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
     setPrevCartItems(cartItems);
     if (cartItems.length > 0) {
       const total = cartItems.reduce((acc, item) => acc + (item.preco_venda ?? 0) * item.quantidade, 0);
-      setEditValor(total.toFixed(2));
+      setEditAmount(total.toFixed(2));
     }
   }
 
   // Foca no input de valor ao abrir
   useEffect(() => {
-    editValorInputRef.current?.focus();
-    editValorInputRef.current?.select();
+    editAmountInputRef.current?.focus();
+    editAmountInputRef.current?.select();
   }, []);
 
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const valor = parseNumber(editValor);
+    const amount = parseNumber(editAmount);
 
     try {
       await updateSale(
         sale.id,
-        editData,
-        valor,
-        editObservacoes,
+        editDate,
+        amount,
+        editNotes,
         cartItems.map((item) => ({
           item_id: item.id,
           tipo: item.tipo,
@@ -121,8 +121,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           Data:
           <input
             type="date"
-            value={editData}
-            onChange={(e) => setEditData(e.target.value)}
+            value={editDate}
+            onChange={(e) => setEditDate(e.target.value)}
             required
           />
         </label>
@@ -133,11 +133,11 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           className="input-with-icon-wrapper"
           >
             <input
-              ref={editValorInputRef}
+              ref={editAmountInputRef}
               type="number"
               step="0.01"
-              value={editValor}
-              onChange={(e) => setEditValor(e.target.value)}
+              value={editAmount}
+              onChange={(e) => setEditAmount(e.target.value)}
               required
               style={{ flex: 1 }}
             />
@@ -156,7 +156,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
             <button
               type="button"
               className="cart-icon-button"
-              onClick={openCarrinho}
+              onClick={openCartModal}
               aria-label="Editar itens da venda"
               title="Editar itens da venda"
             >
@@ -171,7 +171,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
               {cartItems.length} {cartItems.length === 1 ? "item" : "itens"} no carrinho — valor recalculado automaticamente
             </span>
           )}
-          {loadingItens && (
+          {loadingItems && (
             <span style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "4px", display: "block" }}>
               Carregando itens...
             </span>
@@ -182,8 +182,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           Observações:
           <textarea
             className="flex-grow-edit-observacoes"
-            value={editObservacoes}
-            onChange={(e) => setEditObservacoes(e.target.value)}
+            value={editNotes}
+            onChange={(e) => setEditNotes(e.target.value)}
           />
         </label>
 
@@ -195,8 +195,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
 
       {/* Modal de seleção de itens (adicionar ao carrinho) */}
       <SelectItemsModal
-        isOpen={selecionarOpen}
-        onClose={closeSelecao}
+        isOpen={selectModalOpen}
+        onClose={closeSelectModal}
         onManageCart={handleManageCart}
         cartItems={cartItems}
         catalogItems={catalogItems}
@@ -210,7 +210,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
       {/* Modal de carrinho para editar itens */}
       <CartModal
         isOpen={cartModalOpen}
-        onClose={closeCarrinho}
+        onClose={closeCartModal}
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}

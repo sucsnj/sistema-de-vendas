@@ -54,9 +54,9 @@ export const useUnitOfMeasure = ({
   // Cadastro de Unidade de Medida Inline
   const handleSaveUnitOfMeasure = async (e: React.FormEvent) => {
     e.preventDefault();
-    const siglaUnidade = validateRequired(uomForm.abbreviation, 'A sigla da unidade de medida');
-    if (!siglaUnidade.ok) {
-      showToast(siglaUnidade.message ?? 'Campo obrigatório.', 'error');
+    const abbreviationValidation = validateRequired(uomForm.abbreviation, 'A sigla da unidade de medida');
+    if (!abbreviationValidation.ok) {
+      showToast(abbreviationValidation.message ?? 'Campo obrigatório.', 'error');
       return;
     }
     try {

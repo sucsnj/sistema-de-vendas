@@ -25,234 +25,234 @@ import { useShortcuts } from '../utils/shortcuts';
 import { getDateArray, toTimestamp, now } from '../utils/date';
 import { validateRequired, validateCurrency } from '../utils/validation';
 
-const hoje = now().format('YYYY-MM-DD');
+const today = now().format('YYYY-MM-DD');
 
 // Componente React.
 const Payables: React.FC = () => {
   const queryClient = useQueryClient();
-  const [ano, setAno] = useState(getDateArray()[2]);
-  const [mes, setMes] = useState(getDateArray()[1]);
-  const [contasMes, setContasMes] = useState<AccountDetails[]>([]);
-  const [contasAno, setContasAno] = useState<AccountDetails[]>([]);
-  const [distribuidora, setDistribuidora] = useState('');
-  const [valor, setValor] = useState('');
-  const [vencimento, setVencimento] = useState(hoje);
-  const [documento, setDocumento] = useState('');
-  const [bancoObservacoes, setBancoObservacoes] = useState('');
-  const [editingConta, setEditingConta] = useState<AccountDetails | null>(null);
-  const [selectedConta, setSelectedConta] = useState<AccountDetails | null>(null);
-  const [filtroDistribuidora, setFiltroDistribuidora] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState<'Todos' | 'Pendente' | 'Pago'>('Todos');
-  const [filtroVencimentoDe, setFiltroVencimentoDe] = useState(() => {
-    if (typeof window === 'undefined') return hoje;
-    return localStorage.getItem('filtroVencimentoDe') || hoje;
+  const [year, setYear] = useState(getDateArray()[2]);
+  const [month, setMonth] = useState(getDateArray()[1]);
+  const [accountsMonth, setAccountsMonth] = useState<AccountDetails[]>([]);
+  const [accountsYear, setAccountsYear] = useState<AccountDetails[]>([]);
+  const [distributor, setDistributor] = useState('');
+  const [amount, setAmount] = useState('');
+  const [dueDate, setDueDate] = useState(today);
+  const [documentNumber, setDocumentNumber] = useState('');
+  const [bankNotes, setBankNotes] = useState('');
+  const [editingAccount, setEditingAccount] = useState<AccountDetails | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<AccountDetails | null>(null);
+  const [distributorFilter, setDistributorFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'Todos' | 'Pendente' | 'Pago'>('Todos');
+  const [dueDateFromFilter, setDueDateFromFilter] = useState(() => {
+    if (typeof window === 'undefined') return today;
+    return localStorage.getItem('filtroVencimentoDe') || today;
   });
-  const [filtroVencimentoAte, setFiltroVencimentoAte] = useState(() => {
-    if (typeof window === 'undefined') return hoje;
-    return localStorage.getItem('filtroVencimentoAte') || hoje;
+  const [dueDateToFilter, setDueDateToFilter] = useState(() => {
+    if (typeof window === 'undefined') return today;
+    return localStorage.getItem('filtroVencimentoAte') || today;
   });
-  const distribuidoraInputRef = useRef<HTMLInputElement | null>(null);
-  const valorInputRef = useRef<HTMLInputElement | null>(null);
+  const distributorInputRef = useRef<HTMLInputElement | null>(null);
+  const amountInputRef = useRef<HTMLInputElement | null>(null);
   const dataInputRef = useRef<HTMLInputElement | null>(null);
-  const documentoInputRef = useRef<HTMLInputElement | null>(null);
+  const documentInputRef = useRef<HTMLInputElement | null>(null);
 
   const [payModalOpen, setPayModalOpen] = useState(false);
-  const [payObservacao, setPayObservacao] = useState('');
+  const [paymentNotes, setPaymentNotes] = useState('');
 
   const handleDueDateFromChange = (value: string) => {
-    setFiltroVencimentoDe(value);
+    setDueDateFromFilter(value);
     if (typeof window !== 'undefined') {
       localStorage.setItem('filtroVencimentoDe', value);
-      if (value > filtroVencimentoAte) {
+      if (value > dueDateToFilter) {
         localStorage.setItem('filtroVencimentoAte', value);
       }
     }
-    if (value > filtroVencimentoAte) {
-      setFiltroVencimentoAte(value);
+    if (value > dueDateToFilter) {
+      setDueDateToFilter(value);
     }
   };
 
   const handleDueDateToChange = (value: string) => {
-    setFiltroVencimentoAte(value);
+    setDueDateToFilter(value);
     if (typeof window !== 'undefined') {
       localStorage.setItem('filtroVencimentoAte', value);
-      if (value < filtroVencimentoDe) {
+      if (value < dueDateFromFilter) {
         localStorage.setItem('filtroVencimentoDe', value);
       }
     }
-    if (value < filtroVencimentoDe) {
-      setFiltroVencimentoDe(value);
+    if (value < dueDateFromFilter) {
+      setDueDateFromFilter(value);
     }
   };
 
   const { showToast } = useToast();
 
-  const loadContasMes = useCallback(async () => {
+  const loadMonthAccounts = useCallback(async () => {
     try {
-      const data = await fetchAccounts(ano, mes);
-      setContasMes(data);
+      const data = await fetchAccounts(year, month);
+      setAccountsMonth(data);
     } catch {
       showToast('Não foi possível carregar as contas do mês.', 'error');
     }
-  }, [ano, mes, showToast]);
+  }, [year, month, showToast]);
 
-  const loadContasAno = useCallback(async () => {
+  const loadYearAccounts = useCallback(async () => {
     try {
-      const data = await fetchAccounts(ano);
-      setContasAno(data);
+      const data = await fetchAccounts(year);
+      setAccountsYear(data);
     } catch {
       showToast('Não foi possível carregar o resumo anual.', 'error');
     }
-  }, [ano, showToast]);
+  }, [year, showToast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      loadContasMes();
+      loadMonthAccounts();
     }, 0);
     return () => clearTimeout(timer);
-  }, [loadContasMes]);
+  }, [loadMonthAccounts]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      loadContasAno();
+      loadYearAccounts();
     }, 0);
     return () => clearTimeout(timer);
-  }, [loadContasAno]);
+  }, [loadYearAccounts]);
 
   const resetForm = () => {
-    setDistribuidora('');
-    setValor('');
-    setVencimento(hoje);
-    setDocumento('');
-    setBancoObservacoes('');
-    setEditingConta(null);
+    setDistributor('');
+    setAmount('');
+    setDueDate(today);
+    setDocumentNumber('');
+    setBankNotes('');
+    setEditingAccount(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Validações de campos obrigatórios e formato (contrato ADR 0002)
-    const distribuidoraCheck = validateRequired(distribuidora, 'Distribuidora');
-    if (!distribuidoraCheck.ok) {
-      showToast(distribuidoraCheck.message ?? 'Campo obrigatório.', 'error');
-      highlightField(distribuidoraInputRef);
+    const distributorCheck = validateRequired(distributor, 'Distribuidora');
+    if (!distributorCheck.ok) {
+      showToast(distributorCheck.message ?? 'Campo obrigatório.', 'error');
+      highlightField(distributorInputRef);
       return;
     }
 
-    const valorCheck = validateRequired(valor, 'Valor');
-    if (!valorCheck.ok) {
-      showToast(valorCheck.message ?? 'Campo obrigatório.', 'error');
-      highlightField(valorInputRef);
+    const amountCheck = validateRequired(amount, 'Valor');
+    if (!amountCheck.ok) {
+      showToast(amountCheck.message ?? 'Campo obrigatório.', 'error');
+      highlightField(amountInputRef);
       return;
     }
 
-    const valorFormato = validateCurrency(valor);
-    if (!valorFormato.ok) {
-      showToast(valorFormato.message ?? 'Valor inválido.', 'error');
-      highlightField(valorInputRef);
+    const amountFormat = validateCurrency(amount);
+    if (!amountFormat.ok) {
+      showToast(amountFormat.message ?? 'Valor inválido.', 'error');
+      highlightField(amountInputRef);
       return;
     }
 
-    const vencimentoCheck = validateRequired(vencimento, 'Vencimento');
-    if (!vencimentoCheck.ok) {
-      showToast(vencimentoCheck.message ?? 'Campo obrigatório.', 'error');
+    const dueDateCheck = validateRequired(dueDate, 'Vencimento');
+    if (!dueDateCheck.ok) {
+      showToast(dueDateCheck.message ?? 'Campo obrigatório.', 'error');
       highlightField(dataInputRef);
       return;
     }
 
-    const documentoCheck = validateRequired(documento, 'Documento');
-    if (!documentoCheck.ok) {
-      showToast(documentoCheck.message ?? 'Campo obrigatório.', 'error');
-      highlightField(documentoInputRef);
+    const documentCheck = validateRequired(documentNumber, 'Documento');
+    if (!documentCheck.ok) {
+      showToast(documentCheck.message ?? 'Campo obrigatório.', 'error');
+      highlightField(documentInputRef);
       return;
     }
 
-    const numericValor = parseNumber(valor);
-    if (Number.isNaN(numericValor) || numericValor <= 0) {
+    const numericAmount = parseNumber(amount);
+    if (Number.isNaN(numericAmount) || numericAmount <= 0) {
       showToast('Valor deve ser um número maior que zero.', 'error');
       return;
     }
 
     try {
-      if (editingConta) {
+      if (editingAccount) {
         await updateAccount(
-          editingConta.id,
-          distribuidora,
-          numericValor,
-          vencimento,
-          documento,
-          bancoObservacoes,
+          editingAccount.id,
+          distributor,
+          numericAmount,
+          dueDate,
+          documentNumber,
+          bankNotes,
         );
         showToast('Conta atualizada com sucesso.', 'success');
       } else {
         // traz o retorno do backend para mostrar a mensagem de sucesso ou erro específico
         // o retorno do json
-        const response = await registerAccount(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        const response = await registerAccount(distributor, numericAmount, dueDate, documentNumber, bankNotes);
         if (response.error) {
           showToast(response.error, 'error');
           return;
         }
-        // await registerAccount(distribuidora, numericValor, vencimento, documento, bancoObservacoes);
+        // await registerAccount(distributor, numericAmount, dueDate, documentNumber, bankNotes);
         showToast(response.message, 'success');
       }
 
       resetForm();
-      loadContasMes();
-      loadContasAno();
+      loadMonthAccounts();
+      loadYearAccounts();
     } catch {
       showToast('Erro ao salvar a conta.', 'error');
     }
   };
 
   const handleEdit = (account: AccountDetails) => {
-    setEditingConta(account);
-    setDistribuidora(account.distribuidora);
-    setValor(account.valor.toFixed(2));
-    setVencimento(account.vencimento);
-    setDocumento(account.documento);
-    setBancoObservacoes(account.banco_observacoes ?? '');
-    distribuidoraInputRef.current?.focus();
+    setEditingAccount(account);
+    setDistributor(account.distribuidora);
+    setAmount(account.valor.toFixed(2));
+    setDueDate(account.vencimento);
+    setDocumentNumber(account.documento);
+    setBankNotes(account.banco_observacoes ?? '');
+    distributorInputRef.current?.focus();
   };
 
   const handleCancelEdit = () => resetForm();
 
-  const handleView = (account: AccountDetails) => setSelectedConta(account);
+  const handleView = (account: AccountDetails) => setSelectedAccount(account);
 
   const handleDelete = async (id: number) => {
     try {
       await deleteAccount(id);
       showToast('Conta excluída com sucesso.', 'success');
-      loadContasMes();
-      loadContasAno();
-      setSelectedConta((current) => (current?.id === id ? null : current));
+      loadMonthAccounts();
+      loadYearAccounts();
+      setSelectedAccount((current) => (current?.id === id ? null : current));
     } catch {
       showToast('Erro ao excluir a conta.', 'error');
     }
   };
 
   const handleConfirmPayment = async () => {
-    if (!selectedConta) return;
+    if (!selectedAccount) return;
 
     try {
       await updateAccount(
-        selectedConta.id,
-        selectedConta.distribuidora,
-        selectedConta.valor,
-        selectedConta.vencimento,
-        selectedConta.documento,
-        payObservacao
+        selectedAccount.id,
+        selectedAccount.distribuidora,
+        selectedAccount.valor,
+        selectedAccount.vencimento,
+        selectedAccount.documento,
+        paymentNotes
       );
 
-      await payAccount(selectedConta.id);
+      await payAccount(selectedAccount.id);
 
       showToast('Conta paga com sucesso.', 'success');
 
       setPayModalOpen(false);
 
-      loadContasMes();
-      loadContasAno();
+      loadMonthAccounts();
+      loadYearAccounts();
 
-      setSelectedConta(null);
+      setSelectedAccount(null);
     } catch {
       showToast('Erro ao pagar conta.', 'error');
     }
@@ -262,9 +262,9 @@ const Payables: React.FC = () => {
     try {
       await cancelAccountPayment(id);
       showToast('Pagamento cancelado e conta voltou a Pendente.', 'success');
-      loadContasMes();
-      loadContasAno();
-      setSelectedConta(null);
+      loadMonthAccounts();
+      loadYearAccounts();
+      setSelectedAccount(null);
     } catch {
       showToast('Erro ao cancelar o pagamento.', 'error');
     }
@@ -280,7 +280,7 @@ const Payables: React.FC = () => {
   };
 
   // Função para importação de XML
-  const handleImportXML = async () => {
+  const handleImportXml = async () => {
     try {
       const fileInput = document.createElement('input');
       fileInput.type = 'file';
@@ -303,8 +303,8 @@ const Payables: React.FC = () => {
         if (result.sucesso) {
           showToast(`Importação concluída: ${result.registros.length} registros inseridos`, 'success');
           // Atualiza imediatamente a UI
-          await loadContasMes();
-          await loadContasAno();
+          await loadMonthAccounts();
+          await loadYearAccounts();
           queryClient.invalidateQueries({ queryKey: ['notas'] });
         } else {
           showToast(`Erro: ${result.error || 'Falha ao importar XML'}`, 'error');
@@ -317,27 +317,27 @@ const Payables: React.FC = () => {
     }
   };
 
-  const filteredContas = useMemo(() => {
-    return contasAno.filter((account) => {
+  const filteredAccounts = useMemo(() => {
+    return accountsYear.filter((account) => {
       const matchesDistribuidora = account.distribuidora
         .toLowerCase()
-        .includes(filtroDistribuidora.toLowerCase());
-      const matchesStatus = filtroStatus === 'Todos' || account.status === filtroStatus;
-      const matchesVencimentoDe = filtroVencimentoDe ? account.vencimento >= filtroVencimentoDe : true;
-      const matchesVencimentoAte = filtroVencimentoAte ? account.vencimento <= filtroVencimentoAte : true;
-      return matchesDistribuidora && matchesStatus && matchesVencimentoDe && matchesVencimentoAte;
+        .includes(distributorFilter.toLowerCase());
+      const matchesStatus = statusFilter === 'Todos' || account.status === statusFilter;
+      const matchesDueDateFrom = dueDateFromFilter ? account.vencimento >= dueDateFromFilter : true;
+      const matchesDueDateTo = dueDateToFilter ? account.vencimento <= dueDateToFilter : true;
+      return matchesDistribuidora && matchesStatus && matchesDueDateFrom && matchesDueDateTo;
     });
-  }, [contasAno, filtroDistribuidora, filtroStatus, filtroVencimentoDe, filtroVencimentoAte]);
+  }, [accountsYear, distributorFilter, statusFilter, dueDateFromFilter, dueDateToFilter]);
 
-  const ultimasContas = useMemo(() => {
-    return [...contasAno]
+  const latestAccounts = useMemo(() => {
+    return [...accountsYear]
       .sort((a, b) => {
         const dateA = toTimestamp(a.criado_em || '1970-01-01T00:00:00');
         const dateB = toTimestamp(b.criado_em || '1970-01-01T00:00:00');
         return dateB - dateA;
       })
       .slice(0, 10);
-  }, [contasAno]);
+  }, [accountsYear]);
 
   // Limpa formulário de registro de conta ao pressionar esc
   useShortcuts(['Escape'], () => {
@@ -346,34 +346,34 @@ const Payables: React.FC = () => {
 
   return (
     <div className={styles.contasPage}>
-      <PayablesHeader year={ano} month={mes} setYear={setAno} setMonth={setMes} handleBackup={handleBackup} />
+      <PayablesHeader year={year} month={month} setYear={setYear} setMonth={setMonth} handleBackup={handleBackup} />
 
       <main className={styles.contasGrid}>
         <section className={`${styles.contasPanel} ${styles.detailPanel}`}>
           <PayablesFilterPanel
-            distributorFilter={filtroDistribuidora}
-            setDistributorFilter={setFiltroDistribuidora}
-            statusFilter={filtroStatus}
-            setStatusFilter={setFiltroStatus}
-            dueDateFromFilter={filtroVencimentoDe}
+            distributorFilter={distributorFilter}
+            setDistributorFilter={setDistributorFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            dueDateFromFilter={dueDateFromFilter}
             setDueDateFromFilter={handleDueDateFromChange}
-            dueDateToFilter={filtroVencimentoAte}
+            dueDateToFilter={dueDateToFilter}
             setDueDateToFilter={handleDueDateToChange}
-            today={hoje}
-            filteredAccounts={filteredContas}
+            today={today}
+            filteredAccounts={filteredAccounts}
             handleView={handleView}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
             handleStartPayment={(account) => {
-              setSelectedConta(account);
-              setPayObservacao(account.banco_observacoes || '');
+              setSelectedAccount(account);
+              setPaymentNotes(account.banco_observacoes || '');
               setPayModalOpen(true);
             }}
             onClearFilters={() => {
-              setFiltroDistribuidora('');
-              setFiltroStatus('Todos');
-              setFiltroVencimentoDe(hoje);
-              setFiltroVencimentoAte(hoje);
+              setDistributorFilter('');
+              setStatusFilter('Todos');
+              setDueDateFromFilter(today);
+              setDueDateToFilter(today);
 
               if (typeof window !== 'undefined') {
                 localStorage.removeItem('filtroVencimentoDe');
@@ -383,29 +383,29 @@ const Payables: React.FC = () => {
           />
 
           <PayablesForm
-            distributor={distribuidora}
-            setDistributor={setDistribuidora}
-            amount={valor}
-            setAmount={setValor}
-            dueDate={vencimento}
-            setDueDate={setVencimento}
-            document={documento}
-            setDocument={setDocumento}
-            bankNotes={bancoObservacoes}
-            setBankNotes={setBancoObservacoes}
-            editingAccount={editingConta}
+            distributor={distributor}
+            setDistributor={setDistributor}
+            amount={amount}
+            setAmount={setAmount}
+            dueDate={dueDate}
+            setDueDate={setDueDate}
+            document={documentNumber}
+            setDocument={setDocumentNumber}
+            bankNotes={bankNotes}
+            setBankNotes={setBankNotes}
+            editingAccount={editingAccount}
             onSubmit={handleSubmit}
             onReset={resetForm}
-            onImportXML={handleImportXML}
+            onImportXML={handleImportXml}
             onCancelEdit={handleCancelEdit}
-            distributorInputRef={distribuidoraInputRef}
-            amountInputRef={valorInputRef}
+            distributorInputRef={distributorInputRef}
+            amountInputRef={amountInputRef}
             dataInputRef={dataInputRef}
-            documentInputRef={documentoInputRef}
+            documentInputRef={documentInputRef}
           />
 
           <PayablesLastTen
-            latestAccounts={ultimasContas}
+            latestAccounts={latestAccounts}
             handleView={handleView}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
@@ -413,42 +413,42 @@ const Payables: React.FC = () => {
         </section>
 
         {/* #Agenda */}
-        <Agenda accountsMonth={contasMes} accountsYear={contasAno} />
+        <Agenda accountsMonth={accountsMonth} accountsYear={accountsYear} />
 
         {/* #Resumo */}
-        <Summary accountsYear={contasAno} year={ano} month={mes} setYear={setAno} setMonth={setMes} />
+        <Summary accountsYear={accountsYear} year={year} month={month} setYear={setYear} setMonth={setMonth} />
 
       </main>
 
       <PayablesModals
-        selectedAccount={selectedConta}
-        editingAccount={editingConta}
-        distributor={distribuidora}
-        setDistributor={setDistribuidora}
-        amount={valor}
-        setAmount={setValor}
-        dueDate={vencimento}
-        setDueDate={setVencimento}
-        document={documento}
-        setDocument={setDocumento}
-        bankNotes={bancoObservacoes}
-        setBankNotes={setBancoObservacoes}
+        selectedAccount={selectedAccount}
+        editingAccount={editingAccount}
+        distributor={distributor}
+        setDistributor={setDistributor}
+        amount={amount}
+        setAmount={setAmount}
+        dueDate={dueDate}
+        setDueDate={setDueDate}
+        document={documentNumber}
+        setDocument={setDocumentNumber}
+        bankNotes={bankNotes}
+        setBankNotes={setBankNotes}
         payModalOpen={payModalOpen}
-        paymentNotes={payObservacao}
-        setPaymentNotes={setPayObservacao}
-        onCloseSelectedAccount={() => setSelectedConta(null)}
+        paymentNotes={paymentNotes}
+        setPaymentNotes={setPaymentNotes}
+        onCloseSelectedAccount={() => setSelectedAccount(null)}
         onSave={handleSubmit}
         onEdit={handleEdit}
         onCancelEdit={handleCancelEdit}
         onStartPayment={(account) => {
-          setSelectedConta(account);
-          setPayObservacao(account.banco_observacoes || '');
+          setSelectedAccount(account);
+          setPaymentNotes(account.banco_observacoes || '');
           setPayModalOpen(true);
         }}
         onConfirmPayment={() => {
           handleConfirmPayment();
           handleCancelEdit();
-          setSelectedConta(null);
+          setSelectedAccount(null);
         }}
         onClosePayModal={() => setPayModalOpen(false)}
         onCancelPayment={handleCancelPayment}

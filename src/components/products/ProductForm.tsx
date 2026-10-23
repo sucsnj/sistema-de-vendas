@@ -156,11 +156,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const categoriaSelecionada = options.categories.find(
+                            const selectedCategory = options.categories.find(
                                 (c) => c.id === form.categoryId
                             );
-                            if (categoriaSelecionada) {
-                                actions.editCategory(categoriaSelecionada);
+                            if (selectedCategory) {
+                                actions.editCategory(selectedCategory);
                             }
                         }}
                         title="Editar Categoria Selecionada"
@@ -204,11 +204,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const marcaSelecionada = options.brands.find(
+                            const selectedBrand = options.brands.find(
                                 (m) => m.id === form.brandId
                             );
-                            if (marcaSelecionada) {
-                                actions.editBrand(marcaSelecionada);
+                            if (selectedBrand) {
+                                actions.editBrand(selectedBrand);
                             }
                         }}
                         title="Editar Marca Selecionada"
@@ -252,11 +252,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         type="button"
                         className={styles.manageButton}
                         onClick={() => {
-                            const fornecedorSelecionado = options.suppliers.find(
+                            const selectedSupplier = options.suppliers.find(
                                 (f) => f.id === form.supplierId
                             );
-                            if (fornecedorSelecionado) {
-                                actions.editSupplier(fornecedorSelecionado);
+                            if (selectedSupplier) {
+                                actions.editSupplier(selectedSupplier);
                             }
                         }}
                         title="Editar Fornecedor Selecionado"
@@ -282,19 +282,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         value={form.purchasePrice}
                         onChange={(e) => {
                             const purchasePrice = e.target.value;
-                            const compraValor = parseNumber(purchasePrice);
-                            const vendaValor = parseNumber(form.salePrice);
-                            const margemValor = parseNumber(form.profitMargin);
+                            const purchaseValue = parseNumber(purchasePrice);
+                            const saleValue = parseNumber(form.salePrice);
+                            const marginValue = parseNumber(form.profitMargin);
 
-                            if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
-                                const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
-                                setForm(prev => ({ ...prev, purchasePrice, salePrice: String(novoPrecoVenda) }));
+                            if (!Number.isNaN(purchaseValue) && purchaseValue >= 0 && !Number.isNaN(marginValue)) {
+                                const newSalePrice = calculateSalePrice(purchaseValue, marginValue);
+                                setForm(prev => ({ ...prev, purchasePrice, salePrice: String(newSalePrice) }));
                                 return;
                             }
 
-                            if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
-                                const novaMargem = calculateMargin(compraValor, vendaValor);
-                                setForm(prev => ({ ...prev, purchasePrice, profitMargin: String(novaMargem) }));
+                            if (!Number.isNaN(purchaseValue) && purchaseValue > 0 && !Number.isNaN(saleValue)) {
+                                const newMargin = calculateMargin(purchaseValue, saleValue);
+                                setForm(prev => ({ ...prev, purchasePrice, profitMargin: String(newMargin) }));
                                 return;
                             }
 
@@ -316,12 +316,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         value={form.profitMargin}
                         onChange={(e) => {
                             const profitMargin = e.target.value;
-                            const compraValor = parseNumber(form.purchasePrice);
-                            const margemValor = parseNumber(profitMargin);
+                            const purchaseValue = parseNumber(form.purchasePrice);
+                            const marginValue = parseNumber(profitMargin);
 
-                            if (!Number.isNaN(compraValor) && compraValor >= 0 && !Number.isNaN(margemValor)) {
-                                const novoPrecoVenda = calculateSalePrice(compraValor, margemValor);
-                                setForm(prev => ({ ...prev, profitMargin, salePrice: String(novoPrecoVenda) }));
+                            if (!Number.isNaN(purchaseValue) && purchaseValue >= 0 && !Number.isNaN(marginValue)) {
+                                const newSalePrice = calculateSalePrice(purchaseValue, marginValue);
+                                setForm(prev => ({ ...prev, profitMargin, salePrice: String(newSalePrice) }));
                                 return;
                             }
 
@@ -343,12 +343,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         value={form.salePrice}
                         onChange={(e) => {
                             const salePrice = e.target.value;
-                            const compraValor = parseNumber(form.purchasePrice);
-                            const vendaValor = parseNumber(salePrice);
+                            const purchaseValue = parseNumber(form.purchasePrice);
+                            const saleValue = parseNumber(salePrice);
 
-                            if (!Number.isNaN(compraValor) && compraValor > 0 && !Number.isNaN(vendaValor)) {
-                                const novaMargem = calculateMargin(compraValor, vendaValor);
-                                setForm(prev => ({ ...prev, salePrice, profitMargin: String(novaMargem) }));
+                            if (!Number.isNaN(purchaseValue) && purchaseValue > 0 && !Number.isNaN(saleValue)) {
+                                const newMargin = calculateMargin(purchaseValue, saleValue);
+                                setForm(prev => ({ ...prev, salePrice, profitMargin: String(newMargin) }));
                                 return;
                             }
 

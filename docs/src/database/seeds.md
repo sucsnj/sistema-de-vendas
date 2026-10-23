@@ -5,9 +5,9 @@
 ## O que faz
 
 - Exporta `seedUoms`: lista de unidades de medida com `sigla` e `descricao` (inclui `SR` - Serviço, id 21).
-- Exporta `seedCategorias`: `[ { nome: 'Geral', descricao: 'Categoria padrão' } ]`.
-- Exporta `seedMarcas`: `[ { nome: 'Outros' } ]`.
-- Exporta `seedFornecedores`: `[ { nome: 'Sem fornecedor' } ]`.
+- Exporta `seedCategories`: `[ { nome: 'Geral', descricao: 'Categoria padrão' } ]`.
+- Exporta `seedBrands`: `[ { nome: 'Outros' } ]`.
+- Exporta `seedSuppliers`: `[ { nome: 'Sem fornecedor' } ]`.
 
 ## Relações
 

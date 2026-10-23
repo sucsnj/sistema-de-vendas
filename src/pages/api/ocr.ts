@@ -63,7 +63,7 @@ export default async function handler(
         fs.mkdirSync("./temp");
     }
 
-    const resultados = [];
+    const results = [];
 
     for (const file of files) {
 
@@ -89,12 +89,12 @@ export default async function handler(
             }
 
             if (linhaDigitavel) {
-                resultados.push({
+                results.push({
                     arquivo: file.originalname + `${info}`,
                     linha: linhaDigitavel,
                 });
             } else {
-                resultados.push({
+                results.push({
                     arquivo: file.originalname,
                     erro: "Erro no OCR",
                 });
@@ -104,7 +104,7 @@ export default async function handler(
 
             console.error("Erro:", err);
 
-            resultados.push({
+            results.push({
                 arquivo: file.originalname,
                 erro: "Falha ao processar arquivo",
             });
@@ -118,5 +118,5 @@ export default async function handler(
         }
     }
 
-    return res.status(200).json(resultados);
+    return res.status(200).json(results);
 }

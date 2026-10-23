@@ -6,7 +6,7 @@
 
 - Abre conexão com `db/produtos.db`, pragmas `journal_mode=WAL`, `synchronous=FULL`, `foreign_keys=ON`.
 - Cria tabelas: `categorias`, `marcas`, `fornecedores`, `unidades_medida`, `itens`, `item_codigos_barras`, `item_unidades_medida`, `servicos`, `movimentacoes_estoque`.
-- Aplica seeds (`seedUoms`, `seedCategorias`, `seedMarcas`, `seedFornecedores`) quando vazias; realiza migrações para coluna `multiplicador_unidade` em `itens`, normalização de `servicos` (adiciona colunas, remove `ativo` se existir) e migração de dados de unidades de medida da tabela `itens` para `item_unidades_medida`.
+- Aplica seeds (`seedUoms`, `seedCategories`, `seedBrands`, `seedSuppliers`) quando vazias; realiza migrações para coluna `multiplicador_unidade` em `itens`, normalização de `servicos` (adiciona colunas, remove `ativo` se existir) e migração de dados de unidades de medida da tabela `itens` para `item_unidades_medida`.
 - Sincroniza sequência compartilhada (`sqlite_sequence`) entre `itens` e `servicos` via `syncSharedAutoincrementSequence()` (chamado ao inicializar e em `insertService`/`insertItem` contextos relevantes).
 - Fornece helpers CRUD para cadastros auxiliares (com regras de proteção para registros padrão: categoria Geral id=1, marca Outros id=1, fornecedor Sem fornecedor id=1, unidade UN id=1 — impede apagar/atualizar em casos restritos).
 - Gerencia movimentações de estoque com transação (`insertStockMovement` = `db.transaction(insertStockMovementRaw)`), calculando `estoque_final` conforme tipo (`ENTRADA/SAIDA/AJUSTE`).

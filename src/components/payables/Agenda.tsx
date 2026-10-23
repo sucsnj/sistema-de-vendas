@@ -14,17 +14,17 @@ interface AgendaProps {
 const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
     // Mapeamento de contas por data de vencimento
     const agenda = useMemo(() => {
-        const map = new Map<string, { data: string; totalPendente: number }>();
+        const map = new Map<string, { date: string; pendingTotal: number }>();
         accountsYear.forEach((account) => {
-            const current = map.get(account.vencimento) ?? { data: account.vencimento, totalPendente: 0 };
+            const current = map.get(account.vencimento) ?? { date: account.vencimento, pendingTotal: 0 };
             if (account.status === 'Pendente') {
-                current.totalPendente += account.valor;
+                current.pendingTotal += account.valor;
             }
             map.set(account.vencimento, current);
         });
         return Array.from(map.values())
-            .filter((item) => item.totalPendente > 0)
-            .sort((a, b) => toTimestamp(a.data) - toTimestamp(b.data))
+            .filter((item) => item.pendingTotal > 0)
+            .sort((a, b) => toTimestamp(a.date) - toTimestamp(b.date))
             .slice(0, 8);
     }, [accountsYear]);
 
@@ -50,9 +50,9 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                             <p>Nenhum vencimento registrado neste mês.</p>
                         ) : (
                             agenda.map((item) => (
-                                <div key={item.data} className="agenda-row">
-                                    <strong>{formatDateString(item.data, 'DD-MM-YYYY')}</strong>
-                                    <span>R$ {formatCurrency(item.totalPendente, 2)}</span>
+                                <div key={item.date} className="agenda-row">
+                                    <strong>{formatDateString(item.date, 'DD-MM-YYYY')}</strong>
+                                    <span>R$ {formatCurrency(item.pendingTotal, 2)}</span>
                                 </div>
                             ))
                         )}

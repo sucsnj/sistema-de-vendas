@@ -27,7 +27,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
     // Hook que busca notas automaticamente
-    const { data: notas = [], isLoading } = useQuery<InvoiceDetails[]>({
+    const { data: invoices = [], isLoading } = useQuery<InvoiceDetails[]>({
         queryKey: ['notas', year, month],
         queryFn: () => fetchInvoicesByPeriod(year, month).then((data) =>
             Array.isArray(data) ? data : [data]
@@ -35,7 +35,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
     });
 
     // Somatório de notas
-    const somaNotas = notas.reduce((sum, nota) => sum + nota.valor_nota, 0);
+    const invoiceTotal = invoices.reduce((sum, invoice) => sum + invoice.valor_nota, 0);
 
     const handleDelete = async (id: number) => {
         try {
@@ -73,13 +73,13 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
                 </select>
                 <div>
                     <h4>Somatório</h4>
-                    <span>R$ {formatCurrency(somaNotas, 2)}</span>
+                    <span>R$ {formatCurrency(invoiceTotal, 2)}</span>
                 </div>
             </div>
 
             {isLoading ? (
                 <p>Carregando notas...</p>
-            ) : notas.length === 0 ? (
+            ) : invoices.length === 0 ? (
                 <p>Nenhuma nota encontrada.</p>
             ) : (
                 <table className="summary-table">
@@ -92,7 +92,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
                         </tr>
                     </thead>
                     <tbody>
-                        {notas.map((n) => (
+                        {invoices.map((n) => (
                             <tr key={n.id}>
                                 <td>{formatDateString(n.data_emissao, 'DD/MM/YYYY HH:mm')}</td>
                                 <td>{n.distribuidora}</td>

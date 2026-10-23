@@ -19,6 +19,14 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Nomenclatura: variáveis locais e contrato do carrinho para inglês (ADR 0004) — 22/10/2026
+
+- Renomeadas variáveis locais, estados e memos restantes em páginas/componentes/hooks (ex.: `produtos`→`products`, `servicos`→`services`, `valor`→`amount`, `contasAno`→`accountsYear`, `filteredContas`→`filteredAccounts`, `mes/ano`→`month/year`, `ultimaVenda`→`latestSale`, `loadingItens`→`loadingItems`).
+- Contrato do `useCart` normalizado (`selectModalOpen`, `closeSelectModal`, `openCartModal`, `closeCartModal`, `loadCatalogItems`); consumidores em `DailySaleForm` e `EditSaleForm` atualizados.
+- APIs/database/services: aliases em inglês preservando chaves de payload/query/colunas SQL (ex.: `{ mes: monthParam, ano: yearParam, filtro: filter }`, `seedCategories`, métricas de consolidação). Nenhum contrato JSON/SQL foi alterado.
+- Docs espelhados atualizados (`seeds`, `produtosDb`, `contas-a-pagar`, `useCart`, `OcrUpload`, `PixModal`, `EditSaleForm`).
+- Verificação final: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `node scripts/check-encoding.mjs` e `node scripts/check-docs.mjs` verdes.
+
 ### Nomenclatura: varredura completa de funções e parâmetros para inglês (ADR 0004) — 22/10/2026
 
 - Renomeadas ~160 funções em `src/services`, `src/database`, `src/hooks`, `src/pages`, `src/pages/api`, `src/components` e `src/utils` (exports, hooks, componentes, handlers locais e helpers), além dos parâmetros de função (ex.: `mes`→`month`, `ano`→`year`, `valor`→`amount`, `nome`→`name`, `descricao`→`description`, `itens`→`items`).

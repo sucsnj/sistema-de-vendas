@@ -46,9 +46,9 @@ export const useSupplier = ({
     // Cadastro de Fornecedor Inline
     const handleSaveSupplier = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeFornecedor = validateRequired(newSupplierName, 'O nome do fornecedor');
-        if (!nomeFornecedor.ok) {
-            showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
+        const nameValidation = validateRequired(newSupplierName, 'O nome do fornecedor');
+        if (!nameValidation.ok) {
+            showToast(nameValidation.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {
@@ -56,8 +56,8 @@ export const useSupplier = ({
             showToast(response.message || 'Fornecedor criado com sucesso.', 'success');
 
             // Re-carrega lista de suppliers e seleciona o criado
-            const forns = await fetchSuppliers();
-            setOptions(prev => ({ ...prev, suppliers: forns }));
+            const suppliers = await fetchSuppliers();
+            setOptions(prev => ({ ...prev, suppliers: suppliers }));
             setForm(prev => ({ ...prev, supplierId: response.id }));
 
             // Fecha modal
@@ -78,9 +78,9 @@ export const useSupplier = ({
     // Ediçao de fornecedor
     const handleUpdateSupplier = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nomeFornecedor = validateRequired(supplierForm.name, 'O nome do fornecedor');
-        if (!nomeFornecedor.ok) {
-            showToast(nomeFornecedor.message ?? 'Campo obrigatório.', 'error');
+        const nameValidation = validateRequired(supplierForm.name, 'O nome do fornecedor');
+        if (!nameValidation.ok) {
+            showToast(nameValidation.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {

@@ -18,7 +18,7 @@ interface SalesTableProps {
 }
 
 const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale }) => {
-  const totalVendas = sales.reduce((total, sale) => total + sale.valor, 0);
+  const totalSales = sales.reduce((total, sale) => total + sale.valor, 0);
 
   const [maxSales, setMaxSales] = React.useState(() => {
     if (typeof window === 'undefined') return 5;
@@ -44,7 +44,7 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
   return (
     <div className="table-container">
       <h2>Vendas Diárias
-        - <span>Total R$ {formatCurrency(totalVendas, 2)}</span>
+        - <span>Total R$ {formatCurrency(totalSales, 2)}</span>
       </h2>
       <div className="range-buttons">
         <button
