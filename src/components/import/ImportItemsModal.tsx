@@ -18,7 +18,7 @@ import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useImportItems } from '../../hooks/useImportItems';
+import { useImportItems, type ItemStatus } from '../../hooks/useImportItems';
 import ItemNameDropdown from './ItemNameDropdown';
 
 interface ImportItemsModalProps {
@@ -26,6 +26,14 @@ interface ImportItemsModalProps {
   onImportSuccess: () => void;
   initialFile?: File | null;
 }
+
+const rowClassByStatus: Record<ItemStatus, string | undefined> = {
+  idle: undefined,
+  ok: importStyles.row_ok,
+  duplicado: importStyles.row_duplicado,
+  estoque_atualizado: importStyles.row_estoque_atualizado,
+  erro: importStyles.row_erro,
+};
 
 const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSuccess, initialFile }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -190,7 +198,7 @@ const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSu
                 </thead>
                 <tbody>
                   {products.map((p, i) => (
-                    <tr key={i} className={importStyles[`row_${p.status}`]}>
+                    <tr key={i} className={rowClassByStatus[p.status]}>
                       <td>{i + 1}</td>
                       <td className={importStyles.colNfProduto}>
                         <div

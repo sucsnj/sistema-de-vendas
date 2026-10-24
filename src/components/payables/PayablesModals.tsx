@@ -164,7 +164,7 @@ const PayablesModals: React.FC<PayablesModalsProps> = ({
             </div>
             <div className={styles.modalRow}>
               <strong>Status:</strong>
-              <span className={`${styles.status} ${styles[selectedAccount.status.toLowerCase()]}`}>{selectedAccount.status}</span>
+              <span className={`${styles.status} ${styles[selectedAccount.status === 'Pago' ? 'pago' : 'pendente']}`}>{selectedAccount.status}</span>
             </div>
             <div className={styles.modalRow}>
               <strong>Banco / Observações:</strong>

@@ -23,5 +23,5 @@ interface CartModalShellProps {
 
 ## Notas
 
-- Fonte única do chrome (`cart-modal-*` em `globals.css`); antes duplicado nos dois modais.
+- Fonte única do chrome (`cart-modal-*` em `legacy.css`); antes duplicado nos dois modais.
 - Só um shell fica aberto por vez (seleção ⇄ gerenciamento são exclusivos no `useCart`).

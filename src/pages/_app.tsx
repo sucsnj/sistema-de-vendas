@@ -1,5 +1,8 @@
 import type { AppProps } from 'next/app';
-import '../styles/globals.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/utilities.css';
+import '../styles/legacy.css';
 import Nav from '../components/common/Nav';
 import Toaster from '../components/common/Toaster';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

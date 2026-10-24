@@ -25,4 +25,4 @@ interface DailySaleFormProps {
 ## Notas
 
 - `CartItem` foi movido para `src/types/sale.ts` (compartilhado com `useCart`/modais).
-- `<style jsx>` permanece no componente (padronização de estilos pendente).
+- `<style jsx>` permanece no componente (migração para CSS Modules prevista na Fase 2 do ADR 0007); `EditSaleForm` não depende mais dessas classes.

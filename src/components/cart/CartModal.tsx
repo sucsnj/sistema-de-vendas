@@ -146,7 +146,7 @@ const CartModal: React.FC<CartModalProps> = ({
       )}
 
       <style jsx>{`
-        /* Lista de Itens (chrome vem de src/styles/globals.css) */
+        /* Lista de Itens (chrome vem de src/styles/legacy.css) */
         .cart-items-list {
           display: flex;
           flex-direction: column;

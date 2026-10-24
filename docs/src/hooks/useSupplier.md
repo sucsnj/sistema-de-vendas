@@ -16,3 +16,4 @@
 ## Notas
 
 - Arquivo `useSupplier.ts`; identificador exportado é `useSupplier`.
+- Após criar, o campo `newSupplierName` é limpo junto com o fechamento do modal.

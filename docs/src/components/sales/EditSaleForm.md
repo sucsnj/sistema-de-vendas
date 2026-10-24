@@ -17,10 +17,11 @@ interface EditSaleFormProps {
 
 ## Relações
 
-- **Usa:** `fetchSaleItems`/`updateSale` (`src/services/vendasService.ts`), `useCart` (`src/hooks/useCart.ts`), `parseNumber`, modais de carrinho.
+- **Usa:** `fetchSaleItems`/`updateSale` (`src/services/vendasService.ts`), `useCart` (`src/hooks/useCart.ts`), `parseNumber`, modais de carrinho, `sales.module.css`.
 - **Usado por:** `../../pages/index.md` quando `editingSale` está preenchido.
 
 ## Notas
 
 - Janela de edição de 2 dias validada na página e na API (403).
 - Foca/seleciona o campo de valor ao abrir; mostra `loadingItems` durante a busca.
+- Os controles do carrinho usam classes próprias de `sales.module.css`; não dependem mais do `styled-jsx` de `DailySaleForm`.

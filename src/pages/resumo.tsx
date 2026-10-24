@@ -54,7 +54,7 @@ const SummaryPage: React.FC = () => {
       <div className="glass-form">
         <div className="table-container">
           {/* Tabela consolidado normal (visível quando view = 'comum') */}
-          <table className={`comum-table ${view === 'comum' ? '' : 'hidden'}`}>
+          <table className={view === 'comum' ? undefined : 'hidden'}>
             <thead>
               <tr>
                 <th>Data</th>
@@ -94,7 +94,7 @@ const SummaryPage: React.FC = () => {
           </table>
 
           {/* Tabela consolidado especial (visível quando view = 'especial') */}
-          <table className={`epecial-table ${view === 'especial' ? '' : 'hidden'}`}>
+          <table className={view === 'especial' ? undefined : 'hidden'}>
             <thead>
               <tr>
                 <th>Data</th>

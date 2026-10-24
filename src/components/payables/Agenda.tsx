@@ -43,14 +43,14 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                     <h2>Agenda</h2>
                     <span className={styles.statusChip}>Atualização automática</span>
                 </div>
-                <div className="agenda-card">
+                <div className={styles.agendaCard}>
                     <h3>Total pendente por vencimento</h3>
-                    <div className="agenda-list">
+                    <div className={styles.agendaList}>
                         {agenda.length === 0 ? (
                             <p>Nenhum vencimento registrado neste mês.</p>
                         ) : (
                             agenda.map((item) => (
-                                <div key={item.date} className="agenda-row">
+                                <div key={item.date} className={styles.agendaRow}>
                                     <strong>{formatDateString(item.date, 'DD-MM-YYYY')}</strong>
                                     <span>R$ {formatCurrency(item.pendingTotal, 2)}</span>
                                 </div>
@@ -59,16 +59,16 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                     </div>
                 </div>
 
-                <section className={`${styles.contasPanel} ${styles.proximasPanel}`}>
+                <section className={styles.contasPanel}>
                     <div className={styles.panelHeader}>
                         <h3>Próximas contas</h3>
                     </div>
-                    <div className="proximas-list">
+                    <div>
                         {upcomingAccounts.length === 0 ? (
                             <p>Nenhuma conta pendente encontrada.</p>
                         ) : (
                             upcomingAccounts.map((account) => (
-                                <div key={account.id} className="proxima-row">
+                                <div key={account.id}>
                                     <strong>{formatDateString(account.vencimento, 'DD-MM-YYYY')}</strong> - {account.distribuidora} - <span>R$ {formatCurrency(account.valor, 2)}</span>
                                 </div>
                             ))
@@ -80,81 +80,9 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                     <div className={styles.panelHeader}>
                         <h3>Leitura de Contas</h3>
                     </div>
-                    <div className="ocr-upload-wrapper">
-                        <OcrUpload />
-                    </div>
+                    <OcrUpload />
                 </section>
             </section>
-
-            <style jsx>{`
-                .contas-panel {
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: 24px;
-                    padding: 22px;
-                    box-shadow: var(--shadow);
-                }
-
-                .agenda-panel,
-                    .resumo-panel {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .panel-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    margin-bottom: 18px;
-                }
-
-                .status-chip {
-                    padding: 8px 12px;
-                    border-radius: 999px;
-                    background: var(--surface-soft);
-                    color: var(--muted);
-                    font-size: 0.9rem;
-                    white-space: normal;
-                    overflow-wrap: anywhere;
-                    word-break: break-word;
-                    max-width: 100%;
-                }
-
-                .agenda-card,
-                .summary-card {
-                    background: var(--surface-strong);
-                    border: 1px solid var(--border);
-                    border-radius: 22px;
-                    padding: 20px;
-                    margin-bottom: 15px;
-                    min-height: 220px;
-                }
-
-                .agenda-list {
-                    display: grid;
-                    gap: 14px;
-                }
-
-                .agenda-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 14px 16px;
-                    border-radius: 10px;
-                    background: var(--surface-soft);
-                }
-
-                .contas-panel {
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: 24px;
-                    padding: 22px;
-                    box-shadow: var(--shadow);
-                }
-
-            `}</style>
         </div>
     );
 };

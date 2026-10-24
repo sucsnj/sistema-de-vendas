@@ -23,7 +23,10 @@ function walk(dir, filter) {
 
 const rel = (base, p) => path.relative(base, p).split(path.sep).join("/");
 
-const sourceFiles = walk(SRC, (p) => SOURCE_EXT.has(path.extname(p)));
+const sourceFiles = walk(
+  SRC,
+  (p) => SOURCE_EXT.has(path.extname(p)) && !p.endsWith(".d.css.ts")
+);
 const docFiles = walk(DOCS, (p) => path.extname(p) === ".md");
 const allDocFiles = walk(path.join(root, "docs"), (p) => path.extname(p) === ".md");
 

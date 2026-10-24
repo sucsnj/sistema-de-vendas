@@ -686,7 +686,7 @@ const RegistrationPage: React.FC = () => {
 
                 <div className={styles.cadastroEdicaoGrid}>
                     {/* Formulário de Cadastro/Edição */}
-                    <div className={styles.produtosGridRight}>
+                    <div>
                         <section className="glass-form" aria-labelledby="form-title">
                             <h2 id="form-title" style={{ marginBottom: '15px' }}>
                                 {editingId ? 'Editar Item' : 'Cadastrar Item'}

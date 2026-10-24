@@ -16,3 +16,4 @@
 ## Notas
 
 - Arquivo `useCategory.ts`; identificador exportado é `useCategory`.
+- O toast de exclusão usa "Categoria deletada com sucesso." (não confundir com marca).

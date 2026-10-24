@@ -107,7 +107,7 @@ export const useCategory = ({
   const handleDeleteCategory = async () => {
     try {
       await deleteCategory(form.categoryId);
-      showToast('Marca deletada com sucesso.', 'success');
+      showToast('Categoria deletada com sucesso.', 'success');
       setDeleteConfirmOpen(false);
       setItemToDelete(null);
 

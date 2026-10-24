@@ -62,6 +62,7 @@ export const useSupplier = ({
 
             // Fecha modal
             setSupplierModalOpen(false);
+            setNewSupplierName('');
             setSupplierForm({ name: '' });
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao criar fornecedor.', 'error');

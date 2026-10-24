@@ -6,6 +6,7 @@ import { useCart } from "../../hooks/useCart";
 import parseNumber from "../../utils/number";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import styles from '@/styles/sales.module.css';
 
 interface EditSaleFormProps {
   sale: DailySale;
@@ -129,9 +130,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
 
         <label>
           Valor:
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}
-          className="input-with-icon-wrapper"
-          >
+          <div className={styles.cartControls}>
             <input
               ref={editAmountInputRef}
               type="number"
@@ -139,40 +138,39 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
               value={editAmount}
               onChange={(e) => setEditAmount(e.target.value)}
               required
-              style={{ flex: 1 }}
             />
             <button
               type="button"
-              className="cart-icon-button"
+              className={styles.cartIconButton}
               onClick={handleCartClick}
               aria-label="Abrir carrinho"
               title="Abrir carrinho"
             >
-              <AddShoppingCartIcon className="cart-icon" />
+              <AddShoppingCartIcon className={styles.cartIcon} />
               {totalCartCount > 0 && (
-                <span className="cart-badge">{totalCartCount}</span>
+                <span className={styles.cartBadge}>{totalCartCount}</span>
               )}
             </button>
             <button
               type="button"
-              className="cart-icon-button"
+              className={styles.cartIconButton}
               onClick={openCartModal}
               aria-label="Editar itens da venda"
               title="Editar itens da venda"
             >
-              <ShoppingCartIcon className="cart-icon" />
+              <ShoppingCartIcon className={styles.cartIcon} />
               {totalCartCount > 0 && (
-                <span className="cart-badge">{totalCartCount}</span>
+                <span className={styles.cartBadge}>{totalCartCount}</span>
               )}
             </button>
           </div>
           {cartItems.length > 0 && (
-            <span style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "4px", display: "block" }}>
+            <span className={styles.cartHint}>
               {cartItems.length} {cartItems.length === 1 ? "item" : "itens"} no carrinho — valor recalculado automaticamente
             </span>
           )}
           {loadingItems && (
-            <span style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "4px", display: "block" }}>
+            <span className={styles.cartHint}>
               Carregando itens...
             </span>
           )}

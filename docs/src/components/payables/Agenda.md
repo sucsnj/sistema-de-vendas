@@ -24,3 +24,4 @@ interface AgendaProps {
 
 - `accountsMonth` é prop morta (não desestruturada) — candidata a remoção.
 - "Atualização automática" é rótulo; não há polling, o painel apenas reflete as props.
+- Estilos locais migrados de `styled-jsx` para `contas.module.css` (`agendaPanel`, `agendaCard`, `agendaList`, `agendaRow`); a classe órfã `ocr-upload-wrapper` foi removida do wrapper.

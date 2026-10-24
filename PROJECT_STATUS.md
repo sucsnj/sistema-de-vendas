@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **22/10/2026**
+Atualizado em: **23/10/2026**
 
 ## Resumo executivo
 
@@ -13,11 +13,22 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 | Checagem | Resultado |
 | --- | --- |
 | `npm run lint` | limpo (zero problemas) |
+| `npm run lint:css` | limpo (zero problemas) |
+| `npm run check:css` | nenhuma classe ausente |
+| `npm run styles:check` | tipagem de CSS Modules em dia |
 | `npx tsc --noEmit` | zero erros |
 | `npm run build` | build de produção OK |
 | Teste manual (funcionalidades críticas) | OK |
 
 ## Últimas mudanças
+
+### UI: Fase 0 + Fase 1 — CSS Modules, tokens e tema por `data-theme` (ADR 0007) — 23/10/2026
+
+- **Fase 0 (correções):** removidas classes órfãs (`agenda-card`, `proximas-list`, `proxima-row`, `ocr-upload-wrapper`, `produtosGridRight`, `CadastroEdicao`, `comum-table`, `epecial-table`); `Agenda` deixou de usar `styled-jsx`; controles do carrinho de `EditSaleForm` ganharam `sales.module.css` próprio; corrigido `padding: 8 24px`; removido vazamento global de `body`/`html` e o `font-size: 12px` global no mobile; removido `page.module.css` morto; corrigidos toast de categoria e limpeza do fornecedor.
+- **Fase 1 (fundação):** `globals.css` dividido em `tokens.css`, `base.css`, `utilities.css` e `legacy.css`; tema migrado de classes `html.light`/`html.dark` para `data-theme` com script anti-flash em `_document.tsx`; `Nav` atualiza `dataset.theme`; `body` compensa a altura da nav via token.
+- **Ferramentas:** `stylelint` + `npm run lint:css`; `typed-css-modules` gerando `*.d.css.ts` (`styles:types`/`styles:check`); `scripts/check-css-modules.mjs` (`check:css`) valida classes usadas; `check-docs` ignora declarações geradas.
+- **Docs:** ADR 0007, `_document`, `_app`, `Nav`, `Agenda`, `EditSaleForm`, `useCategory`, `useSupplier`, `CONTEXT` e `README`.
+- **Verificação:** `npx tsc --noEmit`, `npm run lint`, `npm run lint:css`, `npm run styles:check`, `npm run check:css`, `npm run build`, `check-encoding` e `check-docs` verdes.
 
 ### Nomenclatura: variáveis locais e contrato do carrinho para inglês (ADR 0004) — 22/10/2026
 
@@ -208,9 +219,9 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
-- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`) e **agrupamento dos componentes em subpastas por domínio com nomes em inglês (ADR 0005)** concluídos. Próximos alvos:
-  - **Grandes componentes** mistos (UI+estado+validação+API): `CartModal`, `ImportItemsModal`, `ProductForm`, `SelectItemsModal` — extraídas hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
-  - **Decisão pendente do dono**: padronização de estilos (CSS Modules × classes globais × inline).
+- **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`), agrupamento por domínio (ADR 0005) e **Fase 0 + Fase 1 de estilos (ADR 0007)** concluídos. Próximos alvos:
+  - **UI Fase 2**: primitivas compartilhadas (`Dialog`, `Field`, `Button`, `Table`), consolidação dos 8 modais de catálogo, `useCatalogCrud`/`CatalogEntityModal`, remoção do restante de `styled-jsx` e migração dos blocos de `contas.module.css`/`produtos.module.css`.
+  - **Grandes componentes** mistos (UI+estado+validação+API): `CartModal`, `ImportItemsModal`, `ProductForm`, `SelectItemsModal` — extrair hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
 - Commit das mudanças atuais **não realizado** (por solicitação do usuário nesta rodada).
 
 ## Futuras / Melhorias sugeridas

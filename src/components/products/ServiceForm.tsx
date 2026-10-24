@@ -25,7 +25,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   inputRef,
 }) => {
   return (
-    <div className="CadastroEdicao">
+    <div>
       <div className={styles.formGroup}>
         <label className={styles.formLabel} htmlFor="form-nome">
           Nome:*

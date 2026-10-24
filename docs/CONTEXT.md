@@ -26,6 +26,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 - `src/database/*.ts` — abstrações `better-sqlite3` (vendas, contas, notas, tabela, produtos).
 - `src/utils/*.ts(x)` — formatação, validação, datas, números, cores.
 - `src/types/*.ts` — tipos compartilhados.
+- `src/styles/` — `tokens.css` (design tokens e temas `data-theme`), `base.css` (reset/elementos), `utilities.css` (utilitários), `legacy.css` (CSS global em migração) e `*.module.css` (estilos por componente; tipagem gerada em `*.d.css.ts`).
 - `docs/src/**/*.md` — documentação espelhando `src/` (mesmo caminho e nome, `.ts`/`.tsx` → `.md`; template único em `docs/documentation-guidelines.md`, validado por `node scripts/check-docs.mjs`).
 
 ## Bancos de dados
@@ -69,6 +70,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/src/database/`.
 | Componente/hook/util específico | navegar em `docs/src/` pelo mesmo caminho do arquivo em `src/` |
 | Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/src/utils/validation.md` e `docs/src/utils/forms.md` |
 | Notificações / toast | `docs/src/components/common/Toast.md` (+ `Toaster.md`), `docs/src/utils/toast.md`, `docs/adr/0003-padrao-de-notificacoes-toast.md` |
+| UI / estilos / tema | `docs/adr/0007-css-modules-e-design-tokens.md`, `src/styles/tokens.css`, `docs/src/pages/_document.md`, `docs/src/pages/_app.md` |
 
 ## Regras para o agente
 
@@ -79,7 +81,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/src/database/`.
 5. **Timezones.** Datas são tratadas em `America/Recife`.
 6. **Validação.** Validação de campos em `src/utils/validation.ts` no contrato `{ ok, message }` (ADR 0002); parsing em `number.ts`/`date.ts`; regras de negócio fora da validação (ex.: `edit.ts`).
 7. **Backups.** Ao alterar estrutura de um banco, revise os endpoints de backup correspondentes.
-8. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`.
+8. **Sem `any`/DOM direto.** Prefira tipagem forte e `refs` a `document.querySelector`. Em estilos novos, use CSS Modules + tokens e valide com `npm run lint:css`, `npm run styles:check` e `npm run check:css`.
 9. **Conflito com as regras.** Se uma mudança solicitada violar regras de arquitetura/projeto/negócios/framework/boas práticas, pergunte explicitamente, explique o problema e proponha alternativa antes de implementar (ver `AGENTS.md`).
 10. **Sem código criado via PowerShell.** Nunca gravar arquivos do projeto com cmdlets do PowerShell (`Set-Content`, `Out-File` etc.): gera mojibake (acentos de palavras como `mês` virando dois caracteres lixo) que passa em lint/typecheck/build e só estraga na tela. Use as ferramentas de edição de arquivo (UTF-8) e rode `node scripts/check-encoding.mjs` (com `--fix` para reparar) após criar/editar; ver `PROJECT_STATUS.md`, seção "Gravação de arquivos: nunca usar PowerShell". Comandos de execução (`npm`, `node`, `git`) no terminal são permitidos.
 

@@ -4,7 +4,7 @@
  * Casca visual compartilhada dos modais de carrinho (CartModal e
  * SelectItemsModal). Concentra overlay/header/footer, portal,
  * focus-trap e fechamento por ESC — fonte única do "chrome" do modal,
- * estilizada pelas classes globais `cart-modal-*` (src/styles/globals.css).
+ * estilizada pelas classes globais `cart-modal-*` (src/styles/legacy.css).
  * Ver docs/components/CartModalShell.md.
  */
 

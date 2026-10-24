@@ -5,7 +5,7 @@
 ## O que faz
 
 - Links para `/`, `/resumo`, `/historico`, `/contas-a-pagar`, `/tabela`, `/produtos`.
-- Alterna tema em ciclo `system → light → dark`, aplicando classes em `document.documentElement` e persistindo em `localStorage['themeMode']`.
+- Alterna tema em ciclo `system → light → dark`, aplicando `data-theme` em `document.documentElement` e persistindo em `localStorage['themeMode']`.
 
 ## Relações
 
@@ -15,4 +15,5 @@
 ## Notas
 
 - Estado inicial do tema lido do `localStorage` (default `system`); aplicação direta no `document`.
+- O tema inicial é aplicado antes da hidratação por [_document](../../pages/_document.md), evitando flash.
 - Bloco de logo comentado aguardando melhoria de UI.

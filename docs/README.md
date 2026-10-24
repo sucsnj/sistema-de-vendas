@@ -38,6 +38,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [adr/0004-padrao-de-nomenclatura-dos-identificadores.md](adr/0004-padrao-de-nomenclatura-dos-identificadores.md) - ADR: identificadores/funções/arquivos em inglês (pt-BR só em strings de UI).
 - [adr/0005-agrupamento-de-componentes-por-dominio.md](adr/0005-agrupamento-de-componentes-por-dominio.md) - ADR: componentes em subpastas por domínio com nomes de arquivo em inglês.
 - [adr/0006-docs-espelhando-src.md](adr/0006-docs-espelhando-src.md) - ADR: documentação espelhando `src/` em `docs/src/` + template único validado por script.
+- [adr/0007-css-modules-e-design-tokens.md](adr/0007-css-modules-e-design-tokens.md) - ADR: CSS Modules, design tokens e tema por `data-theme`.
 
 ## Páginas do Frontend
 
@@ -48,7 +49,8 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [src/pages/historico.md](src/pages/historico.md) - histórico de vendas, listagem e busca.
 - [src/pages/resumo.md](src/pages/resumo.md) - resumo mensal de vendas e totais consolidados.
 - [src/pages/tabela.md](src/pages/tabela.md) - upload e consulta da tabela de medicamentos.
-- [src/pages/_app.md](src/pages/_app.md) - configuração global do app e integração com React Query.
+- [src/pages/_app.md](src/pages/_app.md) - configuração global do app, ordem do CSS e integração com React Query.
+- [src/pages/_document.md](src/pages/_document.md) - documento HTML, idioma e aplicação do tema antes da hidratação.
 
 ## Referência de API
 

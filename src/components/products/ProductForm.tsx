@@ -76,7 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     actions,
 }) => {
     return (
-        <div className="CadastroEdicao">
+        <div>
             <div className={styles.formHeader}>
                 <div className={styles.formGroup}>
                     <label className={styles.formLabel} htmlFor="form-ativo">

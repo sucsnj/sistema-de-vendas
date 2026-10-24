@@ -24,11 +24,11 @@ const Nav: React.FC = () => {
   // Controla o tema.
   useEffect(() => {
     if (typeof document === 'undefined') return;
+    const root = document.documentElement;
     if (themeMode === 'system') {
-      document.documentElement.classList.remove('light', 'dark');
+      delete root.dataset.theme;
     } else {
-      document.documentElement.classList.add(themeMode);
-      document.documentElement.classList.remove(themeMode === 'light' ? 'dark' : 'light');
+      root.dataset.theme = themeMode;
     }
     if (typeof window !== 'undefined') {
       localStorage.setItem('themeMode', themeMode);
