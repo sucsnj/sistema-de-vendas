@@ -6,6 +6,7 @@ import { canEdit } from '../../utils/edit';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useShortcuts } from '../../utils/shortcuts';
+import styles from '../../styles/dailySalesTotal.module.css';
 
 interface DailySalesTotalProps {
   sales: DailySale[];
@@ -40,47 +41,47 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
   });
 
   return (
-    <div className="daily-sales-total">
+    <div className={`${styles.dailySalesTotal}`}>
       <h2>Resumo do Período</h2>
-      <div className="summary-grid">
-        <div className="summary-left">
-          <div className="summary-row">
-            <div className="summary-card totals-card">
-              <span className="summary-card-title">Total do Período</span>
-              <div className="summary-metrics">
+      <div className={`${styles.summaryGrid}`}>
+        <div className={`${styles.summaryLeft}`}>
+          <div className={`${styles.summaryRow}`}>
+            <div className={`${styles.summaryCard} totals-card`}>
+              <span className={`${styles.summaryCardTitle}`}>Total do Período</span>
+              <div className={`${styles.summaryMetrics}`}>
                 <div>
-                  <span className="summary-label">Total de Vendas</span>
-                  <span className="summary-value"> R$ {formatCurrency(total, 2)}</span>
+                  <span className={`${styles.summaryLabel}`}>Total de Vendas</span>
+                  <span className={`${styles.summaryValue}`}> R$ {formatCurrency(total, 2)}</span>
                 </div>
                 <div>
-                  <span className="summary-label">Quantidade de Vendas</span>
-                  <span className="summary-value"> {salesCount}</span>
+                  <span className={`${styles.summaryLabel}`}>Quantidade de Vendas</span>
+                  <span className={`${styles.summaryValue}`}> {salesCount}</span>
                 </div>
                 <div>
-                  <span className="summary-label">Ticket Médio</span>
-                  <span className="summary-value"> R$ {formatCurrency(averageTicket, 2)}</span>
+                  <span className={`${styles.summaryLabel}`}>Ticket Médio</span>
+                  <span className={`${styles.summaryValue}`}> R$ {formatCurrency(averageTicket, 2)}</span>
                 </div>
               </div>
             </div>
 
             {selectedDay ? (
-              <div className="summary-card daily-card">
-                <span className="summary-card-title">
+              <div className={`${styles.summaryCard} daily-card`}>
+                <span className={`${styles.summaryCardTitle}`}>
                   Resumo do dia {formatDateString(selectedDay, 'DD-MM-YYYY')}
                 </span>
 
-                <div className="summary-metrics">
+                <div className={`${styles.summaryMetrics}`}>
                   <div>
-                    <span className="summary-label">Total</span>
-                    <span className="summary-value"> R$ {formatCurrency(dailyTotal, 2)}</span>
+                    <span className={`${styles.summaryLabel}`}>Total</span>
+                    <span className={`${styles.summaryValue}`}> R$ {formatCurrency(dailyTotal, 2)}</span>
                   </div>
                   <div>
-                    <span className="summary-label">Vendas</span>
-                    <span className="summary-value"> {dailyCount}</span>
+                    <span className={`${styles.summaryLabel}`}>Vendas</span>
+                    <span className={`${styles.summaryValue}`}> {dailyCount}</span>
                   </div>
                   <div>
-                    <span className="summary-label">Média do dia</span>
-                    <span className="summary-value"> R$ {formatCurrency(dailyAverage, 2)}</span>
+                    <span className={`${styles.summaryLabel}`}>Média do dia</span>
+                    <span className={`${styles.summaryValue}`}> R$ {formatCurrency(dailyAverage, 2)}</span>
                   </div>
                 </div>
               </div>
@@ -88,14 +89,14 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           </div>
 
           {recentSales.length > 0 ? (
-            <div className="history-card">
-              <span className="summary-card-title">Últimas 4 vendas</span>
+            <div className={`${styles.historyCard}`}>
+              <span className={`${styles.summaryCardTitle}`}>Últimas 4 vendas</span>
 
-              <div className="recent-sales-grid">
+              <div className={`${styles.recentSalesGrid}`}>
                 {[...recentSales]
                   .sort((a, b) => a.id - b.id)
                   .map((sale) => (
-                    <div key={sale.id} className="history-item">
+                    <div key={sale.id} className={`${styles.historyItem}`}>
                       <div>
                         <strong>{sale.criado_em.slice(10, 19)}</strong>
 
@@ -104,11 +105,11 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                         </div>
                       </div>
 
-                      <div className="history-values">
+                      <div className={`${styles.historyValues}`}>
                         <span>R$ {formatCurrency(sale.valor, 2)}</span>
                       </div>
 
-                      <div className="recent-sale-actions">
+                      <div className={`${styles.recentSaleActions}`}>
                         {canEdit(sale.data) ? (
                           <>
                             {onEditSale && (
@@ -146,213 +147,9 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
           ) : null}
         </div>
 
-        {children ? <div className="summary-card form-card">{children}</div> : null}
+        {children ? <div className={`${styles.summaryCard} ${styles.formCard}`}>{children}</div> : null}
       </div>
-      <style jsx>{`
-        .daily-sales-total {
-          margin: 28px auto 240px;
-          transform: scale(0.9); // altera o tamanho do elemento para que ele se adapte ao tamanho da tela
-          transform-origin: top;
-          padding: 18px;
-          width: calc(105% - 16px);
-          max-width: 1440px;
-          background: linear-gradient(135deg, #5b6ce0 0%, #6f55b0 100%);
-          border-radius: 12px;
-          color: white;
-        }
-
-        .daily-sales-total h2 {
-          margin: 0 0 16px 0;
-          font-size: 22px;
-        }
-
-        .summary-grid {
-          display: grid;
-          grid-template-columns: minmax(520px, 1.7fr) minmax(360px, 1fr);
-          gap: 20px;
-          align-items: start;
-        }
-
-        .summary-left {
-          display: grid;
-          gap: 14px;
-        }
-
-        .summary-row {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 12px;
-        }
-
-        .summary-card,
-        .history-card {
-          background: rgba(255, 255, 255, 0.14);
-          padding: 16px;
-          border-radius: 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.22);
-          transition: transform 0.25s ease, background 0.25s ease;
-        }
-
-        .history-card {
-          padding-top: 14px;
-        }
-
-        .history-card .summary-card-title {
-          margin-bottom: 8px;
-        }
-
-        .history-card:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.25);
-          border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .recent-sales-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 6px;
-        }
-
-        .history-item {
-          display: flex;
-          transform: scale(0.95);
-          flex-direction: column;
-          justify-content: space-between;
-          gap: 10px;
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.18);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-
-        .history-values {
-          font-size: 1rem;
-          font-weight: 700;
-        }
-
-        .recent-sale-actions {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-
-        .recent-sale-actions button {
-          flex: 1;
-          padding: 8px 10px;
-          border-radius: 10px;
-          border: none;
-          cursor: pointer;
-          font-weight: 700;
-          transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .recent-sale-actions button:hover {
-          transform: translateY(-1px);
-          opacity: 0.92;
-        }
-
-        .recent-sale-actions button:first-child {
-          background: #2563eb;
-          color: white;
-        }
-
-        .recent-sale-actions button:last-child {
-          background: #ef4444;
-          color: white;
-        }
-
-        .history-item strong {
-          display: block;
-          margin-bottom: 6px;
-        }
-
-        .history-item:hover {
-          transform: translateY(-5px);
-          transform: scale(1.2);
-          background: var(--glass-surface);
-          border: 1px solid var(--border);
-        }
-
-        .summary-card:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.25);
-        }
-
-        .summary-card-title {
-          font-size: 1rem;
-          font-weight: 600;
-          letter-spacing: 0.02em;
-          text-transform: uppercase;
-          opacity: 0.9;
-        }
-
-        .summary-metrics {
-          display: grid;
-          gap: 14px;
-        }
-
-        .summary-label {
-          font-size: 0.9rem;
-          font-weight: 500;
-          opacity: 0.9;
-        }
-
-        .summary-value {
-          font-size: 1.75rem;
-          font-weight: 700;
-          animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .summary-grid {
-            grid-template-columns: 1fr;
-          }
-
-          /* Em modo responsivo, o bloco 'Últimas 4 vendas' fica logo abaixo do formulário de registro */
-          .summary-left {
-            display: contents;
-          }
-
-          .form-card {
-            order: -2;
-          }
-
-          .history-card {
-            order: -1;
-          }
-
-          .summary-row {
-            order: 0;
-            grid-template-columns: 1fr;
-          }
-
-          /* Em modo responsivo, inverte a ordem das 'Últimas 4 vendas' (mais recente primeiro) */
-          .recent-sales-grid {
-            display: flex;
-            flex-direction: column-reverse;
-          }
-
-          .summary-value {
-            font-size: 1.4rem;
-          }
-        }
-      `}</style>
-    </div>
+</div>
   );
 };
 

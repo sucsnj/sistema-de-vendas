@@ -203,20 +203,7 @@ const PayablesFilterPanel: React.FC<PayablesFilterPanelProps> = ({
         }}
         onCancel={() => setConfirmOpen(false)}
       />
-
-      <style jsx>{`
-    .status:hover::after {
-      content: attr(data-observacoes);
-      position: absolute;
-      background: #333;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 4px;
-      white-space: nowrap;
-      transform: translateY(-120%);
-    }
-    `}</style>
-    </div>
+</div>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatCurrency } from '../../utils/formatter';
+import styles from '../../styles/totalsByDistributor.module.css';
 
 interface TotalsByDistributorProps {
     totalsByDistributor: Record<string, number>;
@@ -8,7 +9,7 @@ interface TotalsByDistributorProps {
 const TotalsByDistributor: React.FC<TotalsByDistributorProps> = ({ totalsByDistributor }) => {
     return (
         <div>
-            <div className="summary-card small">
+            <div className={`${styles.summaryCard} ${styles.small}`}>
                 <h3>Totais por distribuidora</h3>
                 {Object.keys(totalsByDistributor).length === 0 ? (
                     <p>Sem pendências por distribuidora.</p>
@@ -22,39 +23,7 @@ const TotalsByDistributor: React.FC<TotalsByDistributorProps> = ({ totalsByDistr
                     </ul>
                 )}
             </div>
-            <style jsx>{`
-                .summary-card {
-                    background: var(--surface-strong);
-                    border: 1px solid var(--border);
-                    border-radius: 22px;
-                    padding: 20px;
-                    min-height: 220px;
-                }
-
-                .summary-card.small {
-                    padding: 18px;
-                }
-
-                .summary-card h3 {
-                    margin: 0 0 14px;
-                    font-size: 1rem;
-                    color: var(--muted);
-                }
-
-                .summary-card ul {
-                    list-style: none;
-                    margin: 0;
-                    padding: 0;
-                    display: grid;
-                    gap: 10px;
-                }
-
-                .summary-card ul li {
-                    color: var(--foreground);
-                    font-size: 0.95rem;
-                }
-            `}</style>
-        </div>
+</div>
     );
 };
 

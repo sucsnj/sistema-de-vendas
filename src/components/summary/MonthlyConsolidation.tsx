@@ -2,6 +2,7 @@ import React from 'react';
 import { formatCurrency } from '../../utils/formatter';
 import { formatMonthName } from '../../utils/date';
 import { capitalize } from '../../utils/captalize';
+import styles from '../../styles/monthlyConsolidation.module.css';
 
 interface MonthlyConsolidationProps {
     months: { month: number; paid: number; pending: number }[];
@@ -10,9 +11,9 @@ interface MonthlyConsolidationProps {
 const MonthlyConsolidation: React.FC<MonthlyConsolidationProps> = ({ months }) => {
     return (
         <div>
-            <div className="summary-card small">
+            <div className={`${styles.summaryCard} ${styles.small}`}>
                 <h3>Consolidação mensal</h3>
-                <table className="summary-table">
+                <table className={`${styles.summaryTable}`}>
                     <thead>
                         <tr>
                             <th>Mês</th>
@@ -31,39 +32,7 @@ const MonthlyConsolidation: React.FC<MonthlyConsolidationProps> = ({ months }) =
                     </tbody>
                 </table>
             </div>
-            <style jsx>{`
-                .summary-card {
-                    background: var(--surface-strong);
-                    border: 1px solid var(--border);
-                    border-radius: 22px;
-                    padding: 20px;
-                    min-height: 220px;
-                }
-
-                .summary-card.small {
-                    padding: 18px;
-                }
-            
-                .summary-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    color: var(--foreground);
-                }
-
-                .summary-table th,
-                .summary-table td {
-                    padding: 10px 12px;
-                    text-align: left;
-                    border-bottom: 1px solid var(--border);
-                }
-
-                .summary-table th {
-                    color: var(--muted);
-                    font-size: 0.9rem;
-                }
-            
-            `}</style>
-        </div>
+</div>
     );
 };
 

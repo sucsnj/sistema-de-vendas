@@ -30,7 +30,7 @@ Os estilos estavam concentrados em `globals.css` (~1.300 linhas), cinco CSS Modu
 
 - `legacy.css` ainda concentra estilos globais até a migração dos módulos grandes.
 - Tipos de CSS Modules são gerados (`*.d.css.ts`) e precisam ser regenerados após mudanças de classes; `styles:check` detecta defasagem.
-- A migração completa de `styled-jsx` e a consolidação de primitivas ficam para fases seguintes.
+- A migração completa de `styled-jsx` e a consolidação das primeiras primitivas (`Button`, `Field`, `Dialog`, `Table`) foram concluídas na Fase 2; refinamentos visuais seguem incrementais.
 
 ## Alternativas consideradas
 

@@ -484,6 +484,17 @@
   color: var(--success);
 }
 
+.status:hover::after {
+  content: attr(data-observacoes);
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transform: translateY(-120%);
+}
+
 .emptyRow {
   padding: 24px 0;
   text-align: center;

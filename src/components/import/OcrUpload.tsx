@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useToast } from '../../hooks/useToast';
+import styles from '../../styles/ocrUpload.module.css';
 
 interface OcrResult {
     arquivo: string;
@@ -79,14 +80,14 @@ export default function OcrUpload() {
         <div>
             <input type="file"
                 accept=".pdf,.jpg,.jpeg,.png"
-                className="ocr-upload" multiple onChange={uploadFile} />
+                className={`${styles.ocrUpload}`} multiple onChange={uploadFile} />
 
             {results && (
-                <div className="ocr-results">
+                <div className={`${styles.ocrResults}`}>
                     {results.map((item: OcrResult, index: number) => (
                         <pre
                             key={index}
-                            className="ocr-upload-wrapper"
+                            className={`${styles.ocrUploadWrapper}`}
                             onClick={() => copyContent(item.linha || '')}>
                             <strong>{item.arquivo}</strong>
                             {"\n"}
@@ -95,93 +96,6 @@ export default function OcrUpload() {
                     ))}
                 </div>
             )}
-
-            <style jsx>{`
-                .ocr-results {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                    margin-top: 16px;
-                }
-
-                .ocr-upload-wrapper {
-                    width: 100%;
-                    padding: 0px 5px 5px 7px;
-                    border-radius: 14px;
-                    background: var(--surface-soft);
-                    border: 1px solid var(--border);
-                    color: var(--foreground);
-                    backdrop-filter: blur(12px);
-                    transition:
-                        transform 0.2s ease,
-                        background 0.2s ease,
-                        border-color 0.2s ease,
-                        box-shadow 0.2s ease;
-                    overflow-x: auto;
-                    line-height: 1.5;
-
-                    white-space: pre-wrap;
-                    word-break: break-word;
-                    user-select: all;
-                }
-
-                .ocr-upload-wrapper:hover {
-                    cursor: pointer;
-                    background: var(--surface);
-                    border-color: var(--border);
-                    transform: translateY(-2px);
-                    box-shadow:
-                        0 8px 24px rgba(0, 0, 0, 0.18);
-                }
-
-                .ocr-upload-wrapper:active {
-                    transform: scale(0.99);
-                }
-
-                .ocr-upload {
-                    width: 100%;
-                    padding: 12px 14px;
-                    border-radius: 12px;
-                    border: 1px solid var(--border);
-                    background: var(--surface-soft);
-                    color: var(--foreground);
-                    backdrop-filter: blur(10px);
-                    transition:
-                        border-color 0.2s ease,
-                        background 0.2s ease,
-                        box-shadow 0.2s ease;
-                    outline: none;
-                }
-
-                .ocr-upload:hover {
-                    background: var(--surface);
-                }
-
-                .ocr-upload:focus {
-                    border-color: var(--accent);
-                    box-shadow:
-                        0 0 0 4px var(--accent);
-                    opacity: 0.3;
-                }
-
-                .ocr-upload::file-selector-button {
-                    margin-right: 12px;
-                    padding: 8px 14px;
-                    border: none;
-                    border-radius: 10px;
-                    background: var(--surface);
-                    color: var(--foreground);
-                    cursor: pointer;
-                    transition:
-                        background 0.2s ease,
-                        transform 0.2s ease;
-                }
-
-                .ocr-upload::file-selector-button:hover {
-                    background: var(--surface-soft);
-                    transform: translateY(-1px);
-                }
-            `}</style>
-        </div>
+</div>
     );
 }

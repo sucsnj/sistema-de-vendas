@@ -163,6 +163,10 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [src/components/common/Toast.md](src/components/common/Toast.md) - componente de notificação.
 - [src/components/common/Toaster.md](src/components/common/Toaster.md) - host global do toast (ADR 0003).
 - [src/components/common/ConfirmDialog.md](src/components/common/ConfirmDialog.md) - modal de confirmação.
+- [src/components/common/Dialog.md](src/components/common/Dialog.md) - diálogo compartilhado via portal.
+- [src/components/common/Button.md](src/components/common/Button.md) - botão compartilhado com variantes.
+- [src/components/common/Field.md](src/components/common/Field.md) - campo de formulário compartilhado.
+- [src/components/common/Table.md](src/components/common/Table.md) - tabela compartilhada.
 - [src/components/common/BarcodeManager.md](src/components/common/BarcodeManager.md) - leitura de código de barras.
 
 ## Hooks

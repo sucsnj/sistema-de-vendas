@@ -6,6 +6,7 @@ import TotalsByDistributor from './TotalsByDistributor';
 import MonthNotes from './MonthNotes';
 import { formatCurrency } from '../../utils/formatter';
 import { parseDate } from '../../utils/date';
+import summaryStyles from '../../styles/summary.module.css';
 
 interface SummaryProps {
     accountsYear: AccountDetails[];
@@ -61,12 +62,12 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
 
     return (
         <div>
-            <section className={`${styles.contasPanel} summary-panel`}>
+            <section className={`${styles.contasPanel} ${summaryStyles.summaryPanel}`}>
                 <div className={styles.panelHeader}>
                     <h2>Resumo</h2>
                     <span className={styles.statusChip}>Atualização automática</span>
                 </div>
-                <div className="summary-card">
+                <div className={`${summaryStyles.summaryCard}`}>
                     <table>
                         <thead>
                             <tr>
@@ -78,15 +79,15 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                             <tr>
                                 <td>
                                     <div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Pago</strong>
                                             <span>R$ {formatCurrency(summary.paidTotal, 2)}</span>
                                         </div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Pendente</strong>
                                             <span>R$ {formatCurrency(summary.pendingTotal, 2)}</span>
                                         </div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Acumulado anual</strong>
                                             <span>R$ {formatCurrency(summary.annualTotal, 2)}</span>
                                         </div>
@@ -94,15 +95,15 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                                 </td>
                                 <td>
                                     <div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Pago</strong>
                                             <span>{summary.paidCount}</span>
                                         </div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Pendente</strong>
                                             <span>{summary.pendingCount}</span>
                                         </div>
-                                        <div className="summary-row">
+                                        <div className={`${summaryStyles.summaryRow}`}>
                                             <strong>Acumulado anual</strong>
                                             <span>{summary.totalCount}</span>
                                         </div>
@@ -123,77 +124,7 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                 <MonthNotes year={year} month={month} setYear={setYear} setMonth={setMonth} />
 
             </section>
-            <style jsx>{`
-                .contas-panel {
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: 24px;
-                    padding: 22px;
-                    box-shadow: var(--shadow);
-                }
-
-                .summary-panel {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .panel-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    margin-bottom: 18px;
-                }
-
-                .panel-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 12px;
-                    margin-bottom: 18px;
-                }
-
-                .panel-header h2 {
-                    margin: 0;
-                    font-size: 1.4rem;
-                }
-
-                .status-chip {
-                    padding: 8px 12px;
-                    border-radius: 999px;
-                    background: var(--surface-soft);
-                    color: var(--muted);
-                    font-size: 0.9rem;
-                    white-space: normal;
-                    overflow-wrap: anywhere;
-                    word-break: break-word;
-                    max-width: 100%;
-                }
-
-                .summary-card {
-                    background: var(--surface-strong);
-                    border: 1px solid var(--border);
-                    border-radius: 22px;
-                    padding: 20px;
-                    min-height: 220px;
-                }
-
-                .summary-row:last-child {
-                  border-bottom: none;
-                }
-
-                .summary-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 12px;
-                    padding: 16px 0;
-                    border-bottom: 1px solid var(--border);
-                }
-
-            `}</style>
-        </div>
+</div>
     );
 };
 

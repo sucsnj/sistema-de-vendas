@@ -6,6 +6,7 @@ import type { DailySale } from '../../services/vendasService';
 import CartModal from '@/components/cart/CartModal';
 import PixModal from '@/components/pix/PixModal';
 import SelectItemsModal from '@/components/cart/SelectItemsModal';
+import styles from '../../styles/dailySaleForm.module.css';
 
 interface DailySaleFormProps {
   sales?: DailySale[];
@@ -66,10 +67,10 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
 
   return (
     <>
-      <form ref={formRef} onSubmit={handleSubmit} className="daily-sale-form">
+      <form ref={formRef} onSubmit={handleSubmit} className={`${styles.dailySaleForm}`}>
         <h2>Registrar Venda Diária</h2>
-        <div className="sale-form-grid">
-          <div className="sale-form-fields">
+        <div className={`${styles.saleFormGrid}`}>
+          <div className={`${styles.saleFormFields}`}>
             <label>
               {/* Data: */}
               <input
@@ -79,10 +80,10 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 className="flex-grow-data"
               />
             </label>
-            <div className="math-buttons">
+            <div className={`${styles.mathButtons}`}>
               <button
                 type="button"
-                className="math-button"
+                className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('+')}
@@ -91,7 +92,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </button>
               <button
                 type="button"
-                className="math-button"
+                className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('-')}
@@ -100,7 +101,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </button>
               <button
                 type="button"
-                className="math-button"
+                className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('*')}
@@ -109,7 +110,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </button>
               <button
                 type="button"
-                className="math-button"
+                className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('/')}
@@ -119,7 +120,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             </div>
             <label>
               {/* Valor: */}
-              <div className="input-with-icon-wrapper">
+              <div className={`${styles.inputWithIconWrapper}`}>
                 <input
                   ref={valueInputRef}
                   type="text"
@@ -134,23 +135,23 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 />
                 <button
                   type="button"
-                  className="cart-icon-button"
+                  className={`${styles.cartIconButton}`}
                   onClick={handleCartClick}
                   aria-label="Abrir carrinho"
                   title="Abrir carrinho"
                 >
-                  <AddShoppingCartIcon className="cart-icon" />
+                  <AddShoppingCartIcon className={`${styles.cartIcon}`} />
                   {totalCartCount > 0 && (
-                    <span className="cart-badge">{totalCartCount}</span>
+                    <span className={`${styles.cartBadge}`}>{totalCartCount}</span>
                   )}
                 </button>
               </div>
-              <span className="display-value">
+              <span className={`${styles.displayValue}`}>
                 {/* botão para gerar qrcode pix */}
-                <span className="pix-button" onClick={handlePixClick}>
+                <span className={`${styles.pixButton}`} onClick={handlePixClick}>
                   <QrCode2Icon className="pix-icon" />
                 </span>
-                <span className="pix-button" onClick={handlePixClick}>
+                <span className={`${styles.pixButton}`} onClick={handlePixClick}>
                   {formatCurrency(calculatedValue ?? 0, 2)}
                 </span>
               </span>
@@ -214,235 +215,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
         amount={pixAmount}
         pixKey={process.env.NEXT_PUBLIC_PIX_KEY ?? ''}
       />
-      <style jsx>{`
-        .daily-sale-form {
-          position: relative;
-        }
-
-        .sale-form-grid {
-          display: grid;
-          grid-template-columns: 1.5fr 0.1fr;
-          gap: 24px;
-          align-items: start;
-          margin-top: 20px;
-        }
-
-        .sale-form-fields {
-          display: grid;
-          gap: 16px;
-        }
-
-        .sale-form-fields label,
-        .recent-history {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .sale-form-fields label input,
-        .sale-form-fields label textarea {
-          width: 100%;
-          border-radius: 10px;
-          border: 1px solid var(--border);
-          padding: 10px 12px;
-          font-size: 1rem;
-        }
-
-        .sale-form-fields {
-          min-height: 110px;
-          resize: vertical;
-        }
-
-        .sale-form-fields button {
-          width: fit-content;
-          padding: 12px 20px;
-          border: none;
-          border-radius: 12px;
-          background: var(--accent);
-          color: var(--foreground);
-          font-weight: 700;
-          cursor: pointer;
-        }
-
-        .sale-form-fields button:disabled {
-          background: var(--muted);
-          cursor: not-allowed;
-        }
-
-        .input-with-icon-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-          width: 100%;
-        }
-
-        .input-with-icon-wrapper input {
-          width: 100%;
-          padding-right: 44px;
-        }
-
-        .sale-form-fields button.cart-icon-button {
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: transparent;
-          border: none;
-          padding: 6px;
-          margin: 0;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          color: var(--muted);
-          border-radius: 8px;
-          width: auto;
-          min-width: unset;
-          transition: color 0.2s ease, background-color 0.2s ease;
-          color: #3ed955ff;
-        }
-
-        .sale-form-fields button.cart-icon-button:hover {
-          color: var(--accent);
-          background-color: var(--surface-soft, rgba(255, 255, 255, 0.08));
-        }
-
-        .cart-icon {
-          font-size: 1.3rem;
-        }
-
-        .cart-badge {
-          position: absolute;
-          top: -4px;
-          right: -4px;
-          background: #3ed955;
-          color: #000;
-          font-size: 0.65rem;
-          font-weight: 800;
-          border-radius: 999px;
-          min-width: 17px;
-          height: 17px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 3px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .flex-grow-1 {
-          flex: 1;
-        }
-
-        .display-value {
-          font-size: 1.9rem;
-          font-weight: 700;
-          min-width: 110px;
-          text-align: right;
-          margin-right: 10px;
-
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-        }
-
-        /* estilo para deixar o botão clicável visualmente amigável */
-        .pix-button {
-          cursor: pointer;
-          width: fit-content;
-          height: fit-content;
-          display: inline-flex;
-          align-items: center;
-        }
-
-        .recent-history {
-          padding: 16px;
-          background: var(--surface);
-          border-radius: 16px;
-          border: 1px solid var(--border);
-        }
-
-        .recent-history h3 {
-          margin: 0 0 12px;
-          font-size: 18px;
-        }
-
-        .recent-history ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          display: grid;
-          gap: 12px;
-        }
-
-        .recent-sale-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 12px;
-          padding: 12px 14px;
-          border-radius: 12px;
-          background: var(--surface-soft);
-        }
-
-        .recent-sale-observacoes {
-          margin-top: 6px;
-          color: var(--muted);
-          font-size: 0.95rem;
-        }
-
-        .recent-sale-actions {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-
-        .recent-sale-actions button {
-          padding: 8px 12px;
-          border-radius: 10px;
-          border: none;
-          cursor: pointer;
-          font-weight: 600;
-        }
-
-        .recent-sale-actions button:first-of-type {
-          background: var(--surface-soft);
-        }
-
-        .recent-sale-actions button:last-of-type {
-          background: var(--danger);
-          color: var(--foreground);
-        }
-
-        .math-buttons {
-          display: none;
-        }
-
-        .math-button {
-          padding: 6px 10px;
-          border-radius: 8px;
-          border: none;
-          cursor: pointer;
-          font-size: 1.5rem;
-        }
-
-        @media (max-width: 900px) {
-          .sale-form-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .display-value {
-            font-size: 3.0rem;
-          }
-
-          .math-buttons {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-          }
-        }
-      `}</style>
-    </>
+</>
   );
 };
 

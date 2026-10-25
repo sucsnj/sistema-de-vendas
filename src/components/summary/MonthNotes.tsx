@@ -5,6 +5,7 @@ import { formatCurrency } from '../../utils/formatter';
 import { formatDateString, getCurrentYear } from '../../utils/date';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
+import styles from '../../styles/monthNotes.module.css';
 
 // Array com os months
 const months = [
@@ -53,11 +54,11 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
     };
 
     return (
-        <div className="summary-card small">
+        <div className={`${styles.summaryCard} ${styles.small}`}>
             <h3>Notas do mês</h3>
 
             {/* Seletor de período */}
-            <div className="selectors">
+            <div className={`${styles.selectors}`}>
                 <select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
                     {months.map((name, index) => (
                         <option key={index} value={index + 1}>
@@ -82,7 +83,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
             ) : invoices.length === 0 ? (
                 <p>Nenhuma nota encontrada.</p>
             ) : (
-                <table className="summary-table">
+                <table className={`${styles.summaryTable}`}>
                     <thead>
                         <tr>
                             <th>Emissão</th>
@@ -98,7 +99,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
                                 <td>{n.distribuidora}</td>
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
-                                    <button onClick={() => openConfirm(n.id)} className="delete-btn">
+                                    <button onClick={() => openConfirm(n.id)} className={`${styles.deleteBtn}`}>
                                         <span className="icon-responsive">
                                             <DeleteIcon />
                                         </span>
@@ -125,97 +126,7 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
                 }}
                 onCancel={() => setConfirmOpen(false)}
             />
-
-            <style jsx>{`
-        .summary-card {
-          background: var(--surface-strong);
-          border: 1px solid var(--border);
-          border-radius: 22px;
-          padding: 20px;
-          min-height: 220px;
-        }
-
-        .summary-card.small {
-          padding: 18px;
-        }
-
-        .selectors {
-            display: flex;
-            align-items: center;
-            margin-bottom: 24px;
-            gap: 12px;
-        }
-
-        .selectors > div,
-        .selectors select {
-          min-width: 0;
-        }
-
-        .selectors select {
-          flex: 1 1 160px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
-          background: var(--surface-soft);
-          color: var(--foreground);
-        }
-
-        .selectors > div {
-          flex: 1 1 220px;
-          min-width: 160px;
-          display: grid;
-          gap: 4px;
-        }
-
-        .selectors > div h4 {
-          margin: 0;
-          font-size: 0.95rem;
-          color: var(--muted);
-        }
-
-        .summary-table {
-          width: 100%;
-          border-collapse: collapse;
-          min-width: 0;
-          table-layout: auto;
-          color: var(--foreground);
-        }
-
-        .summary-table th,
-        .summary-table td {
-          padding: 10px 7px;
-          text-align: left;
-          border-bottom: 1px solid var(--border);
-          min-width: 0;
-          overflow-wrap: anywhere;
-          word-break: break-word;
-        }
-
-        .summary-table th {
-          color: var(--muted);
-          font-size: 0.9rem;
-        }
-
-        .summary-table td:last-child {
-          white-space: nowrap;
-          width: 1%;
-        }
-
-        .delete-btn {
-          background: var(--danger);
-          color: white;
-          border: none;
-          border-radius: 10px;
-          padding: 8px 12px;
-          cursor: pointer;
-          font-size: 0.85rem;
-        }
-
-        .delete-btn:hover {
-          opacity: 0.95;
-        }
-      `}</style>
-        </div>
+</div>
     );
 };
 
