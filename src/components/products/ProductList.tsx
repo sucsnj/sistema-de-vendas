@@ -1,4 +1,6 @@
 import styles from '../../styles/produtos.module.css';
+import Panel from '@/components/common/Panel';
+import PanelHeader from '@/components/common/PanelHeader';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -27,13 +29,8 @@ const Listagem: React.FC<ProductListProps> = ({ items, total, page, totalPages, 
 
     return (
         <div>
-            <section className="glass-form" style={{ marginTop: '15px' }} aria-labelledby="listagem-title">
-                <div className={styles.panelHeader}>
-                    <h2 id="listagem-title" style={{ margin: 0 }}>Listagem</h2>
-                    <div style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>
-                        Total: {total} registro(s)
-                    </div>
-                </div>
+            <Panel>
+                <PanelHeader title="Listagem" chip={<span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Total: {total} registro(s)</span>} />
 
                 {loading ? (
                     <div className={styles.emptyState}>Carregando...</div>
@@ -166,7 +163,7 @@ const Listagem: React.FC<ProductListProps> = ({ items, total, page, totalPages, 
                         </div>
                     </div>
                 )}
-            </section>
+            </Panel>
         </div>
     );
 };

@@ -36,6 +36,10 @@ import { useBrand } from '@/hooks/useBrand';
 import { useSupplier } from '@/hooks/useSupplier';
 import { useUnitOfMeasure } from '@/hooks/useUnitOfMeasure';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
+import Panel from '@/components/common/Panel';
+import PanelHeader from '@/components/common/PanelHeader';
 
 const RegistrationPage: React.FC = () => {
 
@@ -666,20 +670,18 @@ const RegistrationPage: React.FC = () => {
                 />
             </Head>
 
-            <div className={styles.produtosPage}>
+            <PageShell className={styles.produtosPage}>
 
-                <div>
-                    <h1 id="page-title">Produtos e Serviços</h1>
-                    <p>Cadastro/Edição de produtos e serviços, suporte a múltiplos códigos de barras.</p>
-                </div>
+                <PageHeader title="Produtos e Serviços" description="Cadastro/Edição de produtos e serviços, suporte a múltiplos códigos de barras." />
+
+
+
 
                 <div className={styles.cadastroEdicaoGrid}>
                     {/* Formulário de Cadastro/Edição */}
                     <div>
-                        <section className="glass-form" aria-labelledby="form-title">
-                            <h2 id="form-title" style={{ marginBottom: '15px' }}>
-                                {editingId ? 'Editar Item' : 'Cadastrar Item'}
-                            </h2>
+                        <Panel>
+                            <PanelHeader title={editingId ? 'Editar Item' : 'Cadastrar Item'} />
 
                             <form onSubmit={handleSubmitForm}>
                                 <ItemForm
@@ -754,7 +756,7 @@ const RegistrationPage: React.FC = () => {
                                     </button>
                                 </div>
                             </form>
-                        </section>
+                        </Panel>
                     </div>
                 </div>
 
@@ -1112,7 +1114,7 @@ const RegistrationPage: React.FC = () => {
                         pendingNavUrl.current = null;
                     }}
                 />
-            </div >
+            </PageShell>
         </>
     );
 };

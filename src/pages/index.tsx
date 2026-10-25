@@ -10,6 +10,11 @@ import { capitalize } from '../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getDateArray, now, toTimestamp, formatMonthName } from '../utils/date';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
+import Panel from '@/components/common/Panel';
+import PanelHeader from '@/components/common/PanelHeader';
+
 
 // Data de today (fuso do app) usada como seleção inicial do formulário
 const today = now().format('YYYY-MM-DD');
@@ -61,8 +66,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className="container-padding">
-        <h1>Dashboard de Vendas</h1>
+      <PageShell>
+        <PageHeader title="Dashboard de Vendas" description={loading ? 'Carregando vendas...' : undefined} />
         {loading && <p className="loading-text">Carregando vendas...</p>}
         {/* Resumo do período + formulário de registro de venda */}
         <DailySalesTotal
@@ -103,7 +108,8 @@ const Home: React.FC = () => {
           onImportCompleted={loadSales}
         />
         {/* Rodapé com filtro de período e ações de consolidação/backup */}
-        <div className="footer-header glass-form">
+        <Panel>
+          <PanelHeader title="Período e ações" />
           <div className="page-actions">
             <label>
               Mês:
@@ -142,8 +148,8 @@ const Home: React.FC = () => {
               Fazer Backup
             </button>
           </div>
-        </div>
-      </div>
+        </Panel>
+      </PageShell>
     </>
   );
 };

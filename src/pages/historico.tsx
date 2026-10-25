@@ -7,6 +7,9 @@ import { getDateArray, formatMonthName } from '../utils/date';
 import { useToast } from '../hooks/useToast';
 import { useSales } from '../hooks/useSales';
 import { useFilter } from '../hooks/useFilter';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
+import Panel from '@/components/common/Panel';
 
 // Componente React: tela de Histórico de Vendas.
 // Lista as vendas do período com filtro (todas/positivas/negativas), permitindo
@@ -39,10 +42,10 @@ const History: React.FC = () => {
 
   return (
     <>
-      <div className="container-padding">
-        <h1>Histórico de Vendas</h1>
+      <PageShell>
+        <PageHeader title="Histórico de Vendas" />
         {/* Filtro de período e botões de valor */}
-        <div className="glass-form">
+        <Panel>
           <div className="page-actions">
             <label>
               Mês:
@@ -77,7 +80,7 @@ const History: React.FC = () => {
 
             </div>
           </div>
-        </div>
+        </Panel>
 
         {/* Formulário de edição (visível apenas quando há uma venda em edição) */}
         {editingSale && (
@@ -93,7 +96,7 @@ const History: React.FC = () => {
         <SalesTable sales={sales} onEditSale={handleEditSale} onDeleteSale={handleDeleteSale} />
         {/* Exportação e importação de vendas */}
         <ExportButtons sales={sales} month={month} year={year} onMessage={showToast} />
-      </div>
+      </PageShell>
     </>
   );
 };

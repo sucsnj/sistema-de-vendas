@@ -7,6 +7,9 @@ import parseNumber from "../../utils/number";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import styles from '@/styles/sales.module.css';
+import Panel from '@/components/common/Panel';
+import PanelHeader from '@/components/common/PanelHeader';
+import Form from '@/components/common/Form';
 
 interface EditSaleFormProps {
   sale: DailySale;
@@ -115,8 +118,9 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
 
   return (
     <>
-      <form onSubmit={handleSaveEdit} className="glass-form">
-        <h2>Editar Venda</h2>
+      <Panel>
+        <PanelHeader title="Editar Venda" />
+        <Form onSubmit={handleSaveEdit}>
 
         <label>
           Data:
@@ -189,7 +193,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
         <button type="button" onClick={onCancel} className="button-spacing button-delete">
           Cancelar
         </button>
-      </form>
+      </Form>
+      </Panel>
 
       {/* Modal de seleção de itens (adicionar ao carrinho) */}
       <SelectItemsModal

@@ -3,6 +3,7 @@ import OcrUpload from '@/components/import/OcrUpload';
 import { AccountDetails, } from '../../services/contasService';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
+import Panel from '@/components/common/Panel';
 import { formatDateString } from '../../utils/date';
 import { toTimestamp } from '../../utils/date';
 
@@ -38,7 +39,7 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
 
     return (
         <div>
-            <section className={`${styles.contasPanel} ${styles.agendaPanel}`}>
+            <Panel className={styles.agendaPanel}>
                 <div className={styles.panelHeader}>
                     <h2>Agenda</h2>
                     <span className={styles.statusChip}>Atualização automática</span>
@@ -59,7 +60,7 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                     </div>
                 </div>
 
-                <section className={styles.contasPanel}>
+                <Panel>
                     <div className={styles.panelHeader}>
                         <h3>Próximas contas</h3>
                     </div>
@@ -74,15 +75,15 @@ const Agenda: React.FC<AgendaProps> = ({ accountsYear }) => {
                             ))
                         )}
                     </div>
-                </section>
+                </Panel>
 
-                <section className={styles.contasPanel}>
+                <Panel>
                     <div className={styles.panelHeader}>
                         <h3>Leitura de Contas</h3>
                     </div>
                     <OcrUpload />
-                </section>
-            </section>
+                </Panel>
+            </Panel>
         </div>
     );
 };

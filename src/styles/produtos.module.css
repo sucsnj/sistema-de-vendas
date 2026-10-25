@@ -14,7 +14,6 @@
 
 .listagemGrid {
   display: grid;
-  margin: 30px;
   gap: 16px;
 }
 

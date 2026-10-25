@@ -8,6 +8,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useToast } from '../hooks/useToast';
 import { useMonthlyData } from '../hooks/useMonthlyData';
 import { useConfirmDialog } from '../hooks/useConfirmDialog';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
+import Panel from '@/components/common/Panel';
 dayjs.locale('pt-br');
 
 // Componente React: tela de Resumo Mensal.
@@ -31,8 +34,9 @@ const SummaryPage: React.FC = () => {
 
   return (
     <>
-      <div className="container-padding">
-        <h1>Resumo Mensal</h1>
+      <PageShell>
+        <PageHeader title="Resumo Mensal" />
+        <Panel>
 
       {/* Botões de alternância entre as tabelas */}
       <div className="toggle-buttons">
@@ -126,6 +130,7 @@ const SummaryPage: React.FC = () => {
           </table>
         </div>
       </div>
+      </Panel>
 
       {/* Diálogo de confirmação de exclusão */}
       <ConfirmDialog
@@ -137,7 +142,7 @@ const SummaryPage: React.FC = () => {
         onConfirm={handleConfirm}
         onCancel={cancelConfirm}
       />
-      </div>
+    </PageShell>
     </>
   );
 };

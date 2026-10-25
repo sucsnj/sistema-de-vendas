@@ -13,6 +13,9 @@ import {
 import { useShortcuts } from '../utils/shortcuts';
 import { parseDate } from '../utils/date';
 import styles from '../styles/tabela.module.css';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
+import Panel from '@/components/common/Panel';
 
 // Componente React.
 const Tabela: React.FC = () => {
@@ -141,12 +144,10 @@ const Tabela: React.FC = () => {
   });
 
   return (
-    <div className="page-container">
-      <div className="container-padding">
-        <h1>Tabela de Medicamentos</h1>
-      </div>
+      <PageShell>
+      <PageHeader title="Tabela de Medicamentos" description="Upload, busca e histórico da tabela de medicamentos." />
 
-      <section className={`glass-form ${styles.uploadPanel}`}>
+      <Panel className={styles.uploadPanel}>
         <div className={`${styles.panelRow}`}>
           <div className={`${styles.uploadHelp}`}>
             <button type="button" className={`${styles.uploadButton}`} onClick={() => fileInputRef.current?.click()}>
@@ -189,10 +190,10 @@ const Tabela: React.FC = () => {
             <span>{tabelaLoaded ? 'Carregada' : 'Aguardando upload'}</span>
           </div>
         </div>
-      </section>
+      </Panel>
 
       <div className={`${styles.resultsGrid}`}>
-        <section className={`glass-form ${styles.resultsPanel}`}>
+        <Panel className={styles.resultsPanel}>
           <div className={contasStyles.panelHeader}>
             <div>
               <h2>Resultados</h2>
@@ -235,9 +236,9 @@ const Tabela: React.FC = () => {
           ) : (
             <div className={`${styles.emptyState}`}>Use a busca acima para encontrar registros na tabela.</div>
           )}
-        </section>
+        </Panel>
 
-        <aside className={`glass-form ${styles.historyPanel}`}>
+        <Panel className={styles.historyPanel}>
           <div className={contasStyles.panelHeader}>
             <div>
               <h2>Histórico de pesquisas</h2>
@@ -263,9 +264,9 @@ const Tabela: React.FC = () => {
           ) : (
             <div className={`${styles.emptyState}`}>Nenhuma pesquisa registrada ainda.</div>
           )}
-        </aside>
+        </Panel>
       </div>
-</div>
+    </PageShell>
   );
 };
 

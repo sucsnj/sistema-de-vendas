@@ -22,6 +22,12 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Aplicação do padrão de layout e formulários — 25/10/2026
+
+- **Páginas:** `index`, `historico`, `resumo`, `produtos`, `cadastro`, `tabela` e `contas-a-pagar` usam `PageShell`/`PageHeader`; painéis e formulários migrados para `Panel`/`Form`/`FormActions` onde aplicável.
+- **Componentes:** `ProductFilters`, `ProductList`, `EditSaleForm`, `ExportButtons`, `Agenda`, `Summary`, `PayablesForm` e `tabela` usam as primitivas de layout.
+- **Verificação:** `tsc`, `lint`, `lint:css`, `styles:check`, `check:css`, `build`, `check-docs` e `check-encoding` verdes.
+
 ### Padrão de layout e formulários — ADR 0009 — 25/10/2026
 
 - **Primitivas reutilizáveis:** `PageShell`, `PageHeader`, `PageGrid`, `Panel`, `PanelHeader`, `StatusChip`, `Form`, `FormRow`, `FormActions` e `FormField` em `src/components/common/`.

@@ -1,5 +1,8 @@
 import React from 'react';
 import styles from '../../styles/contas.module.css';
+import Form from '@/components/common/Form';
+import FormRow from '@/components/common/FormRow';
+import FormActions from '@/components/common/FormActions';
 import { AccountDetails } from '../../services/contasService';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -49,8 +52,8 @@ const PayablesForm: React.FC<PayablesFormProps> = ({
   documentInputRef,
 }) => {
   return (
-    <form onSubmit={onSubmit} className={styles.contasForm}>
-      <div className={styles.formRow}>
+    <Form onSubmit={onSubmit} className={styles.contasForm}>
+      <FormRow>
         <label>
           Distribuidora
           <input
@@ -87,7 +90,7 @@ const PayablesForm: React.FC<PayablesFormProps> = ({
             onChange={(e) => setDocument(e.target.value)}
           />
         </label>
-      </div>
+      </FormRow>
       <label>
         Banco / Observações
         <textarea
@@ -96,7 +99,7 @@ const PayablesForm: React.FC<PayablesFormProps> = ({
           onChange={(e) => setBankNotes(e.target.value)}
         />
       </label>
-      <div className={styles.formActions}>
+      <FormActions>
         <button type="submit">
           <NoteAddIcon className="material-icon" />
           {editingAccount ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
@@ -113,8 +116,8 @@ const PayablesForm: React.FC<PayablesFormProps> = ({
             Cancelar
           </button>
         ) : null}
-      </div>
-    </form>
+      </FormActions>
+    </Form>
   );
 };
 

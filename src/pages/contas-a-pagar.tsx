@@ -10,6 +10,7 @@ import parseNumber from '../utils/number';
 import PayablesLastTen from '@/components/payables/PayablesLastTen';
 import PayablesModals from '@/components/payables/PayablesModals';
 import styles from '@/styles/contas.module.css';
+import PageShell from '@/components/common/PageShell';
 import {
   fetchAccounts,
   updateAccount,
@@ -345,7 +346,7 @@ const Payables: React.FC = () => {
   });
 
   return (
-    <div className={styles.contasPage}>
+    <PageShell className={styles.contasPage}>
       <PayablesHeader year={year} month={month} setYear={setYear} setMonth={setMonth} handleBackup={handleBackup} />
 
       <main className={styles.contasGrid}>
@@ -453,7 +454,7 @@ const Payables: React.FC = () => {
         onClosePayModal={() => setPayModalOpen(false)}
         onCancelPayment={handleCancelPayment}
       />
-    </div>
+    </PageShell>
   );
 };
 

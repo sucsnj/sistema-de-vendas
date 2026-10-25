@@ -22,6 +22,8 @@ import ProdutosList from '@/components/products/ProductList';
 import ProductFilters from '@/components/products/ProductFilters';
 import ProductDeleteModal from '@/components/products/ProductDeleteModal';
 import { ProductFiltersState } from '@/components/products/ProductFilters';
+import PageShell from '@/components/common/PageShell';
+import PageHeader from '@/components/common/PageHeader';
 
 const ProductsPage: React.FC = () => {
 
@@ -235,12 +237,9 @@ const ProductsPage: React.FC = () => {
         />
       </Head>
 
-      <div className={styles.produtosPage}>
+      <PageShell>
 
-        <div>
-          <h1 id="page-title">Listagem</h1>
-          <p>Listagem com filtros, paginação e controle de status.</p>
-        </div>
+        <PageHeader title="Listagem" description="Listagem com filtros, paginação e controle de status." />
 
         <div className={styles.listagemGrid}>
           {/* Coluna Esquerda: Listagem e Filtros */}
@@ -289,7 +288,7 @@ const ProductsPage: React.FC = () => {
         <Link href="/cadastro" className={styles.fab} id="fab-novo-cadastro" title="Novo cadastro">
           <span className={styles.fabIcon}>+</span>
         </Link>
-      </div >
+      </PageShell>
     </>
   );
 };

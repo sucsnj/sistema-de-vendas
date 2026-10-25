@@ -4,6 +4,9 @@ import {
     SupplierData
 } from '../../services/produtosService';
 import styles from '../../styles/produtos.module.css';
+import Panel from '@/components/common/Panel';
+import PanelHeader from '@/components/common/PanelHeader';
+import Form from '@/components/common/Form';
 
 export interface ProductFiltersState {
     search: string;
@@ -41,9 +44,9 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
 }) => {
 
     return (
-        <section className="glass-form" aria-labelledby="filtros-title">
-            <h2 id="filtros-title" className="">Filtros de Pesquisa</h2>
-            <form onSubmit={actions.search} className={`${styles.filterForm} page-actions`}>
+        <Panel>
+            <PanelHeader title="Filtros de Pesquisa" />
+            <Form onSubmit={actions.search} className="page-actions">
                 <label htmlFor="search-input" className={styles.filterLabelSearch}>
                     Buscar:
                     <input
@@ -159,8 +162,8 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                         Limpar
                     </button>
                 </div>
-            </form>
-        </section>
+            </Form>
+        </Panel>
     )
 }
 

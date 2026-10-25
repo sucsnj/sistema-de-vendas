@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import styles from '../../styles/contas.module.css';
+import Panel from '@/components/common/Panel';
 import { AccountDetails } from '../../services/contasService';
 import MonthlyConsolidation from './MonthlyConsolidation';
 import TotalsByDistributor from './TotalsByDistributor';
@@ -62,7 +63,7 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
 
     return (
         <div>
-            <section className={`${styles.contasPanel} ${summaryStyles.summaryPanel}`}>
+            <Panel className={summaryStyles.summaryPanel}>
                 <div className={styles.panelHeader}>
                     <h2>Resumo</h2>
                     <span className={styles.statusChip}>Atualização automática</span>
@@ -123,7 +124,7 @@ const Summary: React.FC<SummaryProps> = ({ accountsYear, year, month, setYear, s
                 {/* #Notas do Mês */}
                 <MonthNotes year={year} month={month} setYear={setYear} setMonth={setMonth} />
 
-            </section>
+            </Panel>
 </div>
     );
 };

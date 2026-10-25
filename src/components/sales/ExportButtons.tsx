@@ -4,6 +4,7 @@ import html2canvas from 'html2canvas';
 import { registerSaleWithCreatedAt, DailySale } from '../../services/vendasService';
 import parseNumber from '../../utils/number';
 import { parseDate } from '../../utils/date';
+import Panel from '@/components/common/Panel';
 
 interface ExportButtonsProps {
   sales: DailySale[];
@@ -240,13 +241,11 @@ const ExportButtons: FC<ExportButtonsProps> = ({
   };
 
   return (
-    <div className="glass-form"
-      style={{
+    <Panel style={{
         display: 'flex',
         flexWrap: 'wrap',
         gap: '10px',
-      }}
-    >
+      }}>
       <button type="button" onClick={() => exportXLSX('month')}>
         Exportar XLSX (Mês)
       </button>
@@ -270,7 +269,7 @@ const ExportButtons: FC<ExportButtonsProps> = ({
         data-mode="month"
         onChange={handleFileChange}
       />
-    </div>
+    </Panel>
   );
 };
 
