@@ -22,6 +22,13 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Padrão de layout e formulários — ADR 0009 — 25/10/2026
+
+- **Primitivas reutilizáveis:** `PageShell`, `PageHeader`, `PageGrid`, `Panel`, `PanelHeader`, `StatusChip`, `Form`, `FormRow`, `FormActions` e `FormField` em `src/components/common/`.
+- **Estilos centralizados:** `src/styles/layout.module.css`, derivado do layout de `/contas-a-pagar`, com responsividade equivalente.
+- **Adoção gradual:** páginas existentes não foram alteradas; o padrão está disponível para novas páginas e refatorações futuras.
+- **Docs:** ADR 0009 e docs dos componentes de layout.
+
 ### UI: Fase 2 — modais de catálogo, confirmação, Toast e remoção de styled-jsx (ADR 0008) — 25/10/2026
 
 - **`CatalogEntityModal`** substitui os oito modais de criação/edição de categoria, marca, fornecedor e unidade de medida; campos declarativos, exclusão opcional e IDs existentes preservados.

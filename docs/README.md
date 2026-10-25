@@ -40,6 +40,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [adr/0006-docs-espelhando-src.md](adr/0006-docs-espelhando-src.md) - ADR: documentação espelhando `src/` em `docs/src/` + template único validado por script.
 - [adr/0007-css-modules-e-design-tokens.md](adr/0007-css-modules-e-design-tokens.md) - ADR: CSS Modules, design tokens e tema por `data-theme`.
 - [adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md](adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md) - ADR: modal genérico de catálogo e confirmação compartilhada.
+- [adr/0009-padroes-de-layout-e-formularios.md](adr/0009-padroes-de-layout-e-formularios.md) - ADR: padrão de layout e formulários baseado em `/contas-a-pagar`.
 
 ## Páginas do Frontend
 
@@ -163,6 +164,16 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [src/components/common/Toast.md](src/components/common/Toast.md) - componente de notificação.
 - [src/components/common/Toaster.md](src/components/common/Toaster.md) - host global do toast (ADR 0003).
 - [src/components/common/ConfirmDialog.md](src/components/common/ConfirmDialog.md) - modal de confirmação.
+- [src/components/common/PageShell.md](src/components/common/PageShell.md) - casca padrão de página.
+- [src/components/common/PageHeader.md](src/components/common/PageHeader.md) - cabeçalho padrão de página.
+- [src/components/common/PageGrid.md](src/components/common/PageGrid.md) - grid padrão de página.
+- [src/components/common/Panel.md](src/components/common/Panel.md) - painel padrão.
+- [src/components/common/PanelHeader.md](src/components/common/PanelHeader.md) - cabeçalho padrão de painel.
+- [src/components/common/StatusChip.md](src/components/common/StatusChip.md) - chip de status padrão.
+- [src/components/common/Form.md](src/components/common/Form.md) - formulário padrão.
+- [src/components/common/FormRow.md](src/components/common/FormRow.md) - linha padrão de campos.
+- [src/components/common/FormActions.md](src/components/common/FormActions.md) - ações padrão de formulário.
+- [src/components/common/FormField.md](src/components/common/FormField.md) - campo padrão de formulário.
 - [src/components/common/Dialog.md](src/components/common/Dialog.md) - diálogo compartilhado via portal.
 - [src/components/common/Button.md](src/components/common/Button.md) - botão compartilhado com variantes.
 - [src/components/common/Field.md](src/components/common/Field.md) - campo de formulário compartilhado.
