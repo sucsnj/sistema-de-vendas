@@ -39,6 +39,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [adr/0005-agrupamento-de-componentes-por-dominio.md](adr/0005-agrupamento-de-componentes-por-dominio.md) - ADR: componentes em subpastas por domínio com nomes de arquivo em inglês.
 - [adr/0006-docs-espelhando-src.md](adr/0006-docs-espelhando-src.md) - ADR: documentação espelhando `src/` em `docs/src/` + template único validado por script.
 - [adr/0007-css-modules-e-design-tokens.md](adr/0007-css-modules-e-design-tokens.md) - ADR: CSS Modules, design tokens e tema por `data-theme`.
+- [adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md](adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md) - ADR: modal genérico de catálogo e confirmação compartilhada.
 
 ## Páginas do Frontend
 
@@ -144,14 +145,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [src/components/products/ServiceForm.md](src/components/products/ServiceForm.md) - formulário de serviço.
 - [src/components/products/StockAdjustModal.md](src/components/products/StockAdjustModal.md) - ajuste de estoque.
 - [src/components/products/ProductDeleteModal.md](src/components/products/ProductDeleteModal.md) - confirmação de exclusão de itens do catálogo.
-- [src/components/catalog/CategoryModal.md](src/components/catalog/CategoryModal.md) - criação de categoria.
-- [src/components/catalog/CategoryEditModal.md](src/components/catalog/CategoryEditModal.md) - edição/exclusão de categoria.
-- [src/components/catalog/BrandModal.md](src/components/catalog/BrandModal.md) - criação de marca.
-- [src/components/catalog/BrandEditModal.md](src/components/catalog/BrandEditModal.md) - edição/exclusão de marca.
-- [src/components/catalog/SupplierModal.md](src/components/catalog/SupplierModal.md) - criação de fornecedor.
-- [src/components/catalog/SupplierEditModal.md](src/components/catalog/SupplierEditModal.md) - edição/exclusão de fornecedor.
-- [src/components/catalog/UomModal.md](src/components/catalog/UomModal.md) - criação de unidade de medida.
-- [src/components/catalog/UomEditModal.md](src/components/catalog/UomEditModal.md) - edição/exclusão de unidade de medida.
+- [src/components/catalog/CatalogEntityModal.md](src/components/catalog/CatalogEntityModal.md) - modal genérico de criação/edição/exclusão dos cadastros auxiliares.
 
 ### Importação (`src/components/import/`)
 
@@ -177,7 +171,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 
 ## Tipos
 
-- [src/types/README.md](src/types/README.md) - índice dos tipos compartilhados (`categoria.ts`, `sale.ts`).
+- [src/types/README.md](src/types/README.md) - índice dos tipos compartilhados (`catalog.ts`, `categoria.ts`, `sale.ts`).
 
 ## Utilitários
 

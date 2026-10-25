@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { fetchBrands, createBrand, deleteBrand, updateBrand } from "../services/produtosService";
-import { BrandFormData } from "@/components/catalog/BrandEditModal";
+import { BrandFormData } from "@/types/catalog";
 import { ProductFormData } from "@/components/products/ProductForm";
 import { ProductOptions } from "@/components/products/ProductForm";
 import { validateRequired } from "../utils/validation";
@@ -33,7 +33,6 @@ export const useBrand = ({
     // Modais de cadastro rápido
     const [brandModalOpen, setBrandModalOpen] = useState(false);
     const [brandForm, setBrandForm] = useState<BrandFormData>({ name: '' });
-    const [newBrandName, setNewBrandName] = useState('');
 
     // Modais de Edição
     const [brandEditModalOpen, setBrandEditModalOpen] = useState(false);
@@ -41,13 +40,13 @@ export const useBrand = ({
     // Cadastro de Marca Inline
     const handleSaveBrand = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nameValidation = validateRequired(newBrandName, "O nome da marca");
+        const nameValidation = validateRequired(brandForm.name, "O nome da marca");
         if (!nameValidation.ok) {
             showToast(nameValidation.message ?? "Campo obrigatório.", "error");
             return;
         }
         try {
-            const response = await createBrand(newBrandName.trim());
+            const response = await createBrand(brandForm.name.trim());
             showToast(response.message || 'Marca criada com sucesso.', 'success');
 
             // Re-carrega lista de brands e seleciona a criada
@@ -57,7 +56,7 @@ export const useBrand = ({
 
             // Fecha modal
             setBrandModalOpen(false);
-            setNewBrandName('');
+            setBrandForm({ name: '' });
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao criar marca.', 'error');
         }
@@ -137,8 +136,6 @@ export const useBrand = ({
         setBrandForm,
         brandEditModalOpen,
         setBrandEditModalOpen,
-        newBrandName,
-        setNewBrandName,
 
         // Handlers
         handleSaveBrand,

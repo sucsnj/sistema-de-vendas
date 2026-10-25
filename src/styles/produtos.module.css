@@ -469,6 +469,12 @@
   color: var(--foreground);
 }
 
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;

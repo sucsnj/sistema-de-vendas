@@ -2,13 +2,17 @@ import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useShortcuts } from '../../utils/shortcuts';
 import { useFocusTrap } from '../../utils/focus';
+import styles from '../../styles/confirmDialog.module.css';
 
 interface ConfirmDialogProps {
   open: boolean;
   title: string;
-  message: string;
+  message: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
+  danger?: boolean;
+  confirmButtonId?: string;
+  cancelButtonId?: string;
   onConfirm: () => void;
   onCancel?: () => void;
 }
@@ -19,6 +23,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   message,
   confirmText = 'Confirmar',
   cancelText,
+  danger = false,
+  confirmButtonId,
+  cancelButtonId,
   onConfirm,
   onCancel,
 }) => {
@@ -44,9 +51,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!open) return null;
 
   const dialog = (
-    <div className="confirm-backdrop" role="presentation" onClick={onClose}>
+    <div className={styles.backdrop} role="presentation" onClick={onClose}>
       <div
-        className="confirm-dialog"
+        className={styles.dialog}
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
@@ -55,102 +62,31 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 id="confirm-dialog-title">{title}</h3>
-        <p id="confirm-dialog-message">{message}</p>
-        <div className="confirm-actions">
+        <h3 id="confirm-dialog-title" className={styles.title}>{title}</h3>
+        <div id="confirm-dialog-message" className={styles.message}>{message}</div>
+        <div className={styles.actions}>
           {showCancel && (
             <button
               type="button"
-              className="confirm-button confirm-cancel"
+              className={`${styles.button} ${styles.cancel}`}
               onClick={onCancel}
               ref={cancelButtonRef}
+              id={cancelButtonId}
             >
               {cancelText}
             </button>
           )}
           <button
             type="button"
-            className="confirm-button confirm-ok"
+            className={`${styles.button} ${danger ? styles.danger : styles.confirm}`}
             onClick={onConfirm}
             ref={confirmButtonRef}
+            id={confirmButtonId}
           >
             {confirmText}
           </button>
         </div>
       </div>
-      <style jsx>{`
-        .confirm-backdrop {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.45);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 999;
-        }
-
-        .confirm-dialog {
-          width: min(100%, 420px);
-          background: var(--surface-strong);
-          border-radius: 16px;
-          padding: 24px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-          color: var(--foreground);
-          text-align: left;
-          outline: none;
-        }
-
-        .confirm-dialog h3 {
-          margin: 0 0 12px;
-          font-size: 22px;
-          color: var(--foreground);
-        }
-
-        .confirm-dialog p {
-          margin: 0 0 24px;
-          line-height: 1.6;
-          color: var(--muted);
-        }
-
-        .confirm-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: 12px;
-        }
-
-        .confirm-button {
-          min-width: 100px;
-          padding: 10px 16px;
-          border: none;
-          border-radius: 10px;
-          font-weight: 600;
-          cursor: pointer;
-        }
-
-        .confirm-button:focus-visible {
-          outline: 3px solid var(--accent);
-          outline-offset: 4px;
-        }
-
-        .confirm-cancel {
-          background: var(--surface-soft);
-          color: var(--foreground);
-        }
-
-        .confirm-ok {
-          background: var(--success);
-          color: var(--foreground);
-        }
-
-        .confirm-ok:hover {
-          background: var(--success);
-          opacity: 0.8;
-        }
-
-        .confirm-cancel:hover {
-          background: var(--surface);
-        }
-      `}</style>
     </div>
   );
 

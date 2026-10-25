@@ -6,7 +6,8 @@
 
 | Arquivo | Resumo |
 | --- | --- |
-| [categoria.md](./categoria.md) | Formulário e opções de categoria (`CategoryFormData`, `CategoryOptions`). |
+| [catalog.md](./catalog.md) | Formulários dos cadastros auxiliares (`BrandFormData`, `SupplierFormData`, `UnitOfMeasureFormData`). |
+| [categoria.md](./categoria.md) | Formulário de categoria (`CategoryFormData`). |
 | [sale.md](./sale.md) | Tipos do carrinho/vendas (`CatalogItemType`, `CartItem`). |
 
 ## Notas

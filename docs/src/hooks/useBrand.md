@@ -4,15 +4,15 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`brandModalOpen`, `newBrandName`) e edição (`brandEditModalOpen`, `brandForm`) de marca.
-- Cria marca via `createBrand`, atualiza opções e seleciona a marca criada.
-- Atualiza/exclui marca e sincroniza lista de opções do formulário.
+- Controla os modais de cadastro (`brandModalOpen`) e edição (`brandEditModalOpen`), ambos usando `brandForm`.
+- Cria marca via `createBrand`, atualiza as opções e seleciona a marca criada.
+- Atualiza/exclui marca e sincroniza a lista de opções do formulário.
 
 ## Relações
 
-- **Usa:** `fetchBrands`, `createBrand`, `deleteBrand`, `updateBrand` (`src/services/produtosService.ts`), `validateRequired` (`src/utils/validation.ts`).
-- **Usado por:** componentes de cadastro de produtos (modal de marca).
+- **Usa:** `fetchBrands`, `createBrand`, `deleteBrand`, `updateBrand` (`src/services/produtosService.ts`), `BrandFormData` (`src/types/catalog.ts`), `validateRequired` (`src/utils/validation.ts`).
+- **Usado por:** [cadastro](../pages/cadastro.md), que renderiza [CatalogEntityModal](../components/catalog/CatalogEntityModal.md).
 
 ## Notas
 
-- Arquivo `useBrand.ts`; identificador exportado é `useBrand`.
+- O formulário é limpo ao fechar o modal ou após criar/excluir.

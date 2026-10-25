@@ -48,3 +48,10 @@
 .material-icon {
   margin-right: 4px;
 }
+
+.danger-text {
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 700;
+}

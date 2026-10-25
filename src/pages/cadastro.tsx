@@ -26,15 +26,8 @@ import { parseNumber } from '../utils/number';
 import { validateNumber, validateRequired } from '../utils/validation';
 import BarcodeManager from '@/components/common/BarcodeManager';
 import ItemForm from '@/components/products/ItemForm';
-import ModalCategoria from '@/components/catalog/CategoryModal';
-import BrandModal from '@/components/catalog/BrandModal';
+import CatalogEntityModal from '@/components/catalog/CatalogEntityModal';
 import ProductDeleteModal from '@/components/products/ProductDeleteModal';
-import CategoryEditModal from '@/components/catalog/CategoryEditModal';
-import BrandEditModal from '@/components/catalog/BrandEditModal';
-import SupplierModal from '@/components/catalog/SupplierModal';
-import SupplierEditModal from '@/components/catalog/SupplierEditModal';
-import ModalUnidadeMedida from '@/components/catalog/UomModal';
-import UnitOfMeasureEditModal from '@/components/catalog/UomEditModal';
 import StockAdjustModal from '@/components/products/StockAdjustModal';
 import ImportItemsModal from '@/components/import/ImportItemsModal';
 import { ProductFormData, ProductOptions } from '@/components/products/ProductForm';
@@ -594,8 +587,6 @@ const RegistrationPage: React.FC = () => {
         handleOpenEditBrandModal,
         handleUpdateBrand,
         handleDeleteBrand,
-        newBrandName,
-        setNewBrandName,
     } = useBrand({
         form,
         setForm,
@@ -621,8 +612,6 @@ const RegistrationPage: React.FC = () => {
         handleOpenEditSupplierModal,
         handleUpdateSupplier,
         handleDeleteSupplier,
-        newSupplierName,
-        setNewSupplierName,
     } = useSupplier({
         form,
         setForm,
@@ -701,10 +690,22 @@ const RegistrationPage: React.FC = () => {
                                     options={options}
                                     inputRef={nameInputRef}
                                     actions={{
-                                        openCategoryModal: () => setCategoryModalOpen(true),
-                                        openBrandModal: () => setBrandModalOpen(true),
-                                        openSupplierModal: () => setSupplierModalOpen(true),
-                                        openUnitOfMeasureModal: () => setUnitOfMeasureModalOpen(true),
+                                        openCategoryModal: () => {
+                                            setCategoryForm({ name: '', description: '' });
+                                            setCategoryModalOpen(true);
+                                        },
+                                        openBrandModal: () => {
+                                            setBrandForm({ name: '' });
+                                            setBrandModalOpen(true);
+                                        },
+                                        openSupplierModal: () => {
+                                            setSupplierForm({ name: '' });
+                                            setSupplierModalOpen(true);
+                                        },
+                                        openUnitOfMeasureModal: () => {
+                                            setUomForm({ abbreviation: '', description: '' });
+                                            setUnitOfMeasureModalOpen(true);
+                                        },
                                         openStockAdjustModal: async () => {
                                             if (editingId) {
                                                 await loadMovements(editingId);
@@ -759,96 +760,272 @@ const RegistrationPage: React.FC = () => {
 
                 {/* Modal: Cadastro de Categoria */}
                 {categoryModalOpen && (
-                    <ModalCategoria
-                        categoryForm={categoryForm}
-                        setCategoryForm={setCategoryForm}
-                        options={{
-                            openCategoryModal: () => setCategoryModalOpen(false),
-                            saveCategory: handleSaveCategory,
+                    <CatalogEntityModal
+                        title="Adicionar Categoria"
+                        titleId="modal-cat-title"
+                        fields={[
+                            {
+                                id: 'new-cat-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome da categoria',
+                                value: categoryForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setCategoryForm(prev => ({ ...prev, name })),
+                            },
+                            {
+                                id: 'new-cat-desc',
+                                label: 'Descrição:',
+                                placeholder: 'Descrição opcional',
+                                value: categoryForm.description,
+                                onChange: (description) => setCategoryForm(prev => ({ ...prev, description })),
+                            },
+                        ]}
+                        submitLabel="Salvar"
+                        submitButtonId="save-new-cat-btn"
+                        cancelButtonId="cancel-new-cat-btn"
+                        onSubmit={handleSaveCategory}
+                        onClose={() => {
+                            setCategoryModalOpen(false);
+                            setCategoryForm({ name: '', description: '' });
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Categoria */}
                 {categoryEditModalOpen && (
-                    <CategoryEditModal
-                        categoryForm={categoryForm}
-                        setCategoryForm={setCategoryForm}
-                        onDelete={handleDeleteCategory}
-                        options={{
-                            openCategoryModal: () => setCategoryEditModalOpen(false),
-                            saveCategory: handleUpdateCategory,
+                    <CatalogEntityModal
+                        title="Editar Categoria"
+                        titleId="modal-cat-edit-title"
+                        fields={[
+                            {
+                                id: 'edit-cat-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome da categoria',
+                                value: categoryForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setCategoryForm(prev => ({ ...prev, name })),
+                            },
+                            {
+                                id: 'edit-cat-desc',
+                                label: 'Descrição:',
+                                placeholder: 'Descrição opcional',
+                                value: categoryForm.description,
+                                onChange: (description) => setCategoryForm(prev => ({ ...prev, description })),
+                            },
+                        ]}
+                        submitLabel="Atualizar"
+                        submitButtonId="update-cat-btn"
+                        cancelButtonId="cancel-edit-cat-btn"
+                        onSubmit={handleUpdateCategory}
+                        onClose={() => {
+                            setCategoryEditModalOpen(false);
+                            setCategoryForm({ name: '', description: '' });
+                        }}
+                        deleteAction={{
+                            title: 'Confirmar Exclusão',
+                            message: <>Tem certeza que deseja excluir a categoria <strong>{categoryForm.name}</strong>?</>,
+                            confirmButtonId: 'confirm-delete-cat-btn',
+                            cancelButtonId: 'cancel-delete-cat-btn',
+                            onConfirm: handleDeleteCategory,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Marca */}
                 {brandModalOpen && (
-                    <BrandModal
-                        setBrandModalOpen={setBrandModalOpen}
-                        newBrandName={newBrandName}
-                        setNewBrandName={setNewBrandName}
-                        handleSaveBrand={handleSaveBrand}
+                    <CatalogEntityModal
+                        title="Adicionar Marca"
+                        titleId="modal-marca-title"
+                        fields={[
+                            {
+                                id: 'new-marca-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome da marca',
+                                value: brandForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setBrandForm({ name }),
+                            },
+                        ]}
+                        submitLabel="Salvar"
+                        submitButtonId="save-new-marca-btn"
+                        cancelButtonId="cancel-new-marca-btn"
+                        onSubmit={handleSaveBrand}
+                        onClose={() => {
+                            setBrandModalOpen(false);
+                            setBrandForm({ name: '' });
+                        }}
                     />
                 )}
 
                 {/* Modal: Edição de Marca */}
                 {brandEditModalOpen && (
-                    <BrandEditModal
-                        brandForm={brandForm}
-                        setBrandForm={setBrandForm}
-                        onDelete={handleDeleteBrand}
-                        options={{
-                            openBrandModal: () => setBrandEditModalOpen(false),
-                            saveBrand: handleUpdateBrand,
+                    <CatalogEntityModal
+                        title="Editar Marca"
+                        titleId="modal-mar-edit-title"
+                        fields={[
+                            {
+                                id: 'edit-mar-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome da marca',
+                                value: brandForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setBrandForm(prev => ({ ...prev, name })),
+                            },
+                        ]}
+                        submitLabel="Atualizar"
+                        submitButtonId="update-mar-btn"
+                        cancelButtonId="cancel-edit-mar-btn"
+                        onSubmit={handleUpdateBrand}
+                        onClose={() => {
+                            setBrandEditModalOpen(false);
+                            setBrandForm({ name: '' });
+                        }}
+                        deleteAction={{
+                            title: 'Confirmar Exclusão',
+                            message: <>Tem certeza que deseja excluir a marca <strong>{brandForm.name}</strong>?</>,
+                            confirmButtonId: 'confirm-delete-mar-btn',
+                            cancelButtonId: 'cancel-delete-mar-btn',
+                            onConfirm: handleDeleteBrand,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Fornecedor */}
                 {supplierModalOpen && (
-                    <SupplierModal
-                        setSupplierModalOpen={setSupplierModalOpen}
-                        newSupplierName={newSupplierName}
-                        setNewSupplierName={setNewSupplierName}
-                        handleSaveSupplier={handleSaveSupplier}
+                    <CatalogEntityModal
+                        title="Adicionar Fornecedor"
+                        titleId="modal-fornecedor-title"
+                        fields={[
+                            {
+                                id: 'new-fornecedor-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome do fornecedor',
+                                value: supplierForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setSupplierForm({ name }),
+                            },
+                        ]}
+                        submitLabel="Salvar"
+                        submitButtonId="save-new-fornecedor-btn"
+                        cancelButtonId="cancel-new-fornecedor-btn"
+                        onSubmit={handleSaveSupplier}
+                        onClose={() => {
+                            setSupplierModalOpen(false);
+                            setSupplierForm({ name: '' });
+                        }}
                     />
                 )}
 
                 {/* Modal: Edição de Fornecedor */}
                 {supplierEditModalOpen && (
-                    <SupplierEditModal
-                        supplierForm={supplierForm}
-                        setSupplierForm={setSupplierForm}
-                        onDelete={handleDeleteSupplier}
-                        options={{
-                            openSupplierModal: () => setSupplierEditModalOpen(false),
-                            saveSupplier: handleUpdateSupplier,
+                    <CatalogEntityModal
+                        title="Editar Fornecedor"
+                        titleId="modal-fornecedor-edit-title"
+                        fields={[
+                            {
+                                id: 'edit-fornecedor-nome',
+                                label: 'Nome:*',
+                                placeholder: 'Nome do fornecedor',
+                                value: supplierForm.name,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (name) => setSupplierForm(prev => ({ ...prev, name })),
+                            },
+                        ]}
+                        submitLabel="Atualizar"
+                        submitButtonId="update-fornecedor-btn"
+                        cancelButtonId="cancel-edit-fornecedor-btn"
+                        onSubmit={handleUpdateSupplier}
+                        onClose={() => {
+                            setSupplierEditModalOpen(false);
+                            setSupplierForm({ name: '' });
+                        }}
+                        deleteAction={{
+                            title: 'Confirmar Exclusão',
+                            message: <>Tem certeza que deseja excluir o fornecedor <strong>{supplierForm.name}</strong>?</>,
+                            confirmButtonId: 'confirm-delete-fornecedor-btn',
+                            cancelButtonId: 'cancel-delete-fornecedor-btn',
+                            onConfirm: handleDeleteSupplier,
                         }}
                     />
                 )}
 
                 {/* Modal: Cadastro de Unidade de Medida */}
                 {unitOfMeasureModalOpen && (
-                    <ModalUnidadeMedida
-                        uomForm={uomForm}
-                        setUomForm={setUomForm}
-                        options={{
-                            openUnitOfMeasureModal: () => setUnitOfMeasureModalOpen(false),
-                            saveUnitOfMeasure: handleSaveUnitOfMeasure,
+                    <CatalogEntityModal
+                        title="Adicionar Unidade de Medida"
+                        titleId="modal-uom-title"
+                        fields={[
+                            {
+                                id: 'new-uom-sigla',
+                                label: 'Sigla:*',
+                                placeholder: 'Sigla da Unidade de Medida',
+                                value: uomForm.abbreviation,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (abbreviation) => setUomForm(prev => ({ ...prev, abbreviation })),
+                            },
+                            {
+                                id: 'new-uom-desc',
+                                label: 'Descrição:',
+                                placeholder: 'Descrição opcional',
+                                value: uomForm.description,
+                                onChange: (description) => setUomForm(prev => ({ ...prev, description })),
+                            },
+                        ]}
+                        submitLabel="Salvar"
+                        submitButtonId="save-new-uom-btn"
+                        cancelButtonId="cancel-new-uom-btn"
+                        onSubmit={handleSaveUnitOfMeasure}
+                        onClose={() => {
+                            setUnitOfMeasureModalOpen(false);
+                            setUomForm({ abbreviation: '', description: '' });
                         }}
                     />
                 )}
 
                 {/* Modal: Edição de Unidade de Medida */}
                 {unitOfMeasureEditModalOpen && (
-                    <UnitOfMeasureEditModal
-                        uomForm={uomForm}
-                        setUomForm={setUomForm}
-                        onDelete={handleDeleteUnitOfMeasure}
-                        options={{
-                            openUnitOfMeasureModal: () => setUnitOfMeasureEditModalOpen(false),
-                            saveUnitOfMeasure: handleUpdateUnitOfMeasure,
+                    <CatalogEntityModal
+                        title="Editar Unidade de Medida"
+                        titleId="modal-uom-edit-title"
+                        fields={[
+                            {
+                                id: 'edit-uom-sigla',
+                                label: 'Sigla:*',
+                                placeholder: 'Sigla da Unidade de Medida',
+                                value: uomForm.abbreviation,
+                                required: true,
+                                autoFocus: true,
+                                onChange: (abbreviation) => setUomForm(prev => ({ ...prev, abbreviation })),
+                            },
+                            {
+                                id: 'edit-uom-desc',
+                                label: 'Descrição:',
+                                placeholder: 'Descrição opcional',
+                                value: uomForm.description,
+                                onChange: (description) => setUomForm(prev => ({ ...prev, description })),
+                            },
+                        ]}
+                        submitLabel="Atualizar"
+                        submitButtonId="update-uom-btn"
+                        cancelButtonId="cancel-edit-uom-btn"
+                        onSubmit={handleUpdateUnitOfMeasure}
+                        onClose={() => {
+                            setUnitOfMeasureEditModalOpen(false);
+                            setUomForm({ abbreviation: '', description: '' });
+                        }}
+                        deleteAction={{
+                            title: 'Confirmar Exclusão',
+                            message: <>Tem certeza que deseja excluir a unidade de medida <strong>{uomForm.abbreviation}</strong>?</>,
+                            confirmButtonId: 'confirm-delete-uom-btn',
+                            cancelButtonId: 'cancel-delete-uom-btn',
+                            onConfirm: handleDeleteUnitOfMeasure,
                         }}
                     />
                 )}

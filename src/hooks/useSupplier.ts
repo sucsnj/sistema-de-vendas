@@ -5,7 +5,7 @@ import {
     deleteSupplier,
     updateSupplier,
 } from '../services/produtosService';
-import { SupplierFormData } from '@/components/catalog/SupplierEditModal'
+import { SupplierFormData } from '@/types/catalog';
 import { ProductFormData } from '@/components/products/ProductForm';
 import { ProductOptions } from '@/components/products/ProductForm';
 import { validateRequired } from '../utils/validation';
@@ -38,7 +38,6 @@ export const useSupplier = ({
     // Modais de cadastro rápido
     const [supplierModalOpen, setSupplierModalOpen] = useState(false);
     const [supplierForm, setSupplierForm] = useState<SupplierFormData>({ name: '' });
-    const [newSupplierName, setNewSupplierName] = useState('');
 
     // Modais de Edição
     const [supplierEditModalOpen, setSupplierEditModalOpen] = useState(false);
@@ -46,13 +45,13 @@ export const useSupplier = ({
     // Cadastro de Fornecedor Inline
     const handleSaveSupplier = async (e: React.FormEvent) => {
         e.preventDefault();
-        const nameValidation = validateRequired(newSupplierName, 'O nome do fornecedor');
+        const nameValidation = validateRequired(supplierForm.name, 'O nome do fornecedor');
         if (!nameValidation.ok) {
             showToast(nameValidation.message ?? 'Campo obrigatório.', 'error');
             return;
         }
         try {
-            const response = await createSupplier(newSupplierName.trim());
+            const response = await createSupplier(supplierForm.name.trim());
             showToast(response.message || 'Fornecedor criado com sucesso.', 'success');
 
             // Re-carrega lista de suppliers e seleciona o criado
@@ -62,7 +61,6 @@ export const useSupplier = ({
 
             // Fecha modal
             setSupplierModalOpen(false);
-            setNewSupplierName('');
             setSupplierForm({ name: '' });
         } catch (error: unknown) {
             showToast(error instanceof Error ? error.message : 'Erro ao criar fornecedor.', 'error');
@@ -144,8 +142,6 @@ export const useSupplier = ({
         setSupplierForm,
         supplierEditModalOpen,
         setSupplierEditModalOpen,
-        newSupplierName,
-        setNewSupplierName,
 
         // Handlers
         handleSaveSupplier,

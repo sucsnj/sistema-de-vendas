@@ -1,16 +1,15 @@
 # `src/types/categoria.ts`
 
-> Tipos para categoria de produtos (usados em formulários e hooks de categoria).
+> Tipos para categoria de produtos (usados no formulário e no hook de categoria).
 
 ## O que faz
 
 - `CategoryFormData`: estrutura do formulário de categoria (`name`, `description`).
-- `CategoryOptions`: opções/ações para modal de categoria rápida (`openCategoryModal`, `saveCategory`).
 
 ## Relações
 
-- **Usa:** tipos React para handler de formulário.
-- **Usado por:** `src/hooks/useCategory.ts`, componentes de cadastro rápido de categoria.
+- **Usa:** apenas TypeScript.
+- **Usado por:** `src/hooks/useCategory.ts` e [CatalogEntityModal](../components/catalog/CatalogEntityModal.md) via página de cadastro.
 
 ## Notas
 

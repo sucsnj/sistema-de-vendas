@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **23/10/2026**
+Atualizado em: **25/10/2026**
 
 ## Resumo executivo
 
@@ -18,9 +18,19 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 | `npm run styles:check` | tipagem de CSS Modules em dia |
 | `npx tsc --noEmit` | zero erros |
 | `npm run build` | build de produção OK |
-| Teste manual (funcionalidades críticas) | OK |
+| Teste manual (funcionalidades críticas) | OK na rodada anterior; novos modais de catálogo pendentes de teste visual |
 
 ## Últimas mudanças
+
+### UI: Fase 2 (parcial) — modais de catálogo unificados e confirmação compartilhada (ADR 0008) — 25/10/2026
+
+- **`CatalogEntityModal`** substitui os oito modais de criação/edição de categoria, marca, fornecedor e unidade de medida; campos declarativos, exclusão opcional e IDs existentes preservados.
+- **`ConfirmDialog`** migrado para CSS Module, com variante `danger`, IDs opcionais de botões e mensagem `React.ReactNode`; backdrop acima de modais (`calc(var(--z-modal) + 1)`).
+- **`ProductDeleteModal`** passa a delegar ao `ConfirmDialog`; variantes de exclusão dos cadastros auxiliares removidas.
+- **`Toast`** migrado de `styled-jsx` para `toast.module.css`, usando `--z-toast`.
+- **Tipos** de formulário movidos para `src/types/catalog.ts`; hooks de marca/fornecedor usam um único formulário para criar e editar.
+- **Docs:** ADR 0008, `CatalogEntityModal`, `ConfirmDialog`, `ProductDeleteModal`, `types/catalog`, hooks, `cadastro` e índices.
+- **Verificação:** `npx tsc --noEmit`, `npm run lint`, `npm run lint:css`, `npm run styles:types`, `npm run styles:check`, `npm run check:css`, `npm run build`, `check-encoding` e `check-docs` verdes.
 
 ### UI: Fase 0 + Fase 1 — CSS Modules, tokens e tema por `data-theme` (ADR 0007) — 23/10/2026
 
@@ -220,9 +230,9 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - Nenhuma pendência de lint/typecheck/build.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
 - **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`), agrupamento por domínio (ADR 0005) e **Fase 0 + Fase 1 de estilos (ADR 0007)** concluídos. Próximos alvos:
-  - **UI Fase 2**: primitivas compartilhadas (`Dialog`, `Field`, `Button`, `Table`), consolidação dos 8 modais de catálogo, `useCatalogCrud`/`CatalogEntityModal`, remoção do restante de `styled-jsx` e migração dos blocos de `contas.module.css`/`produtos.module.css`.
+  - **UI Fase 2 (em andamento)**: modais de catálogo e `ConfirmDialog` concluídos; faltam primitivas (`Dialog`, `Field`, `Button`, `Table`), eventual `useCatalogCrud`, remoção do restante de `styled-jsx` e migração dos blocos de `contas.module.css`/`produtos.module.css`.
   - **Grandes componentes** mistos (UI+estado+validação+API): `CartModal`, `ImportItemsModal`, `ProductForm`, `SelectItemsModal` — extrair hooks/serviços/subcomponentes (mesmo padrão de `DailySaleForm`).
-- Commit das mudanças atuais **não realizado** (por solicitação do usuário nesta rodada).
+- Mudanças desta rodada **não commitadas**.
 
 ## Futuras / Melhorias sugeridas
 

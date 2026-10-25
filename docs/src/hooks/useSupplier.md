@@ -4,16 +4,15 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`supplierModalOpen`, `supplierForm`, `newSupplierName`) e edição (`supplierEditModalOpen`).
-- Cria fornecedor via `createSupplier`, atualiza `setOptions.suppliers` e seleciona criado.
+- Controla os modais de cadastro (`supplierModalOpen`) e edição (`supplierEditModalOpen`), ambos usando `supplierForm`.
+- Cria fornecedor via `createSupplier`, atualiza `setOptions.suppliers` e seleciona o criado.
 - Atualiza/exclui fornecedor, sincroniza opções, ajusta paginação/listagem e fecha modais.
 
 ## Relações
 
-- **Usa:** `fetchSuppliers`, `createSupplier`, `deleteSupplier`, `updateSupplier` (`src/services/produtosService.ts`), `SupplierFormData` (`src/components/catalog/SupplierEditModal`), `validateRequired` (`src/utils/validation.ts`).
-- **Usado por:** componentes de cadastro de produtos.
+- **Usa:** `fetchSuppliers`, `createSupplier`, `deleteSupplier`, `updateSupplier` (`src/services/produtosService.ts`), `SupplierFormData` (`src/types/catalog.ts`), `validateRequired` (`src/utils/validation.ts`).
+- **Usado por:** [cadastro](../pages/cadastro.md), que renderiza [CatalogEntityModal](../components/catalog/CatalogEntityModal.md).
 
 ## Notas
 
-- Arquivo `useSupplier.ts`; identificador exportado é `useSupplier`.
-- Após criar, o campo `newSupplierName` é limpo junto com o fechamento do modal.
+- O formulário é limpo ao fechar o modal ou após criar/excluir.

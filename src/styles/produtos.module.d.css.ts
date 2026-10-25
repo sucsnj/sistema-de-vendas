@@ -45,6 +45,7 @@ declare const styles: {
   readonly "manageButton": string;
   readonly "modalActions": string;
   readonly "modalContent": string;
+  readonly "modalForm": string;
   readonly "modalOverlay": string;
   readonly "modalTitle": string;
   readonly "paginationButtons": string;

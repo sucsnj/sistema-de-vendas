@@ -4,17 +4,16 @@
 
 ## O que faz
 
-- Controla modais de cadastro (`unitOfMeasureModalOpen`, `uomForm`) e edição (`unitOfMeasureEditModalOpen`).
-- Cria unidade via `createUnitOfMeasure` (valida `abbreviation` obrigatória), atualiza `setOptions.unitsOfMeasure` e seleciona criada.
+- Controla os modais de cadastro (`unitOfMeasureModalOpen`) e edição (`unitOfMeasureEditModalOpen`) com `uomForm`.
+- Cria unidade via `createUnitOfMeasure` (valida `abbreviation` obrigatória), atualiza `setOptions.unitsOfMeasure` e seleciona a criada.
 - Atualiza/exclui unidade, sincroniza opções, ajusta paginação/listagem e fecha modais.
-- Exporta tipos auxiliares `UnitOfMeasureFormData`, `UnitOfMeasureOptions`.
 
 ## Relações
 
-- **Usa:** `fetchUnitsOfMeasure`, `createUnitOfMeasure`, `deleteUnitOfMeasure`, `updateUnitOfMeasure` (`src/services/produtosService.ts`), `validateRequired` (`src/utils/validation.ts`).
-- **Usado por:** componentes de cadastro de produtos.
+- **Usa:** `fetchUnitsOfMeasure`, `createUnitOfMeasure`, `deleteUnitOfMeasure`, `updateUnitOfMeasure` (`src/services/produtosService.ts`), `UnitOfMeasureFormData` (`src/types/catalog.ts`), `validateRequired` (`src/utils/validation.ts`).
+- **Usado por:** [cadastro](../pages/cadastro.md), que renderiza [CatalogEntityModal](../components/catalog/CatalogEntityModal.md).
 
 ## Notas
 
-- Arquivo `useUnitOfMeasure.ts`; identificador exportado é `useUnitOfMeasure`.
+- O tipo do formulário vive em `src/types/catalog.ts`; o hook não exporta mais tipos auxiliares.
 - Validação: exige `abbreviation` não vazia na edição.

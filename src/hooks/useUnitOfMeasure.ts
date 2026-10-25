@@ -7,17 +7,8 @@ import {
 } from '../services/produtosService';
 import { ProductFormData } from '@/components/products/ProductForm';
 import { ProductOptions } from '@/components/products/ProductForm';
+import { UnitOfMeasureFormData } from '@/types/catalog';
 import { validateRequired } from '../utils/validation';
-
-export interface UnitOfMeasureFormData {
-    abbreviation: string;
-    description: string;
-}
-
-export interface UnitOfMeasureOptions {
-    openUnitOfMeasureModal: () => void;
-    saveUnitOfMeasure: React.FormEventHandler<HTMLFormElement>;
-}
 
 interface UseUnitOfMeasureParams {
   form: ProductFormData;

@@ -19,7 +19,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript). Aplicação s
 ## Camadas (onde mora cada coisa)
 
 - `src/pages/*.tsx` — rotas/páginas que orquestram tudo.
-- `src/components/<domínio>/*.tsx` — UI agrupada por domínio (ADR 0005): `cart/` (carrinho), `sales/` (vendas do dia), `summary/` (resumo/consolidação), `payables/` (contas a pagar + agenda), `products/` (catálogo/estoque), `catalog/` (modais de cadastros auxiliares), `import/` (importação XML/OCR), `pix/` (PIX), `common/` (Nav, Toast, ConfirmDialog, BarcodeManager). Arquivos e identificadores internos em inglês (ADR 0004).
+- `src/components/<domínio>/*.tsx` — UI agrupada por domínio (ADR 0005): `cart/` (carrinho), `sales/` (vendas do dia), `summary/` (resumo/consolidação), `payables/` (contas a pagar + agenda), `products/` (catálogo/estoque), `catalog/` (modal genérico dos cadastros auxiliares), `import/` (importação XML/OCR), `pix/` (PIX), `common/` (Nav, Toast, ConfirmDialog, BarcodeManager). Arquivos e identificadores internos em inglês (ADR 0004).
 - `src/hooks/*.ts` — hooks de estado (flat): carrinho, filtros, toasts, CRUD de catálogo. Arquivos e identificadores exportados em inglês (ADR 0004).
 - `src/services/*.ts` — cliente `fetch` para os endpoints internos.
 - `src/pages/api/**/*.ts` — endpoints REST internos.
@@ -59,7 +59,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/src/database/`.
 | Histórico / relatórios | `docs/src/pages/historico.md`, `docs/src/pages/resumo.md`, `docs/src/pages/api/mensais.md` |
 | Contas a pagar | `docs/src/pages/contas-a-pagar.md`, `docs/src/database/contasDb.md`, `docs/src/services/contasService.md`, `docs/src/pages/api/contas.md`, `docs/src/pages/api/contas/import.md`, `docs/src/pages/api/contas/backup.md` |
 | Produtos / estoque | `docs/src/pages/produtos.md`, `docs/src/database/produtosDb.md`, `docs/src/pages/api/produtos.md`, `docs/src/pages/api/produtos/*.md`, `docs/src/services/produtosService.md` |
-| Cadastros auxiliares | `docs/src/pages/cadastro.md`, `docs/src/components/catalog/*.md` |
+| Cadastros auxiliares | `docs/src/pages/cadastro.md`, `docs/src/components/catalog/*.md`, `docs/adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md` |
 | PIX / pagamento | `docs/src/components/pix/PixModal.md`, `docs/src/utils/pix.md` |
 | Carrinho de compras | `docs/src/components/cart/CartModal.md`, `docs/src/hooks/useCart.md` |
 | Formulários de venda (dia/item) | `docs/src/components/sales/DailySaleForm.md`, `docs/src/components/products/ItemForm.md`, `docs/src/components/sales/EditSaleForm.md` |

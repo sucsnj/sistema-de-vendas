@@ -21,7 +21,7 @@ interface ToastProps {
 
 ## Relações
 
-- **Usa:** `useEffect` (timer) e styled-jsx.
+- **Usa:** `useEffect` (timer) e `toast.module.css`.
 - **Usado por:** [Toaster](./Toaster.md) e diretamente por `OcrUpload`.
 
 ## Notas

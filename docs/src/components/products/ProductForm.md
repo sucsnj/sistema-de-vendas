@@ -23,7 +23,7 @@ export interface ProductFormData {
 
 ## Relações
 
-- **Usa:** `src/utils/productPrice.ts`, `productUnits.ts`, `number.ts`, `formatter.tsx`; modais de [catalog](../catalog/CategoryModal.md).
+- **Usa:** `src/utils/productPrice.ts`, `productUnits.ts`, `number.ts`, `formatter.tsx`; [CatalogEntityModal](../catalog/CatalogEntityModal.md).
 - **Usado por:** [ItemForm](./ItemForm.md), [ServiceForm](./ServiceForm.md) e hooks/páginas de catálogo.
 
 ## Notas
