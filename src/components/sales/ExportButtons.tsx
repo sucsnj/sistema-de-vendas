@@ -4,6 +4,10 @@ import html2canvas from 'html2canvas';
 import { registerSaleWithCreatedAt, DailySale } from '../../services/vendasService';
 import parseNumber from '../../utils/number';
 import { parseDate } from '../../utils/date';
+import Button from '@/components/common/Button';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Panel from '@/components/common/Panel';
 
 interface ExportButtonsProps {
@@ -246,21 +250,21 @@ const ExportButtons: FC<ExportButtonsProps> = ({
         flexWrap: 'wrap',
         gap: '10px',
       }}>
-      <button type="button" onClick={() => exportXLSX('month')}>
+      <Button type="button" onClick={() => exportXLSX('month')} icon={<FileDownloadIcon />}>
         Exportar XLSX (Mês)
-      </button>
-      <button type="button" onClick={() => exportXLSX('day')} disabled={!selectedDate}>
+      </Button>
+      <Button type="button" onClick={() => exportXLSX('day')} disabled={!selectedDate} icon={<FileDownloadIcon />}>
         Exportar XLSX (Dia)
-      </button>
-      <button type="button" onClick={() => triggerImport('month')}>
+      </Button>
+      <Button type="button" onClick={() => triggerImport('month')} icon={<FileUploadIcon />}>
         Importar XLSX (Mês)
-      </button>
-      <button type="button" onClick={() => triggerImport('day')} disabled={!selectedDate}>
+      </Button>
+      <Button type="button" onClick={() => triggerImport('day')} disabled={!selectedDate} icon={<FileUploadIcon />}>
         Importar XLSX (Dia)
-      </button>
-      <button type="button" onClick={exportPDF}>
+      </Button>
+      <Button type="button" onClick={exportPDF} icon={<PictureAsPdfIcon />}>
         Exportar PDF
-      </button>
+      </Button>
       <input
         ref={fileInputRef}
         type="file"

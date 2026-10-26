@@ -7,6 +7,9 @@ import parseNumber from "../../utils/number";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import styles from '@/styles/sales.module.css';
+import Button from '@/components/common/Button';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 import Panel from '@/components/common/Panel';
 import PanelHeader from '@/components/common/PanelHeader';
 import Form from '@/components/common/Form';
@@ -143,7 +146,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
               onChange={(e) => setEditAmount(e.target.value)}
               required
             />
-            <button
+            <Button
               type="button"
               className={styles.cartIconButton}
               onClick={handleCartClick}
@@ -154,8 +157,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
               {totalCartCount > 0 && (
                 <span className={styles.cartBadge}>{totalCartCount}</span>
               )}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               className={styles.cartIconButton}
               onClick={openCartModal}
@@ -166,7 +169,7 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
               {totalCartCount > 0 && (
                 <span className={styles.cartBadge}>{totalCartCount}</span>
               )}
-            </button>
+            </Button>
           </div>
           {cartItems.length > 0 && (
             <span className={styles.cartHint}>
@@ -189,10 +192,10 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           />
         </label>
 
-        <button className="button-edit" type="submit">Salvar Alteração</button>
-        <button type="button" onClick={onCancel} className="button-spacing button-delete">
+        <Button className="button-edit" type="submit" icon={<SaveIcon />}>Salvar Alteração</Button>
+        <Button type="button" onClick={onCancel} className="button-spacing button-delete" icon={<CancelIcon />}>
           Cancelar
-        </button>
+        </Button>
       </Form>
       </Panel>
 

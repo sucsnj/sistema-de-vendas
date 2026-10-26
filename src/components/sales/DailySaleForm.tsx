@@ -1,7 +1,10 @@
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import SaveIcon from '@mui/icons-material/Save';
+import ClearIcon from '@mui/icons-material/Clear';
 import { formatCurrency } from '../../utils/formatter';
 import { useDailySaleForm } from '../../hooks/useDailySaleForm';
+import Button from '@/components/common/Button';
 import type { DailySale } from '../../services/vendasService';
 import CartModal from '@/components/cart/CartModal';
 import PixModal from '@/components/pix/PixModal';
@@ -81,7 +84,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               />
             </label>
             <div className={`${styles.mathButtons}`}>
-              <button
+              <Button
                 type="button"
                 className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
@@ -89,8 +92,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 onClick={() => addOperator('+')}
               >
                 <span>+</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
@@ -98,8 +101,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 onClick={() => addOperator('-')}
               >
                 <span>-</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
@@ -107,8 +110,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 onClick={() => addOperator('*')}
               >
                 <span>×</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className={`${styles.mathButton}`}
                 onMouseDown={(e) => e.preventDefault()}
@@ -116,7 +119,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 onClick={() => addOperator('/')}
               >
                 <span>÷</span>
-              </button>
+              </Button>
             </div>
             <label>
               {/* Valor: */}
@@ -133,7 +136,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   className="flex-grow-valor"
                   placeholder={'Valor'}
                 />
-                <button
+                <Button
                   type="button"
                   className={`${styles.cartIconButton}`}
                   onClick={handleCartClick}
@@ -144,7 +147,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   {totalCartCount > 0 && (
                     <span className={`${styles.cartBadge}`}>{totalCartCount}</span>
                   )}
-                </button>
+                </Button>
               </div>
               <span className={`${styles.displayValue}`}>
                 {/* botão para gerar qrcode pix */}
@@ -167,21 +170,23 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               />
             </label>
             <div className="buttons-wrapper">
-              <button
+              <Button
                 type="submit"
                 className="register-button"
                 disabled={loading}
+                icon={<SaveIcon />}
               >
                 {loading ? 'Registrando...' : 'Registrar'}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className="clear-button"
                 disabled={clearing}
                 onClick={handleClear}
+                icon={<ClearIcon />}
               >
                 {clearing ? 'Limpando...' : 'Limpar'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

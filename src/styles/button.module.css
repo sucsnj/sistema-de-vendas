@@ -37,3 +37,9 @@
   display: inline-flex;
   align-items: center;
 }
+
+@media (max-width: 630px) {
+  .button:has(.icon) .label {
+    display: none;
+  }
+}
