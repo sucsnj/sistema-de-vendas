@@ -20,7 +20,7 @@ import {
 import { highlightField } from '../utils/forms';
 import { parseCurrency } from '../utils/number';
 import { buildPixPayload } from '../utils/pix';
-import { evaluateExpression } from '../utils/calculator';
+import { calcularResultado, sanitizarExpressao, inserirTecla } from '@/lib/calc/calculadora';
 import { useCart } from './useCart';
 import { useToast } from './useToast';
 
@@ -87,41 +87,30 @@ export const useDailySaleForm = ({
 
   // Aplica/limpa o somatório do campo de valor a partir da expressão digitada
   const calculateValue = (input: string) => {
-    setCalculatedValue(evaluateExpression(input));
+    setCalculatedValue(calcularResultado(input));
   };
 
   // Filtra as teclas do input de valor: números, operadores matemáticos,
   // parênteses, vírgula/ponto e teclas de navegação
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const { key, currentTarget } = event;
+    const { key } = event;
 
     if (ALLOWED_SALE_KEYS.includes(key)) return;
-    if (/^[0-9]$/.test(key)) return;
-    if (['+', '-', '*', '/', '(', ')', '.', ','].includes(key)) {
-      const fieldValue = currentTarget.value;
-      const lastChar = fieldValue.slice(-1);
-
-      // Bloquear duplicação do mesmo símbolo
-      if (lastChar === key) {
-        event.preventDefault();
-        return;
-      }
-
-      // Bloquear dois operadores/símbolos diferentes seguidos (ex: "+*")
-      if (/[+\-*/.,]/.test(lastChar) && /[+\-*/.,]/.test(key)) {
-        event.preventDefault();
-        return;
-      }
+    if (key.length !== 1) {
+      event.preventDefault();
       return;
     }
 
-    // Bloquear qualquer outro caractere
-    event.preventDefault();
+    const nextValue = inserirTecla(value, key);
+    if (nextValue === value) {
+      event.preventDefault();
+      return;
+    }
   };
 
   // Sanitiza o input de valor e recalcula a expressão
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitized = event.target.value.replace(/[^0-9+\-*/(),.]/g, '');
+    const sanitized = sanitizarExpressao(event.target.value);
     event.target.value = sanitized;
     setValue(sanitized);
     calculateValue(sanitized);
@@ -342,7 +331,7 @@ export const useDailySaleForm = ({
 
   // Adiciona um operador matemático ao campo de valor
   const addOperator = (operator: string) => {
-    const nextValue = value + operator;
+    const nextValue = inserirTecla(value, operator);
     setValue(nextValue);
     calculateValue(nextValue);
 

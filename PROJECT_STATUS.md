@@ -28,6 +28,12 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 - **Componentes:** `ProductFilters`, `ProductList`, `EditSaleForm`, `ExportButtons`, `Agenda`, `Summary`, `PayablesForm` e `tabela` usam as primitivas de layout.
 - **Verificação:** `tsc`, `lint`, `lint:css`, `styles:check`, `check:css`, `build`, `check-docs` e `check-encoding` verdes.
 
+### Calculadora customizada integrada — 25/10/2026
+
+- **`src/lib/calc/calculadora.ts`** passou a ser a referência principal de cálculo do formulário de venda.
+- **`useDailySaleForm`** usa `calcularResultado`, `sanitizarExpressao` e `inserirTecla`; `utils/calculator.ts` mantém compatibilidade delegando para a nova calculadora.
+- **Docs:** `src/lib/calc/calculadora.md`, `src/lib/calc/engine.md` e docs atualizados.
+
 ### Padrão de layout e formulários — ADR 0009 — 25/10/2026
 
 - **Primitivas reutilizáveis:** `PageShell`, `PageHeader`, `PageGrid`, `Panel`, `PanelHeader`, `StatusChip`, `Form`, `FormRow`, `FormActions` e `FormField` em `src/components/common/`.

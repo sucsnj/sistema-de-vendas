@@ -4,13 +4,12 @@
 
 ## O que faz
 
-- `evaluateExpression(input)` resolve expressões como `"10+5*2"`, convertendo vírgula em ponto decimal.
-- Entrada vazia retorna `0`; expressão inválida retorna `null`.
-- Se a expressão terminar em operador (`"10+"`), tenta avaliar sem o último caractere.
+- `evaluateExpression(input)` mantém compatibilidade e delega o cálculo para `src/lib/calc/calculadora.ts`.
+- A referência principal de cálculo agora é `src/lib/calc/calculadora.ts`.
 
 ## Relações
 
-- **Usa:** `expr-eval`.
+- **Usa:** `src/lib/calc/calculadora.ts`.
 - **Usado por:** `useDailySaleForm` (`../hooks/useDailySaleForm.md`).
 
 ## Notas
