@@ -14,6 +14,7 @@ import PageShell from '@/components/common/PageShell';
 import PageHeader from '@/components/common/PageHeader';
 import Panel from '@/components/common/Panel';
 import PanelHeader from '@/components/common/PanelHeader';
+import Button from '@/components/common/Button';
 
 
 // Data de today (fuso do app) usada como seleção inicial do formulário
@@ -139,14 +140,12 @@ const Home: React.FC = () => {
                 }}
               />
             </label>
-            <button className="headerButton" onClick={handleConsolidate}>
-              <DoneAllIcon />
-              Consolidar Mês
-            </button>
-            <button className="headerBackupButton" onClick={handleBackup}>
-              <BackupIcon />
+            <Button onClick={handleConsolidate} icon={<DoneAllIcon />}>
+              Consolidar Més
+            </Button>
+            <Button onClick={handleBackup} icon={<BackupIcon />}>
               Fazer Backup
-            </button>
+            </Button>
           </div>
         </Panel>
       </PageShell>

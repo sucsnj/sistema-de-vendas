@@ -192,8 +192,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           />
         </label>
 
-        <Button className="button-edit" type="submit" icon={<SaveIcon />}>Salvar Alteração</Button>
-        <Button type="button" onClick={onCancel} className="button-spacing button-delete" icon={<CancelIcon />}>
+        <Button type="submit" icon={<SaveIcon />}>Salvar Alteração</Button>
+        <Button type="button" onClick={onCancel} className="button-spacing" icon={<CancelIcon />}>
           Cancelar
         </Button>
       </Form>

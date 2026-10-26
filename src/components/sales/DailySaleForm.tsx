@@ -86,8 +86,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <div className={`${styles.mathButtons}`}>
               <Button
                 type="button"
-                className={`${styles.mathButton}`}
-                onMouseDown={(e) => e.preventDefault()}
+                                onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('+')}
               >
@@ -95,8 +94,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
-                className={`${styles.mathButton}`}
-                onMouseDown={(e) => e.preventDefault()}
+                                onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('-')}
               >
@@ -104,8 +102,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
-                className={`${styles.mathButton}`}
-                onMouseDown={(e) => e.preventDefault()}
+                                onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('*')}
               >
@@ -113,8 +110,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
-                className={`${styles.mathButton}`}
-                onMouseDown={(e) => e.preventDefault()}
+                                onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('/')}
               >
@@ -139,6 +135,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 <Button
                   type="button"
                   className={`${styles.cartIconButton}`}
+                  style={{ background: 'transparent', border: 'none', padding: '6px' }}
                   onClick={handleCartClick}
                   aria-label="Abrir carrinho"
                   title="Abrir carrinho"
@@ -172,16 +169,14 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <div className="buttons-wrapper">
               <Button
                 type="submit"
-                className="register-button"
-                disabled={loading}
+                                disabled={loading}
                 icon={<SaveIcon />}
               >
                 {loading ? 'Registrando...' : 'Registrar'}
               </Button>
               <Button
                 type="button"
-                className="clear-button"
-                disabled={clearing}
+                                disabled={clearing}
                 onClick={handleClear}
                 icon={<ClearIcon />}
               >
