@@ -5,12 +5,12 @@
  * Puro e desacoplado do React (sem estado, sem setState) — testável.
  */
 
-import { calcularResultado } from '@/lib/calc/calculadora';
+import { calculateResult } from '@/lib/calc/calculator';
 
 /**
- * Compatibilidade com o cálculo legado: a referência de cálculo agora é
- * `src/lib/calc/calculadora.ts`.
+ * Compatibility with the legacy calculation API: calculation now delegates
+ * to `src/lib/calc/calculadora.ts`.
  */
 export function evaluateExpression(input: string): number | null {
-  return calcularResultado(input);
+  return calculateResult(input);
 }

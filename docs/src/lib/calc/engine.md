@@ -4,7 +4,7 @@
 
 ## O que faz
 
-- `arredondarMoeda`: arredonda valores para duas casas decimais.
+- `roundCurrency`: rounds values to two decimal places.
 
 ## Relações
 

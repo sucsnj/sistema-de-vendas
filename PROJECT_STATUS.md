@@ -30,9 +30,9 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ### Calculadora customizada integrada — 25/10/2026
 
-- **`src/lib/calc/calculadora.ts`** passou a ser a referência principal de cálculo do formulário de venda.
+- **`src/lib/calc/calculator.ts`** passou a ser a referência principal de cálculo do formulário de venda.
 - **`useDailySaleForm`** usa `calcularResultado`, `sanitizarExpressao` e `inserirTecla`; `utils/calculator.ts` mantém compatibilidade delegando para a nova calculadora.
-- **Docs:** `src/lib/calc/calculadora.md`, `src/lib/calc/engine.md` e docs atualizados.
+- **Docs:** `src/lib/calc/calculator.md`, `src/lib/calc/engine.md` e docs atualizados.
 
 ### Padrão de layout e formulários — ADR 0009 — 25/10/2026
 

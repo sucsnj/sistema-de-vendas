@@ -20,7 +20,7 @@ import {
 import { highlightField } from '../utils/forms';
 import { parseCurrency } from '../utils/number';
 import { buildPixPayload } from '../utils/pix';
-import { calcularResultado, sanitizarExpressao, inserirTecla } from '@/lib/calc/calculadora';
+import { calculateResult, sanitizeExpression, insertKey } from '@/lib/calc/calculator';
 import { useCart } from './useCart';
 import { useToast } from './useToast';
 
@@ -87,7 +87,7 @@ export const useDailySaleForm = ({
 
   // Aplica/limpa o somatório do campo de valor a partir da expressão digitada
   const calculateValue = (input: string) => {
-    setCalculatedValue(calcularResultado(input));
+    setCalculatedValue(calculateResult(input));
   };
 
   // Filtra as teclas do input de valor: números, operadores matemáticos,
@@ -101,7 +101,7 @@ export const useDailySaleForm = ({
       return;
     }
 
-    const nextValue = inserirTecla(value, key);
+    const nextValue = insertKey(value, key);
     if (nextValue === value) {
       event.preventDefault();
       return;
@@ -110,7 +110,7 @@ export const useDailySaleForm = ({
 
   // Sanitiza o input de valor e recalcula a expressão
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitized = sanitizarExpressao(event.target.value);
+    const sanitized = sanitizeExpression(event.target.value);
     event.target.value = sanitized;
     setValue(sanitized);
     calculateValue(sanitized);
@@ -331,7 +331,7 @@ export const useDailySaleForm = ({
 
   // Adiciona um operador matemático ao campo de valor
   const addOperator = (operator: string) => {
-    const nextValue = inserirTecla(value, operator);
+    const nextValue = insertKey(value, operator);
     setValue(nextValue);
     calculateValue(nextValue);
 

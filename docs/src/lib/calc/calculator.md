@@ -1,11 +1,11 @@
-# `src/lib/calc/calculadora.ts`
+# `src/lib/calc/calculator.ts`
 
 > Calculadora customizada do campo de valor de vendas.
 
 ## O que faz
 
-- Valida e insere teclas (`inserirTecla`), apaga (`apagarTecla`) e sanitiza expressões (`sanitizarExpressao`).
-- Avalia expressões com precedência e parênteses (`calcular`/`calcularResultado`).
+- Validates and inserts keys (`insertKey`), deletes (`deleteKey`) and sanitizes expressions (`sanitizeExpression`).
+- Evaluates expressions with precedence and parentheses (`calculate`/`calculateResult`).
 - Usa `arredondarMoeda` de `engine.ts`.
 
 ## Relações

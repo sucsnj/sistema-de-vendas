@@ -1,3 +1,3 @@
-export function arredondarMoeda(valor: number): number {
-  return Math.round(valor * 100) / 100;
+export function roundCurrency(value: number): number {
+  return Math.round(value * 100) / 100;
 }
