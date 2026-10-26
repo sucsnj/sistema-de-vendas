@@ -22,6 +22,13 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### Padrão universal de botão — 25/10/2026
+
+- **`Button`** agora tem aparência única: cor, ícone, texto, formato, arredondamento, borda, fundo e fonte padronizados.
+- Props: `icon` opcional e `children`; repassa props nativas do botão.
+- Estilos centralizados em `button.module.css`.
+- Será aplicado gradualmente substituindo os botões existentes.
+
 ### Aplicação do padrão de layout e formulários — 25/10/2026
 
 - **Páginas:** `index`, `historico`, `resumo`, `produtos`, `cadastro`, `tabela` e `contas-a-pagar` usam `PageShell`/`PageHeader`; painéis e formulários migrados para `Panel`/`Form`/`FormActions` onde aplicável.

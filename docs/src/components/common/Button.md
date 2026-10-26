@@ -4,14 +4,15 @@
 
 ## O que faz
 
-- Renderiza `button` com variantes `primary`, `secondary`, `danger` e `ghost`.
-- Suporta tamanho `sm` e repassa props nativas do botão.
+- Renderiza `button` com aparência universal única.
+- Suporta ícone opcional (`icon`) e texto.
+- Repassa props nativas do botão.
 - Usa `button.module.css`.
 
 ```ts
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  size?: 'sm' | 'md';
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
 }
 ```
 
