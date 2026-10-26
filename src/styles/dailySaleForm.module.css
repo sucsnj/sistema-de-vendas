@@ -56,9 +56,9 @@
           width: 100%;
         }
 
-        .inputWithIconWrapper input {
+        .saleFormFields .inputWithIconWrapper input {
           width: 100%;
-          padding-right: 44px;
+          padding-right: 64px;
         }
 
         .saleFormFields button.cartIconButton {
@@ -220,3 +220,15 @@
             margin-bottom: 8px;
           }
         }
+
+        .dateInput {
+          padding-right: 2.5rem;
+        }
+
+        @media (max-width: 630px) {
+          .dateInput::-webkit-calendar-picker-indicator,
+          .dateInput::-moz-calendar-picker-indicator {
+            display: none;
+          }
+        }
+

@@ -77,7 +77,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 type="date"
                 value={selectedDate}
                 onChange={(e) => onDateChange(e.target.value)}
-                className="flex-grow-data"
+                className={`${styles.dateInput} flex-grow-data`}
               />
             </label>
             <div className={`${styles.mathButtons}`}>
@@ -152,7 +152,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   <QrCode2Icon className="pix-icon" />
                 </span>
                 <span className={`${styles.pixButton}`} onClick={handlePixClick}>
-                  {formatCurrency(calculatedValue ?? 0, 2)}
+                  {formatCurrency(Math.min(calculatedValue ?? 0, 9999999), 2)}
                 </span>
               </span>
             </label>

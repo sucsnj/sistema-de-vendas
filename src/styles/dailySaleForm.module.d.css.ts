@@ -3,6 +3,7 @@ declare const styles: {
   readonly "cartIcon": string;
   readonly "cartIconButton": string;
   readonly "dailySaleForm": string;
+  readonly "dateInput": string;
   readonly "displayValue": string;
   readonly "flexGrow1": string;
   readonly "inputWithIconWrapper": string;
