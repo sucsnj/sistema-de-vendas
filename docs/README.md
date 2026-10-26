@@ -41,6 +41,7 @@ Este arquivo é o ponto de partida para navegar pela documentação do projeto.
 - [adr/0007-css-modules-e-design-tokens.md](adr/0007-css-modules-e-design-tokens.md) - ADR: CSS Modules, design tokens e tema por `data-theme`.
 - [adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md](adr/0008-modais-de-catalogo-e-confirmacao-compartilhada.md) - ADR: modal genérico de catálogo e confirmação compartilhada.
 - [adr/0009-padroes-de-layout-e-formularios.md](adr/0009-padroes-de-layout-e-formularios.md) - ADR: padrão de layout e formulários baseado em `/contas-a-pagar`.
+- [adr/0010-sistema-de-botoes-com-variantes.md](adr/0010-sistema-de-botoes-com-variantes.md) - ADR: botões com variantes funcionais, tamanhos, carregamento e `iconOnly`.
 
 ## Páginas do Frontend
 

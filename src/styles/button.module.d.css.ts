@@ -4,6 +4,7 @@ declare const styles: {
   readonly "danger": string;
   readonly "ghost": string;
   readonly "icon": string;
+  readonly "iconOnly": string;
   readonly "info": string;
   readonly "label": string;
   readonly "lg": string;
@@ -13,6 +14,7 @@ declare const styles: {
   readonly "secondary": string;
   readonly "sm": string;
   readonly "spinner": string;
+  readonly "srOnly": string;
   readonly "success": string;
   readonly "warning": string;
 };

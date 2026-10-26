@@ -20,6 +20,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: React.ReactNode;
   icon?: React.ReactNode;
   isLoading?: boolean;
+  iconOnly?: boolean;
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -48,6 +49,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       icon,
       isLoading = false,
+      iconOnly = false,
       children,
       className,
       disabled,
@@ -61,6 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const iconWidthRef = useRef(0);
 
     const resolvedLeftIcon = isLoading ? <span className={styles.spinner} aria-hidden="true" /> : (leftIcon ?? icon);
+    const isIconOnly = iconOnly && Boolean(resolvedLeftIcon);
 
     const setRef = (node: HTMLButtonElement | null) => {
       buttonRef.current = node;
@@ -70,7 +73,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     useEffect(() => {
       const button = buttonRef.current;
-      if (!button) return;
+      if (!button || iconOnly) return;
 
       const evaluate = () => {
         if (!hideIcon) {
@@ -88,16 +91,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       evaluate();
 
       return () => observer.disconnect();
-    }, [icon, leftIcon, rightIcon, children, isLoading, hideIcon]);
+    }, [icon, leftIcon, rightIcon, children, isLoading, iconOnly, hideIcon]);
 
     const classes = [styles.button, variantClasses[variant], sizeClasses[size]];
+    if (isIconOnly) classes.push(styles.iconOnly);
     if (className) classes.push(className);
 
     return (
       <button ref={setRef} className={classes.join(' ')} disabled={disabled || isLoading} aria-busy={isLoading} {...props}>
-        {resolvedLeftIcon && !hideIcon ? <span ref={iconRef} className={styles.icon}>{resolvedLeftIcon}</span> : null}
-        {children ? <span className={styles.label}>{children}</span> : null}
-        {rightIcon ? <span className={styles.icon}>{rightIcon}</span> : null}
+        {resolvedLeftIcon && (!hideIcon || isIconOnly) ? <span ref={iconRef} className={styles.icon}>{resolvedLeftIcon}</span> : null}
+        {isIconOnly ? (
+          children ? <span className={styles.srOnly}>{children}</span> : null
+        ) : children ? (
+          <span className={styles.label}>{children}</span>
+        ) : null}
+        {!isIconOnly && rightIcon ? <span className={styles.icon}>{rightIcon}</span> : null}
       </button>
     );
   },

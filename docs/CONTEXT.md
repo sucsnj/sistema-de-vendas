@@ -71,6 +71,7 @@ Bancos em `db/` (SQLite). Documentação em `docs/src/database/`.
 | Validação de campos / formulários | `docs/adr/0002-padrao-de-validacao-de-campos.md`, `docs/src/utils/validation.md` e `docs/src/utils/forms.md` |
 | Notificações / toast | `docs/src/components/common/Toast.md` (+ `Toaster.md`), `docs/src/utils/toast.md`, `docs/adr/0003-padrao-de-notificacoes-toast.md` |
 | UI / estilos / tema | `docs/adr/0007-css-modules-e-design-tokens.md`, `src/styles/tokens.css`, `docs/src/pages/_document.md`, `docs/src/pages/_app.md` |
+| Botões / ações | `docs/adr/0010-sistema-de-botoes-com-variantes.md`, `docs/src/components/common/Button.md` |
 
 ## Regras para o agente
 

@@ -2,7 +2,7 @@
 
 > Fonte da verdade sobre o estado do projeto. Todo agente deve **ler antes de trabalhar** e **atualizar ao final de cada mudança de código**. Complementa `docs/CONTEXT.md` (contexto) e `docs/README.md` (índice).
 
-Atualizado em: **25/10/2026**
+Atualizado em: **26/10/2026**
 
 ## Resumo executivo
 
@@ -21,6 +21,15 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 | Teste manual (funcionalidades críticas) | OK na rodada anterior; novos modais de catálogo pendentes de teste visual |
 
 ## Últimas mudanças
+
+### UI: Fase 0 do sistema de botões — `iconOnly` e contrato (ADR 0010) — 26/10/2026
+
+- **`Button`** ganhou `iconOnly`: dimensões quadradas por tamanho, ícone como único conteúdo visual e `children` como rótulo acessível oculto (`srOnly`).
+- **Contrato consolidado:** `variant`, `size`, `leftIcon`, `rightIcon`, `isLoading` e `iconOnly`; `icon` segue como alias legado temporário.
+- **Acessibilidade:** `isLoading` mantém `disabled`/`aria-busy`; ícones-only aceitam `aria-label` ou `children`.
+- **Docs:** `docs/src/components/common/Button.md` atualizado e ADR 0010 criado.
+- **Plano:** migração dos 113 botões da aplicação em fases (compartilhados → endpoint principal → vendas → contas → produtos → importação/PIX → carrinho → páginas → limpeza).
+- **Verificação:** `styles:types`, `styles:check`, `lint`, `lint:css`, `tsc`, `build`, `check-css`, `check-docs` e `check-encoding` verdes.
 
 ### Padrão universal de botão — 25/10/2026
 
@@ -256,6 +265,7 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 ## Pendentes
 
 - Nenhuma pendência de lint/typecheck/build.
+- **Migração de botões (ADR 0010):** Fase 0 concluída; próximas fases: compartilhados (9), endpoint principal (20), listagens de vendas (11), contas a pagar (20), produtos (21), importação/PIX (10), carrinho (9), páginas/filtros (13) e limpeza final. Os controles especiais (`historyItem`, drop zone e item clicável do catálogo) ficam para uma fase de acessibilidade.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
 - **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`), agrupamento por domínio (ADR 0005) e **Fase 0 + Fase 1 de estilos (ADR 0007)** concluídos. Próximos alvos:
   - **UI Fase 2 concluída**: modais de catálogo, `ConfirmDialog`, `Toast`, primitivas (`Dialog`, `Field`, `Button`, `Table`) e remoção do restante de `styled-jsx` (11 componentes). `useCatalogCrud` não foi necessário; `CatalogEntityModal` cobre a consolidação. Grandes módulos (`contas`/`produtos`) permanecem para refatoração visual futura.
