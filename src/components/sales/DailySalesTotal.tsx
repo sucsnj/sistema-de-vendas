@@ -116,8 +116,10 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                             {onEditSale && (
                               <Button
                                 type="button"
+                                variant="info"
+                                size="sm"
                                 onClick={() => onEditSale(sale)}
-                                icon={<EditIcon />}
+                                leftIcon={<EditIcon />}
                               >
                                 Editar
                               </Button>
@@ -126,8 +128,10 @@ const DailySalesTotal: React.FC<DailySalesTotalProps> = ({ sales, selectedDay, r
                             {onDeleteSale && (
                               <Button
                                 type="button"
+                                variant="danger"
+                                size="sm"
                                 onClick={() => onDeleteSale(sale.id)}
-                                icon={<DeleteIcon />}
+                                leftIcon={<DeleteIcon />}
                               >
                                 Excluir
                               </Button>

@@ -4,7 +4,7 @@
 
 | Arquivo | Resumo |
 | --- | --- |
-| [calculator.md](./calculator.md) | Avaliação de expressões matemáticas do campo de valor. |
+
 | [captalize.md](./captalize.md) | Capitalização de texto. |
 | [cart.md](./cart.md) | Resumo do carrinho (`getCartSummary`). |
 | [cleaner.md](./cleaner.md) | Limpeza de arquivos temporários do OCR. |

@@ -5,6 +5,7 @@ import { AccountDetails } from '../../services/contasService';
 import { formatCurrency } from '../../utils/formatter';
 import { useShortcuts } from '../../utils/shortcuts';
 import { useFocusTrap } from '../../utils/focus';
+import Button from '@/components/common/Button';
 
 interface PayablesModalsProps {
   selectedAccount: AccountDetails | null;
@@ -96,17 +97,17 @@ const PayablesModals: React.FC<PayablesModalsProps> = ({
               Detalhes da conta
               {editingAccount?.id === selectedAccount.id ? (
                 <>
-                  <button type="button" className={styles.saveButton} onClick={(event) => onSave(event)}>
+                  <Button type="button" variant="success" size="sm" onClick={(event) => onSave(event)}>
                     Salvar
-                  </button>
-                  <button type="button" className={styles.closeButton} onClick={onCancelEdit}>
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={onCancelEdit}>
                     Cancelar
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <button type="button" className={styles.editButton} onClick={() => onEdit(selectedAccount)}>
+                <Button type="button" variant="info" size="sm" onClick={() => onEdit(selectedAccount)}>
                   Editar
-                </button>
+                </Button>
               )}
             </h2>
 
@@ -181,35 +182,38 @@ const PayablesModals: React.FC<PayablesModalsProps> = ({
             </div>
             <div className={styles.modalActions}>
               {selectedAccount.status === 'Pendente' ? (
-                <button
+                <Button
                   type="button"
-                  className={styles.payButton}
+                  variant="success"
+                  size="sm"
                   onClick={() => onStartPayment(selectedAccount)}
                 >
                   Pagar conta
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
-                  className={styles.cancelButton}
+                  variant="warning"
+                  size="sm"
                   onClick={() => {
                     onCancelPayment(selectedAccount.id);
                     onCancelEdit();
                   }}
                 >
                   Cancelar pagamento
-                </button>
+                </Button>
               )}
-              <button
+              <Button
                 type="button"
-                className={styles.closeButton}
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   onCloseSelectedAccount();
                   onCancelEdit();
                 }}
               >
                 Fechar
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -232,12 +236,12 @@ const PayablesModals: React.FC<PayablesModalsProps> = ({
               placeholder="Digite observações..."
             />
             <div className={styles.modalActions}>
-              <button type="button" className={styles.payButton} onClick={onConfirmPayment}>
+              <Button type="button" variant="success" onClick={onConfirmPayment}>
                 Confirmar pagamento
-              </button>
-              <button type="button" className={styles.closeButton} onClick={onClosePayModal}>
+              </Button>
+              <Button type="button" variant="outline" onClick={onClosePayModal}>
                 Cancelar
-              </button>
+              </Button>
             </div>
           </div>
         </div>

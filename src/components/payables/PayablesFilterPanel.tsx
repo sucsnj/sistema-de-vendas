@@ -5,6 +5,7 @@ import { formatDateString } from '../../utils/date';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import Button from '@/components/common/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -107,10 +108,9 @@ const PayablesFilterPanel: React.FC<PayablesFilterPanelProps> = ({
             </label>
           </div>
           <div className={styles.filterActions}>
-            <button type="button" onClick={onClearFilters}>
-              <ClearAllIcon className="material-icon"/>
+            <Button type="button" variant="outline" size="sm" onClick={onClearFilters} leftIcon={<ClearAllIcon />}>
               Limpar filtros
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -151,29 +151,22 @@ const PayablesFilterPanel: React.FC<PayablesFilterPanelProps> = ({
                   </span>
                 </td>
                 <td className={styles.actionsCell}>
-                  <button type="button" className={styles.viewButton} onClick={() => handleView(account)}>
-                    <span className="icon-responsive">
-                      <VisibilityIcon />
-                    </span>
-                    <span className="text-responsive">Ver</span>
-                  </button>
-                  <button type="button" className={styles.deleteButton} onClick={() => openConfirm(account.id)}>
-                    <span className="icon-responsive">
-                      <DeleteIcon />
-                    </span>
-                    <span className="text-responsive">Excluir</span>
-                  </button>
+                  <Button type="button" variant="info" size="sm" onClick={() => handleView(account)} leftIcon={<VisibilityIcon />}>
+                    Ver
+                  </Button>
+                  <Button type="button" variant="danger" size="sm" onClick={() => openConfirm(account.id)} leftIcon={<DeleteIcon />}>
+                    Excluir
+                  </Button>
                   {account.status === 'Pendente' ? (
-                    <button
+                    <Button
                       type="button"
-                      className={styles.payButton}
+                      variant="success"
+                      size="sm"
                       onClick={() => handleStartPayment(account)}
+                      leftIcon={<MonetizationOnIcon />}
                     >
-                      <span className="icon-responsive">
-                        <MonetizationOnIcon />
-                      </span>
-                      <span className="text-responsive">Pagar</span>
-                    </button>
+                      Pagar
+                    </Button>
                   ) : null}
                 </td>
               </tr>

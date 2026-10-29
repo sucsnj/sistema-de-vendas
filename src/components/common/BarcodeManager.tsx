@@ -1,4 +1,5 @@
 import styles from '../../styles/produtos.module.css';
+import Button from '@/components/common/Button';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CloseIcon from '@mui/icons-material/Close';
@@ -48,15 +49,15 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
           }}
           id="barcode-input-field"
         />
-        <button
+        <Button
           type="button"
-          className={styles.primaryButton}
+          variant="primary"
+          size="sm"
           onClick={actions.add}
-          style={{ padding: '8px 14px', marginTop: 0, marginBottom: 0 }}
           id="add-barcode-action-btn"
         >
           Adicionar
-        </button>
+        </Button>
       </div>
 
       {data.barcodes.length === 0 ? (
@@ -90,15 +91,17 @@ const BarcodeManager: React.FC<BarcodeManagerProps> = ({
                   {cb.principal === 1 ? 'Principal' : 'Tornar Principal'}
                 </span>
               </div>
-              <button
+              <Button
                 type="button"
+                variant="danger"
+                size="sm"
+                iconOnly
                 onClick={() => actions.remove(cb.codigo_barras)}
-                className={styles.removeBtn}
                 title="Remover"
+                aria-label="Remover"
                 id={`remove-barcode-${cb.codigo_barras}`}
-              >
-                <CloseIcon fontSize="small" />
-              </button>
+                leftIcon={<CloseIcon fontSize="small" />}
+              />
             </div>
           ))}
         </div>

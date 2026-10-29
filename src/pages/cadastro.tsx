@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styles from '../styles/produtos.module.css';
+import Button from '@/components/common/Button';
 import { useToast } from '../hooks/useToast';
 import {
     fetchProducts,
@@ -740,20 +741,20 @@ const RegistrationPage: React.FC = () => {
 
                                 {/* Botões de Ação */}
                                 <div className={styles.actionButtons}>
-                                    <button type="submit"
-                                        className={styles.primaryButton}
+                                    <Button type="submit"
+                                        variant="success"
                                         id="submit-item-btn"
                                     >
                                         {editingId ? 'Salvar Alterações' : 'Cadastrar'}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
-                                        className={styles.secondaryButton}
+                                        variant="outline"
                                         onClick={resetForm}
                                         id="cancel-item-btn"
                                     >
                                         Cancelar
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </Panel>

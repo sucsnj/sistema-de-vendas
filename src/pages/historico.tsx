@@ -10,6 +10,7 @@ import { useFilter } from '../hooks/useFilter';
 import PageShell from '@/components/common/PageShell';
 import PageHeader from '@/components/common/PageHeader';
 import Panel from '@/components/common/Panel';
+import Button from '@/components/common/Button';
 
 // Componente React: tela de Histórico de Vendas.
 // Lista as vendas do período com filtro (todas/positivas/negativas), permitindo
@@ -68,15 +69,15 @@ const History: React.FC = () => {
             </label>
             {/* Botões de filtro por valor da venda */}
             <div className="buttons-filter">
-              <button className={filter === 'todas' ? 'color-muted' : 'button-todas'} onClick={() => changeFilter('todas')}>
+              <Button variant={filter === 'todas' ? 'primary' : 'ghost'} size="sm" aria-pressed={filter === 'todas'} onClick={() => changeFilter('todas')}>
                 Todas
-              </button>
-              <button className={filter === 'positivas' ? 'color-muted' : 'button-positivas'} onClick={() => changeFilter('positivas')}>
+              </Button>
+              <Button variant={filter === 'positivas' ? 'success' : 'ghost'} size="sm" aria-pressed={filter === 'positivas'} onClick={() => changeFilter('positivas')}>
                 Positivas
-              </button>
-              <button className={filter === 'negativas' ? 'color-muted' : 'button-negativas'} onClick={() => changeFilter('negativas')}>
+              </Button>
+              <Button variant={filter === 'negativas' ? 'danger' : 'ghost'} size="sm" aria-pressed={filter === 'negativas'} onClick={() => changeFilter('negativas')}>
                 Negativas
-              </button>
+              </Button>
 
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import Button from './Button';
 import { useShortcuts } from '../../utils/shortcuts';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/confirmDialog.module.css';
@@ -66,25 +67,25 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div id="confirm-dialog-message" className={styles.message}>{message}</div>
         <div className={styles.actions}>
           {showCancel && (
-            <button
+            <Button
               type="button"
-              className={`${styles.button} ${styles.cancel}`}
+              variant="outline"
               onClick={onCancel}
               ref={cancelButtonRef}
               id={cancelButtonId}
             >
               {cancelText}
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             type="button"
-            className={`${styles.button} ${danger ? styles.danger : styles.confirm}`}
+            variant={danger ? 'danger' : 'primary'}
             onClick={onConfirm}
             ref={confirmButtonRef}
             id={confirmButtonId}
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

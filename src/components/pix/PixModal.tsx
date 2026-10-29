@@ -6,6 +6,7 @@ import { showToast } from '@/utils/toast';
 import { copyToClipboard } from '@/utils/clipboard';
 import { useFocusTrap } from '../../utils/focus';
 import CloseIcon from '@mui/icons-material/Close';
+import Button from '@/components/common/Button';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import PrintIcon from '@mui/icons-material/Print';
@@ -111,14 +112,16 @@ const ModalPixContent: React.FC<PixModalProps> = ({
         {/* Cabeçalho Fixo */}
         <div className="modal-header">
           <h2 id="pix-modal-title">QR Code PIX</h2>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
+            iconOnly
             className="modal-close"
             onClick={onClose}
             aria-label="Fechar"
-          >
-            <CloseIcon fontSize="small" />
-          </button>
+            leftIcon={<CloseIcon fontSize="small" />}
+          />
         </div>
 
         {/* Corpo do Modal com Rolagem */}
@@ -134,15 +137,15 @@ const ModalPixContent: React.FC<PixModalProps> = ({
 
         {/* Rodapé Fixo */}
         <div className="modal-actions">
-          <button className="action-button" onClick={handleCopy}>
-            <ContentCopyIcon fontSize="small" /> Copiar
-          </button>
-          <button className="action-button" onClick={handleDownload}>
-            <FileDownloadIcon fontSize="small" /> Baixar PNG
-          </button>
-          <button className="action-button" onClick={handlePrint}>
-            <PrintIcon fontSize="small" /> Imprimir
-          </button>
+          <Button className="action-button" variant="info" onClick={handleCopy} leftIcon={<ContentCopyIcon fontSize="small" />}>
+            Copiar
+          </Button>
+          <Button className="action-button" variant="secondary" onClick={handleDownload} leftIcon={<FileDownloadIcon fontSize="small" />}>
+            Baixar PNG
+          </Button>
+          <Button className="action-button" variant="outline" onClick={handlePrint} leftIcon={<PrintIcon fontSize="small" />}>
+            Imprimir
+          </Button>
         </div>
       </div>
     </div>

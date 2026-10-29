@@ -3,6 +3,7 @@ import styles from '../../styles/contas.module.css';
 import { formatMonthName } from '../../utils/date';
 import { capitalize } from '../../utils/captalize';
 import BackupIcon from '@mui/icons-material/Backup';
+import Button from '@/components/common/Button';
 import { now } from '../../utils/date';
 
 interface PayablesHeaderProps {
@@ -42,10 +43,9 @@ const PayablesHeader: React.FC<PayablesHeaderProps> = ({ year, month, setYear, s
             ))}
           </select>
         </label>
-        <button type="button" onClick={handleBackup} className={styles.backupButton}>
-          <BackupIcon />
+        <Button type="button" variant="info" onClick={handleBackup} leftIcon={<BackupIcon />}>
           Backup Anual
-        </button>
+        </Button>
       </div>
     </header>
   );

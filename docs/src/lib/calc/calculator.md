@@ -4,9 +4,10 @@
 
 ## O que faz
 
-- Validates and inserts keys (`insertKey`), deletes (`deleteKey`) and sanitizes expressions (`sanitizeExpression`).
-- Evaluates expressions with precedence and parentheses (`calculate`/`calculateResult`).
-- Usa `arredondarMoeda` de `engine.ts`.
+- Valida e insere teclas (`insertKey`), remove (`deleteKey`) e sanitiza expressões (`sanitizeExpression`).
+- Avalia expressões com precedência, parênteses e sinal unário (`calculate`/`calculateResult`).
+- Aceita multiplicação implícita (`2(3)`, `(2)3`, `(2)(3)`).
+- Usa `roundCurrency` de `engine.ts`.
 
 ## Relações
 
@@ -16,3 +17,5 @@
 ## Notas
 
 - É a referência principal de cálculo do formulário de venda diária.
+- Sinal final não invalida a expressão: o cálculo parcial possível é exibido.
+- O sinal de menos unário é suportado em qualquer posição válida.

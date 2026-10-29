@@ -16,6 +16,7 @@ import styles from '../styles/tabela.module.css';
 import PageShell from '@/components/common/PageShell';
 import PageHeader from '@/components/common/PageHeader';
 import Panel from '@/components/common/Panel';
+import Button from '@/components/common/Button';
 
 // Componente React.
 const Tabela: React.FC = () => {
@@ -150,9 +151,9 @@ const Tabela: React.FC = () => {
       <Panel className={styles.uploadPanel}>
         <div className={`${styles.panelRow}`}>
           <div className={`${styles.uploadHelp}`}>
-            <button type="button" className={`${styles.uploadButton}`} onClick={() => fileInputRef.current?.click()}>
+            <Button type="button" variant="primary" className={`${styles.uploadButton}`} onClick={() => fileInputRef.current?.click()} isLoading={uploading}>
               {uploading ? 'Carregando...' : 'Enviar nova planilha'}
-            </button>
+            </Button>
             <input
               ref={fileInputRef}
               type="file"
@@ -176,9 +177,9 @@ const Tabela: React.FC = () => {
                   disabled={!tabelaLoaded}
                 />
               </div>
-              <button type="submit" className={`${styles.searchButton}`} disabled={loading || !tabelaLoaded}>
+              <Button type="submit" variant="primary" className={`${styles.searchButton}`} disabled={loading || !tabelaLoaded} isLoading={loading}>
                 {loading ? 'Pesquisando...' : 'Buscar'}
-              </button>
+              </Button>
             </form>
           </div>
           <div className={`${styles.panelSummary}`}>
@@ -244,9 +245,9 @@ const Tabela: React.FC = () => {
               <h2>Histórico de pesquisas</h2>
               <p>Últimas 100 buscas gravadas no cache.</p>
             </div>
-            <button type="button" onClick={handleClearHistory} className="secondary">
+            <Button type="button" variant="outline" onClick={handleClearHistory}>
               Limpar histórico
-            </button>
+            </Button>
           </div>
 
           {history.length > 0 ? (

@@ -22,6 +22,56 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 ## Últimas mudanças
 
+### UI: migração dos botões para `Button` (ADR 0010) — 26/10/2026
+
+- **Fases 1 a 9 concluídas:** primitivas compartilhadas, endpoint principal, listagens de vendas, contas a pagar, produtos, importação/PIX, carrinho, páginas/filtros e limpeza.
+- **Cobertura:** 113 botões da aplicação migrados para `Button`; restou apenas o item clicável de histórico da tabela, mantido como controle especial de acessibilidade.
+- **Variantes/tamanhos:** ações destrutivas usam `danger`, confirmação `success`, navegação/secundárias `info`/`secondary`/`outline`, filtros `ghost` com `aria-pressed`.
+- **Carregamento:** botões de upload, busca e importação usam `isLoading`.
+- **Botões somente ícone:** usam `iconOnly`, dimensões quadradas e rótulo acessível.
+- **Verificação:** `npm run lint`, `lint:css`, `styles:types`, `styles:check`, `check:css`, `tsc`, `build`, `check-encoding`, `check-docs` e `test:calc` verdes.
+
+### Calculadora: exibição de cálculo parcial com sinal final — 26/10/2026
+
+- **Comportamento alterado:** expressão terminada em operador agora exibe o cálculo parcial possível (`5+` -> `5`; `5+7-4+` -> `8`).
+- **Parser:** operadores finais são removidos antes da avaliação, sem invalidar a expressão.
+- **Baseline:** `npm run test:calc` atualizado para 29 casos, todos verdes.
+- **Docs:** `docs/src/lib/calc/calculator.md` atualizado.
+- **Verificação:** `tsc`, `lint`, `build`, `check-encoding` e `check-docs` verdes.
+
+### Calculadora: Fase 3 — limpeza final — 26/10/2026
+
+- **Wrapper legado removido:** `src/utils/calculator.ts` e seu doc foram excluídos; não havia consumidores.
+- **Índice de utils:** entrada de `calculator.md` removida de `docs/src/utils/README.md`.
+- **Verificação:** `npm run test:calc`, `tsc`, `lint`, `build`, `check-encoding` e `check-docs` verdes.
+
+### Calculadora: Fase 2 — integração com formulário — 26/10/2026
+
+- **Carrinho:** `formatCartValue` passou a usar ponto decimal, evitando mistura com a expressão sanitizada.
+- **Limpeza:** `clearing` agora é estado real e é ativado/desativado em `handleClear`.
+- **Expressão inválida:** `isValueInvalid` foi adicionado; submit e PIX bloqueiam expressão inválida e a UI exibe `Inválido`.
+- **Cursor:** `handleValueChange` preserva a posição aproximada do cursor após sanitização.
+- **ESC e limpeza:** resetam também o estado de invalidade.
+- **Docs:** `docs/src/hooks/useDailySaleForm.md` atualizado.
+- **Verificação:** `npm run test:calc`, `tsc`, `lint`, `build`, `check-encoding` e `check-docs` verdes.
+
+### Calculadora: Fase 1 — parser e sinal unário — 26/10/2026
+
+- **Operadores:** operador final não gera mais valor de prefixo; expressão incompleta retorna `null`.
+- **Multiplicação implícita:** suportada em `2(3)`, `(2)3` e `(2)(3)`, inclusive em expressões coladas.
+- **Sinal unário:** `-5`, `(-2)`, `5*(-2)` e `--5` passam a ser avaliados.
+- **Insert de teclas:** operadores binários substituem o operador anterior; o menos unário é anexado.
+- **Baseline:** `npm run test:calc` atualizado para 27 casos, todos verdes.
+- **Docs:** `docs/src/lib/calc/calculator.md` atualizado.
+- **Verificação:** `tsc`, `lint`, `lint:css`, `build`, `check-encoding` e `check-docs` verdes.
+
+### Calculadora: Fase 0 — baseline e decisão de valores negativos — 26/10/2026
+
+- **Baseline criado:** `scripts/test-calculator.mjs` e script `npm run test:calc` compilam a calculadora e validam 22 casos atuais.
+- **Decisão registrada:** a calculadora deve aceitar valores negativos (`-5`, `(-2)`, `5*(-2)`), com implementação prevista na Fase 1.
+- **Achados registrados:** operador final, multiplicação implícita ausente, sinal unário ausente, mistura de vírgula/ponto no carrinho e cursor no input.
+- **Docs:** análise e plano de ação apresentados ao usuário; implementação ainda não iniciada.
+
 ### UI: Fase 0 do sistema de botões — `iconOnly` e contrato (ADR 0010) — 26/10/2026
 
 - **`Button`** ganhou `iconOnly`: dimensões quadradas por tamanho, ícone como único conteúdo visual e `children` como rótulo acessível oculto (`srOnly`).
@@ -266,6 +316,8 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 
 - Nenhuma pendência de lint/typecheck/build.
 - **Migração de botões (ADR 0010):** Fase 0 concluída; próximas fases: compartilhados (9), endpoint principal (20), listagens de vendas (11), contas a pagar (20), produtos (21), importação/PIX (10), carrinho (9), páginas/filtros (13) e limpeza final. Os controles especiais (`historyItem`, drop zone e item clicável do catálogo) ficam para uma fase de acessibilidade.
+- **Calculadora:** Fases 0, 1, 2 e 3 concluídas. Implementação encerrada; restam apenas testes manuais opcionais no formulário.
+- **Botões (ADR 0010):** migração concluída. Resta apenas revisão visual manual opcional e remoção futura de classes CSS legadas não referenciadas.
 - **Melhorias futuras recomendadas (P2/P3 do DOCS.md)**: abstração de dados de tabela/histórico; tipagem forte de `fetch`; extrair XML/OCR de `contas/import.ts`; testes automatizados; transversais ainda não implementados do ADR (tamanho máximo de strings).
 - **Refatoração (direção registrada em `docs/ALIGNMENT.md` seção 4)**: Fase 0 (fundações/utilitários), unificação de toasts (ADR 0003), padrão de nomenclatura (ADR 0004), `DailySaleForm` extraído (hook `useDailySaleForm` + `utils/calculator` + `types/sale.ts`), agrupamento por domínio (ADR 0005) e **Fase 0 + Fase 1 de estilos (ADR 0007)** concluídos. Próximos alvos:
   - **UI Fase 2 concluída**: modais de catálogo, `ConfirmDialog`, `Toast`, primitivas (`Dialog`, `Field`, `Button`, `Table`) e remoção do restante de `styled-jsx` (11 componentes). `useCatalogCrud` não foi necessário; `CatalogEntityModal` cobre a consolidação. Grandes módulos (`contas`/`produtos`) permanecem para refatoração visual futura.
@@ -281,4 +333,5 @@ Sistema de gestão de vendas (Next.js 16 + React 19 + TypeScript + MUI + React Q
 ## Como manter este arquivo
 
 - **Sempre** que um agente fizer modificações de código: mover a mudança para "Últimas mudanças" (com data), ajustar "Pendentes"/"Futuras", e atualizar a data no topo.
+- Atualizações/mudanças  antigas (3x) devem ser descartadas.
 - Atualizar também o doc correspondente em `docs/` (e `docs/README.md`/`CONTEXT.md` se necessário) antes de encerrar a tarefa.

@@ -250,19 +250,19 @@ const ExportButtons: FC<ExportButtonsProps> = ({
         flexWrap: 'wrap',
         gap: '10px',
       }}>
-      <Button type="button" onClick={() => exportXLSX('month')} icon={<FileDownloadIcon />}>
+      <Button type="button" variant="info" onClick={() => exportXLSX('month')} leftIcon={<FileDownloadIcon />}>
         Exportar XLSX (Mês)
       </Button>
-      <Button type="button" onClick={() => exportXLSX('day')} disabled={!selectedDate} icon={<FileDownloadIcon />}>
+      <Button type="button" variant="info" onClick={() => exportXLSX('day')} disabled={!selectedDate} leftIcon={<FileDownloadIcon />}>
         Exportar XLSX (Dia)
       </Button>
-      <Button type="button" onClick={() => triggerImport('month')} icon={<FileUploadIcon />}>
+      <Button type="button" variant="secondary" onClick={() => triggerImport('month')} leftIcon={<FileUploadIcon />}>
         Importar XLSX (Mês)
       </Button>
-      <Button type="button" onClick={() => triggerImport('day')} disabled={!selectedDate} icon={<FileUploadIcon />}>
+      <Button type="button" variant="secondary" onClick={() => triggerImport('day')} disabled={!selectedDate} leftIcon={<FileUploadIcon />}>
         Importar XLSX (Dia)
       </Button>
-      <Button type="button" onClick={exportPDF} icon={<PictureAsPdfIcon />}>
+      <Button type="button" variant="info" onClick={exportPDF} leftIcon={<PictureAsPdfIcon />}>
         Exportar PDF
       </Button>
       <input

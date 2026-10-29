@@ -11,6 +11,7 @@ import { useConfirmDialog } from '../hooks/useConfirmDialog';
 import PageShell from '@/components/common/PageShell';
 import PageHeader from '@/components/common/PageHeader';
 import Panel from '@/components/common/Panel';
+import Button from '@/components/common/Button';
 dayjs.locale('pt-br');
 
 // Componente React: tela de Resumo Mensal.
@@ -40,18 +41,20 @@ const SummaryPage: React.FC = () => {
 
       {/* Botões de alternância entre as tabelas */}
       <div className="toggle-buttons">
-        <button
-          className={`especial-button ${view === 'especial' ? '' : 'hidden'}`}
+        <Button
+          variant={view === 'comum' ? 'primary' : 'ghost'}
           onClick={() => setView('comum')}
+          className={view === 'especial' ? '' : 'hidden'}
         >
           Mostrar Consolidado Normal
-        </button>
-        <button
-          className={`comum-button ${view === 'comum' ? '' : 'hidden'}`}
+        </Button>
+        <Button
+          variant={view === 'especial' ? 'secondary' : 'ghost'}
           onClick={() => setView('especial')}
+          className={view === 'comum' ? '' : 'hidden'}
         >
           Mostrar Consolidado Especial
-        </button>
+        </Button>
       </div>
 
       {/* Tabelas de consolidação do mês */}
@@ -85,12 +88,9 @@ const SummaryPage: React.FC = () => {
                   <td>{m.qtdVendas}</td>
                   <td>R$ {formatCurrency(m.total, 2)}</td>
                   <td>
-                    <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
-                      <span className="icon-responsive">
-                        <DeleteIcon />
-                      </span>
-                      <span className="text-responsive">Excluir</span>
-                    </button>
+                    <Button type="button" variant="danger" size="sm" onClick={() => openConfirm(m.id)} leftIcon={<DeleteIcon />}>
+                      Excluir
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -116,12 +116,9 @@ const SummaryPage: React.FC = () => {
                   <td>{m.qtdVendasEsp}</td>
                   <td>R$ {formatCurrency(m.totalEsp, 2)}</td>
                   <td>
-                    <button type="button" onClick={() => openConfirm(m.id)} className="delete-btn">
-                      <span className="icon-responsive">
-                        <DeleteIcon />
-                      </span>
-                      <span className="text-responsive">Excluir</span>
-                    </button>
+                    <Button type="button" variant="danger" size="sm" onClick={() => openConfirm(m.id)} leftIcon={<DeleteIcon />}>
+                      Excluir
+                    </Button>
                   </td>
                 </tr>
               ))}

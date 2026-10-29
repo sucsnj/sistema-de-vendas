@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { DailySale } from '../../services/vendasService';
+import Button from '@/components/common/Button';
 import { formatCurrency, formatCurrencyNumber } from '../../utils/formatter';
 
 interface SalesChartProps {
@@ -36,19 +37,21 @@ const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
       <div className="chart-header">
         <h2>Evolução Diária de Vendas</h2>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() =>
             setChartType((prev) => (prev === 'line' ? 'bar' : 'line'))
           }
         >
           Trocar gráfico
-        </button>
+        </Button>
 
         <div className="range-buttons">
-          <button onClick={() => setRange(30)}>30 vendas</button>
-          <button onClick={() => setRange(7)}>7 vendas</button>
-          <button onClick={() => setRange(3)}>3 vendas</button>
+          <Button variant="ghost" size="sm" aria-pressed={range === 30} onClick={() => setRange(30)}>30 vendas</Button>
+          <Button variant="ghost" size="sm" aria-pressed={range === 7} onClick={() => setRange(7)}>7 vendas</Button>
+          <Button variant="ghost" size="sm" aria-pressed={range === 3} onClick={() => setRange(3)}>3 vendas</Button>
         </div>
       </div>
 

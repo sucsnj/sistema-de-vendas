@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styles from '../../styles/toast.module.css';
+import Button from './Button';
 
 type ToastType = 'success' | 'error' | 'info';
 type ToastPosition =
@@ -52,9 +53,17 @@ const Toast: React.FC<ToastProps> = ({ open, message, type = 'info', onClose, po
       aria-live="polite"
     >
       <span>{message}</span>
-      <button type="button" className={styles.close} aria-label="Fechar" onClick={onClose}>
-        ×
-      </button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        iconOnly
+        aria-label="Fechar"
+        onClick={onClose}
+        leftIcon={<span>×</span>}
+      >
+        Fechar
+      </Button>
     </div>
   );
 };

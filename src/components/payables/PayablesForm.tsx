@@ -3,6 +3,7 @@ import styles from '../../styles/contas.module.css';
 import Form from '@/components/common/Form';
 import FormRow from '@/components/common/FormRow';
 import FormActions from '@/components/common/FormActions';
+import Button from '@/components/common/Button';
 import { AccountDetails } from '../../services/contasService';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -100,21 +101,19 @@ const PayablesForm: React.FC<PayablesFormProps> = ({
         />
       </label>
       <FormActions>
-        <button type="submit">
-          <NoteAddIcon className="material-icon" />
-          {editingAccount ? 'Salvar Alteração' : 'Cadastrar Conta'}</button>
-        <button type="button" className={styles.secondary} onClick={onReset}>
-          <ClearAllIcon className="material-icon" />
+        <Button type="submit" variant="success" leftIcon={<NoteAddIcon />}>
+          {editingAccount ? 'Salvar Alteração' : 'Cadastrar Conta'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onReset} leftIcon={<ClearAllIcon />}>
           Limpar Campos
-        </button>
-        <button type="button" className={styles.secondary} onClick={onImportXML}>
-          <ImportExportIcon className="material-icon" />
+        </Button>
+        <Button type="button" variant="info" onClick={onImportXML} leftIcon={<ImportExportIcon />}>
           Importar XML
-        </button>
+        </Button>
         {editingAccount ? (
-            <button type="button" className={styles.secondary} onClick={onCancelEdit}>
+          <Button type="button" variant="outline" onClick={onCancelEdit}>
             Cancelar
-          </button>
+          </Button>
         ) : null}
       </FormActions>
     </Form>

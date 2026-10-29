@@ -20,6 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useImportItems, type ItemStatus } from '../../hooks/useImportItems';
 import ItemNameDropdown from './ItemNameDropdown';
+import Button from '@/components/common/Button';
 
 interface ImportItemsModalProps {
   onClose: () => void;
@@ -95,9 +96,7 @@ const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSu
           <h3 id="modal-import-title" className={styles.modalTitle}>
             Importar Produtos via Nota Fiscal (XML)
           </h3>
-          <button className={importStyles.closeBtn} onClick={onClose} aria-label="Fechar" type="button">
-            <CloseIcon fontSize="small" />
-          </button>
+          <Button className={importStyles.closeBtn} variant="ghost" size="sm" iconOnly onClick={onClose} aria-label="Fechar" leftIcon={<CloseIcon fontSize="small" />} />
         </div>
 
         {/* Área de upload */}
@@ -153,9 +152,9 @@ const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSu
                 {products.length} produto(s) encontrado(s)
               </span>
               {!completed && (
-                <button type="button" className={importStyles.trocarBtn} onClick={resetFile}>
+                <Button type="button" variant="outline" size="sm" className={importStyles.trocarBtn} onClick={resetFile}>
                   Trocar arquivo
-                </button>
+                </Button>
               )}
             </div>
 
@@ -225,33 +224,31 @@ const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSu
                         {!completed && (
                           <div className={importStyles.cadastroRapidoContainer}>
                             {p.existe && p.itemIdExistente ? (
-                              <button
+                              <Button
                                 type="button"
+                                variant="info"
+                                size="sm"
                                 className={importStyles.btnEditarItem}
                                 onClick={() => handleEditItem(p)}
                                 title="Abrir edição deste item em nova aba"
+                                leftIcon={<EditIcon fontSize="inherit" />}
+                                rightIcon={<OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />}
                               >
-                                <EditIcon fontSize="inherit" />
-                                <span>Editar item</span>
-                                <OpenInNewIcon
-                                  fontSize="inherit"
-                                  className={importStyles.iconExternal}
-                                />
-                              </button>
+                                Editar item
+                              </Button>
                             ) : (
-                              <button
+                              <Button
                                 type="button"
+                                variant="success"
+                                size="sm"
                                 className={importStyles.btnCadastroRapido}
                                 onClick={() => handleQuickRegister(p)}
                                 title="Abrir formulário de cadastro em nova aba"
+                                leftIcon={<AddIcon fontSize="inherit" />}
+                                rightIcon={<OpenInNewIcon fontSize="inherit" className={importStyles.iconExternal} />}
                               >
-                                <AddIcon fontSize="inherit" />
-                                <span>Cadastro rápido</span>
-                                <OpenInNewIcon
-                                  fontSize="inherit"
-                                  className={importStyles.iconExternal}
-                                />
-                              </button>
+                                Cadastro rápido
+                              </Button>
                             )}
                           </div>
                         )}
@@ -313,24 +310,25 @@ const ImportItemsModal: React.FC<ImportItemsModalProps> = ({ onClose, onImportSu
         {/* Rodapé */}
         <div className={styles.modalActions}>
           {products.length > 0 && !completed && (
-            <button
+            <Button
               type="button"
-              className={styles.primaryButton}
+              variant="success"
               onClick={handleImport}
               disabled={importing}
               id="btn-confirmar-importacao"
+              isLoading={importing}
             >
-              {importing ? 'Importando…' : `Importar ${products.length} produto(s)`}
-            </button>
+              {importing ? 'Importando...' : `Importar ${products.length} produto(s)`}
+            </Button>
           )}
-          <button
+          <Button
             type="button"
-            className={styles.secondaryButton}
+            variant="outline"
             onClick={onClose}
             id="btn-fechar-import"
           >
             {completed ? 'Fechar' : 'Cancelar'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

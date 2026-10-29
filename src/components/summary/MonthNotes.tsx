@@ -4,6 +4,7 @@ import { fetchInvoicesByPeriod, deleteInvoice, InvoiceDetails } from '../../serv
 import { formatCurrency } from '../../utils/formatter';
 import { formatDateString, getCurrentYear } from '../../utils/date';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import Button from '@/components/common/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styles from '../../styles/monthNotes.module.css';
 
@@ -99,12 +100,9 @@ const MonthNotes: React.FC<MonthNotesProps> = ({ year, month, setYear, setMonth 
                                 <td>{n.distribuidora}</td>
                                 <td>R$ {formatCurrency(Number(n.valor_nota), 2)}</td>
                                 <td>
-                                    <button onClick={() => openConfirm(n.id)} className={`${styles.deleteBtn}`}>
-                                        <span className="icon-responsive">
-                                            <DeleteIcon />
-                                        </span>
-                                        <span className="text-responsive">Excluir</span>
-                                    </button>
+                                    <Button variant="danger" size="sm" onClick={() => openConfirm(n.id)} leftIcon={<DeleteIcon />}>
+                                        Excluir
+                                    </Button>
                                 </td>
                             </tr>
                         ))}

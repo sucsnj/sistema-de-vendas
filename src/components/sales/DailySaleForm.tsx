@@ -36,6 +36,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
     loading,
     clearing,
     calculatedValue,
+    isValueInvalid,
     pixModalOpen,
     setPixModalOpen,
     pixPayload,
@@ -86,6 +87,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <div className={`${styles.mathButtons}`}>
               <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('+')}
@@ -94,6 +97,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('-')}
@@ -102,6 +107,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('*')}
@@ -110,6 +117,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
               </Button>
               <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => e.preventDefault()}
                 onClick={() => addOperator('/')}
@@ -134,6 +143,8 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                 />
                 <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   className={`${styles.cartIconButton}`}
                   style={{ background: 'transparent', border: 'none', padding: '6px' }}
                   onClick={handleCartClick}
@@ -152,7 +163,7 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
                   <QrCode2Icon className="pix-icon" />
                 </span>
                 <span className={`${styles.pixButton}`} onClick={handlePixClick}>
-                  {formatCurrency(Math.min(calculatedValue ?? 0, 9999999), 2)}
+                  {isValueInvalid ? 'Inválido' : formatCurrency(Math.min(calculatedValue ?? 0, 9999999), 2)}
                 </span>
               </span>
             </label>
@@ -169,16 +180,18 @@ const DailySaleForm: React.FC<DailySaleFormProps> = ({
             <div className="buttons-wrapper">
               <Button
                 type="submit"
+                variant="success"
                                 disabled={loading}
-                icon={<SaveIcon />}
+                leftIcon={<SaveIcon />}
               >
                 {loading ? 'Registrando...' : 'Registrar'}
               </Button>
               <Button
                 type="button"
+                variant="danger"
                                 disabled={clearing}
                 onClick={handleClear}
-                icon={<ClearIcon />}
+                leftIcon={<ClearIcon />}
               >
                 {clearing ? 'Limpando...' : 'Limpar'}
               </Button>

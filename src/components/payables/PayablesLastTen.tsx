@@ -5,6 +5,7 @@ import { formatDateString } from '../../utils/date';
 import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import Button from '@/components/common/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -51,24 +52,15 @@ const PayablesLastTen: React.FC<PayablesLastTenProps> = ({
               <td>{account.distribuidora}</td>
               <td>R$ {formatCurrency(account.valor, 2)}</td>
               <td className={styles.actionsCell}>
-                <button type="button" className={styles.viewButton} onClick={() => handleView(account)}>
-                  <span className="icon-responsive">
-                    <VisibilityIcon />
-                  </span>
-                  <span className="text-responsive">Ver</span>
-                </button>
-                <button type="button" className={styles.deleteButton} onClick={() => openConfirm(account.id)}>
-                  <span className="icon-responsive">
-                    <DeleteIcon />
-                  </span>
-                  <span className="text-responsive">Excluir</span>
-                </button>
-                <button type="button" className={styles.editButton} onClick={() => handleEdit(account)}>
-                  <span className="icon-responsive">
-                    <EditIcon />
-                  </span>
-                  <span className="text-responsive">Editar</span>
-                </button>
+                <Button type="button" variant="info" size="sm" onClick={() => handleView(account)} leftIcon={<VisibilityIcon />}>
+                  Ver
+                </Button>
+                <Button type="button" variant="danger" size="sm" onClick={() => openConfirm(account.id)} leftIcon={<DeleteIcon />}>
+                  Excluir
+                </Button>
+                <Button type="button" variant="info" size="sm" onClick={() => handleEdit(account)} leftIcon={<EditIcon />}>
+                  Editar
+                </Button>
               </td>
             </tr>
           ))}

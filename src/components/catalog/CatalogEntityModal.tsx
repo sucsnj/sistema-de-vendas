@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useFocusTrap } from '../../utils/focus';
 import styles from '../../styles/produtos.module.css';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import Button from '@/components/common/Button';
 
 export interface CatalogEntityField {
     id: string;
@@ -87,26 +88,28 @@ const CatalogEntityModal: React.FC<CatalogEntityModalProps> = ({
                         ))}
                         <div className={styles.modalActions}>
                             {deleteAction && (
-                                <button
+                                <Button
                                     type="button"
-                                    className={styles.deleteButton}
+                                    variant="danger"
+                                    size="sm"
                                     onClick={() => setDeleteConfirmOpen(true)}
                                     id="confirm-delete-action-btn"
                                 >
                                     Excluir
-                                </button>
+                                </Button>
                             )}
-                            <button type="submit" className={styles.primaryButton} id={submitButtonId}>
+                            <Button type="submit" variant="success" id={submitButtonId}>
                                 {submitLabel}
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
-                                className={styles.secondaryButton}
+                                variant="outline"
+                                size="sm"
                                 onClick={onClose}
                                 id={cancelButtonId}
                             >
                                 Fechar
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>

@@ -140,10 +140,10 @@ const Home: React.FC = () => {
                 }}
               />
             </label>
-            <Button onClick={handleConsolidate} icon={<DoneAllIcon />}>
+            <Button variant="primary" onClick={handleConsolidate} leftIcon={<DoneAllIcon />}>
               Consolidar Més
             </Button>
-            <Button onClick={handleBackup} icon={<BackupIcon />}>
+            <Button variant="info" onClick={handleBackup} leftIcon={<BackupIcon />}>
               Fazer Backup
             </Button>
           </div>

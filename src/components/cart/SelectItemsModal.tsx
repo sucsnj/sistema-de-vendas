@@ -15,6 +15,7 @@ import { CartModalShell } from './CartModalShell';
 import { ItemData } from '../../services/produtosService';
 import type { CartItem } from '../../types/sale';
 import styles from '../../styles/selectItemsModal.module.css';
+import Button from '@/components/common/Button';
 
 interface SelectItemsModalProps {
   isOpen: boolean;
@@ -66,10 +67,9 @@ const SelectItemsModal: React.FC<SelectItemsModalProps> = ({
       summary={summary}
       footerLeft={
         summary.totalItems > 0 ? (
-          <button type="button" className={`${styles.cartManageBtn}`} onClick={onManageCart}>
-            <ShoppingCartIcon style={{ fontSize: '1rem' }} />
+          <Button type="button" variant="secondary" size="sm" className={`${styles.cartManageBtn}`} onClick={onManageCart} leftIcon={<ShoppingCartIcon style={{ fontSize: '1rem' }} />}>
             Gerenciar
-          </button>
+          </Button>
         ) : undefined
       }
     >
@@ -85,13 +85,16 @@ const SelectItemsModal: React.FC<SelectItemsModalProps> = ({
           className={`${styles.cartSearchInput}`}
         />
         {cartSearch && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
+            iconOnly
             className={`${styles.cartSearchClear}`}
             onClick={() => onCartSearchChange('')}
-          >
-            ✕
-          </button>
+            aria-label="Limpar busca"
+            leftIcon={<span>×</span>}
+          />
         )}
       </div>
 
@@ -106,8 +109,11 @@ const SelectItemsModal: React.FC<SelectItemsModalProps> = ({
             const hasInCart = Boolean(inCart && inCart.quantidade > 0);
             return (
               <div key={`${item.tipo}-${item.id}`} className={`${styles.cartCatalogItemRow}`}>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
+                  iconOnly
                   className={`${styles.cartBtnSub} ${!hasInCart ? 'disabled' : ''}`}
                   disabled={!hasInCart}
                   onClick={(e) => {
@@ -116,9 +122,8 @@ const SelectItemsModal: React.FC<SelectItemsModalProps> = ({
                   }}
                   title={hasInCart ? 'Subtrair 1 unidade' : 'Item não está no carrinho'}
                   aria-label="Subtrair 1 unidade"
-                >
-                  -
-                </button>
+                  leftIcon={<span>-</span>}
+                />
 
                 <div className={`${styles.cartCatalogItem}`} onClick={() => onAddToCart(item)}>
                   <div className={`${styles.cartItemInfo}`}>

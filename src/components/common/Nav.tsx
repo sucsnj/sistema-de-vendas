@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Button from '@/components/common/Button';
 import styles from '@/styles/nav.module.css';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -78,21 +79,25 @@ const Nav: React.FC = () => {
             <img src="/favicon.png" alt="logo" width={40} height={36} />
           </Link>
         </div> */}
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
+          iconOnly
           onClick={toggleThemeMode}
-          className={styles.themeButton}
-        >
-          <span key={themeMode} className={styles.themeIcon}>
-            {themeMode === 'system' ? (
-              <TuneIcon />
-            ) : themeMode === 'light' ? (
-              <Brightness7Icon />
-            ) : (
-              <Brightness4Icon />
-            )}
-          </span>
-        </button>
+          aria-label="Alternar tema"
+          leftIcon={
+            <span key={themeMode} className={styles.themeIcon}>
+              {themeMode === 'system' ? (
+                <TuneIcon />
+              ) : themeMode === 'light' ? (
+                <Brightness7Icon />
+              ) : (
+                <Brightness4Icon />
+              )}
+            </span>
+          }
+        />
       </div>
     </nav>
 

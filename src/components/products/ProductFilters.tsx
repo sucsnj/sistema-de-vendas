@@ -7,6 +7,7 @@ import styles from '../../styles/produtos.module.css';
 import Panel from '@/components/common/Panel';
 import PanelHeader from '@/components/common/PanelHeader';
 import Form from '@/components/common/Form';
+import Button from '@/components/common/Button';
 
 export interface ProductFiltersState {
     search: string;
@@ -151,16 +152,12 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                 </label>
 
                 <div className={styles.filterActions}>
-                    <button type="submit" className="headerBackupButton">
+                    <Button type="submit" variant="primary">
                         Filtrar
-                    </button>
-                    <button
-                        type="button"
-                        className="headerButton"
-                        onClick={actions.clear}
-                    >
+                    </Button>
+                    <Button type="button" variant="outline" onClick={actions.clear}>
                         Limpar
-                    </button>
+                    </Button>
                 </div>
             </Form>
         </Panel>

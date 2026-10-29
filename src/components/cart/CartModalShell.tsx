@@ -14,6 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { formatCurrency } from '../../utils/formatter';
 import { useFocusTrap } from '../../utils/focus';
 import { useEscClose } from '../../hooks/useEscClose';
+import Button from '@/components/common/Button';
 import type { CartSummary } from '../../utils/cart';
 
 interface CartModalShellProps {
@@ -74,14 +75,16 @@ export const CartModalShell: React.FC<CartModalShellProps> = ({
               </span>
             )}
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
+            iconOnly
             className="cart-modal-close-btn"
             onClick={onClose}
             aria-label={closeAriaLabel}
-          >
-            <CloseIcon fontSize="small" />
-          </button>
+            leftIcon={<CloseIcon fontSize="small" />}
+          />
         </div>
 
         {/* Corpo do Modal */}
@@ -95,9 +98,9 @@ export const CartModalShell: React.FC<CartModalShellProps> = ({
               <span className="total-label">Total:</span>
               <span className="total-amount">{formatCurrency(summary.totalValue, 2)}</span>
             </div>
-            <button type="button" className="cart-modal-close-action-btn" onClick={onClose}>
+            <Button type="button" variant="success" className="cart-modal-close-action-btn" onClick={onClose}>
               Concluir
-            </button>
+            </Button>
           </div>
         </div>
       </div>

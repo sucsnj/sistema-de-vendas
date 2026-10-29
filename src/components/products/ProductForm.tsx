@@ -2,6 +2,7 @@ import styles from '../../styles/produtos.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVert from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
+import Button from '@/components/common/Button';
 import { parseNumber } from '../../utils/number';
 import { calculateMargin, calculateSalePrice } from '../../utils/productPrice';
 import {
@@ -142,19 +143,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             </option>
                         ))}
                     </select>
-                    <button
+                    <Button
                         type="button"
-                        className={styles.addButton}
+                        variant="primary"
+                        size="sm"
+                        iconOnly
                         onClick={actions.openCategoryModal}
                         title="Adicionar Categoria"
+                        aria-label="Adicionar Categoria"
                         id="add-categoria-btn"
-                    >
-                        <AddIcon fontSize="small" />
-                    </button>
+                        leftIcon={<AddIcon fontSize="small" />}
+                    />
                     {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de categorias */}
-                    <button
+                    <Button
                         type="button"
-                        className={styles.manageButton}
+                        variant="outline"
+                        size="sm"
+                        iconOnly
                         onClick={() => {
                             const selectedCategory = options.categories.find(
                                 (c) => c.id === form.categoryId
@@ -164,10 +169,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             }
                         }}
                         title="Editar Categoria Selecionada"
+                        aria-label="Editar Categoria Selecionada"
                         id="edit-categoria-btn"
-                    >
-                        <MoreVert fontSize="small" />
-                    </button>
+                        leftIcon={<MoreVert fontSize="small" />}
+                    />
                 </div>
             </div>
 
@@ -190,19 +195,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             </option>
                         ))}
                     </select>
-                    <button
+                    <Button
                         type="button"
-                        className={styles.addButton}
+                        variant="primary"
+                        size="sm"
+                        iconOnly
                         onClick={() => actions.openBrandModal()}
                         title="Adicionar Marca"
+                        aria-label="Adicionar Marca"
                         id="add-marca-btn"
-                    >
-                        <AddIcon fontSize="small" />
-                    </button>
+                        leftIcon={<AddIcon fontSize="small" />}
+                    />
                     {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de marcas*/}
-                    <button
+                    <Button
                         type="button"
-                        className={styles.manageButton}
+                        variant="outline"
+                        size="sm"
+                        iconOnly
                         onClick={() => {
                             const selectedBrand = options.brands.find(
                                 (m) => m.id === form.brandId
@@ -212,10 +221,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             }
                         }}
                         title="Editar Marca Selecionada"
+                        aria-label="Editar Marca Selecionada"
                         id="edit-marca-btn"
-                    >
-                        <MoreVert fontSize="small" />
-                    </button>
+                        leftIcon={<MoreVert fontSize="small" />}
+                    />
                 </div>
             </div>
 
@@ -238,19 +247,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             </option>
                         ))}
                     </select>
-                    <button
+                    <Button
                         type="button"
-                        className={styles.addButton}
+                        variant="primary"
+                        size="sm"
+                        iconOnly
                         onClick={actions.openSupplierModal}
                         title="Adicionar Fornecedor"
+                        aria-label="Adicionar Fornecedor"
                         id="add-fornecedor-btn"
-                    >
-                        <AddIcon fontSize="small" />
-                    </button>
+                        leftIcon={<AddIcon fontSize="small" />}
+                    />
                     {/* Botão dos 3 pontinhos para abrir modal de gerenciamento de fornecedores*/}
-                    <button
+                    <Button
                         type="button"
-                        className={styles.manageButton}
+                        variant="outline"
+                        size="sm"
+                        iconOnly
                         onClick={() => {
                             const selectedSupplier = options.suppliers.find(
                                 (f) => f.id === form.supplierId
@@ -260,10 +273,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             }
                         }}
                         title="Editar Fornecedor Selecionado"
+                        aria-label="Editar Fornecedor Selecionado"
                         id="edit-fornecedor-btn"
-                    >
-                        <MoreVert fontSize="small" />
-                    </button>
+                        leftIcon={<MoreVert fontSize="small" />}
+                    />
                 </div>
             </div>
 
@@ -362,14 +375,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         Estoque:
                     </label>
                     {editingProductId ? (
-                        <button
+                        <Button
                             type="button"
-                            className={styles.secondaryButton}
+                            variant="secondary"
                             onClick={actions.openStockAdjustModal}
                             id="open-ajuste-estoque-btn"
                         >
                             Ajustar
-                        </button>
+                        </Button>
                     ) : (
                         <input
                             id="form-estoque"
@@ -452,9 +465,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                                 }}
                             />
 
-                            <button
+                            <Button
                                 type="button"
-                                className={styles.removeBtn}
+                                variant="danger"
+                                size="sm"
+                                iconOnly
                                 onClick={() => {
                                     const { units, unitOfMeasureId, unitMultiplier } = removeUnit(
                                         form.unitsOfMeasure,
@@ -468,16 +483,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
                                     }));
                                 }}
                                 title="Remover"
-                            >
-                                <CloseIcon fontSize="small" />
-                            </button>
+                                aria-label="Remover"
+                                leftIcon={<CloseIcon fontSize="small" />}
+                            />
                         </div>
                     ))}
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                    <button
+                    <Button
                         type="button"
-                        className={styles.secondaryButton}
+                        variant="outline"
+                        size="sm"
                         onClick={() => {
                             setForm(p => ({
                                 ...p,
@@ -486,15 +502,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         }}
                     >
                         + Nova Unidade
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
-                        className={styles.secondaryButton}
+                        variant="outline"
+                        size="sm"
                         onClick={actions.openUnitOfMeasureModal}
                         title="Cadastrar Unidade no Sistema"
                     >
                         Cadastro de Unidades
-                    </button>
+                    </Button>
                 </div>
             </div>
 

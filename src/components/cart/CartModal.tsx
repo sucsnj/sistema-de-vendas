@@ -15,6 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { formatCurrency } from '../../utils/formatter';
 import { getCartSummary } from '../../utils/cart';
+import Button from '@/components/common/Button';
 import { CartModalShell } from './CartModalShell';
 import type { CartItem } from '../../types/sale';
 import styles from '../../styles/cartModal.module.css';
@@ -49,10 +50,9 @@ const CartModal: React.FC<CartModalProps> = ({
       summary={summary}
       footerLeft={
         cartItems.length > 0 ? (
-          <button type="button" className={`${styles.cartClearAllBtn}`} onClick={onClearCart}>
-            <DeleteIcon fontSize="small" />
+          <Button type="button" variant="danger" size="sm" onClick={onClearCart} leftIcon={<DeleteIcon fontSize="small" />}>
             Limpar Carrinho
-          </button>
+          </Button>
         ) : undefined
       }
     >
@@ -93,15 +93,17 @@ const CartModal: React.FC<CartModalProps> = ({
                 {/* Controles de Quantidade, Subtotal e Remoção */}
                 <div className={`${styles.cartItemActions}`}>
                   <div className={`${styles.cartQtyControl}`}>
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="sm"
+                      iconOnly
                       className={`${styles.qtyBtn}`}
                       onClick={() => onUpdateQuantity(item.id, item.tipo, item.quantidade - 1)}
                       title="Diminuir quantidade"
                       aria-label="Diminuir quantidade"
-                    >
-                      <RemoveIcon fontSize="inherit" />
-                    </button>
+                      leftIcon={<RemoveIcon fontSize="inherit" />}
+                    />
                     <input
                       type="number"
                       min="1"
@@ -115,30 +117,34 @@ const CartModal: React.FC<CartModalProps> = ({
                       }}
                       aria-label={`Quantidade de ${item.nome}`}
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="sm"
+                      iconOnly
                       className={`${styles.qtyBtn}`}
                       onClick={() => onUpdateQuantity(item.id, item.tipo, item.quantidade + 1)}
                       title="Aumentar quantidade"
                       aria-label="Aumentar quantidade"
-                    >
-                      <AddIcon fontSize="inherit" />
-                    </button>
+                      leftIcon={<AddIcon fontSize="inherit" />}
+                    />
                   </div>
 
                   <div className={`${styles.cartItemSubtotalBox}`}>
                     <span className={`${styles.subtotalVal}`}>{formatCurrency(subtotal, 2)}</span>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="danger"
+                    size="sm"
+                    iconOnly
                     className={`${styles.cartRemoveBtn}`}
                     onClick={() => onRemoveItem(item.id, item.tipo)}
                     title="Remover item do carrinho"
                     aria-label={`Remover ${item.nome}`}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </button>
+                    leftIcon={<DeleteIcon fontSize="small" />}
+                  />
                 </div>
               </div>
             );

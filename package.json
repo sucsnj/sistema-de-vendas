@@ -10,7 +10,8 @@
     "lint:css": "stylelint \"src/**/*.css\"",
     "styles:types": "tcm src/styles -p \"**/*.module.css\" -a -s",
     "styles:check": "tcm src/styles -p \"**/*.module.css\" -a -l",
-    "check:css": "node scripts/check-css-modules.mjs"
+    "check:css": "node scripts/check-css-modules.mjs",
+    "test:calc": "node scripts/test-calculator.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

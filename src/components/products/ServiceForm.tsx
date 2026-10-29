@@ -2,6 +2,7 @@ import type { Dispatch, RefObject, SetStateAction } from 'react';
 import styles from '../../styles/produtos.module.css';
 import MoreVert from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@/components/common/Button';
 import { parseNumber } from '../../utils/number';
 import { formatCurrencyNumber } from '../../utils/formatter';
 // CategoryData type not needed directly in this component
@@ -72,18 +73,22 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
               </option>
             ))}
           </select>
-          <button
+          <Button
             type="button"
-            className={styles.addButton}
+            variant="primary"
+            size="sm"
+            iconOnly
             onClick={actions.openCategoryModal}
             title="Adicionar Categoria"
+            aria-label="Adicionar Categoria"
             id="add-categoria-btn"
-          >
-            <AddIcon fontSize="small" />
-          </button>
-          <button
+            leftIcon={<AddIcon fontSize="small" />}
+          />
+          <Button
             type="button"
-            className={styles.manageButton}
+            variant="outline"
+            size="sm"
+            iconOnly
             onClick={() => {
               const selectedCategory = options.categories.find((c) => c.id === form.categoryId);
               if (selectedCategory) {
@@ -91,10 +96,10 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
               }
             }}
             title="Editar Categoria Selecionada"
+            aria-label="Editar Categoria Selecionada"
             id="edit-categoria-btn"
-          >
-            <MoreVert fontSize="small" />
-          </button>
+            leftIcon={<MoreVert fontSize="small" />}
+          />
         </div>
       </div>
 

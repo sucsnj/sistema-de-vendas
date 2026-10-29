@@ -25,14 +25,15 @@ function currentDigits(expression: string): string {
 
 export function insertKey(expression: string, key: string): string {
   if (!VALID_KEY_REGEX.test(key)) return expression
-  if (expression.length >= EXPRESSION_LIMIT && !['Backspace', 'C'].includes(key)) {
-    return expression
-  }
+  if (expression.length >= EXPRESSION_LIMIT) return expression
 
   const last = expression.at(-1) ?? ''
-  const isOperator = key === '+' || key === '-' || key === '*' || key === '/'
+  const isOperator = OPERATOR_REGEX.test(key)
+  const isUnaryMinus =
+    key === '-' && (expression === '' || last === '(' || OPERATOR_REGEX.test(last))
 
-  if (isOperator && OPERATOR_REGEX.test(last) && last !== '*' && last !== '/') {
+  // Operadores binários substituem o operador anterior; o menos unário é anexado.
+  if (isOperator && OPERATOR_REGEX.test(last) && !isUnaryMinus) {
     return `${expression.slice(0, -1)}${key}`
   }
 
@@ -50,7 +51,11 @@ export function insertKey(expression: string, key: string): string {
     if (close >= open) return expression
   }
 
-  if (key === '(' && NUMBER_REGEX.test(last)) {
+  if (key === '(' && (NUMBER_REGEX.test(last) || last === ')')) {
+    return `${expression}*${key}`
+  }
+
+  if (NUMBER_REGEX.test(key) && last === ')') {
     return `${expression}*${key}`
   }
 
@@ -68,14 +73,16 @@ export function sanitizeExpression(text: string): string {
 type Token =
   | { type: 'number'; value: number }
   | { type: 'operator'; value: string }
+  | { type: 'unary' }
   | { type: 'open' }
   | { type: 'close' }
 
-const PRECEDENCE: Record<string, number> = { '+': 1, '-': 1, '*': 2, '/': 2 }
+const PRECEDENCE: Record<string, number> = { '+': 1, '-': 1, '*': 2, '/': 2, neg: 3 }
 
 function tokenize(expression: string): Token[] | null {
   const tokens: Token[] = []
   let index = 0
+  let lastType: Token['type'] | null = null
 
   while (index < expression.length) {
     const char = expression[index]
@@ -90,15 +97,29 @@ function tokenize(expression: string): Token[] | null {
       const value = Number(number)
       if (!Number.isFinite(value)) return null
       tokens.push({ type: 'number', value })
+      lastType = 'number'
+      continue
+    }
+
+    if (
+      char === '-' &&
+      (lastType === null || lastType === 'operator' || lastType === 'open' || lastType === 'unary')
+    ) {
+      tokens.push({ type: 'unary' })
+      lastType = 'unary'
+      index += 1
       continue
     }
 
     if (OPERATOR_REGEX.test(char)) {
       tokens.push({ type: 'operator', value: char })
+      lastType = 'operator'
     } else if (char === '(') {
       tokens.push({ type: 'open' })
+      lastType = 'open'
     } else if (char === ')') {
       tokens.push({ type: 'close' })
+      lastType = 'close'
     } else {
       return null
     }
@@ -110,10 +131,20 @@ function tokenize(expression: string): Token[] | null {
 }
 
 export function calculate(expression: string): number | null {
-  const complete = expression.replace(/[+\-*/]+$/, '')
+  const complete = expression.trim()
   if (isEmpty(complete)) return null
 
-  const tokens = tokenize(complete)
+  // Um sinal final não invalida a expressão: mostra o cálculo parcial possível.
+  const withoutTrailingOperators = complete.replace(/[+\-*/]+$/, '')
+  if (isEmpty(withoutTrailingOperators)) return null
+
+  // Multiplicação implícita também é aceita em expressões já montadas/coladas.
+  const normalized = withoutTrailingOperators
+    .replace(/(\d)\(/g, '$1*(')
+    .replace(/\)(\d)/g, ')*$1')
+    .replace(/\)\(/g, ')*(')
+
+  const tokens = tokenize(normalized)
   if (tokens === null || tokens.length === 0) return null
 
   const output: (number | string)[] = []
@@ -122,6 +153,11 @@ export function calculate(expression: string): number | null {
   for (const token of tokens) {
     if (token.type === 'number') {
       output.push(token.value)
+      continue
+    }
+
+    if (token.type === 'unary') {
+      operators.push('neg')
       continue
     }
 
@@ -162,10 +198,16 @@ export function calculate(expression: string): number | null {
       continue
     }
 
+    if (item === 'neg') {
+      const value = values.pop()
+      if (value === undefined) return null
+      values.push(-value)
+      continue
+    }
+
     const right = values.pop()
     const left = values.pop()
     if (left === undefined || right === undefined) return null
-
     switch (item) {
       case '+':
         values.push(left + right)

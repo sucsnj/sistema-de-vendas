@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import styles from '../../styles/produtos.module.css';
 import type { StockMovementData } from '../../services/produtosService';
 import { useFocusTrap } from '../../utils/focus';
+import Button from '@/components/common/Button';
 
 interface StockAdjustModalProps {
   open: boolean;
@@ -116,12 +117,12 @@ const StockAdjustModal: React.FC<StockAdjustModalProps> = ({
         </div>
 
         <div className={styles.modalActions}>
-          <button type="button" className={styles.primaryButton} onClick={onSave} id="save-ajuste-btn">
+          <Button type="button" variant="success" onClick={onSave} id="save-ajuste-btn">
             Registrar Ajuste
-          </button>
-          <button type="button" className={styles.secondaryButton} onClick={onClose} id="cancel-ajuste-btn">
+          </Button>
+          <Button type="button" variant="outline" onClick={onClose} id="cancel-ajuste-btn">
             Cancelar
-          </button>
+          </Button>
         </div>
       </div>
     </div>

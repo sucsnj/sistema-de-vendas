@@ -1,5 +1,6 @@
 import styles from '../../styles/produtos.module.css';
 import Panel from '@/components/common/Panel';
+import Button from '@/components/common/Button';
 import PanelHeader from '@/components/common/PanelHeader';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -101,34 +102,40 @@ const Listagem: React.FC<ProductListProps> = ({ items, total, page, totalPages, 
                                             <td>
                                                 <div className={styles.actionsCell}>
                                                     {item.tipo === 'PRODUTO' && (
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant={item.ativo === 1 ? 'warning' : 'success'}
+                                                            size="sm"
+                                                            iconOnly
                                                             onClick={() => onToggleStatus(item)}
-                                                            className={`${styles.iconButton} ${styles.statusIcon}`}
                                                             title={item.ativo === 1 ? 'Desativar' : 'Ativar'}
+                                                            aria-label={item.ativo === 1 ? 'Desativar' : 'Ativar'}
                                                             id={`toggle-status-${item.id}`}
-                                                        >
-                                                            {item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
-                                                        </button>
+                                                            leftIcon={item.ativo === 1 ? <BlockIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
+                                                        />
                                                     )}
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="info"
+                                                        size="sm"
+                                                        iconOnly
                                                         onClick={() => onEdit(item)}
-                                                        className={`${styles.iconButton} ${styles.editIcon}`}
                                                         title="Editar"
+                                                        aria-label="Editar"
                                                         id={`edit-item-${item.id}`}
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </button>
-                                                    <button
+                                                        leftIcon={<EditIcon fontSize="small" />}
+                                                    />
+                                                    <Button
                                                         type="button"
+                                                        variant="danger"
+                                                        size="sm"
+                                                        iconOnly
                                                         onClick={() => onDelete(item)}
-                                                        className={`${styles.iconButton} ${styles.deleteIcon}`}
                                                         title="Excluir"
+                                                        aria-label="Excluir"
                                                         id={`delete-item-${item.id}`}
-                                                    >
-                                                        <DeleteIcon fontSize="small" />
-                                                    </button>
+                                                        leftIcon={<DeleteIcon fontSize="small" />}
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>
@@ -146,20 +153,24 @@ const Listagem: React.FC<ProductListProps> = ({ items, total, page, totalPages, 
                             Página {page} de {totalPages}
                         </div>
                         <div className={styles.paginationButtons}>
-                            <button
+                            <Button
                                 type="button"
+                                variant="outline"
+                                size="sm"
                                 disabled={page === 1}
                                 onClick={() => onPageChange(page - 1)}
                             >
                                 Anterior
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
+                                variant="outline"
+                                size="sm"
                                 disabled={page === totalPages}
                                 onClick={() => onPageChange(page + 1)}
                             >
                                 Próxima
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 )}

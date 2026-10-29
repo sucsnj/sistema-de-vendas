@@ -6,6 +6,7 @@ import { formatCurrency } from '../../utils/formatter';
 import styles from '../../styles/contas.module.css';
 import { canEdit } from '../../utils/edit';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import Button from '@/components/common/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Tooltip from '@mui/material/Tooltip';
@@ -47,33 +48,45 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
         - <span>Total R$ {formatCurrency(totalSales, 2)}</span>
       </h2>
       <div className="range-buttons">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           className={maxSales === 100 ? 'color-muted' : 'button-100'}
+          aria-pressed={maxSales === 100}
           onClick={() => changeMaxSales(100)}
         >
           100 últimas
-        </button>
+        </Button>
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           className={maxSales === 50 ? 'color-muted' : 'button-50'}
+          aria-pressed={maxSales === 50}
           onClick={() => changeMaxSales(50)}
         >
           50 últimas
-        </button>
+        </Button>
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           className={maxSales === 25 ? 'color-muted' : 'button-25'}
+          aria-pressed={maxSales === 25}
           onClick={() => changeMaxSales(25)}
         >
           25 últimas
-        </button>
+        </Button>
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           className={maxSales === sales.length ? 'color-muted' : 'button-todas'}
+          aria-pressed={maxSales === sales.length}
           onClick={() => changeMaxSales(sales.length)}
         >
           Todas
-        </button>
+        </Button>
       </div>
       <table>
         <thead>
@@ -117,20 +130,14 @@ const SalesTable: React.FC<SalesTableProps> = ({ sales, onEditSale, onDeleteSale
                   {canEdit(sale.data) ? (
                     <>
                       {onEditSale ? (
-                        <button type="button" className={styles.editButton} onClick={() => onEditSale(sale)}>
-                          <span className="icon-responsive">
-                            <EditIcon />
-                          </span>
-                          <span className="text-responsive">Editar</span>
-                        </button>
+                        <Button type="button" variant="info" size="sm" onClick={() => onEditSale(sale)} leftIcon={<EditIcon />}>
+                          Editar
+                        </Button>
                       ) : null}
                       {onDeleteSale ? (
-                        <button type="button" className={`${styles.deleteButton} button-spacing-small`} onClick={() => openConfirm(sale.id)}>
-                          <span className="icon-responsive">
-                            <DeleteIcon />
-                          </span>
-                          <span className="text-responsive">Excluir</span>
-                        </button>
+                        <Button type="button" variant="danger" size="sm" onClick={() => openConfirm(sale.id)} leftIcon={<DeleteIcon />}>
+                          Excluir
+                        </Button>
                       ) : null}
                     </>
                   ) : (

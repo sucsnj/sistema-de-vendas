@@ -148,6 +148,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
             />
             <Button
               type="button"
+              variant="ghost"
+              size="sm"
               className={styles.cartIconButton}
               onClick={handleCartClick}
               aria-label="Abrir carrinho"
@@ -192,8 +194,8 @@ const EditSaleForm: React.FC<EditSaleFormProps> = ({ sale, onSaved, onCancel, on
           />
         </label>
 
-        <Button type="submit" icon={<SaveIcon />}>Salvar Alteração</Button>
-        <Button type="button" onClick={onCancel} className="button-spacing" icon={<CancelIcon />}>
+        <Button type="submit" variant="success" leftIcon={<SaveIcon />}>Salvar Alteração</Button>
+        <Button type="button" variant="outline" onClick={onCancel} className="button-spacing" leftIcon={<CancelIcon />}>
           Cancelar
         </Button>
       </Form>

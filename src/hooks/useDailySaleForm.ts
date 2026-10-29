@@ -50,7 +50,8 @@ export const useDailySaleForm = ({
   const [value, setValue] = useState('');
   const [observations, setObservations] = useState('');
   const [loading, setLoading] = useState(false);
-  const [clearing] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [isValueInvalid, setIsValueInvalid] = useState(false);
   const [calculatedValue, setCalculatedValue] = useState<number | null>(0);
   const [pixModalOpen, setPixModalOpen] = useState(false);
   const [pixPayload, setPixPayload] = useState('');
@@ -87,7 +88,9 @@ export const useDailySaleForm = ({
 
   // Aplica/limpa o somatório do campo de valor a partir da expressão digitada
   const calculateValue = (input: string) => {
-    setCalculatedValue(calculateResult(input));
+    const result = calculateResult(input);
+    setCalculatedValue(result);
+    setIsValueInvalid(input.trim() !== '' && result === null);
   };
 
   // Filtra as teclas do input de valor: números, operadores matemáticos,
@@ -110,14 +113,20 @@ export const useDailySaleForm = ({
 
   // Sanitiza o input de valor e recalcula a expressão
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const cursor = event.target.selectionStart ?? event.target.value.length;
+    const sanitizedBefore = sanitizeExpression(event.target.value.slice(0, cursor));
     const sanitized = sanitizeExpression(event.target.value);
     event.target.value = sanitized;
     setValue(sanitized);
     calculateValue(sanitized);
+
+    requestAnimationFrame(() => {
+      const position = Math.min(sanitizedBefore.length, sanitized.length);
+      valueInputRef.current?.setSelectionRange(position, position);
+    });
   };
 
-  const formatCartValue = (val: number): string =>
-    val.toFixed(2).replace('.', ',');
+  const formatCartValue = (val: number): string => val.toFixed(2);
 
   // Sempre que o valor total do carrinho mudar, atualiza o campo input
   // adicionando/removendo "+valor_do_carrinho"
@@ -163,6 +172,7 @@ export const useDailySaleForm = ({
   // Apaga tudo ao pressionar ESC no teclado
   useShortcuts(['Escape'], () => {
     setCalculatedValue(0);
+    setIsValueInvalid(false);
     setValue('');
     setCartItems([]);
     prevCartValueRef.current = 0;
@@ -170,12 +180,15 @@ export const useDailySaleForm = ({
 
   // Botão para limpar valor e observações (foco volta para o input de valor)
   const handleClear = () => {
+    setClearing(true);
     setCartItems([]);
     prevCartValueRef.current = 0;
     setValue('');
     setObservations('');
     setCalculatedValue(0);
+    setIsValueInvalid(false);
     valueInputRef.current?.focus();
+    setClearing(false);
   };
 
   const handlePixClick = () => {
@@ -240,6 +253,14 @@ export const useDailySaleForm = ({
 
       const valueFromInput =
         calculatedValue !== null ? calculatedValue : parseCurrency(value);
+
+      if (value.trim() !== '' && calculatedValue === null) {
+        highlightField(valueInputRef);
+        showToast('Expressão inválida.', 'error');
+        setLoading(false);
+        valueInputRef.current?.focus();
+        return;
+      }
 
       const valueCheck = validateRequired(value, 'Valor');
       if (!valueCheck.ok) {
@@ -347,6 +368,7 @@ export const useDailySaleForm = ({
     loading,
     clearing,
     calculatedValue,
+    isValueInvalid,
     pixModalOpen,
     setPixModalOpen,
     pixPayload,
